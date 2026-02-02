@@ -434,44 +434,41 @@ export function countZeroCells(board: Cell[][]): number {
   return count;
 }
 
-// Calculate Pattern Memory cells: safe diagonal cells after flagging a mine
-export function calculatePatternMemoryCells(
+// Calculate Pattern Memory cell: one random safe neighbor after revealing a 3+ cell
+export function calculatePatternMemoryCell(
   board: Cell[][],
-  flaggedRow: number,
-  flaggedCol: number
-): Set<string> {
-  const cells = new Set<string>();
+  revealedRow: number,
+  revealedCol: number
+): string | null {
+  const cell = board[revealedRow]?.[revealedCol];
+
+  // Only trigger for revealed cells with 3+ adjacent mines
+  if (!cell || cell.state !== CellState.Revealed || cell.adjacentMines < 3) {
+    return null;
+  }
+
   const rows = board.length;
   const cols = board[0]?.length || 0;
 
-  // Only reveal diagonal safe cells if the flagged cell is ACTUALLY a mine
-  // This prevents the exploit of flagging random cells to discover safe spots
-  const flaggedCell = board[flaggedRow]?.[flaggedCol];
-  if (!flaggedCell || !flaggedCell.isMine) {
-    return cells; // No information for incorrect flags
-  }
-
-  // Check diagonal neighbors
-  const diagonals = [
-    { dr: -1, dc: -1 },
-    { dr: -1, dc: 1 },
-    { dr: 1, dc: -1 },
-    { dr: 1, dc: 1 },
-  ];
-
-  for (const { dr, dc } of diagonals) {
-    const r = flaggedRow + dr;
-    const c = flaggedCol + dc;
-    if (r >= 0 && r < rows && c >= 0 && c < cols) {
-      const cell = board[r][c];
-      // Only show safe cells that are still hidden
-      if (!cell.isMine && cell.state === CellState.Hidden) {
-        cells.add(`${r},${c}`);
+  // Collect ALL hidden safe neighbors (not just diagonals)
+  const safeNeighbors: string[] = [];
+  for (let dr = -1; dr <= 1; dr++) {
+    for (let dc = -1; dc <= 1; dc++) {
+      if (dr === 0 && dc === 0) continue;
+      const r = revealedRow + dr;
+      const c = revealedCol + dc;
+      if (r >= 0 && r < rows && c >= 0 && c < cols) {
+        const neighbor = board[r][c];
+        if (!neighbor.isMine && neighbor.state === CellState.Hidden) {
+          safeNeighbors.push(`${r},${c}`);
+        }
       }
     }
   }
 
-  return cells;
+  // Return one random safe neighbor (or null if none)
+  if (safeNeighbors.length === 0) return null;
+  return safeNeighbors[Math.floor(Math.random() * safeNeighbors.length)];
 }
 
 // Apply Safe Path: reveal up to 5 safe cells in a row or column
@@ -503,8 +500,8 @@ export function applySafePath(
     }
   }
 
-  // Reveal up to 5 safe cells
-  const toReveal = safeCells.slice(0, 5);
+  // Reveal up to 3 safe cells
+  const toReveal = safeCells.slice(0, 3);
   for (const { row, col } of toReveal) {
     newBoard = revealCell(newBoard, row, col);
   }
