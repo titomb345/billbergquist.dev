@@ -132,7 +132,7 @@ export const UNCOMMON_POWER_UPS: PowerUp[] = [
   {
     id: 'pattern-memory',
     name: 'Pattern Memory',
-    description: 'After flagging a mine, diagonal cells glow green if safe',
+    description: 'After revealing a 3+ cell, one random safe neighbor glows',
     icon: '🧩',
     type: 'passive',
     rarity: 'uncommon',
@@ -163,14 +163,6 @@ export const UNCOMMON_POWER_UPS: PowerUp[] = [
     rarity: 'uncommon',
   },
   {
-    id: 'sixth-sense',
-    name: 'Sixth Sense',
-    description: 'First click redirected to nearest 0-cell for max cascade',
-    icon: '✨',
-    type: 'passive',
-    rarity: 'uncommon',
-  },
-  {
     id: 'mine-detector',
     name: 'Mine Detector',
     description: 'Hover shows mine count in 5×5 area',
@@ -194,7 +186,7 @@ export const RARE_POWER_UPS: PowerUp[] = [
   {
     id: 'safe-path',
     name: 'Safe Path',
-    description: 'Once per floor, reveal up to 5 safe cells in a chosen row or column',
+    description: 'Once per floor, reveal up to 3 safe cells in a chosen row or column',
     icon: '🛤️',
     type: 'active',
     rarity: 'rare',
@@ -210,14 +202,6 @@ export const RARE_POWER_UPS: PowerUp[] = [
     usesPerFloor: 1,
   },
   {
-    id: 'iron-will',
-    name: 'Iron Will',
-    description: 'Survive one mine click per run (mine becomes flagged instead)',
-    icon: '🛡️',
-    type: 'passive',
-    rarity: 'rare',
-  },
-  {
     id: 'x-ray-vision',
     name: 'X-Ray Vision',
     description: 'Once per floor, safely reveal 3×3 area (mines flagged, safe cells revealed)',
@@ -226,6 +210,14 @@ export const RARE_POWER_UPS: PowerUp[] = [
     rarity: 'rare',
     usesPerFloor: 1,
   },
+  {
+    id: 'sixth-sense',
+    name: 'Sixth Sense',
+    description: 'First click redirected to nearest 0-cell for max cascade',
+    icon: '✨',
+    type: 'passive',
+    rarity: 'rare',
+  },
 ];
 
 // ==================== EPIC RELICS ====================
@@ -233,7 +225,7 @@ export const EPIC_POWER_UPS: PowerUp[] = [
   {
     id: 'probability-lens',
     name: 'Probability Lens',
-    description: 'Once per floor, highlights the safest unrevealed cell on the board',
+    description: 'Once per floor, highlights the 3 safest unrevealed cells on the board',
     icon: '🔮',
     type: 'active',
     rarity: 'epic',
@@ -242,8 +234,16 @@ export const EPIC_POWER_UPS: PowerUp[] = [
   {
     id: 'oracles-gift',
     name: "Oracle's Gift",
-    description: 'All true 50/50 situations show the safe choice. BUT: +25% mine density',
+    description: 'All true 50/50 situations show the safe choice. BUT: +15% mine density',
     icon: '🌟',
+    type: 'passive',
+    rarity: 'epic',
+  },
+  {
+    id: 'iron-will',
+    name: 'Iron Will',
+    description: 'Survive one mine click per run (mine becomes flagged instead)',
+    icon: '🛡️',
     type: 'passive',
     rarity: 'epic',
   },

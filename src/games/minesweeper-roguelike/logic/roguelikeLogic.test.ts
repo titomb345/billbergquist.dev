@@ -6,6 +6,7 @@ import {
   checkFloorCleared,
   calculateMineCount5x5,
   countZeroCells,
+  calculatePatternMemoryCell,
 } from './roguelikeLogic';
 import { Cell, CellState } from '../types';
 import { SCORING } from '../constants';
@@ -113,5 +114,110 @@ describe('countZeroCells', () => {
     board[1][1].isMine = true; // Should not count
 
     expect(countZeroCells(board)).toBe(1);
+  });
+});
+
+describe('calculatePatternMemoryCell', () => {
+  it('returns null for cells with less than 3 adjacent mines', () => {
+    const board = createTestBoard(3, 3);
+    board[1][1].state = CellState.Revealed;
+    board[1][1].adjacentMines = 2;
+
+    expect(calculatePatternMemoryCell(board, 1, 1)).toBe(null);
+  });
+
+  it('returns null for hidden cells', () => {
+    const board = createTestBoard(3, 3);
+    board[1][1].adjacentMines = 3;
+    // Cell is still hidden
+
+    expect(calculatePatternMemoryCell(board, 1, 1)).toBe(null);
+  });
+
+  it('returns a random safe neighbor for revealed 3+ cells', () => {
+    const board = createTestBoard(3, 3);
+    board[1][1].state = CellState.Revealed;
+    board[1][1].adjacentMines = 3;
+    // All surrounding cells are hidden and safe
+
+    const result = calculatePatternMemoryCell(board, 1, 1);
+    expect(result).not.toBe(null);
+
+    // Should be one of the 8 surrounding cells
+    const validCells = [
+      '0,0', '0,1', '0,2',
+      '1,0',        '1,2',
+      '2,0', '2,1', '2,2',
+    ];
+    expect(validCells).toContain(result);
+  });
+
+  it('excludes mine neighbors from safe neighbor pool', () => {
+    const board = createTestBoard(3, 3);
+    board[1][1].state = CellState.Revealed;
+    board[1][1].adjacentMines = 3;
+
+    // Make all neighbors except (0,0) mines
+    board[0][1].isMine = true;
+    board[0][2].isMine = true;
+    board[1][0].isMine = true;
+    board[1][2].isMine = true;
+    board[2][0].isMine = true;
+    board[2][1].isMine = true;
+    board[2][2].isMine = true;
+
+    // Only (0,0) is safe and hidden
+    const result = calculatePatternMemoryCell(board, 1, 1);
+    expect(result).toBe('0,0');
+  });
+
+  it('excludes already revealed neighbors', () => {
+    const board = createTestBoard(3, 3);
+    board[1][1].state = CellState.Revealed;
+    board[1][1].adjacentMines = 4;
+
+    // Reveal all neighbors except (2,2)
+    board[0][0].state = CellState.Revealed;
+    board[0][1].state = CellState.Revealed;
+    board[0][2].state = CellState.Revealed;
+    board[1][0].state = CellState.Revealed;
+    board[1][2].state = CellState.Revealed;
+    board[2][0].state = CellState.Revealed;
+    board[2][1].state = CellState.Revealed;
+
+    // Only (2,2) is hidden and safe
+    const result = calculatePatternMemoryCell(board, 1, 1);
+    expect(result).toBe('2,2');
+  });
+
+  it('returns null when no safe hidden neighbors exist', () => {
+    const board = createTestBoard(3, 3);
+    board[1][1].state = CellState.Revealed;
+    board[1][1].adjacentMines = 3;
+
+    // All neighbors are mines
+    board[0][0].isMine = true;
+    board[0][1].isMine = true;
+    board[0][2].isMine = true;
+    board[1][0].isMine = true;
+    board[1][2].isMine = true;
+    board[2][0].isMine = true;
+    board[2][1].isMine = true;
+    board[2][2].isMine = true;
+
+    expect(calculatePatternMemoryCell(board, 1, 1)).toBe(null);
+  });
+
+  it('handles edge cells correctly', () => {
+    const board = createTestBoard(3, 3);
+    board[0][0].state = CellState.Revealed;
+    board[0][0].adjacentMines = 3;
+
+    const result = calculatePatternMemoryCell(board, 0, 0);
+    expect(result).not.toBe(null);
+
+    // Should be one of the 3 valid neighbors for corner cell
+    const validCells = ['0,1', '1,0', '1,1'];
+    expect(validCells).toContain(result);
   });
 });

@@ -39,7 +39,7 @@ import {
   countFlags,
   calculateChordHighlightCells,
   countZeroCells,
-  calculatePatternMemoryCells,
+  calculatePatternMemoryCell,
 } from '../logic/roguelikeLogic';
 import { getFloorConfig, selectDraftOptions, getAvailablePowerUps } from '../constants';
 import { saveGameState, loadGameState, clearGameState } from '../persistence';
@@ -313,6 +313,26 @@ function roguelikeReducer(
         }
       }
 
+      // Pattern Memory: check for newly revealed 3+ cells
+      let newPatternMemoryCells = state.patternMemoryCells;
+      if (hasPowerUp(state.run, 'pattern-memory')) {
+        // Find all cells that were just revealed with 3+ adjacent mines
+        for (let r = 0; r < newBoard.length; r++) {
+          for (let c = 0; c < newBoard[r].length; c++) {
+            const wasHidden = state.board[r]?.[c]?.state !== CellState.Revealed;
+            const isNowRevealed = newBoard[r][c].state === CellState.Revealed;
+            const has3Plus = newBoard[r][c].adjacentMines >= 3;
+
+            if (wasHidden && isNowRevealed && has3Plus && !newBoard[r][c].isMine) {
+              const safeCell = calculatePatternMemoryCell(newBoard, r, c);
+              if (safeCell && !newPatternMemoryCells.has(safeCell)) {
+                newPatternMemoryCells = new Set([...newPatternMemoryCells, safeCell]);
+              }
+            }
+          }
+        }
+      }
+
       return {
         ...state,
         board: newBoard,
@@ -326,6 +346,7 @@ function roguelikeReducer(
         zeroCellCount: newZeroCellCount,
         cellsRevealedThisFloor: newCellsRevealedThisFloor,
         cellRevealTimes: newCellRevealTimes,
+        patternMemoryCells: newPatternMemoryCells,
       };
     }
 
@@ -338,15 +359,6 @@ function roguelikeReducer(
       if (cell.state === CellState.Revealed) return state;
 
       const newBoard = toggleFlag(state.board, row, col);
-      const nowFlagged = newBoard[row][col].state === CellState.Flagged;
-
-      // Update Pattern Memory cells when flagging (not unflagging)
-      let newPatternMemoryCells = state.patternMemoryCells;
-      if (nowFlagged && hasPowerUp(state.run, 'pattern-memory')) {
-        // Merge new diagonal safe cells with existing ones
-        const newDiagonals = calculatePatternMemoryCells(newBoard, row, col);
-        newPatternMemoryCells = new Set([...state.patternMemoryCells, ...newDiagonals]);
-      }
 
       // Clear momentum on flag (as per design)
       const newRun = hasPowerUp(state.run, 'momentum') && state.run.momentumActive
@@ -358,7 +370,6 @@ function roguelikeReducer(
         board: newBoard,
         run: newRun,
         minesRemaining: state.floorConfig.mines - countFlags(newBoard),
-        patternMemoryCells: newPatternMemoryCells,
       };
     }
 
@@ -422,6 +433,26 @@ function roguelikeReducer(
         newDraftOptions = clearResult.draftOptions;
       }
 
+      // Pattern Memory: check for newly revealed 3+ cells
+      let newPatternMemoryCells = state.patternMemoryCells;
+      if (hasPowerUp(state.run, 'pattern-memory')) {
+        // Find all cells that were just revealed with 3+ adjacent mines
+        for (let r = 0; r < finalBoard.length; r++) {
+          for (let c = 0; c < finalBoard[r].length; c++) {
+            const wasHidden = state.board[r]?.[c]?.state !== CellState.Revealed;
+            const isNowRevealed = finalBoard[r][c].state === CellState.Revealed;
+            const has3Plus = finalBoard[r][c].adjacentMines >= 3;
+
+            if (wasHidden && isNowRevealed && has3Plus && !finalBoard[r][c].isMine) {
+              const safeCell = calculatePatternMemoryCell(finalBoard, r, c);
+              if (safeCell && !newPatternMemoryCells.has(safeCell)) {
+                newPatternMemoryCells = new Set([...newPatternMemoryCells, safeCell]);
+              }
+            }
+          }
+        }
+      }
+
       return {
         ...state,
         board: finalBoard,
@@ -430,6 +461,7 @@ function roguelikeReducer(
         draftOptions: newDraftOptions,
         minesRemaining: state.floorConfig.mines - countFlags(finalBoard),
         closeCallCell,
+        patternMemoryCells: newPatternMemoryCells,
       };
     }
 
