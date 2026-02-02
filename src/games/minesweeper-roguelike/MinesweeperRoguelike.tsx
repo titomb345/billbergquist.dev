@@ -86,6 +86,7 @@ function Minesweeper({ resetRef }: MinesweeperProps) {
   }, []);
 
   const handleXRayClick = (row: number, col: number) => {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     useXRay(row, col);
     setXRayMode(false);
   };
@@ -125,6 +126,7 @@ function Minesweeper({ resetRef }: MinesweeperProps) {
   };
 
   const handlePeekClick = (row: number, col: number) => {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     usePeek(row, col);
     setPeekMode(false);
   };
@@ -137,6 +139,7 @@ function Minesweeper({ resetRef }: MinesweeperProps) {
 
   const handleSafePathClick = (row: number, _col: number) => {
     // For simplicity, Safe Path reveals cells in the ROW of the clicked cell
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     useSafePath('row', row);
     setSafePathMode(false);
   };
@@ -148,6 +151,7 @@ function Minesweeper({ resetRef }: MinesweeperProps) {
   };
 
   const handleDefusalKitClick = (row: number, col: number) => {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     useDefusalKit(row, col);
     setDefusalKitMode(false);
   };
@@ -160,6 +164,7 @@ function Minesweeper({ resetRef }: MinesweeperProps) {
 
   const handleSurveyClick = (row: number, _col: number) => {
     // Survey reveals mine count in the clicked row
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     useSurvey('row', row);
     setSurveyMode(false);
   };

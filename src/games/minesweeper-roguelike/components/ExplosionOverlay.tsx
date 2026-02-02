@@ -1,7 +1,10 @@
 import { useEffect } from 'react';
 
-// Pre-allocate particle indices to avoid array allocation on each render
-const PARTICLE_INDICES = Array.from({ length: 12 }, (_, i) => i);
+// Pre-allocate particle data to avoid allocation and Math.random calls on each render
+const PARTICLE_DATA = Array.from({ length: 12 }, (_, i) => ({
+  index: i,
+  distance: 80 + Math.random() * 60,
+}));
 
 interface ExplosionOverlayProps {
   onComplete: () => void;
@@ -26,14 +29,14 @@ function ExplosionOverlay({ onComplete }: ExplosionOverlayProps) {
         <div className="explosion-flash" />
 
         {/* Pixel debris particles */}
-        {PARTICLE_INDICES.map((i) => (
+        {PARTICLE_DATA.map((particle) => (
           <div
-            key={i}
+            key={particle.index}
             className="explosion-particle"
             style={{
-              '--angle': `${i * 30}deg`,
-              '--delay': `${i * 0.03}s`,
-              '--distance': `${80 + Math.random() * 60}px`,
+              '--angle': `${particle.index * 30}deg`,
+              '--delay': `${particle.index * 0.03}s`,
+              '--distance': `${particle.distance}px`,
             } as React.CSSProperties}
           />
         ))}

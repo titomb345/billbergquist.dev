@@ -1,16 +1,12 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { PowerUpId, RoguelikeStats } from '../types';
 import { UNLOCK_FLOOR_5_REWARD } from '../constants';
 import { saveStats, loadStats } from '../persistence';
 import { AscensionLevel, MAX_ASCENSION } from '../ascension';
 
 export function useRoguelikeStats() {
-  const [stats, setStats] = useState<RoguelikeStats>(loadStats);
-
-  // Sync with localStorage on mount
-  useEffect(() => {
-    setStats(loadStats());
-  }, []);
+  // Use lazy initialization - loadStats is called once during initial render
+  const [stats, setStats] = useState<RoguelikeStats>(() => loadStats());
 
   const recordRun = useCallback(
     (floorReached: number, score: number, ascensionLevel: AscensionLevel, isVictory: boolean) => {
