@@ -1,6 +1,7 @@
 import { Cell, CellState, GamePhase, PowerUpId, RoguelikeGameState, RunState } from '../types';
-import { getFloorConfig, SCORING, MAX_FLOOR, POWER_UP_POOL } from '../constants';
+import { getFloorConfig, SCORING, MAX_FLOOR } from '../constants';
 import { createEmptyBoard, revealCell, revealCascade } from './gameLogic';
+import { AscensionLevel, getAscensionModifiers } from '../ascension';
 
 // Generate a short run seed for sharing/comparing runs
 function generateRunSeed(): string {
@@ -13,7 +14,7 @@ function generateRunSeed(): string {
 }
 
 // Create initial run state
-export function createInitialRunState(): RunState {
+export function createInitialRunState(ascensionLevel: AscensionLevel = 0): RunState {
   return {
     currentFloor: 1,
     score: 0,
@@ -28,12 +29,17 @@ export function createInitialRunState(): RunState {
     defusalKitUsedThisFloor: false,
     surveyUsedThisFloor: false,
     seed: generateRunSeed(),
+    ascensionLevel,
   };
 }
 
 // Create initial roguelike game state for a new run
-export function createRoguelikeInitialState(isMobile: boolean, unlocks: PowerUpId[] = []): RoguelikeGameState {
-  const floorConfig = getFloorConfig(1, isMobile);
+export function createRoguelikeInitialState(
+  isMobile: boolean,
+  unlocks: PowerUpId[] = [],
+  ascensionLevel: AscensionLevel = 0
+): RoguelikeGameState {
+  const floorConfig = getFloorConfig(1, isMobile, ascensionLevel);
   return {
     phase: GamePhase.Start,
     board: createEmptyBoard(floorConfig),
@@ -42,7 +48,7 @@ export function createRoguelikeInitialState(isMobile: boolean, unlocks: PowerUpI
     time: 0,
     isFirstClick: true,
     isMobile,
-    run: createInitialRunState(),
+    run: createInitialRunState(ascensionLevel),
     draftOptions: [],
     dangerCells: new Set(),
     chordHighlightCells: new Set(),
@@ -55,16 +61,22 @@ export function createRoguelikeInitialState(isMobile: boolean, unlocks: PowerUpI
     surveyResult: null,
     heatMapEnabled: true, // TEMPORARY: Enable for testing
     cellsRevealedThisFloor: 0,
+    cellRevealTimes: new Map(),
+    fadedCells: new Set(),
   };
 }
 
 // Set up a new floor (called when starting run or advancing to next floor)
 export function setupFloor(state: RoguelikeGameState, floor: number): RoguelikeGameState {
-  const floorConfig = getFloorConfig(floor, state.isMobile);
+  const modifiers = getAscensionModifiers(state.run.ascensionLevel);
+  const floorConfig = getFloorConfig(floor, state.isMobile, state.run.ascensionLevel);
   const board = createEmptyBoard(floorConfig);
 
   // Check if player has Heat Map power-up
   const hasHeatMap = hasPowerUp(state.run, 'heat-map');
+
+  // A2: Initialize countdown timer if applicable
+  const initialTime = modifiers.timerCountdown ?? 0;
 
   return {
     ...state,
@@ -72,7 +84,7 @@ export function setupFloor(state: RoguelikeGameState, floor: number): RoguelikeG
     board,
     floorConfig,
     minesRemaining: floorConfig.mines,
-    time: 0,
+    time: initialTime,
     isFirstClick: true,
     dangerCells: new Set(),
     chordHighlightCells: new Set(),
@@ -84,6 +96,8 @@ export function setupFloor(state: RoguelikeGameState, floor: number): RoguelikeG
     surveyResult: null,
     heatMapEnabled: hasHeatMap,
     cellsRevealedThisFloor: 0,
+    cellRevealTimes: new Map(), // A4: Reset reveal times for new floor
+    fadedCells: new Set(), // A4: Reset faded cells for new floor
     run: {
       ...state.run,
       currentFloor: floor,

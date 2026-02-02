@@ -43,6 +43,7 @@ import {
 } from '../logic/roguelikeLogic';
 import { getFloorConfig, selectDraftOptions, getAvailablePowerUps } from '../constants';
 import { saveGameState, loadGameState, clearGameState } from '../persistence';
+import { AscensionLevel, getAscensionModifiers } from '../ascension';
 
 // Helper: Handle floor clear transition and calculate draft options
 function handleFloorClearTransition(
@@ -51,12 +52,13 @@ function handleFloorClearTransition(
   unlocks: PowerUpId[]
 ): { phase: GamePhase; score: number; draftOptions: PowerUp[] } {
   const score = run.score + calculateFloorClearBonus(run.currentFloor, time);
+  const modifiers = getAscensionModifiers(run.ascensionLevel);
   const draftOptions = isFinalFloor(run.currentFloor)
     ? []
     : selectDraftOptions(
         getAvailablePowerUps(unlocks),
         run.activePowerUps.map((p) => p.id),
-        3
+        modifiers.draftChoices // A1: 2 choices at ascension 1+, otherwise 3
       );
 
   return { phase: GamePhase.FloorClear, score, draftOptions };
@@ -120,7 +122,7 @@ function roguelikeReducer(
 ): RoguelikeGameState {
   switch (action.type) {
     case 'START_RUN': {
-      const newState = createRoguelikeInitialState(action.isMobile, action.unlocks);
+      const newState = createRoguelikeInitialState(action.isMobile, action.unlocks, action.ascensionLevel);
       return setupFloor(newState, 1);
     }
 
@@ -143,6 +145,28 @@ function roguelikeReducer(
 
     case 'TICK': {
       if (state.phase !== GamePhase.Playing) return state;
+
+      const modifiers = getAscensionModifiers(state.run.ascensionLevel);
+
+      // A2: Countdown timer mode
+      if (modifiers.timerCountdown !== null) {
+        const newTime = state.time - 1;
+        if (newTime <= 0) {
+          // Time's up - explode!
+          return {
+            ...state,
+            time: 0,
+            phase: GamePhase.Exploding,
+            explodedCell: null, // No specific cell exploded
+          };
+        }
+        return {
+          ...state,
+          time: newTime,
+        };
+      }
+
+      // Normal count-up timer
       return {
         ...state,
         time: Math.min(state.time + 1, 999),
@@ -169,11 +193,13 @@ function roguelikeReducer(
         const config = state.floorConfig;
         const hasCautiousStart = hasPowerUp(state.run, 'cautious-start');
         const hasBreathingRoom = hasPowerUp(state.run, 'breathing-room');
+        const modifiers = getAscensionModifiers(state.run.ascensionLevel);
 
-        if (hasCautiousStart || hasBreathingRoom) {
+        if (hasCautiousStart || hasBreathingRoom || modifiers.toroidal) {
           newBoard = placeMinesWithConstraints(createEmptyBoard(config), config, row, col, {
             cautiousStart: hasCautiousStart,
             breathingRoom: hasBreathingRoom,
+            toroidal: modifiers.toroidal,
           });
         } else {
           newBoard = placeMines(createEmptyBoard(config), config, row, col);
@@ -267,6 +293,26 @@ function roguelikeReducer(
         newDraftOptions = clearResult.draftOptions;
       }
 
+      // A4: Track reveal times for newly revealed cells (for amnesia)
+      const modifiersForAmnesia = getAscensionModifiers(state.run.ascensionLevel);
+      let newCellRevealTimes = state.cellRevealTimes;
+      if (modifiersForAmnesia.amnesiaSeconds !== null) {
+        const now = Date.now();
+        newCellRevealTimes = new Map(state.cellRevealTimes);
+        // Find all newly revealed cells (cells that are revealed in newBoard but weren't before)
+        for (let r = 0; r < newBoard.length; r++) {
+          for (let c = 0; c < newBoard[r].length; c++) {
+            const key = `${r},${c}`;
+            const wasRevealed = state.board[r]?.[c]?.state === CellState.Revealed;
+            const isNowRevealed = newBoard[r][c].state === CellState.Revealed;
+            const hasNumber = newBoard[r][c].adjacentMines > 0 && !newBoard[r][c].isMine;
+            if (isNowRevealed && !wasRevealed && hasNumber && !newCellRevealTimes.has(key)) {
+              newCellRevealTimes.set(key, now);
+            }
+          }
+        }
+      }
+
       return {
         ...state,
         board: newBoard,
@@ -279,6 +325,7 @@ function roguelikeReducer(
         closeCallCell,
         zeroCellCount: newZeroCellCount,
         cellsRevealedThisFloor: newCellsRevealedThisFloor,
+        cellRevealTimes: newCellRevealTimes,
       };
     }
 
@@ -431,11 +478,15 @@ function roguelikeReducer(
 
       const newPowerUps = [...state.run.activePowerUps, action.powerUp];
       const hasHeatMap = newPowerUps.some((p) => p.id === 'heat-map');
+      const modifiers = getAscensionModifiers(state.run.ascensionLevel);
 
       // Set up next floor
       const nextFloor = state.run.currentFloor + 1;
-      const floorConfig = getFloorConfig(nextFloor, state.isMobile);
+      const floorConfig = getFloorConfig(nextFloor, state.isMobile, state.run.ascensionLevel);
       const newBoard = createEmptyBoard(floorConfig);
+
+      // A2: Initialize countdown timer if applicable
+      const initialTime = modifiers.timerCountdown ?? 0;
 
       return {
         ...state,
@@ -443,7 +494,7 @@ function roguelikeReducer(
         board: newBoard,
         floorConfig,
         minesRemaining: floorConfig.mines,
-        time: 0,
+        time: initialTime,
         isFirstClick: true,
         run: {
           ...state.run,
@@ -471,10 +522,15 @@ function roguelikeReducer(
     case 'SKIP_DRAFT': {
       if (state.phase !== GamePhase.Draft) return state;
 
+      const modifiers = getAscensionModifiers(state.run.ascensionLevel);
+
       // Set up next floor with bonus points
       const nextFloor = state.run.currentFloor + 1;
-      const floorConfig = getFloorConfig(nextFloor, state.isMobile);
+      const floorConfig = getFloorConfig(nextFloor, state.isMobile, state.run.ascensionLevel);
       const newBoard = createEmptyBoard(floorConfig);
+
+      // A2: Initialize countdown timer if applicable
+      const initialTime = modifiers.timerCountdown ?? 0;
 
       return {
         ...state,
@@ -482,7 +538,7 @@ function roguelikeReducer(
         board: newBoard,
         floorConfig,
         minesRemaining: floorConfig.mines,
-        time: 0,
+        time: initialTime,
         isFirstClick: true,
         run: {
           ...state.run,
@@ -655,8 +711,12 @@ function roguelikeReducer(
 
       if (canUseQuickRecovery) {
         // Restart the current floor
-        const floorConfig = getFloorConfig(state.run.currentFloor, state.isMobile);
+        const modifiers = getAscensionModifiers(state.run.ascensionLevel);
+        const floorConfig = getFloorConfig(state.run.currentFloor, state.isMobile, state.run.ascensionLevel);
         const newBoard = createEmptyBoard(floorConfig);
+
+        // A2: Reset countdown timer if applicable
+        const initialTime = modifiers.timerCountdown ?? 0;
 
         return {
           ...state,
@@ -664,7 +724,7 @@ function roguelikeReducer(
           board: newBoard,
           floorConfig,
           minesRemaining: floorConfig.mines,
-          time: 0,
+          time: initialTime,
           isFirstClick: true,
           explodedCell: null,
           dangerCells: new Set(),
@@ -742,6 +802,41 @@ function roguelikeReducer(
       };
     }
 
+    case 'UPDATE_FADED_CELLS': {
+      // A4: Check which cells have been revealed for longer than amnesiaSeconds
+      const modifiers = getAscensionModifiers(state.run.ascensionLevel);
+      if (modifiers.amnesiaSeconds === null) return state;
+      if (state.phase !== GamePhase.Playing) return state;
+
+      const now = Date.now();
+      const fadeThreshold = modifiers.amnesiaSeconds * 1000;
+      const newFadedCells = new Set<string>();
+
+      for (const [key, revealTime] of state.cellRevealTimes) {
+        if (now - revealTime >= fadeThreshold) {
+          newFadedCells.add(key);
+        }
+      }
+
+      // Only update if there are changes
+      if (newFadedCells.size === state.fadedCells.size) {
+        // Quick check - sizes are same, might be identical
+        let same = true;
+        for (const key of newFadedCells) {
+          if (!state.fadedCells.has(key)) {
+            same = false;
+            break;
+          }
+        }
+        if (same) return state;
+      }
+
+      return {
+        ...state,
+        fadedCells: newFadedCells,
+      };
+    }
+
     default:
       return state;
   }
@@ -790,6 +885,19 @@ export function useRoguelikeState(isMobile: boolean = false, unlocks: PowerUpId[
     return () => clearInterval(interval);
   }, [state.phase]);
 
+  // A4: Amnesia effect - check for faded cells every 500ms
+  useEffect(() => {
+    const modifiers = getAscensionModifiers(state.run.ascensionLevel);
+    if (modifiers.amnesiaSeconds === null) return;
+    if (state.phase !== GamePhase.Playing) return;
+
+    const interval = setInterval(() => {
+      dispatch({ type: 'UPDATE_FADED_CELLS' });
+    }, 500);
+
+    return () => clearInterval(interval);
+  }, [state.phase, state.run.ascensionLevel]);
+
   // Close call effect - auto-clear after animation
   useEffect(() => {
     if (!state.closeCallCell) return;
@@ -802,8 +910,8 @@ export function useRoguelikeState(isMobile: boolean = false, unlocks: PowerUpId[
   }, [state.closeCallCell]);
 
   const startRun = useCallback(
-    (runUnlocks: PowerUpId[] = []) => {
-      dispatch({ type: 'START_RUN', isMobile, unlocks: runUnlocks });
+    (runUnlocks: PowerUpId[] = [], ascensionLevel: AscensionLevel = 0) => {
+      dispatch({ type: 'START_RUN', isMobile, unlocks: runUnlocks, ascensionLevel });
     },
     [isMobile]
   );

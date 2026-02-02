@@ -1,4 +1,5 @@
 import { FloorConfig, PowerUp, PowerUpId, Rarity } from './types';
+import { AscensionLevel, getAscensionModifiers } from './ascension';
 
 // Floor configurations - escalate from floor 1 (6x6, 4 mines) to floor 10 (12x12, 40 mines)
 export const FLOOR_CONFIGS: FloorConfig[] = [
@@ -28,10 +29,26 @@ export const MOBILE_FLOOR_CONFIGS: FloorConfig[] = [
   { floor: 10, rows: 13, cols: 10, mines: 40 },
 ];
 
-export function getFloorConfig(floor: number, isMobile: boolean): FloorConfig {
+export function getFloorConfig(
+  floor: number,
+  isMobile: boolean,
+  ascensionLevel: AscensionLevel = 0
+): FloorConfig {
   const configs = isMobile ? MOBILE_FLOOR_CONFIGS : FLOOR_CONFIGS;
   const index = Math.min(floor - 1, configs.length - 1);
-  return configs[index];
+  const baseConfig = configs[index];
+
+  // A3: Add mine density bonus
+  const modifiers = getAscensionModifiers(ascensionLevel);
+  if (modifiers.mineDensityBonus > 0) {
+    const bonusMines = Math.floor(baseConfig.mines * modifiers.mineDensityBonus);
+    return {
+      ...baseConfig,
+      mines: baseConfig.mines + bonusMines,
+    };
+  }
+
+  return baseConfig;
 }
 
 // Rarity weights for draft selection (must sum to 100)

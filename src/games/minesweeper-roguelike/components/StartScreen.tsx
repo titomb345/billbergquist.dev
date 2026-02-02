@@ -1,13 +1,26 @@
+import { useState } from 'react';
 import { RoguelikeStats } from '../types';
 import { MAX_FLOOR } from '../constants';
+import { AscensionLevel, ASCENSION_INFO, MAX_ASCENSION } from '../ascension';
 
 interface StartScreenProps {
   stats: RoguelikeStats;
-  onStartRun: () => void;
+  onStartRun: (ascensionLevel: AscensionLevel) => void;
 }
 
 function StartScreen({ stats, onStartRun }: StartScreenProps) {
   const hasPlayed = stats.totalRuns > 0;
+  const [selectedAscension, setSelectedAscension] = useState<AscensionLevel>(0);
+
+  // Build list of available ascension levels (0 through highestUnlocked)
+  const availableAscensions: AscensionLevel[] = [];
+  for (let i = 0; i <= stats.highestAscensionUnlocked && i <= MAX_ASCENSION; i++) {
+    availableAscensions.push(i as AscensionLevel);
+  }
+
+  const handleStartRun = () => {
+    onStartRun(selectedAscension);
+  };
 
   return (
     <div className="start-screen">
@@ -20,7 +33,30 @@ function StartScreen({ stats, onStartRun }: StartScreenProps) {
         <p>Collect power-ups to survive.</p>
       </div>
 
-      <button className="start-button" onClick={onStartRun}>
+      {/* Ascension Selector - only show if any ascensions are unlocked */}
+      {stats.highestAscensionUnlocked > 0 && (
+        <div className="ascension-selector">
+          <div className="ascension-buttons">
+            {availableAscensions.map((level) => (
+              <button
+                key={level}
+                className={`ascension-button ${selectedAscension === level ? 'selected' : ''} ${level > 0 ? 'ascension-active' : ''}`}
+                onClick={() => setSelectedAscension(level)}
+              >
+                {level === 0 ? 'Normal' : `A${level}`}
+              </button>
+            ))}
+          </div>
+          <p className="ascension-description">{ASCENSION_INFO[selectedAscension].description}</p>
+          {selectedAscension > 0 && (
+            <p className="ascension-cumulative">
+              Includes: {Array.from({ length: selectedAscension }, (_, i) => `A${i + 1}`).join(' + ')}
+            </p>
+          )}
+        </div>
+      )}
+
+      <button className="start-button" onClick={handleStartRun}>
         {hasPlayed ? 'START NEW RUN' : 'BEGIN DESCENT'}
       </button>
 
@@ -47,6 +83,12 @@ function StartScreen({ stats, onStartRun }: StartScreenProps) {
               <span className="stat-label">Floors Cleared</span>
             </div>
           </div>
+          {stats.highestAscensionCleared > 0 && (
+            <div className="stat-item ascension-stat">
+              <span className="stat-value">A{stats.highestAscensionCleared}</span>
+              <span className="stat-label">Best Ascension</span>
+            </div>
+          )}
           {stats.unlocks.length > 0 && (
             <div className="unlocks-display">
               <span className="unlocks-label">Unlocks:</span>

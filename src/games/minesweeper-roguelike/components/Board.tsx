@@ -27,6 +27,7 @@ interface BoardProps {
   chordHighlightCells?: Set<string>;
   onChordHighlightStart?: (row: number, col: number) => void;
   onChordHighlightEnd?: () => void;
+  fadedCells?: Set<string>; // A4: Cells with faded numbers
 }
 
 function Board({
@@ -55,6 +56,7 @@ function Board({
   chordHighlightCells,
   onChordHighlightStart,
   onChordHighlightEnd,
+  fadedCells,
 }: BoardProps) {
   // Check if a cell is within the 5x5 detector zone
   const isInDetectorZone = (row: number, col: number): boolean => {
@@ -103,6 +105,7 @@ function Board({
               isChordHighlighted={chordHighlightCells?.has(`${cell.row},${cell.col}`)}
               onChordHighlightStart={onChordHighlightStart}
               onChordHighlightEnd={onChordHighlightEnd}
+              isFaded={fadedCells?.has(`${cell.row},${cell.col}`)}
             />
           ))}
         </div>

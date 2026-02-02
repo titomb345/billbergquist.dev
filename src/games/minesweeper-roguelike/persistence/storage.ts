@@ -223,6 +223,7 @@ export function loadGameState(currentUnlocks: PowerUpId[]): RoguelikeGameState |
       xRayUsedThisFloor: validated.run.xRayUsedThisFloor,
       luckyStartUsedThisFloor: validated.run.luckyStartUsedThisFloor,
       seed: validated.run.seed,
+      ascensionLevel: (validated.run.ascensionLevel ?? 0) as RunState['ascensionLevel'],
     };
 
     // Convert floor config
@@ -283,6 +284,8 @@ const DEFAULT_STATS: RoguelikeStats = {
   bestScore: 0,
   floorsCleared: 0,
   unlocks: [],
+  highestAscensionUnlocked: 0,
+  highestAscensionCleared: 0,
 };
 
 export function saveStats(stats: RoguelikeStats): void {
@@ -295,6 +298,8 @@ export function saveStats(stats: RoguelikeStats): void {
       bestScore: stats.bestScore,
       floorsCleared: stats.floorsCleared,
       unlocks: stats.unlocks,
+      highestAscensionUnlocked: stats.highestAscensionUnlocked,
+      highestAscensionCleared: stats.highestAscensionCleared,
     };
 
     const checksum = computeChecksum(serializable);
@@ -371,6 +376,8 @@ export function loadStats(): RoguelikeStats {
       bestScore: validated.bestScore,
       floorsCleared: validated.floorsCleared,
       unlocks: filteredUnlocks,
+      highestAscensionUnlocked: (validated.highestAscensionUnlocked ?? 0) as RoguelikeStats['highestAscensionUnlocked'],
+      highestAscensionCleared: (validated.highestAscensionCleared ?? 0) as RoguelikeStats['highestAscensionCleared'],
     };
   } catch (e) {
     console.warn('Failed to load stats:', e);

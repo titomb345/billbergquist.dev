@@ -117,6 +117,9 @@ export enum GamePhase {
   Victory = 'victory',
 }
 
+// Ascension level type (re-exported from ascension.ts for convenience)
+export type { AscensionLevel } from './ascension';
+
 // Run state tracks current roguelike run
 export interface RunState {
   currentFloor: number;
@@ -132,6 +135,7 @@ export interface RunState {
   defusalKitUsedThisFloor: boolean; // Defusal Kit: remove one mine per floor
   surveyUsedThisFloor: boolean; // Survey: reveal mine count in row/col per floor
   seed: string; // Run seed for sharing/comparing runs
+  ascensionLevel: import('./ascension').AscensionLevel; // Current ascension level for this run
 }
 
 // Meta-progression stats persisted to localStorage
@@ -141,6 +145,8 @@ export interface RoguelikeStats {
   bestScore: number;
   floorsCleared: number;
   unlocks: PowerUpId[];
+  highestAscensionUnlocked: import('./ascension').AscensionLevel; // 0-5, unlocks on victory
+  highestAscensionCleared: import('./ascension').AscensionLevel; // 0-5, highest won
 }
 
 // Full roguelike game state
@@ -165,11 +171,13 @@ export interface RoguelikeGameState {
   heatMapEnabled: boolean; // Heat Map: tint revealed numbers by danger
   cellsRevealedThisFloor: number; // For Quick Recovery check
   surveyResult: { direction: 'row' | 'col'; index: number; mineCount: number } | null; // Survey result
+  cellRevealTimes: Map<string, number>; // A4: "row,col" -> timestamp when revealed (for amnesia)
+  fadedCells: Set<string>; // A4: "row,col" cells that have faded (numbers hidden)
 }
 
 // Roguelike-specific actions
 export type RoguelikeAction =
-  | { type: 'START_RUN'; isMobile: boolean; unlocks: PowerUpId[] }
+  | { type: 'START_RUN'; isMobile: boolean; unlocks: PowerUpId[]; ascensionLevel: import('./ascension').AscensionLevel }
   | { type: 'GO_TO_START' }
   | { type: 'REVEAL_CELL'; row: number; col: number }
   | { type: 'TOGGLE_FLAG'; row: number; col: number }
@@ -189,4 +197,5 @@ export type RoguelikeAction =
   | { type: 'FLOOR_CLEAR_COMPLETE' }
   | { type: 'CLOSE_CALL_COMPLETE' }
   | { type: 'SET_CHORD_HIGHLIGHT'; row: number; col: number }
-  | { type: 'CLEAR_CHORD_HIGHLIGHT' };
+  | { type: 'CLEAR_CHORD_HIGHLIGHT' }
+  | { type: 'UPDATE_FADED_CELLS' }; // A4: Check and update faded cells
