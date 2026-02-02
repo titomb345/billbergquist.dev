@@ -14,6 +14,7 @@ import UnlockSplashScreen from './components/UnlockSplashScreen';
 import { isFinalFloor, calculateMineCount5x5 } from './logic/roguelikeLogic';
 import { GamePhase, PowerUp } from './types';
 import { UNLOCK_FLOOR_5_REWARD, getPowerUpById } from './constants';
+import { AscensionLevel } from './ascension';
 import './styles.css';
 
 interface MinesweeperProps {
@@ -65,8 +66,8 @@ function Minesweeper({ resetRef }: MinesweeperProps) {
     };
   }, [resetRef, goToStart]);
 
-  const handleStartRun = () => {
-    startRun(stats.unlocks);
+  const handleStartRun = (ascensionLevel: AscensionLevel = 0) => {
+    startRun(stats.unlocks, ascensionLevel);
   };
 
   // Mine Detector: calculate 5×5 mine count when hovering
@@ -197,8 +198,16 @@ function Minesweeper({ resetRef }: MinesweeperProps) {
 
   // Record run on game over/victory
   const handleRunEnd = () => {
-    recordRun(state.run.currentFloor, state.run.score);
-    startRun(stats.unlocks);
+    const isVictory = state.phase === GamePhase.Victory;
+    recordRun(state.run.currentFloor, state.run.score, state.run.ascensionLevel, isVictory);
+    startRun(stats.unlocks, 0); // Default to normal difficulty
+  };
+
+  // Start a new run at a specific ascension level (for ascension unlock button)
+  const handleStartAscension = (ascensionLevel: AscensionLevel) => {
+    const isVictory = state.phase === GamePhase.Victory;
+    recordRun(state.run.currentFloor, state.run.score, state.run.ascensionLevel, isVictory);
+    startRun(stats.unlocks, ascensionLevel);
   };
 
   const handleUnlockContinue = () => {
@@ -270,6 +279,7 @@ function Minesweeper({ resetRef }: MinesweeperProps) {
               chordHighlightCells={state.chordHighlightCells}
               onChordHighlightStart={setChordHighlight}
               onChordHighlightEnd={clearChordHighlight}
+              fadedCells={state.fadedCells}
             />
           </div>
         </>
@@ -316,7 +326,9 @@ function Minesweeper({ resetRef }: MinesweeperProps) {
           powerUps={state.run.activePowerUps}
           stats={stats}
           seed={state.run.seed}
+          currentAscension={state.run.ascensionLevel}
           onTryAgain={handleRunEnd}
+          onStartAscension={handleStartAscension}
         />
       )}
     </div>

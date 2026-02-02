@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { PowerUp, RoguelikeStats } from '../types';
 import { MAX_FLOOR } from '../constants';
 import RelicsPopover from './RelicsPopover';
+import { AscensionLevel, ASCENSION_INFO, MAX_ASCENSION } from '../ascension';
 
 interface RunOverScreenProps {
   isVictory: boolean;
@@ -11,7 +12,9 @@ interface RunOverScreenProps {
   powerUps: PowerUp[];
   stats: RoguelikeStats;
   seed: string;
+  currentAscension: AscensionLevel;
   onTryAgain: () => void;
+  onStartAscension: (level: AscensionLevel) => void;
 }
 
 function RunOverScreen({
@@ -22,11 +25,18 @@ function RunOverScreen({
   powerUps,
   stats,
   seed,
+  currentAscension,
   onTryAgain,
+  onStartAscension,
 }: RunOverScreenProps) {
   const [showRelicsPopover, setShowRelicsPopover] = useState(false);
   const isNewBestFloor = floor > stats.bestFloor;
   const isNewBestScore = score > stats.bestScore;
+
+  // Check if a new ascension level was just unlocked
+  const nextAscension = (currentAscension + 1) as AscensionLevel;
+  const justUnlockedAscension =
+    isVictory && currentAscension < MAX_ASCENSION && currentAscension >= stats.highestAscensionUnlocked;
 
   const formatTime = (seconds: number): string => {
     const mins = Math.floor(seconds / 60);
@@ -87,9 +97,32 @@ function RunOverScreen({
         <span className="run-seed-value">#{seed}</span>
       </div>
 
-      <button className="try-again-button" onClick={onTryAgain}>
-        {isVictory ? 'PLAY AGAIN' : 'TRY AGAIN'}
-      </button>
+      {/* Ascension Unlock Banner */}
+      {justUnlockedAscension && (
+        <div className="ascension-unlock-banner">
+          <span className="ascension-unlock-label">ASCENSION UNLOCKED!</span>
+          <span className="ascension-unlock-name">{ASCENSION_INFO[nextAscension].name}</span>
+          <span className="ascension-unlock-desc">{ASCENSION_INFO[nextAscension].description}</span>
+        </div>
+      )}
+
+      {/* Show ascension badge if not at normal difficulty */}
+      {currentAscension > 0 && (
+        <div className="run-ascension-badge">
+          Completed at {ASCENSION_INFO[currentAscension].name}
+        </div>
+      )}
+
+      <div className="run-over-buttons">
+        {justUnlockedAscension && (
+          <button className="start-ascension-button" onClick={() => onStartAscension(nextAscension)}>
+            BEGIN {ASCENSION_INFO[nextAscension].name.toUpperCase()}
+          </button>
+        )}
+        <button className="try-again-button" onClick={onTryAgain}>
+          {isVictory ? 'PLAY AGAIN' : 'TRY AGAIN'}
+        </button>
+      </div>
 
       <div className="lifetime-stats">
         <span className="lifetime-label">Lifetime Stats</span>

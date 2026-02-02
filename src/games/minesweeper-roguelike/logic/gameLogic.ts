@@ -22,7 +22,8 @@ export function placeMines(
   board: Cell[][],
   config: DifficultyConfig,
   excludeRow: number,
-  excludeCol: number
+  excludeCol: number,
+  toroidal: boolean = false
 ): Cell[][] {
   const newBoard = board.map((row) => row.map((cell) => ({ ...cell })));
   const excludeSet = new Set<string>();
@@ -59,10 +60,15 @@ export function placeMines(
     newBoard[row][col].isMine = true;
   }
 
-  return calculateAdjacentMines(newBoard);
+  return calculateAdjacentMines(newBoard, toroidal);
 }
 
-export function calculateAdjacentMines(board: Cell[][]): Cell[][] {
+// Helper: wrap coordinate for toroidal mode
+function wrap(val: number, max: number): number {
+  return ((val % max) + max) % max;
+}
+
+export function calculateAdjacentMines(board: Cell[][], toroidal: boolean = false): Cell[][] {
   const rows = board.length;
   const cols = board[0].length;
 
@@ -74,10 +80,22 @@ export function calculateAdjacentMines(board: Cell[][]): Cell[][] {
       for (let dr = -1; dr <= 1; dr++) {
         for (let dc = -1; dc <= 1; dc++) {
           if (dr === 0 && dc === 0) continue;
-          const r = row + dr;
-          const c = col + dc;
-          if (r >= 0 && r < rows && c >= 0 && c < cols && board[r][c].isMine) {
-            count++;
+
+          let r = row + dr;
+          let c = col + dc;
+
+          if (toroidal) {
+            // A5: Wrap coordinates at edges
+            r = wrap(r, rows);
+            c = wrap(c, cols);
+            if (board[r][c].isMine) {
+              count++;
+            }
+          } else {
+            // Normal bounds checking
+            if (r >= 0 && r < rows && c >= 0 && c < cols && board[r][c].isMine) {
+              count++;
+            }
           }
         }
       }
@@ -247,6 +265,7 @@ export function countFlags(board: Cell[][]): number {
 export interface PlaceMinesOptions {
   cautiousStart?: boolean; // First click cell must have ≤2 adjacent mines
   breathingRoom?: boolean; // 2×2 area around first click must be safe
+  toroidal?: boolean; // A5: Wrap coordinates at edges
 }
 
 // Place mines with optional power-up constraints
@@ -320,7 +339,7 @@ export function placeMinesWithConstraints(
     }
 
     // Calculate adjacent mines
-    const finalBoard = calculateAdjacentMines(newBoard);
+    const finalBoard = calculateAdjacentMines(newBoard, options.toroidal ?? false);
 
     // Check Cautious Start constraint
     if (options.cautiousStart) {
@@ -345,5 +364,5 @@ export function placeMinesWithConstraints(
   for (const [row, col] of minePositions) {
     newBoard[row][col].isMine = true;
   }
-  return calculateAdjacentMines(newBoard);
+  return calculateAdjacentMines(newBoard, options.toroidal ?? false);
 }

@@ -35,8 +35,18 @@ export const gameStateMigrations: Record<number, MigrationFn> = {
       unlocks: s.unlocks ?? [],
     };
   },
-  // Future migrations go here:
-  // 1: (state) => ({ ...state, newFieldV2: 'default' }),
+  // v1 → v2: Add ascensionLevel to run state
+  1: (state: unknown) => {
+    const s = state as Record<string, unknown>;
+    const run = (s.run ?? {}) as Record<string, unknown>;
+    return {
+      ...s,
+      run: {
+        ...run,
+        ascensionLevel: run.ascensionLevel ?? 0,
+      },
+    };
+  },
 };
 
 // Stats migrations
@@ -52,8 +62,15 @@ export const statsMigrations: Record<number, MigrationFn> = {
       unlocks: s.unlocks ?? [],
     };
   },
-  // Future migrations go here:
-  // 1: (state) => ({ ...state, newStat: 0 }),
+  // v1 → v2: Add ascension tracking fields
+  1: (state: unknown) => {
+    const s = state as Record<string, unknown>;
+    return {
+      ...s,
+      highestAscensionUnlocked: s.highestAscensionUnlocked ?? 0,
+      highestAscensionCleared: s.highestAscensionCleared ?? 0,
+    };
+  },
 };
 
 export function applyMigrations(

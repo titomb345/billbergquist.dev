@@ -28,6 +28,7 @@ interface CellProps {
   isChordHighlighted?: boolean; // For chord highlight preview
   onChordHighlightStart?: (row: number, col: number) => void;
   onChordHighlightEnd?: () => void;
+  isFaded?: boolean; // A4: Amnesia - number has faded
 }
 
 function CellComponent({
@@ -56,6 +57,7 @@ function CellComponent({
   isChordHighlighted = false,
   onChordHighlightStart,
   onChordHighlightEnd,
+  isFaded = false,
 }: CellProps) {
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -154,8 +156,12 @@ function CellComponent({
         classes.push('cell-mine');
       } else if (cell.adjacentMines > 0) {
         classes.push(`cell-${cell.adjacentMines}`);
-        // Add heat map class if enabled
-        if (heatMapEnabled) {
+        // A4: Faded cell styling
+        if (isFaded) {
+          classes.push('cell-faded');
+        }
+        // Add heat map class if enabled (but not for faded cells)
+        if (heatMapEnabled && !isFaded) {
           if (cell.adjacentMines <= 2) {
             classes.push('cell-heat-low');
           } else if (cell.adjacentMines <= 4) {
@@ -190,6 +196,10 @@ function CellComponent({
         return <MineIcon />;
       }
       if (cell.adjacentMines > 0) {
+        // A4: Show "?" for faded cells
+        if (isFaded) {
+          return <span className="faded-number">?</span>;
+        }
         return cell.adjacentMines;
       }
     }
@@ -289,7 +299,8 @@ const Cell = memo(CellComponent, (prev, next) => {
     prev.surveyMode === next.surveyMode &&
     prev.peekValue === next.peekValue &&
     prev.inDetectorZone === next.inDetectorZone &&
-    prev.isChordHighlighted === next.isChordHighlighted
+    prev.isChordHighlighted === next.isChordHighlighted &&
+    prev.isFaded === next.isFaded
   );
 });
 

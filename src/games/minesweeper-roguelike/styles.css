@@ -3273,3 +3273,201 @@
     font-size: 0.6rem;
   }
 }
+
+/* ==================== ASCENSION SYSTEM ==================== */
+
+/* Start Screen Ascension Selector */
+.ascension-selector {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin: 16px 0;
+  padding: 12px 16px;
+  background: rgba(0, 10, 20, 0.6);
+  border: 1px solid rgba(0, 245, 255, 0.2);
+  border-radius: 8px;
+}
+
+.ascension-buttons {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.ascension-button {
+  padding: 6px 12px;
+  font-family: var(--font-heading);
+  font-size: 0.75rem;
+  letter-spacing: 1px;
+  background: transparent;
+  border: 1px solid rgba(0, 245, 255, 0.3);
+  color: var(--neon-mint);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-radius: 4px;
+}
+
+.ascension-button:hover {
+  background: rgba(0, 245, 255, 0.1);
+  border-color: var(--neon-mint);
+}
+
+.ascension-button.selected {
+  background: rgba(0, 245, 255, 0.2);
+  border-color: var(--neon-mint);
+  box-shadow: 0 0 8px var(--neon-mint-glow);
+}
+
+.ascension-button.ascension-active {
+  color: #ffaa00;
+  border-color: rgba(255, 170, 0, 0.3);
+}
+
+.ascension-button.ascension-active:hover,
+.ascension-button.ascension-active.selected {
+  border-color: #ffaa00;
+  box-shadow: 0 0 8px rgba(255, 170, 0, 0.4);
+}
+
+.ascension-description {
+  font-size: 0.75rem;
+  color: var(--neon-mint);
+  text-align: center;
+  margin: 0;
+}
+
+.ascension-cumulative {
+  font-size: 0.65rem;
+  color: rgba(255, 170, 0, 0.7);
+  text-align: center;
+  margin: 0;
+}
+
+.ascension-stat {
+  border-top: 1px solid rgba(0, 245, 255, 0.2);
+  padding-top: 8px;
+  margin-top: 8px;
+}
+
+/* Header Ascension Badge */
+.ascension-badge-small {
+  margin-left: 4px;
+  padding: 1px 4px;
+  font-size: 0.6rem;
+  background: rgba(255, 170, 0, 0.2);
+  border: 1px solid rgba(255, 170, 0, 0.4);
+  border-radius: 3px;
+  color: #ffaa00;
+}
+
+/* Timer Warning (A2) */
+.timer-warning {
+  color: #ff4444 !important;
+  animation: timerPulse 0.5s ease-in-out infinite;
+}
+
+@keyframes timerPulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+/* Run Over Screen Ascension UI */
+.ascension-unlock-banner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin: 16px 0;
+  padding: 12px 20px;
+  background: linear-gradient(180deg, rgba(255, 170, 0, 0.1) 0%, rgba(255, 170, 0, 0.05) 100%);
+  border: 1px solid rgba(255, 170, 0, 0.4);
+  border-radius: 8px;
+  animation: unlockGlow 1.5s ease-in-out infinite;
+}
+
+@keyframes unlockGlow {
+  0%,
+  100% {
+    box-shadow: 0 0 10px rgba(255, 170, 0, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(255, 170, 0, 0.5);
+  }
+}
+
+.ascension-unlock-label {
+  font-family: var(--font-heading);
+  font-size: 0.8rem;
+  letter-spacing: 3px;
+  color: #ffaa00;
+}
+
+.ascension-unlock-name {
+  font-family: var(--font-heading);
+  font-size: 1.2rem;
+  letter-spacing: 2px;
+  color: #ffcc44;
+}
+
+.ascension-unlock-desc {
+  font-size: 0.75rem;
+  color: rgba(255, 204, 68, 0.8);
+}
+
+.run-ascension-badge {
+  font-size: 0.7rem;
+  color: rgba(255, 170, 0, 0.8);
+  margin: 4px 0;
+}
+
+.run-over-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.start-ascension-button {
+  padding: 10px 24px;
+  font-family: var(--font-heading);
+  font-size: 0.9rem;
+  letter-spacing: 2px;
+  background: rgba(255, 170, 0, 0.1);
+  border: 2px solid #ffaa00;
+  color: #ffcc44;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-radius: 4px;
+}
+
+.start-ascension-button:hover {
+  background: rgba(255, 170, 0, 0.2);
+  box-shadow: 0 0 15px rgba(255, 170, 0, 0.4);
+  transform: scale(1.02);
+}
+
+/* Cell Faded State (A4 Amnesia) */
+.cell-faded {
+  position: relative;
+}
+
+.cell-faded::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 10, 20, 0.6);
+  pointer-events: none;
+}
+
+.faded-number {
+  color: rgba(150, 150, 150, 0.6);
+  font-style: italic;
+}

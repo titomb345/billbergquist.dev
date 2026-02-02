@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
-export const GAME_STATE_VERSION = 1;
-export const STATS_VERSION = 1;
+export const GAME_STATE_VERSION = 2;
+export const STATS_VERSION = 2;
 
 // Cell schema
 export const CellStateSchema = z.enum(['hidden', 'revealed', 'flagged']);
@@ -76,6 +76,9 @@ export const GamePhaseSchema = z.enum([
   'victory',
 ]);
 
+// Ascension level schema (0-5)
+export const AscensionLevelSchema = z.number().int().min(0).max(5);
+
 // RunState schema - uses lenient power-up schema for forward compatibility
 export const RunStateSchema = z.object({
   currentFloor: z.number().int().min(1).max(10),
@@ -85,6 +88,7 @@ export const RunStateSchema = z.object({
   xRayUsedThisFloor: z.boolean(),
   luckyStartUsedThisFloor: z.boolean(),
   seed: z.string(),
+  ascensionLevel: AscensionLevelSchema.default(0),
 });
 
 // Serialized game state (dangerCells as array)
@@ -116,4 +120,6 @@ export const SerializedStatsSchema = z.object({
   bestScore: z.number().int().min(0),
   floorsCleared: z.number().int().min(0),
   unlocks: z.array(LenientPowerUpIdSchema), // Accept unknown power-up IDs
+  highestAscensionUnlocked: AscensionLevelSchema.default(0),
+  highestAscensionCleared: AscensionLevelSchema.default(0),
 });
