@@ -444,6 +444,13 @@ export function calculatePatternMemoryCells(
   const rows = board.length;
   const cols = board[0]?.length || 0;
 
+  // Only reveal diagonal safe cells if the flagged cell is ACTUALLY a mine
+  // This prevents the exploit of flagging random cells to discover safe spots
+  const flaggedCell = board[flaggedRow]?.[flaggedCol];
+  if (!flaggedCell || !flaggedCell.isMine) {
+    return cells; // No information for incorrect flags
+  }
+
   // Check diagonal neighbors
   const diagonals = [
     { dr: -1, dc: -1 },

@@ -1,7 +1,10 @@
 import { useEffect } from 'react';
 
-// Pre-allocate particle indices to avoid array allocation on each render
-const SPARKLE_INDICES = Array.from({ length: 16 }, (_, i) => i);
+// Pre-allocate particle data to avoid allocation and Math.random calls on each render
+const SPARKLE_DATA = Array.from({ length: 16 }, (_, i) => ({
+  index: i,
+  distance: 100 + Math.random() * 80,
+}));
 
 interface FloorClearOverlayProps {
   floor: number;
@@ -19,14 +22,14 @@ function FloorClearOverlay({ floor, isVictory, onComplete }: FloorClearOverlayPr
     <div className="floor-clear-overlay">
       <div className="floor-clear-container">
         {/* Sparkle particles */}
-        {SPARKLE_INDICES.map((i) => (
+        {SPARKLE_DATA.map((particle) => (
           <div
-            key={i}
+            key={particle.index}
             className="sparkle-particle"
             style={{
-              '--angle': `${i * 22.5}deg`,
-              '--delay': `${i * 0.05}s`,
-              '--distance': `${100 + Math.random() * 80}px`,
+              '--angle': `${particle.index * 22.5}deg`,
+              '--delay': `${particle.index * 0.05}s`,
+              '--distance': `${particle.distance}px`,
             } as React.CSSProperties}
           />
         ))}

@@ -444,7 +444,7 @@ function roguelikeReducer(
       const newBoard = applyXRayVision(state.board, row, col);
       const newRevealed = countRevealedCells(newBoard);
 
-      let newRun = {
+      const newRun = {
         ...state.run,
         xRayUsedThisFloor: true,
         momentumActive: false, // Using ability clears momentum
@@ -607,7 +607,7 @@ function roguelikeReducer(
       const newBoard = applySafePath(state.board, direction, index);
       const newRevealed = countRevealedCells(newBoard);
 
-      let newRun = {
+      const newRun = {
         ...state.run,
         safePathUsedThisFloor: true,
         momentumActive: false,
@@ -674,7 +674,7 @@ function roguelikeReducer(
         };
       }
 
-      let newRun = {
+      const newRun = {
         ...state.run,
         defusalKitUsedThisFloor: true,
         momentumActive: false,

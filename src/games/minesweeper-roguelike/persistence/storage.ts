@@ -37,7 +37,7 @@ function computeChecksum(data: object): string {
 
 function verifyChecksum(data: Record<string, unknown>, checksum: string): boolean {
   // Exclude only checksum - version IS part of the hash for tamper detection
-  const { checksum: _, ...rest } = data;
+  const { checksum: _checksum, ...rest } = data;
   return computeChecksum(rest) === checksum;
 }
 
@@ -122,7 +122,7 @@ export function saveGameState(state: RoguelikeGameState): void {
 }
 
 // TEMPORARY: Set to false to restore normal behavior
-let SKIP_LOAD_FOR_TESTING = true;
+const SKIP_LOAD_FOR_TESTING = true;
 
 export function loadGameState(currentUnlocks: PowerUpId[]): RoguelikeGameState | null {
   if (SKIP_LOAD_FOR_TESTING) return null;
