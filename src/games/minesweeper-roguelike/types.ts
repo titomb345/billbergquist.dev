@@ -96,6 +96,7 @@ export interface PowerUp {
   type: 'passive' | 'active';
   rarity: Rarity;
   usesPerFloor?: number; // For active abilities
+  activeHint?: string; // Hint shown when active powerup mode is enabled (single source of truth)
 }
 
 // Floor configuration (replaces Difficulty for roguelike mode)
@@ -113,6 +114,7 @@ export enum GamePhase {
   FloorClear = 'floor-clear',
   Draft = 'draft',
   Exploding = 'exploding',
+  IronWillSave = 'iron-will-save',
   RunOver = 'run-over',
   Victory = 'victory',
 }
@@ -134,6 +136,7 @@ export interface RunState {
   safePathUsedThisFloor: boolean; // Safe Path: reveal row/col per floor
   defusalKitUsedThisFloor: boolean; // Defusal Kit: remove one mine per floor
   surveyUsedThisFloor: boolean; // Survey: reveal mine count in row/col per floor
+  probabilityLensUsedThisFloor: boolean; // Probability Lens: highlight safest cells per floor
   seed: string; // Run seed for sharing/comparing runs
   ascensionLevel: import('./ascension').AscensionLevel; // Current ascension level for this run
 }
@@ -171,6 +174,8 @@ export interface RoguelikeGameState {
   surveyResult: { direction: 'row' | 'col'; index: number; mineCount: number } | null; // Survey result
   cellRevealTimes: Map<string, number>; // A4: "row,col" -> timestamp when revealed (for amnesia)
   fadedCells: Set<string>; // A4: "row,col" cells that have faded (numbers hidden)
+  probabilityLensCells: Set<string>; // Probability Lens: highlighted safest cells
+  oracleGiftCells: Set<string>; // Oracle's Gift: cells in 50/50 situations that are safe
 }
 
 // Roguelike-specific actions
@@ -193,7 +198,9 @@ export type RoguelikeAction =
   | { type: 'SET_MOBILE'; isMobile: boolean }
   | { type: 'EXPLOSION_COMPLETE' }
   | { type: 'FLOOR_CLEAR_COMPLETE' }
-  | { type: 'CLOSE_CALL_COMPLETE' }
+  | { type: 'IRON_WILL_COMPLETE' }
   | { type: 'SET_CHORD_HIGHLIGHT'; row: number; col: number }
   | { type: 'CLEAR_CHORD_HIGHLIGHT' }
-  | { type: 'UPDATE_FADED_CELLS' }; // A4: Check and update faded cells
+  | { type: 'UPDATE_FADED_CELLS' } // A4: Check and update faded cells
+  | { type: 'USE_PROBABILITY_LENS' }
+  | { type: 'CLEAR_PROBABILITY_LENS' };

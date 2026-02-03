@@ -39,8 +39,10 @@ import {
   calculateChordHighlightCells,
   countZeroCells,
   calculatePatternMemoryCell,
+  calculateSafestCells,
+  calculateOracleGiftCells,
 } from '../logic/roguelikeLogic';
-import { getFloorConfig, selectDraftOptions, POWER_UP_POOL } from '../constants';
+import { getFloorConfig, selectDraftOptions, getAvailablePowerUps, ORACLES_GIFT_MINE_DENSITY_BONUS } from '../constants';
 import { saveGameState, loadGameState, clearGameState } from '../persistence';
 import { AscensionLevel, getAscensionModifiers } from '../ascension';
 
@@ -54,7 +56,7 @@ function handleFloorClearTransition(
   const draftOptions = isFinalFloor(run.currentFloor)
     ? []
     : selectDraftOptions(
-        POWER_UP_POOL,
+        getAvailablePowerUps(),
         run.activePowerUps.map((p) => p.id),
         modifiers.draftChoices // A1: 2 choices at ascension 1+, otherwise 3
       );
@@ -266,12 +268,14 @@ function roguelikeReducer(
 
       // Check for mine hit
       let closeCallCell: { row: number; col: number } | null = null;
+      let savedByIronWill = false;
       if (newBoard[row][col].isMine) {
         const protection = applyIronWillProtection(newBoard, newRun, row, col);
         if (protection.saved) {
           newBoard = protection.board;
           newRun = protection.run;
           closeCallCell = protection.savedCell;
+          savedByIronWill = true;
         } else {
           // Game over - start explosion animation
           return {
@@ -331,11 +335,14 @@ function roguelikeReducer(
         }
       }
 
+      // Oracle's Gift: recalculate 50/50 safe cells
+      const newOracleGiftCells = calculateOracleGiftCells(newBoard, newRun);
+
       return {
         ...state,
         board: newBoard,
         isFirstClick: false,
-        phase: newPhase,
+        phase: savedByIronWill ? GamePhase.IronWillSave : newPhase,
         run: newRun,
         draftOptions: newDraftOptions,
         dangerCells: newDangerCells,
@@ -345,6 +352,7 @@ function roguelikeReducer(
         cellsRevealedThisFloor: newCellsRevealedThisFloor,
         cellRevealTimes: newCellRevealTimes,
         patternMemoryCells: newPatternMemoryCells,
+        oracleGiftCells: newOracleGiftCells,
       };
     }
 
@@ -363,11 +371,15 @@ function roguelikeReducer(
         ? { ...state.run, momentumActive: false }
         : state.run;
 
+      // Oracle's Gift: recalculate 50/50 safe cells (flagging can change the situation)
+      const flagOracleGiftCells = calculateOracleGiftCells(newBoard, newRun);
+
       return {
         ...state,
         board: newBoard,
         run: newRun,
         minesRemaining: state.floorConfig.mines - countFlags(newBoard),
+        oracleGiftCells: flagOracleGiftCells,
       };
     }
 
@@ -394,6 +406,7 @@ function roguelikeReducer(
       }
 
       let closeCallCell: { row: number; col: number } | null = null;
+      let chordSavedByIronWill = false;
       if (hitMine) {
         // Find which mine was hit for the animation
         let hitRow = row,
@@ -414,6 +427,7 @@ function roguelikeReducer(
           finalBoard = protection.board;
           newRun = protection.run;
           closeCallCell = protection.savedCell;
+          chordSavedByIronWill = true;
         } else {
           return {
             ...state,
@@ -451,15 +465,19 @@ function roguelikeReducer(
         }
       }
 
+      // Oracle's Gift: recalculate 50/50 safe cells
+      const chordOracleGiftCells = calculateOracleGiftCells(finalBoard, newRun);
+
       return {
         ...state,
         board: finalBoard,
-        phase: newPhase,
+        phase: chordSavedByIronWill ? GamePhase.IronWillSave : newPhase,
         run: newRun,
         draftOptions: newDraftOptions,
         minesRemaining: state.floorConfig.mines - countFlags(finalBoard),
         closeCallCell,
         patternMemoryCells: newPatternMemoryCells,
+        oracleGiftCells: chordOracleGiftCells,
       };
     }
 
@@ -508,11 +526,13 @@ function roguelikeReducer(
 
       const newPowerUps = [...state.run.activePowerUps, action.powerUp];
       const hasHeatMap = newPowerUps.some((p) => p.id === 'heat-map');
+      const hasOraclesGift = newPowerUps.some((p) => p.id === 'oracles-gift');
       const modifiers = getAscensionModifiers(state.run.ascensionLevel);
 
-      // Set up next floor
+      // Set up next floor (with Oracle's Gift density bonus if applicable)
       const nextFloor = state.run.currentFloor + 1;
-      const floorConfig = getFloorConfig(nextFloor, state.isMobile, state.run.ascensionLevel);
+      const extraDensity = hasOraclesGift ? ORACLES_GIFT_MINE_DENSITY_BONUS : 0;
+      const floorConfig = getFloorConfig(nextFloor, state.isMobile, state.run.ascensionLevel, extraDensity);
       const newBoard = createEmptyBoard(floorConfig);
 
       // A2: Initialize countdown timer if applicable
@@ -537,6 +557,7 @@ function roguelikeReducer(
           safePathUsedThisFloor: false,
           defusalKitUsedThisFloor: false,
           surveyUsedThisFloor: false,
+          probabilityLensUsedThisFloor: false,
         },
         draftOptions: [],
         dangerCells: new Set(),
@@ -546,6 +567,8 @@ function roguelikeReducer(
         surveyResult: null,
         heatMapEnabled: hasHeatMap,
         cellsRevealedThisFloor: 0,
+        probabilityLensCells: new Set(),
+        oracleGiftCells: new Set(),
       };
     }
 
@@ -553,10 +576,12 @@ function roguelikeReducer(
       if (state.phase !== GamePhase.Draft) return state;
 
       const modifiers = getAscensionModifiers(state.run.ascensionLevel);
+      const hasOraclesGiftSkip = hasPowerUp(state.run, 'oracles-gift');
 
-      // Set up next floor with bonus points
+      // Set up next floor with bonus points (with Oracle's Gift density bonus if applicable)
       const nextFloor = state.run.currentFloor + 1;
-      const floorConfig = getFloorConfig(nextFloor, state.isMobile, state.run.ascensionLevel);
+      const extraDensitySkip = hasOraclesGiftSkip ? ORACLES_GIFT_MINE_DENSITY_BONUS : 0;
+      const floorConfig = getFloorConfig(nextFloor, state.isMobile, state.run.ascensionLevel, extraDensitySkip);
       const newBoard = createEmptyBoard(floorConfig);
 
       // A2: Initialize countdown timer if applicable
@@ -581,6 +606,7 @@ function roguelikeReducer(
           safePathUsedThisFloor: false,
           defusalKitUsedThisFloor: false,
           surveyUsedThisFloor: false,
+          probabilityLensUsedThisFloor: false,
         },
         draftOptions: [],
         dangerCells: new Set(),
@@ -590,6 +616,8 @@ function roguelikeReducer(
         surveyResult: null,
         heatMapEnabled: hasPowerUp(state.run, 'heat-map'),
         cellsRevealedThisFloor: 0,
+        probabilityLensCells: new Set(),
+        oracleGiftCells: new Set(),
       };
     }
 
@@ -740,9 +768,11 @@ function roguelikeReducer(
         state.cellsRevealedThisFloor < 10;
 
       if (canUseQuickRecovery) {
-        // Restart the current floor
+        // Restart the current floor (with Oracle's Gift density bonus if applicable)
         const modifiers = getAscensionModifiers(state.run.ascensionLevel);
-        const floorConfig = getFloorConfig(state.run.currentFloor, state.isMobile, state.run.ascensionLevel);
+        const hasOraclesGiftRecovery = hasPowerUp(state.run, 'oracles-gift');
+        const extraDensityRecovery = hasOraclesGiftRecovery ? ORACLES_GIFT_MINE_DENSITY_BONUS : 0;
+        const floorConfig = getFloorConfig(state.run.currentFloor, state.isMobile, state.run.ascensionLevel, extraDensityRecovery);
         const newBoard = createEmptyBoard(floorConfig);
 
         // A2: Reset countdown timer if applicable
@@ -761,6 +791,8 @@ function roguelikeReducer(
           patternMemoryCells: new Set(),
           zeroCellCount: null,
           cellsRevealedThisFloor: 0,
+          probabilityLensCells: new Set(),
+          oracleGiftCells: new Set(),
           run: {
             ...state.run,
             quickRecoveryUsedThisRun: true,
@@ -771,6 +803,7 @@ function roguelikeReducer(
             safePathUsedThisFloor: false,
             defusalKitUsedThisFloor: false,
             surveyUsedThisFloor: false,
+            probabilityLensUsedThisFloor: false,
           },
         };
       }
@@ -804,9 +837,11 @@ function roguelikeReducer(
       };
     }
 
-    case 'CLOSE_CALL_COMPLETE': {
+    case 'IRON_WILL_COMPLETE': {
+      if (state.phase !== GamePhase.IronWillSave) return state;
       return {
         ...state,
+        phase: GamePhase.Playing,
         closeCallCell: null,
       };
     }
@@ -864,6 +899,33 @@ function roguelikeReducer(
       return {
         ...state,
         fadedCells: newFadedCells,
+      };
+    }
+
+    case 'USE_PROBABILITY_LENS': {
+      if (state.phase !== GamePhase.Playing) return state;
+      if (!hasPowerUp(state.run, 'probability-lens')) return state;
+      if (state.run.probabilityLensUsedThisFloor) return state;
+      if (state.isFirstClick) return state; // Can't use before mines are placed
+
+      const safestCells = calculateSafestCells(state.board);
+
+      return {
+        ...state,
+        probabilityLensCells: safestCells,
+        run: {
+          ...state.run,
+          probabilityLensUsedThisFloor: true,
+          momentumActive: false, // Using ability clears momentum
+        },
+      };
+    }
+
+    case 'CLEAR_PROBABILITY_LENS': {
+      if (state.probabilityLensCells.size === 0) return state;
+      return {
+        ...state,
+        probabilityLensCells: new Set(),
       };
     }
 
@@ -928,17 +990,6 @@ export function useRoguelikeState(isMobile: boolean = false) {
     return () => clearInterval(interval);
   }, [state.phase, state.run.ascensionLevel]);
 
-  // Close call effect - auto-clear after animation
-  useEffect(() => {
-    if (!state.closeCallCell) return;
-
-    const timeout = setTimeout(() => {
-      dispatch({ type: 'CLOSE_CALL_COMPLETE' });
-    }, 1200);
-
-    return () => clearTimeout(timeout);
-  }, [state.closeCallCell]);
-
   const startRun = useCallback(
     (ascensionLevel: AscensionLevel = 0) => {
       dispatch({ type: 'START_RUN', isMobile, ascensionLevel });
@@ -982,6 +1033,10 @@ export function useRoguelikeState(isMobile: boolean = false) {
     dispatch({ type: 'FLOOR_CLEAR_COMPLETE' });
   }, []);
 
+  const ironWillComplete = useCallback(() => {
+    dispatch({ type: 'IRON_WILL_COMPLETE' });
+  }, []);
+
   const setChordHighlight = useCallback((row: number, col: number) => {
     dispatch({ type: 'SET_CHORD_HIGHLIGHT', row, col });
   }, []);
@@ -1010,6 +1065,10 @@ export function useRoguelikeState(isMobile: boolean = false) {
     dispatch({ type: 'USE_SURVEY', direction, index });
   }, []);
 
+  const useProbabilityLens = useCallback(() => {
+    dispatch({ type: 'USE_PROBABILITY_LENS' });
+  }, []);
+
   // Auto-clear peek after a short delay
   useEffect(() => {
     if (!state.peekCell) return;
@@ -1020,6 +1079,9 @@ export function useRoguelikeState(isMobile: boolean = false) {
 
     return () => clearTimeout(timeout);
   }, [state.peekCell]);
+
+  // Note: Probability Lens highlights persist until floor end (no auto-clear timer)
+  // This gives players time to act on the strategic guidance
 
   return {
     state,
@@ -1034,10 +1096,12 @@ export function useRoguelikeState(isMobile: boolean = false) {
     useSafePath,
     useDefusalKit,
     useSurvey,
+    useProbabilityLens,
     selectPowerUp,
     skipDraft,
     explosionComplete,
     floorClearComplete,
+    ironWillComplete,
     setChordHighlight,
     clearChordHighlight,
   };
