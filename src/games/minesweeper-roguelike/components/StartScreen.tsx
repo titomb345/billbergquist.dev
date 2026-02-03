@@ -89,16 +89,6 @@ function StartScreen({ stats, onStartRun }: StartScreenProps) {
               <span className="stat-label">Best Ascension</span>
             </div>
           )}
-          {stats.unlocks.length > 0 && (
-            <div className="unlocks-display">
-              <span className="unlocks-label">Unlocks:</span>
-              {stats.unlocks.map((unlock) => (
-                <span key={unlock} className="unlock-badge">
-                  {unlock === 'mine-detector' ? '📡 Mine Detector' : unlock}
-                </span>
-              ))}
-            </div>
-          )}
         </div>
       )}
     </div>

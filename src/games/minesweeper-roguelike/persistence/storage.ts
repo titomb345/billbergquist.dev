@@ -105,7 +105,6 @@ export function saveGameState(state: RoguelikeGameState): void {
       dangerCells: Array.from(state.dangerCells),
       explodedCell: state.explodedCell,
       closeCallCell: state.closeCallCell,
-      unlocks: state.unlocks,
     };
 
     const checksum = computeChecksum(serializable);
@@ -124,7 +123,7 @@ export function saveGameState(state: RoguelikeGameState): void {
 // TEMPORARY: Set to false to restore normal behavior
 const SKIP_LOAD_FOR_TESTING = true;
 
-export function loadGameState(currentUnlocks: PowerUpId[]): RoguelikeGameState | null {
+export function loadGameState(): RoguelikeGameState | null {
   if (SKIP_LOAD_FOR_TESTING) return null;
   try {
     const saved = localStorage.getItem(GAME_STATE_KEY);
@@ -179,7 +178,7 @@ export function loadGameState(currentUnlocks: PowerUpId[]): RoguelikeGameState |
     }
 
     // Create default state for merge
-    const defaults = createRoguelikeInitialState(validated.isMobile, currentUnlocks);
+    const defaults = createRoguelikeInitialState(validated.isMobile);
     const defaultRun = createInitialRunState();
 
     // Convert board with proper enum types
@@ -240,11 +239,6 @@ export function loadGameState(currentUnlocks: PowerUpId[]): RoguelikeGameState |
       .map(convertPowerUp)
       .filter((p): p is PowerUp => p !== null);
 
-    // Merge unlocks: union of saved unlocks and current stats unlocks
-    // This ensures consistency if stats were updated while game was saved
-    const savedUnlocks = validated.unlocks.filter(isKnownPowerUpId) as PowerUpId[];
-    const mergedUnlocks = [...new Set([...savedUnlocks, ...currentUnlocks])];
-
     // Merge with defaults (handles new fields gracefully)
     return {
       ...defaults,
@@ -260,7 +254,6 @@ export function loadGameState(currentUnlocks: PowerUpId[]): RoguelikeGameState |
       dangerCells: new Set(validated.dangerCells),
       explodedCell: validated.explodedCell,
       closeCallCell: validated.closeCallCell,
-      unlocks: mergedUnlocks,
     };
   } catch (e) {
     console.warn('Failed to load game state:', e);
@@ -283,7 +276,6 @@ const DEFAULT_STATS: RoguelikeStats = {
   bestFloor: 0,
   bestScore: 0,
   floorsCleared: 0,
-  unlocks: [],
   highestAscensionUnlocked: 0,
   highestAscensionCleared: 0,
 };
@@ -297,7 +289,6 @@ export function saveStats(stats: RoguelikeStats): void {
       bestFloor: stats.bestFloor,
       bestScore: stats.bestScore,
       floorsCleared: stats.floorsCleared,
-      unlocks: stats.unlocks,
       highestAscensionUnlocked: stats.highestAscensionUnlocked,
       highestAscensionCleared: stats.highestAscensionCleared,
     };
@@ -349,7 +340,6 @@ export function loadStats(): RoguelikeStats {
       if (typeof parsed.floorsCleared === 'number' && parsed.floorsCleared >= 0) {
         salvaged.floorsCleared = Math.floor(parsed.floorsCleared);
       }
-      // Don't salvage unlocks - they need proper validation
       return salvaged;
     }
 
@@ -360,14 +350,6 @@ export function loadStats(): RoguelikeStats {
       console.warn('Stats checksum mismatch - using data anyway');
     }
 
-    // Filter unlocks to only known power-up IDs (forward compatibility)
-    const filteredUnlocks = validated.unlocks.filter(isKnownPowerUpId) as PowerUpId[];
-    if (filteredUnlocks.length !== validated.unlocks.length) {
-      console.warn(
-        `Filtered ${validated.unlocks.length - filteredUnlocks.length} unknown power-up IDs from stats`
-      );
-    }
-
     // Merge with defaults
     return {
       ...DEFAULT_STATS,
@@ -375,7 +357,6 @@ export function loadStats(): RoguelikeStats {
       bestFloor: validated.bestFloor,
       bestScore: validated.bestScore,
       floorsCleared: validated.floorsCleared,
-      unlocks: filteredUnlocks,
       highestAscensionUnlocked: (validated.highestAscensionUnlocked ?? 0) as RoguelikeStats['highestAscensionUnlocked'],
       highestAscensionCleared: (validated.highestAscensionCleared ?? 0) as RoguelikeStats['highestAscensionCleared'],
     };

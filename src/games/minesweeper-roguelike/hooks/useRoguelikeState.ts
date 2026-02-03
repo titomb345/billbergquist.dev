@@ -3,7 +3,6 @@ import {
   RoguelikeGameState,
   RoguelikeAction,
   PowerUp,
-  PowerUpId,
   GamePhase,
   RunState,
   Cell,
@@ -41,22 +40,21 @@ import {
   countZeroCells,
   calculatePatternMemoryCell,
 } from '../logic/roguelikeLogic';
-import { getFloorConfig, selectDraftOptions, getAvailablePowerUps } from '../constants';
+import { getFloorConfig, selectDraftOptions, POWER_UP_POOL } from '../constants';
 import { saveGameState, loadGameState, clearGameState } from '../persistence';
 import { AscensionLevel, getAscensionModifiers } from '../ascension';
 
 // Helper: Handle floor clear transition and calculate draft options
 function handleFloorClearTransition(
   run: RunState,
-  time: number,
-  unlocks: PowerUpId[]
+  time: number
 ): { phase: GamePhase; score: number; draftOptions: PowerUp[] } {
   const score = run.score + calculateFloorClearBonus(run.currentFloor, time);
   const modifiers = getAscensionModifiers(run.ascensionLevel);
   const draftOptions = isFinalFloor(run.currentFloor)
     ? []
     : selectDraftOptions(
-        getAvailablePowerUps(unlocks),
+        POWER_UP_POOL,
         run.activePowerUps.map((p) => p.id),
         modifiers.draftChoices // A1: 2 choices at ascension 1+, otherwise 3
       );
@@ -122,7 +120,7 @@ function roguelikeReducer(
 ): RoguelikeGameState {
   switch (action.type) {
     case 'START_RUN': {
-      const newState = createRoguelikeInitialState(action.isMobile, action.unlocks, action.ascensionLevel);
+      const newState = createRoguelikeInitialState(action.isMobile, action.ascensionLevel);
       return setupFloor(newState, 1);
     }
 
@@ -287,7 +285,7 @@ function roguelikeReducer(
           };
         }
       } else if (checkFloorCleared(newBoard)) {
-        const clearResult = handleFloorClearTransition(newRun, state.time, state.unlocks);
+        const clearResult = handleFloorClearTransition(newRun, state.time);
         newRun.score = clearResult.score;
         newPhase = clearResult.phase;
         newDraftOptions = clearResult.draftOptions;
@@ -427,7 +425,7 @@ function roguelikeReducer(
           };
         }
       } else if (checkFloorCleared(newBoard)) {
-        const clearResult = handleFloorClearTransition(newRun, state.time, state.unlocks);
+        const clearResult = handleFloorClearTransition(newRun, state.time);
         newRun.score = clearResult.score;
         newPhase = clearResult.phase;
         newDraftOptions = clearResult.draftOptions;
@@ -489,7 +487,7 @@ function roguelikeReducer(
       let newDraftOptions: PowerUp[] = [];
 
       if (checkFloorCleared(newBoard)) {
-        const clearResult = handleFloorClearTransition(newRun, state.time, state.unlocks);
+        const clearResult = handleFloorClearTransition(newRun, state.time);
         newRun.score = clearResult.score;
         newPhase = clearResult.phase;
         newDraftOptions = clearResult.draftOptions;
@@ -650,7 +648,7 @@ function roguelikeReducer(
       let newDraftOptions: PowerUp[] = [];
 
       if (checkFloorCleared(newBoard)) {
-        const clearResult = handleFloorClearTransition(newRun, state.time, state.unlocks);
+        const clearResult = handleFloorClearTransition(newRun, state.time);
         newRun.score = clearResult.score;
         newPhase = clearResult.phase;
         newDraftOptions = clearResult.draftOptions;
@@ -716,7 +714,7 @@ function roguelikeReducer(
       let newDraftOptions: PowerUp[] = [];
 
       if (checkFloorCleared(newBoard)) {
-        const clearResult = handleFloorClearTransition(newRun, state.time, state.unlocks);
+        const clearResult = handleFloorClearTransition(newRun, state.time);
         newRun.score = clearResult.score;
         newPhase = clearResult.phase;
         newDraftOptions = clearResult.draftOptions;
@@ -874,11 +872,11 @@ function roguelikeReducer(
   }
 }
 
-export function useRoguelikeState(isMobile: boolean = false, unlocks: PowerUpId[] = []) {
+export function useRoguelikeState(isMobile: boolean = false) {
   const [state, dispatch] = useReducer(
     roguelikeReducer,
-    { isMobile, unlocks },
-    (init) => loadGameState(init.unlocks) ?? createRoguelikeInitialState(init.isMobile, init.unlocks)
+    { isMobile },
+    (init) => loadGameState() ?? createRoguelikeInitialState(init.isMobile)
   );
 
   // Handle mobile state changes
@@ -942,8 +940,8 @@ export function useRoguelikeState(isMobile: boolean = false, unlocks: PowerUpId[
   }, [state.closeCallCell]);
 
   const startRun = useCallback(
-    (runUnlocks: PowerUpId[] = [], ascensionLevel: AscensionLevel = 0) => {
-      dispatch({ type: 'START_RUN', isMobile, unlocks: runUnlocks, ascensionLevel });
+    (ascensionLevel: AscensionLevel = 0) => {
+      dispatch({ type: 'START_RUN', isMobile, ascensionLevel });
     },
     [isMobile]
   );

@@ -32,7 +32,6 @@ export const gameStateMigrations: Record<number, MigrationFn> = {
       dangerCells: s.dangerCells ?? [],
       explodedCell: s.explodedCell ?? null,
       closeCallCell: s.closeCallCell ?? null,
-      unlocks: s.unlocks ?? [],
     };
   },
   // v1 → v2: Add ascensionLevel to run state
@@ -59,7 +58,6 @@ export const statsMigrations: Record<number, MigrationFn> = {
       bestFloor: s.bestFloor ?? 0,
       bestScore: s.bestScore ?? 0,
       floorsCleared: s.floorsCleared ?? 0,
-      unlocks: s.unlocks ?? [],
     };
   },
   // v1 → v2: Add ascension tracking fields
