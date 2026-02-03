@@ -32,16 +32,19 @@ export const MOBILE_FLOOR_CONFIGS: FloorConfig[] = [
 export function getFloorConfig(
   floor: number,
   isMobile: boolean,
-  ascensionLevel: AscensionLevel = 0
+  ascensionLevel: AscensionLevel = 0,
+  extraMineDensityBonus: number = 0 // Additional mine density modifier (e.g., 0.15 for Oracle's Gift)
 ): FloorConfig {
   const configs = isMobile ? MOBILE_FLOOR_CONFIGS : FLOOR_CONFIGS;
   const index = Math.min(floor - 1, configs.length - 1);
   const baseConfig = configs[index];
 
-  // A3: Add mine density bonus
+  // Calculate total mine density bonus
   const modifiers = getAscensionModifiers(ascensionLevel);
-  if (modifiers.mineDensityBonus > 0) {
-    const bonusMines = Math.floor(baseConfig.mines * modifiers.mineDensityBonus);
+  const totalDensityBonus = modifiers.mineDensityBonus + extraMineDensityBonus;
+
+  if (totalDensityBonus > 0) {
+    const bonusMines = Math.floor(baseConfig.mines * totalDensityBonus);
     return {
       ...baseConfig,
       mines: baseConfig.mines + bonusMines,
@@ -140,11 +143,12 @@ export const UNCOMMON_POWER_UPS: PowerUp[] = [
   {
     id: 'survey',
     name: 'Survey',
-    description: 'Once per floor, reveal mine count in any row OR column',
+    description: 'Once per floor, reveal mine count in a chosen row',
     icon: '📊',
     type: 'active',
     rarity: 'uncommon',
     usesPerFloor: 1,
+    activeHint: 'Click a cell to count mines in that row',
   },
   {
     id: 'momentum',
@@ -177,20 +181,22 @@ export const RARE_POWER_UPS: PowerUp[] = [
   {
     id: 'peek',
     name: 'Peek',
-    description: 'Once per floor, preview a cell (see mine or number) without revealing',
+    description: 'Once per floor, glimpse a cell for 2 seconds (see mine or number)',
     icon: '👀',
     type: 'active',
     rarity: 'rare',
     usesPerFloor: 1,
+    activeHint: 'Click a cell to peek at it',
   },
   {
     id: 'safe-path',
     name: 'Safe Path',
-    description: 'Once per floor, reveal up to 3 safe cells in a chosen row or column',
+    description: 'Once per floor, reveal up to 3 safe cells in a chosen row',
     icon: '🛤️',
     type: 'active',
     rarity: 'rare',
     usesPerFloor: 1,
+    activeHint: 'Click a cell to reveal safe cells in that row',
   },
   {
     id: 'defusal-kit',
@@ -200,6 +206,7 @@ export const RARE_POWER_UPS: PowerUp[] = [
     type: 'active',
     rarity: 'rare',
     usesPerFloor: 1,
+    activeHint: 'Click a flagged mine to remove it',
   },
   {
     id: 'x-ray-vision',
@@ -209,6 +216,7 @@ export const RARE_POWER_UPS: PowerUp[] = [
     type: 'active',
     rarity: 'rare',
     usesPerFloor: 1,
+    activeHint: 'Click a cell to reveal 3×3 area',
   },
   {
     id: 'sixth-sense',
@@ -230,6 +238,7 @@ export const EPIC_POWER_UPS: PowerUp[] = [
     type: 'active',
     rarity: 'epic',
     usesPerFloor: 1,
+    activeHint: 'Click to highlight the 3 safest cells',
   },
   {
     id: 'oracles-gift',
@@ -257,10 +266,8 @@ export const POWER_UP_POOL: PowerUp[] = [
   ...EPIC_POWER_UPS,
 ];
 
-// Legacy constant for backwards compatibility (mine-detector was previously unlockable)
-export const MINE_DETECTOR_POWER_UP: PowerUp = UNCOMMON_POWER_UPS.find(
-  (p) => p.id === 'mine-detector'
-)!;
+// All power-up IDs derived from the pool (used for validation in persistence)
+export const ALL_POWER_UP_IDS = POWER_UP_POOL.map((p) => p.id);
 
 // Scoring constants
 export const SCORING = {
@@ -271,31 +278,14 @@ export const SCORING = {
   TIME_BONUS_MULTIPLIER: 2, // Bonus multiplier for fast clears
 };
 
-// Look up a power-up by ID from all available powerups
+// Look up a power-up by ID
 export function getPowerUpById(id: PowerUpId): PowerUp | null {
-  // Check the main pool first
-  const fromPool = POWER_UP_POOL.find((p) => p.id === id);
-  if (fromPool) return fromPool;
-
-  // Check unlockable powerups
-  if (MINE_DETECTOR_POWER_UP.id === id) return MINE_DETECTOR_POWER_UP;
-
-  return null;
+  return POWER_UP_POOL.find((p) => p.id === id) ?? null;
 }
 
-// Power-ups that require unlocking (not available by default)
-export const UNLOCKABLE_POWER_UPS: PowerUpId[] = ['mine-detector'];
-
-// Get available power-ups based on unlocks
-export function getAvailablePowerUps(unlocks: PowerUpId[]): PowerUp[] {
-  return POWER_UP_POOL.filter((p) => {
-    // If it's an unlockable power-up, check if it's unlocked
-    if (UNLOCKABLE_POWER_UPS.includes(p.id)) {
-      return unlocks.includes(p.id);
-    }
-    // Otherwise, always available
-    return true;
-  });
+// Get all available power-ups for drafting
+export function getAvailablePowerUps(): PowerUp[] {
+  return POWER_UP_POOL;
 }
 
 // Select N random power-ups for draft using weighted rarity selection
@@ -337,4 +327,6 @@ export function selectDraftOptions(
 }
 
 export const MAX_FLOOR = 10;
-export const UNLOCK_FLOOR_5_REWARD: PowerUpId = 'mine-detector';
+
+// Oracle's Gift mine density bonus (+15%)
+export const ORACLES_GIFT_MINE_DENSITY_BONUS = 0.15;

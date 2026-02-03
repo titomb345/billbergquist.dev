@@ -29,6 +29,10 @@ interface CellProps {
   onChordHighlightStart?: (row: number, col: number) => void;
   onChordHighlightEnd?: () => void;
   isFaded?: boolean; // A4: Amnesia - number has faded
+  hoveredRow?: number | null; // For Safe Path / Survey row highlighting
+  onRowHover?: (row: number | null) => void; // For Safe Path / Survey row highlighting
+  hasProbabilityLens?: boolean; // Probability Lens: this cell is one of the safest
+  hasOracleGift?: boolean; // Oracle's Gift: this cell is the safe choice in a 50/50
 }
 
 function CellComponent({
@@ -58,6 +62,10 @@ function CellComponent({
   onChordHighlightStart,
   onChordHighlightEnd,
   isFaded = false,
+  hoveredRow = null,
+  onRowHover,
+  hasProbabilityLens = false,
+  hasOracleGift = false,
 }: CellProps) {
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -118,17 +126,23 @@ function CellComponent({
       if (hasPatternMemory) {
         classes.push('cell-pattern-memory');
       }
+      if (hasProbabilityLens) {
+        classes.push('cell-probability-lens');
+      }
+      if (hasOracleGift) {
+        classes.push('cell-oracle-gift');
+      }
       if (xRayMode) {
         classes.push('cell-xray-target');
       }
       if (peekMode) {
         classes.push('cell-peek-target');
       }
-      if (safePathMode) {
-        classes.push('cell-safe-path-target');
+      if (safePathMode && hoveredRow === cell.row) {
+        classes.push('cell-row-highlight-green');
       }
-      if (surveyMode) {
-        classes.push('cell-survey-target');
+      if (surveyMode && hoveredRow === cell.row) {
+        classes.push('cell-row-highlight-yellow');
       }
       if (peekValue !== null) {
         classes.push('cell-peeked');
@@ -207,6 +221,9 @@ function CellComponent({
   };
 
   const handleMouseEnter = (e: React.MouseEvent) => {
+    // Row hover for Safe Path / Survey
+    onRowHover?.(cell.row);
+
     if (onHover && cell.state === CellState.Hidden) {
       onHover(cell.row, cell.col);
     }
@@ -227,6 +244,9 @@ function CellComponent({
   };
 
   const handleMouseLeave = () => {
+    // Clear row hover for Safe Path / Survey
+    onRowHover?.(null);
+
     if (onHoverEnd) {
       onHoverEnd();
     }
@@ -300,7 +320,10 @@ const Cell = memo(CellComponent, (prev, next) => {
     prev.peekValue === next.peekValue &&
     prev.inDetectorZone === next.inDetectorZone &&
     prev.isChordHighlighted === next.isChordHighlighted &&
-    prev.isFaded === next.isFaded
+    prev.isFaded === next.isFaded &&
+    prev.hoveredRow === next.hoveredRow &&
+    prev.hasProbabilityLens === next.hasProbabilityLens &&
+    prev.hasOracleGift === next.hasOracleGift
   );
 });
 

@@ -1,7 +1,14 @@
 import { Cell, CellState, GamePhase, PowerUpId, RoguelikeGameState, RunState } from '../types';
-import { getFloorConfig, SCORING, MAX_FLOOR } from '../constants';
+import { getFloorConfig, SCORING, MAX_FLOOR, POWER_UP_POOL, ORACLES_GIFT_MINE_DENSITY_BONUS } from '../constants';
 import { createEmptyBoard, revealCell, revealCascade } from './gameLogic';
 import { AscensionLevel, getAscensionModifiers } from '../ascension';
+
+// Check for debug URL parameter to enable all powerups
+function hasAllPowerupsParam(): boolean {
+  if (typeof window === 'undefined') return false;
+  const params = new URLSearchParams(window.location.search);
+  return params.get('allpowerups') === 'true';
+}
 
 // Generate a short run seed for sharing/comparing runs
 function generateRunSeed(): string {
@@ -18,7 +25,7 @@ export function createInitialRunState(ascensionLevel: AscensionLevel = 0): RunSt
   return {
     currentFloor: 1,
     score: 0,
-    activePowerUps: [],
+    activePowerUps: hasAllPowerupsParam() ? [...POWER_UP_POOL] : [],
     ironWillAvailable: true,
     xRayUsedThisFloor: false,
     luckyStartUsedThisFloor: false,
@@ -28,6 +35,7 @@ export function createInitialRunState(ascensionLevel: AscensionLevel = 0): RunSt
     safePathUsedThisFloor: false,
     defusalKitUsedThisFloor: false,
     surveyUsedThisFloor: false,
+    probabilityLensUsedThisFloor: false,
     seed: generateRunSeed(),
     ascensionLevel,
   };
@@ -36,10 +44,12 @@ export function createInitialRunState(ascensionLevel: AscensionLevel = 0): RunSt
 // Create initial roguelike game state for a new run
 export function createRoguelikeInitialState(
   isMobile: boolean,
-  unlocks: PowerUpId[] = [],
   ascensionLevel: AscensionLevel = 0
 ): RoguelikeGameState {
-  const floorConfig = getFloorConfig(1, isMobile, ascensionLevel);
+  // Check for Oracle's Gift in debug mode (allpowerups param)
+  const hasOraclesGift = hasAllPowerupsParam();
+  const extraDensity = hasOraclesGift ? ORACLES_GIFT_MINE_DENSITY_BONUS : 0;
+  const floorConfig = getFloorConfig(1, isMobile, ascensionLevel, extraDensity);
   return {
     phase: GamePhase.Start,
     board: createEmptyBoard(floorConfig),
@@ -55,7 +65,6 @@ export function createRoguelikeInitialState(
     patternMemoryCells: new Set(),
     explodedCell: null,
     closeCallCell: null,
-    unlocks,
     zeroCellCount: null,
     peekCell: null,
     surveyResult: null,
@@ -63,13 +72,18 @@ export function createRoguelikeInitialState(
     cellsRevealedThisFloor: 0,
     cellRevealTimes: new Map(),
     fadedCells: new Set(),
+    probabilityLensCells: new Set(),
+    oracleGiftCells: new Set(),
   };
 }
 
 // Set up a new floor (called when starting run or advancing to next floor)
 export function setupFloor(state: RoguelikeGameState, floor: number): RoguelikeGameState {
   const modifiers = getAscensionModifiers(state.run.ascensionLevel);
-  const floorConfig = getFloorConfig(floor, state.isMobile, state.run.ascensionLevel);
+  // Apply Oracle's Gift mine density bonus if player has it
+  const hasOraclesGift = hasPowerUp(state.run, 'oracles-gift');
+  const extraDensity = hasOraclesGift ? ORACLES_GIFT_MINE_DENSITY_BONUS : 0;
+  const floorConfig = getFloorConfig(floor, state.isMobile, state.run.ascensionLevel, extraDensity);
   const board = createEmptyBoard(floorConfig);
 
   // Check if player has Heat Map power-up
@@ -98,6 +112,8 @@ export function setupFloor(state: RoguelikeGameState, floor: number): RoguelikeG
     cellsRevealedThisFloor: 0,
     cellRevealTimes: new Map(), // A4: Reset reveal times for new floor
     fadedCells: new Set(), // A4: Reset faded cells for new floor
+    probabilityLensCells: new Set(),
+    oracleGiftCells: new Set(),
     run: {
       ...state.run,
       currentFloor: floor,
@@ -108,6 +124,7 @@ export function setupFloor(state: RoguelikeGameState, floor: number): RoguelikeG
       safePathUsedThisFloor: false,
       defusalKitUsedThisFloor: false,
       surveyUsedThisFloor: false,
+      probabilityLensUsedThisFloor: false,
     },
   };
 }
@@ -583,3 +600,168 @@ export function applyDefusalKit(
 
 // Re-export countFlags from gameLogic to avoid duplication
 export { countFlags } from './gameLogic';
+
+// Calculate the 3 safest cells on the board for Probability Lens
+// Safety score based on: number of revealed neighbors and their adjacent mine counts
+export function calculateSafestCells(board: Cell[][]): Set<string> {
+  const rows = board.length;
+  const cols = board[0]?.length || 0;
+
+  // Collect all hidden non-mine cells with safety scores
+  const candidates: Array<{ row: number; col: number; score: number }> = [];
+
+  for (let row = 0; row < rows; row++) {
+    for (let col = 0; col < cols; col++) {
+      const cell = board[row][col];
+      // Only consider hidden, non-flagged, non-mine cells
+      if (cell.state !== CellState.Hidden || cell.isMine) continue;
+
+      // Calculate safety score based on revealed neighbors
+      let score = 0;
+      let revealedNeighbors = 0;
+
+      for (let dr = -1; dr <= 1; dr++) {
+        for (let dc = -1; dc <= 1; dc++) {
+          if (dr === 0 && dc === 0) continue;
+          const r = row + dr;
+          const c = col + dc;
+          if (r >= 0 && r < rows && c >= 0 && c < cols) {
+            const neighbor = board[r][c];
+            if (neighbor.state === CellState.Revealed && !neighbor.isMine) {
+              revealedNeighbors++;
+              // Lower adjacent mine count = safer neighbor = higher score
+              // A neighbor showing "1" is safer than one showing "5"
+              score += 8 - neighbor.adjacentMines;
+
+              // Count how many of neighbor's mines are already flagged
+              let flaggedCount = 0;
+              for (let ddr = -1; ddr <= 1; ddr++) {
+                for (let ddc = -1; ddc <= 1; ddc++) {
+                  const rr = r + ddr;
+                  const cc = c + ddc;
+                  if (rr >= 0 && rr < rows && cc >= 0 && cc < cols) {
+                    if (board[rr][cc].state === CellState.Flagged) {
+                      flaggedCount++;
+                    }
+                  }
+                }
+              }
+              // If all mines around this neighbor are flagged, this cell is definitely safe
+              if (neighbor.adjacentMines > 0 && flaggedCount >= neighbor.adjacentMines) {
+                score += 20; // Big bonus for definitely safe
+              }
+            }
+          }
+        }
+      }
+
+      // Only include cells that have some revealed neighbors (we have info about them)
+      if (revealedNeighbors > 0) {
+        // Bonus for having more revealed neighbors (more information)
+        score += revealedNeighbors * 2;
+        candidates.push({ row, col, score });
+      }
+    }
+  }
+
+  // Sort by score descending and take top 3
+  candidates.sort((a, b) => b.score - a.score);
+  const safest = candidates.slice(0, 3);
+
+  return new Set(safest.map((c) => `${c.row},${c.col}`));
+}
+
+// Helper: Get all adjacent revealed numbered cells as a Set of "row,col" keys
+function getAdjacentNumberedCells(board: Cell[][], row: number, col: number): Set<string> {
+  const result = new Set<string>();
+  const rows = board.length;
+  const cols = board[0]?.length || 0;
+
+  for (let dr = -1; dr <= 1; dr++) {
+    for (let dc = -1; dc <= 1; dc++) {
+      if (dr === 0 && dc === 0) continue;
+      const r = row + dr;
+      const c = col + dc;
+      if (r >= 0 && r < rows && c >= 0 && c < cols) {
+        const cell = board[r][c];
+        if (cell.state === CellState.Revealed && cell.adjacentMines > 0) {
+          result.add(`${r},${c}`);
+        }
+      }
+    }
+  }
+  return result;
+}
+
+// Helper: Check if two sets are equal
+function setsAreEqual(a: Set<string>, b: Set<string>): boolean {
+  if (a.size !== b.size) return false;
+  for (const item of a) {
+    if (!b.has(item)) return false;
+  }
+  return true;
+}
+
+// Calculate Oracle's Gift cells: find TRUE 50/50 situations and identify the safe cell
+// A TRUE 50/50 is when two hidden cells share the EXACT same set of adjacent numbered cells.
+// If they have identical numbered neighbors, no information on the board can distinguish them.
+export function calculateOracleGiftCells(board: Cell[][], run: RunState): Set<string> {
+  if (!hasPowerUp(run, 'oracles-gift')) return new Set();
+
+  const safeCells = new Set<string>();
+  const rows = board.length;
+  const cols = board[0]?.length || 0;
+
+  for (let row = 0; row < rows; row++) {
+    for (let col = 0; col < cols; col++) {
+      const cell = board[row][col];
+
+      // Only check revealed numbered cells
+      if (cell.state !== CellState.Revealed || cell.isMine || cell.adjacentMines === 0) {
+        continue;
+      }
+
+      // Count flagged and hidden neighbors
+      let flaggedCount = 0;
+      const hiddenNeighbors: Array<{ row: number; col: number; isMine: boolean }> = [];
+
+      for (let dr = -1; dr <= 1; dr++) {
+        for (let dc = -1; dc <= 1; dc++) {
+          if (dr === 0 && dc === 0) continue;
+          const r = row + dr;
+          const c = col + dc;
+          if (r >= 0 && r < rows && c >= 0 && c < cols) {
+            const neighbor = board[r][c];
+            if (neighbor.state === CellState.Flagged) {
+              flaggedCount++;
+            } else if (neighbor.state === CellState.Hidden) {
+              hiddenNeighbors.push({ row: r, col: c, isMine: neighbor.isMine });
+            }
+          }
+        }
+      }
+
+      // Check for local 50/50: exactly 1 mine remaining among exactly 2 hidden cells
+      const minesRemaining = cell.adjacentMines - flaggedCount;
+      if (minesRemaining === 1 && hiddenNeighbors.length === 2) {
+        const [cellA, cellB] = hiddenNeighbors;
+
+        // Get numbered neighbors for each cell
+        const neighborsA = getAdjacentNumberedCells(board, cellA.row, cellA.col);
+        const neighborsB = getAdjacentNumberedCells(board, cellB.row, cellB.col);
+
+        // TRUE 50/50 only if they share EXACT same numbered neighbors
+        // If they have different constraints, other information on the board might reveal the answer
+        if (setsAreEqual(neighborsA, neighborsB)) {
+          // One is mine, one is safe - find the safe one
+          const safeCell = hiddenNeighbors.find((n) => !n.isMine);
+          if (safeCell) {
+            safeCells.add(`${safeCell.row},${safeCell.col}`);
+          }
+        }
+      }
+    }
+  }
+
+  return safeCells;
+}

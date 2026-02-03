@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Cell as CellType } from '../types';
 import Cell from './Cell';
 
@@ -28,6 +29,8 @@ interface BoardProps {
   onChordHighlightStart?: (row: number, col: number) => void;
   onChordHighlightEnd?: () => void;
   fadedCells?: Set<string>; // A4: Cells with faded numbers
+  probabilityLensCells?: Set<string>; // Probability Lens: safest cells highlighted
+  oracleGiftCells?: Set<string>; // Oracle's Gift: 50/50 safe cells highlighted
 }
 
 function Board({
@@ -57,7 +60,12 @@ function Board({
   onChordHighlightStart,
   onChordHighlightEnd,
   fadedCells,
+  probabilityLensCells,
+  oracleGiftCells,
 }: BoardProps) {
+  // Track hovered row for Safe Path and Survey row highlighting
+  const [hoveredRow, setHoveredRow] = useState<number | null>(null);
+
   // Check if a cell is within the 5x5 detector zone
   const isInDetectorZone = (row: number, col: number): boolean => {
     if (!detectorCenter) return false;
@@ -106,6 +114,10 @@ function Board({
               onChordHighlightStart={onChordHighlightStart}
               onChordHighlightEnd={onChordHighlightEnd}
               isFaded={fadedCells?.has(`${cell.row},${cell.col}`)}
+              hoveredRow={safePathMode || surveyMode ? hoveredRow : null}
+              onRowHover={safePathMode || surveyMode ? setHoveredRow : undefined}
+              hasProbabilityLens={probabilityLensCells?.has(`${cell.row},${cell.col}`)}
+              hasOracleGift={oracleGiftCells?.has(`${cell.row},${cell.col}`)}
             />
           ))}
         </div>

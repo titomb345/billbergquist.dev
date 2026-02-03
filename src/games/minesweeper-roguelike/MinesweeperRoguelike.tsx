@@ -9,11 +9,9 @@ import PowerUpDraft from './components/PowerUpDraft';
 import RunOverScreen from './components/RunOverScreen';
 import ExplosionOverlay from './components/ExplosionOverlay';
 import FloorClearOverlay from './components/FloorClearOverlay';
-import CloseCallOverlay from './components/CloseCallOverlay';
-import UnlockSplashScreen from './components/UnlockSplashScreen';
+import IronWillSaveOverlay from './components/IronWillSaveOverlay';
 import { isFinalFloor, calculateMineCount5x5 } from './logic/roguelikeLogic';
-import { GamePhase, PowerUp } from './types';
-import { UNLOCK_FLOOR_5_REWARD, getPowerUpById } from './constants';
+import { GamePhase } from './types';
 import { AscensionLevel } from './ascension';
 import './styles.css';
 
@@ -37,13 +35,15 @@ function Minesweeper({ resetRef }: MinesweeperProps) {
     useSafePath,
     useDefusalKit,
     useSurvey,
+    useProbabilityLens,
     selectPowerUp,
     skipDraft,
     explosionComplete,
     floorClearComplete,
+    ironWillComplete,
     setChordHighlight,
     clearChordHighlight,
-  } = useRoguelikeState(isConstrained, stats.unlocks);
+  } = useRoguelikeState(isConstrained);
 
   const [xRayMode, setXRayMode] = useState(false);
   const [peekMode, setPeekMode] = useState(false);
@@ -51,23 +51,37 @@ function Minesweeper({ resetRef }: MinesweeperProps) {
   const [defusalKitMode, setDefusalKitMode] = useState(false);
   const [surveyMode, setSurveyMode] = useState(false);
   const [hoveredCell, setHoveredCell] = useState<{ row: number; col: number } | null>(null);
-  const [pendingUnlock, setPendingUnlock] = useState<PowerUp | null>(null);
-  const [unlockShownThisRun, setUnlockShownThisRun] = useState(false);
+
+  // Wrapper that records the run before going to start (if a run was active)
+  const handleGoToStart = useCallback(() => {
+    // If we're in a state where a run was in progress or just ended, record it
+    if (
+      state.phase === GamePhase.Playing ||
+      state.phase === GamePhase.Draft ||
+      state.phase === GamePhase.FloorClear ||
+      state.phase === GamePhase.RunOver ||
+      state.phase === GamePhase.Victory
+    ) {
+      const isVictory = state.phase === GamePhase.Victory;
+      recordRun(state.run.currentFloor, state.run.score, state.run.ascensionLevel, isVictory);
+    }
+    goToStart();
+  }, [state.phase, state.run.currentFloor, state.run.score, state.run.ascensionLevel, goToStart, recordRun]);
 
   // Expose reset function to parent via ref
   useEffect(() => {
     if (resetRef) {
-      resetRef.current = goToStart;
+      resetRef.current = handleGoToStart;
     }
     return () => {
       if (resetRef) {
         resetRef.current = null;
       }
     };
-  }, [resetRef, goToStart]);
+  }, [resetRef, handleGoToStart]);
 
   const handleStartRun = (ascensionLevel: AscensionLevel = 0) => {
-    startRun(stats.unlocks, ascensionLevel);
+    startRun(ascensionLevel);
   };
 
   // Mine Detector: calculate 5×5 mine count when hovering
@@ -117,6 +131,10 @@ function Minesweeper({ resetRef }: MinesweeperProps) {
   const hasSurvey = state.run.activePowerUps.some((p) => p.id === 'survey');
   const canUseSurvey = hasSurvey && !state.run.surveyUsedThisFloor && !state.isFirstClick;
 
+  // Check if Probability Lens is available
+  const hasProbabilityLens = state.run.activePowerUps.some((p) => p.id === 'probability-lens');
+  const canUseProbabilityLens = hasProbabilityLens && !state.run.probabilityLensUsedThisFloor && !state.isFirstClick;
+
   const clearAllModes = () => {
     setXRayMode(false);
     setPeekMode(false);
@@ -138,7 +156,6 @@ function Minesweeper({ resetRef }: MinesweeperProps) {
   };
 
   const handleSafePathClick = (row: number, _col: number) => {
-    // For simplicity, Safe Path reveals cells in the ROW of the clicked cell
     // eslint-disable-next-line react-hooks/rules-of-hooks
     useSafePath('row', row);
     setSafePathMode(false);
@@ -175,48 +192,25 @@ function Minesweeper({ resetRef }: MinesweeperProps) {
     setSurveyMode(newMode);
   };
 
-  // Check for new unlock when game ends
+  const handleUseProbabilityLens = () => {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    useProbabilityLens();
+  };
+
   const isGameOver = state.phase === GamePhase.RunOver || state.phase === GamePhase.Victory;
-  const justUnlocked =
-    isGameOver &&
-    state.run.currentFloor >= 5 &&
-    !stats.unlocks.includes(UNLOCK_FLOOR_5_REWARD);
-
-  // Show unlock splash when unlock happens (only once per run)
-  useEffect(() => {
-    if (justUnlocked && !pendingUnlock && !unlockShownThisRun) {
-      const unlockedPowerUp = getPowerUpById(UNLOCK_FLOOR_5_REWARD);
-      if (unlockedPowerUp) {
-        setPendingUnlock(unlockedPowerUp);
-        setUnlockShownThisRun(true);
-      }
-    }
-  }, [justUnlocked, pendingUnlock, unlockShownThisRun]);
-
-  // Reset unlock tracking when starting a new run
-  useEffect(() => {
-    if (state.phase === GamePhase.Start || state.phase === GamePhase.Playing) {
-      setPendingUnlock(null);
-      setUnlockShownThisRun(false);
-    }
-  }, [state.phase]);
 
   // Record run on game over/victory
   const handleRunEnd = () => {
     const isVictory = state.phase === GamePhase.Victory;
     recordRun(state.run.currentFloor, state.run.score, state.run.ascensionLevel, isVictory);
-    startRun(stats.unlocks, 0); // Default to normal difficulty
+    startRun(0); // Default to normal difficulty
   };
 
   // Start a new run at a specific ascension level (for ascension unlock button)
   const handleStartAscension = (ascensionLevel: AscensionLevel) => {
     const isVictory = state.phase === GamePhase.Victory;
     recordRun(state.run.currentFloor, state.run.score, state.run.ascensionLevel, isVictory);
-    startRun(stats.unlocks, ascensionLevel);
-  };
-
-  const handleUnlockContinue = () => {
-    setPendingUnlock(null);
+    startRun(ascensionLevel);
   };
 
   return (
@@ -251,41 +245,48 @@ function Minesweeper({ resetRef }: MinesweeperProps) {
             surveyResult={state.surveyResult}
             mineDetectorCount={mineDetectorCount}
             zeroCellCount={state.zeroCellCount}
+            canUseProbabilityLens={canUseProbabilityLens}
+            onUseProbabilityLens={handleUseProbabilityLens}
+            probabilityLensActive={state.probabilityLensCells.size > 0}
           />
-          {xRayMode && <div className="xray-hint">Click a cell to reveal 3×3 area</div>}
-          {peekMode && <div className="xray-hint peek-hint">Click a cell to peek at it</div>}
-          {safePathMode && <div className="xray-hint safe-path-hint">Click a cell to reveal safe cells in that row</div>}
-          {defusalKitMode && <div className="xray-hint defusal-hint">Click a flagged mine to remove it</div>}
-          {surveyMode && <div className="xray-hint survey-hint">Click a row to count mines in it</div>}
-          <div className="minesweeper">
-            <Board
-              board={state.board}
-              onReveal={revealCell}
-              onFlag={toggleFlag}
-              onChord={chordClick}
-              gameOver={false}
-              dangerCells={state.dangerCells}
-              patternMemoryCells={state.patternMemoryCells}
-              heatMapEnabled={state.heatMapEnabled}
-              xRayMode={xRayMode && canUseXRay}
-              peekMode={peekMode && canUsePeek}
-              safePathMode={safePathMode && canUseSafePath}
-              defusalKitMode={defusalKitMode && canUseDefusalKit}
-              surveyMode={surveyMode && canUseSurvey}
-              peekCell={state.peekCell}
-              onXRay={handleXRayClick}
-              onPeek={handlePeekClick}
-              onSafePath={handleSafePathClick}
-              onDefusalKit={handleDefusalKitClick}
-              onSurvey={handleSurveyClick}
-              onCellHover={hasMineDetector ? handleCellHover : undefined}
-              onCellHoverEnd={hasMineDetector ? handleCellHoverEnd : undefined}
-              detectorCenter={hasMineDetector && !state.isFirstClick ? hoveredCell : null}
-              chordHighlightCells={state.chordHighlightCells}
-              onChordHighlightStart={setChordHighlight}
-              onChordHighlightEnd={clearChordHighlight}
-              fadedCells={state.fadedCells}
-            />
+          <div className="board-with-hints">
+            {xRayMode && <div className="xray-hint">{state.run.activePowerUps.find(p => p.id === 'x-ray-vision')?.activeHint}</div>}
+            {peekMode && <div className="xray-hint peek-hint">{state.run.activePowerUps.find(p => p.id === 'peek')?.activeHint}</div>}
+            {safePathMode && <div className="xray-hint safe-path-hint">{state.run.activePowerUps.find(p => p.id === 'safe-path')?.activeHint}</div>}
+            {defusalKitMode && <div className="xray-hint defusal-hint">{state.run.activePowerUps.find(p => p.id === 'defusal-kit')?.activeHint}</div>}
+            {surveyMode && <div className="xray-hint survey-hint">{state.run.activePowerUps.find(p => p.id === 'survey')?.activeHint}</div>}
+            <div className="minesweeper">
+              <Board
+                board={state.board}
+                onReveal={revealCell}
+                onFlag={toggleFlag}
+                onChord={chordClick}
+                gameOver={false}
+                dangerCells={state.dangerCells}
+                patternMemoryCells={state.patternMemoryCells}
+                heatMapEnabled={state.heatMapEnabled}
+                xRayMode={xRayMode && canUseXRay}
+                peekMode={peekMode && canUsePeek}
+                safePathMode={safePathMode && canUseSafePath}
+                defusalKitMode={defusalKitMode && canUseDefusalKit}
+                surveyMode={surveyMode && canUseSurvey}
+                peekCell={state.peekCell}
+                onXRay={handleXRayClick}
+                onPeek={handlePeekClick}
+                onSafePath={handleSafePathClick}
+                onDefusalKit={handleDefusalKitClick}
+                onSurvey={handleSurveyClick}
+                onCellHover={hasMineDetector ? handleCellHover : undefined}
+                onCellHoverEnd={hasMineDetector ? handleCellHoverEnd : undefined}
+                detectorCenter={hasMineDetector && !state.isFirstClick ? hoveredCell : null}
+                chordHighlightCells={state.chordHighlightCells}
+                onChordHighlightStart={setChordHighlight}
+                onChordHighlightEnd={clearChordHighlight}
+                fadedCells={state.fadedCells}
+                probabilityLensCells={state.probabilityLensCells}
+                oracleGiftCells={state.oracleGiftCells}
+              />
+            </div>
           </div>
         </>
       )}
@@ -301,8 +302,10 @@ function Minesweeper({ resetRef }: MinesweeperProps) {
         />
       )}
 
-      {/* Close Call Animation (Iron Will saved) */}
-      {state.closeCallCell && <CloseCallOverlay />}
+      {/* Iron Will Save Animation */}
+      {state.phase === GamePhase.IronWillSave && (
+        <IronWillSaveOverlay onComplete={ironWillComplete} />
+      )}
 
       {/* Explosion Animation */}
       {state.phase === GamePhase.Exploding && <ExplosionOverlay onComplete={explosionComplete} />}
@@ -316,13 +319,8 @@ function Minesweeper({ resetRef }: MinesweeperProps) {
         />
       )}
 
-      {/* Unlock Splash Screen (shows before Run Over if player unlocked something) */}
-      {isGameOver && pendingUnlock && (
-        <UnlockSplashScreen powerUp={pendingUnlock} onContinue={handleUnlockContinue} />
-      )}
-
       {/* Run Over / Victory */}
-      {isGameOver && !pendingUnlock && (
+      {isGameOver && (
         <RunOverScreen
           isVictory={state.phase === GamePhase.Victory}
           floor={state.run.currentFloor}

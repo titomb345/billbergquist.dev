@@ -1,6 +1,5 @@
 import { useState, useCallback } from 'react';
-import { PowerUpId, RoguelikeStats } from '../types';
-import { UNLOCK_FLOOR_5_REWARD } from '../constants';
+import { RoguelikeStats } from '../types';
 import { saveStats, loadStats } from '../persistence';
 import { AscensionLevel, MAX_ASCENSION } from '../ascension';
 
@@ -11,13 +10,6 @@ export function useRoguelikeStats() {
   const recordRun = useCallback(
     (floorReached: number, score: number, ascensionLevel: AscensionLevel, isVictory: boolean) => {
       setStats((prev) => {
-        const newUnlocks: PowerUpId[] = [...prev.unlocks];
-
-        // Check for floor 5 unlock
-        if (floorReached >= 5 && !newUnlocks.includes(UNLOCK_FLOOR_5_REWARD)) {
-          newUnlocks.push(UNLOCK_FLOOR_5_REWARD);
-        }
-
         // Track ascension progress
         let newHighestAscensionUnlocked = prev.highestAscensionUnlocked;
         let newHighestAscensionCleared = prev.highestAscensionCleared;
@@ -38,7 +30,6 @@ export function useRoguelikeStats() {
           bestFloor: Math.max(prev.bestFloor, floorReached),
           bestScore: Math.max(prev.bestScore, score),
           floorsCleared: prev.floorsCleared + floorReached - 1, // Don't count current floor if died
-          unlocks: newUnlocks,
           highestAscensionUnlocked: newHighestAscensionUnlocked,
           highestAscensionCleared: newHighestAscensionCleared,
         };
@@ -56,7 +47,6 @@ export function useRoguelikeStats() {
       bestFloor: 0,
       bestScore: 0,
       floorsCleared: 0,
-      unlocks: [],
       highestAscensionUnlocked: 0,
       highestAscensionCleared: 0,
     };
