@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
+import { useState, useRef } from 'react';
 import { RunState, PowerUp } from '../types';
 import { MAX_FLOOR } from '../constants';
 import { getAscensionModifiers } from '../ascension';
@@ -27,12 +27,16 @@ interface RoguelikeHeaderProps {
   surveyResult?: { direction: 'row' | 'col'; index: number; mineCount: number } | null;
   mineDetectorCount?: number | null;
   zeroCellCount?: number | null;
+  canUseProbabilityLens?: boolean;
+  onUseProbabilityLens?: () => void;
+  probabilityLensActive?: boolean;
 }
 
 interface HoveredPowerUp {
   powerUp: PowerUp;
   isUsed: boolean;
-  arrowOffset: number;
+  tooltipOffset: number; // clamped horizontal offset for tooltip position
+  arrowOffset: number; // arrow position relative to tooltip center
   topOffset: number;
 }
 
@@ -60,67 +64,12 @@ function RoguelikeHeader({
   surveyResult,
   mineDetectorCount,
   zeroCellCount,
+  canUseProbabilityLens = false,
+  onUseProbabilityLens,
+  probabilityLensActive = false,
 }: RoguelikeHeaderProps) {
   const [hoveredPowerUp, setHoveredPowerUp] = useState<HoveredPowerUp | null>(null);
-  const [passivePopoverOpen, setPassivePopoverOpen] = useState(false);
-  const [hoveredPassive, setHoveredPassive] = useState<PowerUp | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const passiveBadgeRef = useRef<HTMLSpanElement>(null);
-  const popoverRef = useRef<HTMLDivElement>(null);
-  const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  // Split power-ups into active and passive
-  const { activeRelics, passiveRelics } = useMemo(() => {
-    const active: PowerUp[] = [];
-    const passive: PowerUp[] = [];
-    for (const powerUp of run.activePowerUps) {
-      if (powerUp.type === 'active') {
-        active.push(powerUp);
-      } else {
-        passive.push(powerUp);
-      }
-    }
-    return { activeRelics: active, passiveRelics: passive };
-  }, [run.activePowerUps]);
-
-  // Handle popover close with delay to prevent flicker
-  const handlePopoverMouseEnter = useCallback(() => {
-    if (closeTimeoutRef.current) {
-      clearTimeout(closeTimeoutRef.current);
-      closeTimeoutRef.current = null;
-    }
-  }, []);
-
-  const handlePopoverMouseLeave = useCallback(() => {
-    closeTimeoutRef.current = setTimeout(() => {
-      setPassivePopoverOpen(false);
-      setHoveredPassive(null);
-    }, 150);
-  }, []);
-
-  const handleBadgeMouseEnter = useCallback(() => {
-    if (closeTimeoutRef.current) {
-      clearTimeout(closeTimeoutRef.current);
-      closeTimeoutRef.current = null;
-    }
-    setPassivePopoverOpen(true);
-  }, []);
-
-  const handleBadgeMouseLeave = useCallback(() => {
-    closeTimeoutRef.current = setTimeout(() => {
-      setPassivePopoverOpen(false);
-      setHoveredPassive(null);
-    }, 150);
-  }, []);
-
-  // Clean up timeout on unmount
-  useEffect(() => {
-    return () => {
-      if (closeTimeoutRef.current) {
-        clearTimeout(closeTimeoutRef.current);
-      }
-    };
-  }, []);
 
   const formatNumber = (num: number): string => {
     const clamped = Math.max(-99, Math.min(999, num));
@@ -144,14 +93,26 @@ function RoguelikeHeader({
     const iconRect = iconElement.getBoundingClientRect();
     const iconCenter = iconRect.left + iconRect.width / 2;
     const containerCenter = containerRect.left + containerRect.width / 2;
-    const arrowOffset = iconCenter - containerCenter;
+
+    // How far the icon is from container center
+    const rawOffset = iconCenter - containerCenter;
+
+    // Clamp tooltip position so it stays in container bounds
+    // Using half of max-width (360px) as estimate, with some padding
+    const tooltipHalfWidth = 180;
+    const maxOffset = Math.max(0, containerRect.width / 2 - tooltipHalfWidth);
+    const clampedTooltipOffset = Math.max(-maxOffset, Math.min(maxOffset, rawOffset));
+
+    // Arrow offset = remaining distance to point at icon
+    const arrowOffset = rawOffset - clampedTooltipOffset;
+
     // Calculate how far down from the container top the icon's bottom is
     const topOffset = iconRect.bottom - containerRect.top;
 
-    setHoveredPowerUp({ powerUp, isUsed, arrowOffset, topOffset });
+    setHoveredPowerUp({ powerUp, isUsed, tooltipOffset: clampedTooltipOffset, arrowOffset, topOffset });
   };
 
-  const hasRelics = activeRelics.length > 0 || passiveRelics.length > 0;
+  const hasRelics = run.activePowerUps.length > 0;
 
   // A2: Check if timer is in countdown mode and low
   const modifiers = getAscensionModifiers(run.ascensionLevel);
@@ -195,7 +156,10 @@ function RoguelikeHeader({
         {hoveredPowerUp && (
           <div
             className="powerup-tooltip"
-            style={{ top: `${hoveredPowerUp.topOffset + 12}px` }}
+            style={{
+              top: `${hoveredPowerUp.topOffset + 12}px`,
+              left: `calc(50% + ${hoveredPowerUp.tooltipOffset}px)`,
+            }}
           >
             <div className="powerup-tooltip-header">
               <span className="powerup-tooltip-name">{hoveredPowerUp.powerUp.name}</span>
@@ -214,8 +178,9 @@ function RoguelikeHeader({
             />
           </div>
         )}
-        {/* Active relic icons */}
-        {activeRelics.map((powerUp) => {
+        {/* All relics in acquisition order */}
+        {run.activePowerUps.map((powerUp) => {
+          const isActive = powerUp.type === 'active';
           const isXRay = powerUp.id === 'x-ray-vision';
           const isXRayUsed = isXRay && run.xRayUsedThisFloor;
           const isPeek = powerUp.id === 'peek';
@@ -226,20 +191,40 @@ function RoguelikeHeader({
           const isDefusalKitUsed = isDefusalKit && run.defusalKitUsedThisFloor;
           const isSurvey = powerUp.id === 'survey';
           const isSurveyUsed = isSurvey && run.surveyUsedThisFloor;
+          const isProbabilityLens = powerUp.id === 'probability-lens';
+          const isProbabilityLensUsed = isProbabilityLens && run.probabilityLensUsedThisFloor;
+          const isIronWillUsed = !run.ironWillAvailable && powerUp.id === 'iron-will';
+          const isQuickRecoveryUsed =
+            powerUp.id === 'quick-recovery' && run.quickRecoveryUsedThisRun;
           const isUsed =
-            isXRayUsed || isPeekUsed || isSafePathUsed || isDefusalKitUsed || isSurveyUsed;
+            isXRayUsed ||
+            isPeekUsed ||
+            isSafePathUsed ||
+            isDefusalKitUsed ||
+            isSurveyUsed ||
+            isProbabilityLensUsed ||
+            isIronWillUsed ||
+            isQuickRecoveryUsed;
+
           const isXRayClickable = isXRay && canUseXRay && onToggleXRay;
           const isPeekClickable = isPeek && canUsePeek && onTogglePeek;
           const isSafePathClickable = isSafePath && canUseSafePath && onToggleSafePath;
           const isDefusalKitClickable = isDefusalKit && canUseDefusalKit && onToggleDefusalKit;
           const isSurveyClickable = isSurvey && canUseSurvey && onToggleSurvey;
+          const isProbabilityLensClickable = isProbabilityLens && canUseProbabilityLens && onUseProbabilityLens;
           const isClickable =
             isXRayClickable ||
             isPeekClickable ||
             isSafePathClickable ||
             isDefusalKitClickable ||
-            isSurveyClickable;
+            isSurveyClickable ||
+            isProbabilityLensClickable;
+
           const showSurveyResult = isSurvey && surveyResult != null;
+          const isMineDetector = powerUp.id === 'mine-detector';
+          const isFloorScout = powerUp.id === 'floor-scout';
+          const showDetectorCount = isMineDetector && mineDetectorCount != null;
+          const showZeroCellCount = isFloorScout && zeroCellCount != null;
 
           const getClickHandler = () => {
             if (isXRayClickable) return onToggleXRay;
@@ -247,96 +232,35 @@ function RoguelikeHeader({
             if (isSafePathClickable) return onToggleSafePath;
             if (isDefusalKitClickable) return onToggleDefusalKit;
             if (isSurveyClickable) return onToggleSurvey;
+            if (isProbabilityLensClickable) return onUseProbabilityLens;
             return undefined;
           };
 
           return (
             <span
               key={powerUp.id}
-              className={`powerup-icon-wrapper rarity-${powerUp.rarity} ${isUsed ? 'used' : ''} ${isXRay ? 'xray' : ''} ${xRayMode ? 'xray-active' : ''} ${isPeek ? 'peek' : ''} ${peekMode ? 'peek-active' : ''} ${isSafePath ? 'safe-path' : ''} ${safePathMode ? 'safe-path-active' : ''} ${isDefusalKit ? 'defusal-kit' : ''} ${defusalKitMode ? 'defusal-kit-active' : ''} ${isSurvey ? 'survey' : ''} ${surveyMode ? 'survey-active' : ''} ${isClickable ? 'clickable' : ''} ${showSurveyResult ? 'detector-active' : ''}`}
+              className={`powerup-icon-wrapper rarity-${powerUp.rarity} ${isUsed ? 'used' : ''} ${isXRay ? 'xray' : ''} ${xRayMode ? 'xray-active' : ''} ${isPeek ? 'peek' : ''} ${peekMode ? 'peek-active' : ''} ${isSafePath ? 'safe-path' : ''} ${safePathMode ? 'safe-path-active' : ''} ${isDefusalKit ? 'defusal-kit' : ''} ${defusalKitMode ? 'defusal-kit-active' : ''} ${isSurvey ? 'survey' : ''} ${surveyMode ? 'survey-active' : ''} ${isProbabilityLens ? 'probability-lens' : ''} ${probabilityLensActive ? 'probability-lens-active' : ''} ${isClickable ? 'clickable' : ''} ${showSurveyResult || showDetectorCount || showZeroCellCount ? 'detector-active' : ''}`}
               onMouseEnter={(e) => handleMouseEnter(powerUp, isUsed, e.currentTarget)}
               onMouseLeave={() => setHoveredPowerUp(null)}
               onClick={getClickHandler()}
             >
-              <span className="powerup-icon-emoji">{powerUp.icon}</span>
+              <span className="powerup-icon-inner">
+                <span className="powerup-icon-emoji">{powerUp.icon}</span>
+              </span>
+              {/* Lightning badge for active-type relics */}
+              {isActive && <span className="active-relic-badge">⚡</span>}
               {showSurveyResult && (
                 <span className="mine-detector-badge survey-badge">{surveyResult.mineCount}</span>
+              )}
+              {showDetectorCount && (
+                <span className="mine-detector-badge">{mineDetectorCount}</span>
+              )}
+              {showZeroCellCount && (
+                <span className="mine-detector-badge floor-scout-badge">{zeroCellCount}</span>
               )}
             </span>
           );
         })}
-        {/* Passive relics badge */}
-        {passiveRelics.length > 0 && (
-          <span
-            ref={passiveBadgeRef}
-            className="passive-badge"
-            onMouseEnter={handleBadgeMouseEnter}
-            onMouseLeave={handleBadgeMouseLeave}
-            onClick={() => setPassivePopoverOpen((prev) => !prev)}
-          >
-            +{passiveRelics.length}
-          </span>
-        )}
-        {/* Passive relics popover */}
-        {passivePopoverOpen && passiveRelics.length > 0 && (
-          <div
-            ref={popoverRef}
-            className="passive-popover"
-            onMouseEnter={handlePopoverMouseEnter}
-            onMouseLeave={handlePopoverMouseLeave}
-          >
-            <span className="passive-popover-title">PASSIVE RELICS</span>
-            <div className="passive-popover-grid">
-              {passiveRelics.map((powerUp) => {
-                const isIronWillUsed = !run.ironWillAvailable && powerUp.id === 'iron-will';
-                const isQuickRecoveryUsed =
-                  powerUp.id === 'quick-recovery' && run.quickRecoveryUsedThisRun;
-                const isUsed = isIronWillUsed || isQuickRecoveryUsed;
-                const isMineDetector = powerUp.id === 'mine-detector';
-                const isFloorScout = powerUp.id === 'floor-scout';
-                const showDetectorCount = isMineDetector && mineDetectorCount != null;
-                const showZeroCellCount = isFloorScout && zeroCellCount != null;
-
-                return (
-                  <span
-                    key={powerUp.id}
-                    className={`passive-popover-icon rarity-${powerUp.rarity} ${isUsed ? 'used' : ''} ${hoveredPassive?.id === powerUp.id ? 'hovered' : ''} ${showDetectorCount || showZeroCellCount ? 'detector-active' : ''}`}
-                    onMouseEnter={() => setHoveredPassive(powerUp)}
-                  >
-                    <span className="powerup-icon-emoji">{powerUp.icon}</span>
-                    {showDetectorCount && (
-                      <span className="mine-detector-badge">{mineDetectorCount}</span>
-                    )}
-                    {showZeroCellCount && (
-                      <span className="mine-detector-badge floor-scout-badge">{zeroCellCount}</span>
-                    )}
-                  </span>
-                );
-              })}
-            </div>
-            {hoveredPassive && (
-              <div className="passive-popover-detail">
-                <div className="passive-popover-detail-header">
-                  <span className="passive-popover-detail-name">{hoveredPassive.name}</span>
-                  <span className={`rarity-badge rarity-${hoveredPassive.rarity}`}>
-                    {hoveredPassive.rarity}
-                  </span>
-                  {(() => {
-                    const isIronWillUsed =
-                      !run.ironWillAvailable && hoveredPassive.id === 'iron-will';
-                    const isQuickRecoveryUsed =
-                      hoveredPassive.id === 'quick-recovery' && run.quickRecoveryUsedThisRun;
-                    const isUsed = isIronWillUsed || isQuickRecoveryUsed;
-                    return isUsed ? (
-                      <span className="passive-popover-detail-status">USED</span>
-                    ) : null;
-                  })()}
-                </div>
-                <span className="passive-popover-detail-desc">{hoveredPassive.description}</span>
-              </div>
-            )}
-          </div>
-        )}
       </div>
     </div>
   );

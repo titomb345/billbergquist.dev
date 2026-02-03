@@ -1,7 +1,8 @@
 import { z } from 'zod';
+import { ALL_POWER_UP_IDS } from '../constants';
 
-export const GAME_STATE_VERSION = 2;
-export const STATS_VERSION = 2;
+export const GAME_STATE_VERSION = 3;
+export const STATS_VERSION = 3;
 
 // Cell schema
 export const CellStateSchema = z.enum(['hidden', 'revealed', 'flagged']);
@@ -14,15 +15,8 @@ export const CellSchema = z.object({
 });
 
 // PowerUp schemas
-// Known power-up IDs - used for strict validation where needed
-export const KNOWN_POWER_UP_IDS = [
-  'iron-will',
-  'x-ray-vision',
-  'lucky-start',
-  'sixth-sense',
-  'danger-sense',
-  'mine-detector',
-] as const;
+// Known power-up IDs - derived from POWER_UP_POOL in constants
+export const KNOWN_POWER_UP_IDS = ALL_POWER_UP_IDS;
 
 export const PowerUpIdSchema = z.enum(KNOWN_POWER_UP_IDS);
 
@@ -72,6 +66,7 @@ export const GamePhaseSchema = z.enum([
   'floor-clear',
   'draft',
   'exploding',
+  'iron-will-save',
   'run-over',
   'victory',
 ]);
@@ -87,9 +82,34 @@ export const RunStateSchema = z.object({
   ironWillAvailable: z.boolean(),
   xRayUsedThisFloor: z.boolean(),
   luckyStartUsedThisFloor: z.boolean(),
+  quickRecoveryUsedThisRun: z.boolean().default(false),
+  momentumActive: z.boolean().default(false),
+  peekUsedThisFloor: z.boolean().default(false),
+  safePathUsedThisFloor: z.boolean().default(false),
+  defusalKitUsedThisFloor: z.boolean().default(false),
+  surveyUsedThisFloor: z.boolean().default(false),
+  probabilityLensUsedThisFloor: z.boolean().default(false),
   seed: z.string(),
   ascensionLevel: AscensionLevelSchema.default(0),
 });
+
+// Survey result schema
+export const SurveyResultSchema = z
+  .object({
+    direction: z.enum(['row', 'col']),
+    index: z.number().int().min(0),
+    mineCount: z.number().int().min(0),
+  })
+  .nullable();
+
+// Peek cell schema (value can be number 0-8 or 'mine')
+export const PeekCellSchema = z
+  .object({
+    row: z.number().int().min(0),
+    col: z.number().int().min(0),
+    value: z.union([z.number().int().min(0).max(8), z.literal('mine')]),
+  })
+  .nullable();
 
 // Serialized game state (dangerCells as array)
 // Uses lenient schemas for forward compatibility with future power-ups
@@ -108,6 +128,10 @@ export const SerializedGameStateSchema = z.object({
   dangerCells: z.array(z.string()), // Serialized Set
   explodedCell: z.object({ row: z.number(), col: z.number() }).nullable(),
   closeCallCell: z.object({ row: z.number(), col: z.number() }).nullable(),
+  // Active relic visual state
+  surveyResult: SurveyResultSchema.default(null),
+  probabilityLensCells: z.array(z.string()).default([]), // Serialized Set
+  peekCell: PeekCellSchema.default(null),
 });
 
 // Stats schema
