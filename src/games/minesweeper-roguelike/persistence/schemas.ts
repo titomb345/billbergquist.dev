@@ -108,10 +108,9 @@ export const SerializedGameStateSchema = z.object({
   dangerCells: z.array(z.string()), // Serialized Set
   explodedCell: z.object({ row: z.number(), col: z.number() }).nullable(),
   closeCallCell: z.object({ row: z.number(), col: z.number() }).nullable(),
-  unlocks: z.array(LenientPowerUpIdSchema), // Accept unknown power-up IDs
 });
 
-// Stats schema - uses lenient power-up ID for forward compatibility
+// Stats schema
 export const SerializedStatsSchema = z.object({
   version: z.number().int().min(1),
   checksum: z.string(),
@@ -119,7 +118,6 @@ export const SerializedStatsSchema = z.object({
   bestFloor: z.number().int().min(0).max(10),
   bestScore: z.number().int().min(0),
   floorsCleared: z.number().int().min(0),
-  unlocks: z.array(LenientPowerUpIdSchema), // Accept unknown power-up IDs
   highestAscensionUnlocked: AscensionLevelSchema.default(0),
   highestAscensionCleared: AscensionLevelSchema.default(0),
 });

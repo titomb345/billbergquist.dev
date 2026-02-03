@@ -53,10 +53,10 @@ export function getFloorConfig(
 
 // Rarity weights for draft selection (must sum to 100)
 export const RARITY_WEIGHTS: Record<Rarity, number> = {
-  common: 50,
+  common: 55,
   uncommon: 30,
-  rare: 15,
-  epic: 5,
+  rare: 12,
+  epic: 3,
 };
 
 // Rarity display colors (for UI)
@@ -163,26 +163,18 @@ export const UNCOMMON_POWER_UPS: PowerUp[] = [
     rarity: 'uncommon',
   },
   {
-    id: 'mine-detector',
-    name: 'Mine Detector',
-    description: 'Hover shows mine count in 5×5 area',
-    icon: '📡',
-    type: 'passive',
-    rarity: 'uncommon',
-  },
-];
-
-// ==================== RARE RELICS ====================
-export const RARE_POWER_UPS: PowerUp[] = [
-  {
     id: 'peek',
     name: 'Peek',
     description: 'Once per floor, preview a cell (see mine or number) without revealing',
     icon: '👀',
     type: 'active',
-    rarity: 'rare',
+    rarity: 'uncommon',
     usesPerFloor: 1,
   },
+];
+
+// ==================== RARE RELICS ====================
+export const RARE_POWER_UPS: PowerUp[] = [
   {
     id: 'safe-path',
     name: 'Safe Path',
@@ -202,15 +194,6 @@ export const RARE_POWER_UPS: PowerUp[] = [
     usesPerFloor: 1,
   },
   {
-    id: 'x-ray-vision',
-    name: 'X-Ray Vision',
-    description: 'Once per floor, safely reveal 3×3 area (mines flagged, safe cells revealed)',
-    icon: '👁️',
-    type: 'active',
-    rarity: 'rare',
-    usesPerFloor: 1,
-  },
-  {
     id: 'sixth-sense',
     name: 'Sixth Sense',
     description: 'First click redirected to nearest 0-cell for max cascade',
@@ -218,19 +201,27 @@ export const RARE_POWER_UPS: PowerUp[] = [
     type: 'passive',
     rarity: 'rare',
   },
-];
-
-// ==================== EPIC RELICS ====================
-export const EPIC_POWER_UPS: PowerUp[] = [
+  {
+    id: 'mine-detector',
+    name: 'Mine Detector',
+    description: 'Hover shows mine count in 5×5 area',
+    icon: '📡',
+    type: 'passive',
+    rarity: 'rare',
+  },
   {
     id: 'probability-lens',
     name: 'Probability Lens',
     description: 'Once per floor, highlights the 3 safest unrevealed cells on the board',
     icon: '🔮',
     type: 'active',
-    rarity: 'epic',
+    rarity: 'rare',
     usesPerFloor: 1,
   },
+];
+
+// ==================== EPIC RELICS ====================
+export const EPIC_POWER_UPS: PowerUp[] = [
   {
     id: 'oracles-gift',
     name: "Oracle's Gift",
@@ -247,6 +238,15 @@ export const EPIC_POWER_UPS: PowerUp[] = [
     type: 'passive',
     rarity: 'epic',
   },
+  {
+    id: 'x-ray-vision',
+    name: 'X-Ray Vision',
+    description: 'Once per floor, safely reveal 3×3 area (mines flagged, safe cells revealed)',
+    icon: '👁️',
+    type: 'active',
+    rarity: 'epic',
+    usesPerFloor: 1,
+  },
 ];
 
 // Combined power-up pool (all relics)
@@ -257,11 +257,6 @@ export const POWER_UP_POOL: PowerUp[] = [
   ...EPIC_POWER_UPS,
 ];
 
-// Legacy constant for backwards compatibility (mine-detector was previously unlockable)
-export const MINE_DETECTOR_POWER_UP: PowerUp = UNCOMMON_POWER_UPS.find(
-  (p) => p.id === 'mine-detector'
-)!;
-
 // Scoring constants
 export const SCORING = {
   BASE_CELL_REVEAL: 10, // Points per cell revealed
@@ -271,31 +266,9 @@ export const SCORING = {
   TIME_BONUS_MULTIPLIER: 2, // Bonus multiplier for fast clears
 };
 
-// Look up a power-up by ID from all available powerups
+// Look up a power-up by ID
 export function getPowerUpById(id: PowerUpId): PowerUp | null {
-  // Check the main pool first
-  const fromPool = POWER_UP_POOL.find((p) => p.id === id);
-  if (fromPool) return fromPool;
-
-  // Check unlockable powerups
-  if (MINE_DETECTOR_POWER_UP.id === id) return MINE_DETECTOR_POWER_UP;
-
-  return null;
-}
-
-// Power-ups that require unlocking (not available by default)
-export const UNLOCKABLE_POWER_UPS: PowerUpId[] = ['mine-detector'];
-
-// Get available power-ups based on unlocks
-export function getAvailablePowerUps(unlocks: PowerUpId[]): PowerUp[] {
-  return POWER_UP_POOL.filter((p) => {
-    // If it's an unlockable power-up, check if it's unlocked
-    if (UNLOCKABLE_POWER_UPS.includes(p.id)) {
-      return unlocks.includes(p.id);
-    }
-    // Otherwise, always available
-    return true;
-  });
+  return POWER_UP_POOL.find((p) => p.id === id) ?? null;
 }
 
 // Select N random power-ups for draft using weighted rarity selection
@@ -337,4 +310,3 @@ export function selectDraftOptions(
 }
 
 export const MAX_FLOOR = 10;
-export const UNLOCK_FLOOR_5_REWARD: PowerUpId = 'mine-detector';

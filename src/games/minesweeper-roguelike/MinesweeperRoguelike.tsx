@@ -10,10 +10,8 @@ import RunOverScreen from './components/RunOverScreen';
 import ExplosionOverlay from './components/ExplosionOverlay';
 import FloorClearOverlay from './components/FloorClearOverlay';
 import CloseCallOverlay from './components/CloseCallOverlay';
-import UnlockSplashScreen from './components/UnlockSplashScreen';
 import { isFinalFloor, calculateMineCount5x5 } from './logic/roguelikeLogic';
-import { GamePhase, PowerUp } from './types';
-import { UNLOCK_FLOOR_5_REWARD, getPowerUpById } from './constants';
+import { GamePhase } from './types';
 import { AscensionLevel } from './ascension';
 import './styles.css';
 
@@ -43,7 +41,7 @@ function Minesweeper({ resetRef }: MinesweeperProps) {
     floorClearComplete,
     setChordHighlight,
     clearChordHighlight,
-  } = useRoguelikeState(isConstrained, stats.unlocks);
+  } = useRoguelikeState(isConstrained);
 
   const [xRayMode, setXRayMode] = useState(false);
   const [peekMode, setPeekMode] = useState(false);
@@ -51,8 +49,6 @@ function Minesweeper({ resetRef }: MinesweeperProps) {
   const [defusalKitMode, setDefusalKitMode] = useState(false);
   const [surveyMode, setSurveyMode] = useState(false);
   const [hoveredCell, setHoveredCell] = useState<{ row: number; col: number } | null>(null);
-  const [pendingUnlock, setPendingUnlock] = useState<PowerUp | null>(null);
-  const [unlockShownThisRun, setUnlockShownThisRun] = useState(false);
 
   // Expose reset function to parent via ref
   useEffect(() => {
@@ -67,7 +63,7 @@ function Minesweeper({ resetRef }: MinesweeperProps) {
   }, [resetRef, goToStart]);
 
   const handleStartRun = (ascensionLevel: AscensionLevel = 0) => {
-    startRun(stats.unlocks, ascensionLevel);
+    startRun(ascensionLevel);
   };
 
   // Mine Detector: calculate 5×5 mine count when hovering
@@ -175,48 +171,20 @@ function Minesweeper({ resetRef }: MinesweeperProps) {
     setSurveyMode(newMode);
   };
 
-  // Check for new unlock when game ends
   const isGameOver = state.phase === GamePhase.RunOver || state.phase === GamePhase.Victory;
-  const justUnlocked =
-    isGameOver &&
-    state.run.currentFloor >= 5 &&
-    !stats.unlocks.includes(UNLOCK_FLOOR_5_REWARD);
-
-  // Show unlock splash when unlock happens (only once per run)
-  useEffect(() => {
-    if (justUnlocked && !pendingUnlock && !unlockShownThisRun) {
-      const unlockedPowerUp = getPowerUpById(UNLOCK_FLOOR_5_REWARD);
-      if (unlockedPowerUp) {
-        setPendingUnlock(unlockedPowerUp);
-        setUnlockShownThisRun(true);
-      }
-    }
-  }, [justUnlocked, pendingUnlock, unlockShownThisRun]);
-
-  // Reset unlock tracking when starting a new run
-  useEffect(() => {
-    if (state.phase === GamePhase.Start || state.phase === GamePhase.Playing) {
-      setPendingUnlock(null);
-      setUnlockShownThisRun(false);
-    }
-  }, [state.phase]);
 
   // Record run on game over/victory
   const handleRunEnd = () => {
     const isVictory = state.phase === GamePhase.Victory;
     recordRun(state.run.currentFloor, state.run.score, state.run.ascensionLevel, isVictory);
-    startRun(stats.unlocks, 0); // Default to normal difficulty
+    startRun(0); // Default to normal difficulty
   };
 
   // Start a new run at a specific ascension level (for ascension unlock button)
   const handleStartAscension = (ascensionLevel: AscensionLevel) => {
     const isVictory = state.phase === GamePhase.Victory;
     recordRun(state.run.currentFloor, state.run.score, state.run.ascensionLevel, isVictory);
-    startRun(stats.unlocks, ascensionLevel);
-  };
-
-  const handleUnlockContinue = () => {
-    setPendingUnlock(null);
+    startRun(ascensionLevel);
   };
 
   return (
@@ -316,13 +284,8 @@ function Minesweeper({ resetRef }: MinesweeperProps) {
         />
       )}
 
-      {/* Unlock Splash Screen (shows before Run Over if player unlocked something) */}
-      {isGameOver && pendingUnlock && (
-        <UnlockSplashScreen powerUp={pendingUnlock} onContinue={handleUnlockContinue} />
-      )}
-
       {/* Run Over / Victory */}
-      {isGameOver && !pendingUnlock && (
+      {isGameOver && (
         <RunOverScreen
           isVictory={state.phase === GamePhase.Victory}
           floor={state.run.currentFloor}

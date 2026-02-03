@@ -144,7 +144,6 @@ export interface RoguelikeStats {
   bestFloor: number;
   bestScore: number;
   floorsCleared: number;
-  unlocks: PowerUpId[];
   highestAscensionUnlocked: import('./ascension').AscensionLevel; // 0-5, unlocks on victory
   highestAscensionCleared: import('./ascension').AscensionLevel; // 0-5, highest won
 }
@@ -165,7 +164,6 @@ export interface RoguelikeGameState {
   patternMemoryCells: Set<string>; // Cell keys "row,col" for Pattern Memory safe diagonal glow
   explodedCell: { row: number; col: number } | null; // Cell that triggered explosion
   closeCallCell: { row: number; col: number } | null; // Cell where Iron Will saved player
-  unlocks: PowerUpId[]; // Unlocked power-ups available in draft pool
   zeroCellCount: number | null; // Floor Scout: count of cells with 0 adjacent mines
   peekCell: { row: number; col: number; value: number | 'mine' } | null; // Peek preview
   heatMapEnabled: boolean; // Heat Map: tint revealed numbers by danger
@@ -177,7 +175,7 @@ export interface RoguelikeGameState {
 
 // Roguelike-specific actions
 export type RoguelikeAction =
-  | { type: 'START_RUN'; isMobile: boolean; unlocks: PowerUpId[]; ascensionLevel: import('./ascension').AscensionLevel }
+  | { type: 'START_RUN'; isMobile: boolean; ascensionLevel: import('./ascension').AscensionLevel }
   | { type: 'GO_TO_START' }
   | { type: 'REVEAL_CELL'; row: number; col: number }
   | { type: 'TOGGLE_FLAG'; row: number; col: number }

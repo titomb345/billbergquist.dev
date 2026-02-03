@@ -36,7 +36,6 @@ export function createInitialRunState(ascensionLevel: AscensionLevel = 0): RunSt
 // Create initial roguelike game state for a new run
 export function createRoguelikeInitialState(
   isMobile: boolean,
-  unlocks: PowerUpId[] = [],
   ascensionLevel: AscensionLevel = 0
 ): RoguelikeGameState {
   const floorConfig = getFloorConfig(1, isMobile, ascensionLevel);
@@ -55,7 +54,6 @@ export function createRoguelikeInitialState(
     patternMemoryCells: new Set(),
     explodedCell: null,
     closeCallCell: null,
-    unlocks,
     zeroCellCount: null,
     peekCell: null,
     surveyResult: null,
