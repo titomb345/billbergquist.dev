@@ -1,0 +1,456 @@
+/* Arcade Cabinet Frame */
+.cabinet {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: calc(100vh - 160px);
+  padding: var(--space-lg);
+}
+
+/* Marquee Header - backlit game title */
+.marquee {
+  position: relative;
+  width: 100%;
+  max-width: 720px;
+  padding: var(--space-lg) var(--space-xl);
+  background: linear-gradient(
+    180deg,
+    #1a1a2e 0%,
+    #0f0f14 100%
+  );
+  border: 4px solid #2a2a35;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  text-align: center;
+  overflow: hidden;
+}
+
+/* Backlit glow effect behind title */
+.marquee::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  height: 120%;
+  background: radial-gradient(
+    ellipse,
+    var(--marquee-glow, var(--neon-magenta-glow)) 0%,
+    transparent 70%
+  );
+  opacity: 0.6;
+  pointer-events: none;
+  animation: marquee-breathe 3s ease-in-out infinite;
+}
+
+.marqueeTitle {
+  position: relative;
+  font-family: var(--font-heading);
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 4px;
+  color: var(--marquee-color, var(--neon-magenta));
+  text-shadow:
+    0 0 10px var(--marquee-color, var(--neon-magenta)),
+    0 0 20px var(--marquee-color, var(--neon-magenta)),
+    0 0 40px var(--marquee-glow, var(--neon-magenta-glow));
+  margin: 0;
+}
+
+.freePlay {
+  position: relative;
+  margin-top: var(--space-sm);
+  font-family: var(--font-heading);
+  font-size: 0.75rem;
+  letter-spacing: 3px;
+  color: var(--neon-magenta);
+  text-shadow:
+    0 0 5px var(--neon-magenta),
+    0 0 10px var(--neon-magenta-glow);
+  animation: blink 3s ease-in-out infinite;
+}
+
+/* T-Molding Trim - colored accent line */
+.tMolding {
+  width: 100%;
+  max-width: 720px;
+  height: 6px;
+  background: var(--marquee-color, var(--neon-magenta));
+  box-shadow:
+    0 0 10px var(--marquee-color, var(--neon-magenta)),
+    0 0 20px var(--marquee-glow, var(--neon-magenta-glow));
+}
+
+/* CRT Screen Frame */
+.screenFrame {
+  position: relative;
+  width: 100%;
+  max-width: 720px;
+  background: linear-gradient(
+    145deg,
+    #2a2a35 0%,
+    #1a1a22 50%,
+    #0f0f14 100%
+  );
+  border: 4px solid #2a2a35;
+  border-top: none;
+  padding: var(--space-lg);
+  box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.3);
+}
+
+/* Speaker grilles on sides */
+.screenFrame::before,
+.screenFrame::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 120px;
+  background:
+    radial-gradient(circle, var(--bg-void) 2px, transparent 2px);
+  background-size: 8px 8px;
+  opacity: 0.5;
+}
+
+.screenFrame::before {
+  left: 8px;
+}
+
+.screenFrame::after {
+  right: 8px;
+}
+
+/* CRT Screen with curvature */
+.screen {
+  position: relative;
+  background: var(--bg-surface);
+  border-radius: 20px / 10px;
+  padding: var(--space-md);
+  box-shadow:
+    inset 0 0 100px rgba(0, 0, 0, 0.5),
+    0 0 15px var(--neon-glow, var(--neon-mint-glow));
+  overflow: hidden;
+}
+
+/* Screen glow */
+.screen::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 20px / 10px;
+  box-shadow:
+    inset 0 0 20px var(--neon-glow, rgba(0, 255, 0, 0.3)),
+    inset 0 0 50px rgba(0, 255, 0, 0.06);
+  pointer-events: none;
+}
+
+/* Scanline overlay */
+.scanlines {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.15) 0px,
+    rgba(0, 0, 0, 0.15) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+  border-radius: 20px / 10px;
+  pointer-events: none;
+  opacity: 0.4;
+}
+
+/* Moving scanline effect */
+.movingScanline {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: 20px / 10px;
+  pointer-events: none;
+}
+
+.movingScanline::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 10%;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(0, 255, 0, 0.04) 50%,
+    transparent 100%
+  );
+  animation: scanline 8s linear infinite;
+}
+
+/* Vignette effect */
+.vignette {
+  position: absolute;
+  inset: 0;
+  border-radius: 20px / 10px;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 50%,
+    rgba(0, 0, 0, 0.4) 100%
+  );
+  pointer-events: none;
+}
+
+/* Screen content container */
+.screenContent {
+  position: relative;
+  z-index: 1;
+}
+
+/* Control Panel */
+.controlPanel {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 720px;
+  background: linear-gradient(
+    180deg,
+    #1a1a22 0%,
+    #0f0f14 100%
+  );
+  border: 4px solid #2a2a35;
+  border-top: none;
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  padding: var(--space-md) var(--space-lg);
+  transform: perspective(500px) rotateX(15deg);
+  transform-origin: top center;
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* Back button - arcade style */
+.backButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  font-family: var(--font-heading);
+  font-size: 0.75rem;
+  letter-spacing: 2px;
+  color: var(--neon-purple);
+  background: transparent;
+  border: 2px solid var(--neon-purple);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition-fast);
+  box-shadow:
+    0 0 5px var(--neon-purple-glow),
+    inset 0 0 5px var(--neon-purple-glow);
+}
+
+.backButton:hover {
+  background: rgba(191, 0, 255, 0.1);
+  box-shadow:
+    0 0 10px var(--neon-purple),
+    0 0 20px var(--neon-purple-glow),
+    inset 0 0 10px var(--neon-purple-glow);
+}
+
+.backButton:active {
+  transform: scale(0.98);
+}
+
+.backButton svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Spaced control panel when both buttons present */
+.controlPanelSpaced {
+  justify-content: space-between;
+}
+
+/* Reset button - matches back button */
+.resetButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  font-family: var(--font-heading);
+  font-size: 0.75rem;
+  letter-spacing: 2px;
+  color: var(--neon-purple);
+  background: transparent;
+  border: 2px solid var(--neon-purple);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition-fast);
+  box-shadow:
+    0 0 5px var(--neon-purple-glow),
+    inset 0 0 5px var(--neon-purple-glow);
+}
+
+.resetButton:hover {
+  background: rgba(191, 0, 255, 0.1);
+  box-shadow:
+    0 0 10px var(--neon-purple),
+    0 0 20px var(--neon-purple-glow),
+    inset 0 0 10px var(--neon-purple-glow);
+}
+
+.resetButton:active {
+  transform: scale(0.98);
+}
+
+.resetButton svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Power LED indicator */
+.powerLed {
+  position: absolute;
+  bottom: 12px;
+  right: 20px;
+  width: 8px;
+  height: 8px;
+  background: #00ff00;
+  border-radius: 50%;
+  box-shadow:
+    0 0 5px #00ff00,
+    0 0 10px #00ff00;
+  animation: led-pulse 2s ease-in-out infinite;
+}
+
+@keyframes led-pulse {
+  0%, 100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Color variants */
+.colorMint {
+  --marquee-color: var(--neon-mint);
+  --marquee-glow: var(--neon-mint-glow);
+  --neon-glow: var(--neon-mint-glow);
+}
+
+.colorMagenta {
+  --marquee-color: var(--neon-magenta);
+  --marquee-glow: var(--neon-magenta-glow);
+  --neon-glow: rgba(0, 255, 0, 0.4);
+}
+
+.colorPurple {
+  --marquee-color: var(--neon-purple);
+  --marquee-glow: var(--neon-purple-glow);
+  --neon-glow: var(--neon-purple-glow);
+}
+
+.colorOrange {
+  --marquee-color: var(--neon-orange);
+  --marquee-glow: var(--neon-orange-glow);
+  --neon-glow: var(--neon-mint-glow);
+}
+
+/* Responsive breakpoints */
+@media (max-width: 640px) {
+  .cabinet {
+    padding: var(--space-md);
+  }
+
+  .marquee {
+    padding: var(--space-md) var(--space-lg);
+  }
+
+  .marqueeTitle {
+    font-size: 1.5rem;
+    letter-spacing: 2px;
+  }
+
+  .freePlay {
+    font-size: 0.625rem;
+    letter-spacing: 2px;
+  }
+
+  .screenFrame {
+    padding: var(--space-md);
+  }
+
+  .screenFrame::before,
+  .screenFrame::after {
+    display: none;
+  }
+
+  .controlPanel {
+    padding: var(--space-sm) var(--space-md);
+    transform: perspective(500px) rotateX(10deg);
+  }
+
+  .backButton,
+  .resetButton {
+    font-size: 0.625rem;
+    padding: var(--space-xs) var(--space-sm);
+  }
+}
+
+@media (max-width: 480px) {
+  .marqueeTitle {
+    font-size: 1.25rem;
+  }
+
+  .screen {
+    padding: var(--space-sm);
+    border-radius: 12px / 6px;
+  }
+
+  .screen::before,
+  .scanlines,
+  .movingScanline,
+  .vignette {
+    border-radius: 12px / 6px;
+  }
+}
+
+/* Local keyframes for CSS modules */
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes scanline {
+  0% {
+    top: -10%;
+  }
+  100% {
+    top: 100%;
+  }
+}
+
+@keyframes marquee-breathe {
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .marquee::before,
+  .freePlay,
+  .movingScanline::before,
+  .powerLed,
+  .screenFrame {
+    animation: none;
+  }
+}

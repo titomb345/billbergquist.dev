@@ -1,0 +1,248 @@
+.section {
+  padding: var(--space-lg) 0;
+}
+
+.sectionTitle {
+  margin-bottom: var(--space-lg);
+}
+
+.timeline {
+  position: relative;
+  padding-left: var(--space-lg);
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(
+    180deg,
+    var(--neon-magenta) 0%,
+    var(--neon-purple) 50%,
+    var(--bg-elevated) 100%
+  );
+  box-shadow: 0 0 10px var(--neon-magenta-glow);
+}
+
+.item {
+  position: relative;
+  padding-bottom: var(--space-lg);
+}
+
+.item:last-child {
+  padding-bottom: 0;
+}
+
+.marker {
+  position: absolute;
+  left: calc(-1 * var(--space-lg) - 5px);
+  top: 4px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--neon-magenta);
+  box-shadow: 0 0 10px var(--neon-magenta-glow);
+}
+
+.featured .marker {
+  background: var(--neon-orange);
+  box-shadow: 0 0 15px var(--neon-orange-glow);
+  width: 14px;
+  height: 14px;
+  left: calc(-1 * var(--space-lg) - 6px);
+}
+
+.content {
+  background: var(--bg-surface);
+  border: 1px solid var(--bg-elevated);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+}
+
+.featured .content {
+  border-color: rgba(255, 106, 0, 0.3);
+  box-shadow: 0 0 20px rgba(255, 106, 0, 0.1);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-md);
+  margin-bottom: var(--space-xs);
+}
+
+.company {
+  font-family: var(--font-heading);
+  font-size: 1.125rem;
+  color: var(--neon-mint);
+  margin: 0;
+}
+
+.featured .company {
+  color: var(--neon-orange);
+  text-shadow: 0 0 10px var(--neon-orange-glow);
+}
+
+.period {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.title {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--text-primary);
+  margin: 0 0 var(--space-sm);
+}
+
+.description {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Promotion track styles */
+.promotionTrack {
+  margin-top: var(--space-md);
+}
+
+.role {
+  display: flex;
+  gap: var(--space-md);
+  position: relative;
+}
+
+.role:not(:last-child) {
+  padding-bottom: var(--space-md);
+}
+
+.roleMarker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+  width: 16px;
+}
+
+.roleMarkerDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--bg-elevated);
+  border: 2px solid var(--text-muted);
+  flex-shrink: 0;
+}
+
+.currentRole .roleMarkerDot {
+  background: var(--neon-orange);
+  border-color: var(--neon-orange);
+  box-shadow: 0 0 10px var(--neon-orange-glow);
+}
+
+.roleMarkerLine {
+  width: 2px;
+  flex-grow: 1;
+  background: linear-gradient(
+    180deg,
+    var(--text-muted) 0%,
+    var(--bg-elevated) 100%
+  );
+  margin-top: 4px;
+}
+
+.currentRole .roleMarkerLine {
+  background: linear-gradient(
+    180deg,
+    var(--neon-orange) 0%,
+    var(--text-muted) 100%
+  );
+}
+
+.roleContent {
+  flex-grow: 1;
+  min-width: 0;
+}
+
+.roleHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-xs);
+  flex-wrap: wrap;
+}
+
+.roleTitle {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.currentRole .roleTitle {
+  color: var(--neon-orange);
+}
+
+.rolePeriod {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.roleDescription {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0 0 var(--space-sm);
+}
+
+.highlights {
+  list-style: none;
+  padding: 0;
+  margin: var(--space-sm) 0 0 0;
+}
+
+.highlight {
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  padding-left: var(--space-md);
+  position: relative;
+  margin-bottom: var(--space-xs);
+}
+
+.highlight::before {
+  content: '▸';
+  position: absolute;
+  left: 0;
+  color: var(--neon-orange);
+}
+
+.highlight:last-child {
+  margin-bottom: 0;
+}
+
+@media (max-width: 640px) {
+  .header,
+  .roleHeader {
+    flex-direction: column;
+    gap: var(--space-xs);
+  }
+
+  .period,
+  .rolePeriod {
+    order: -1;
+  }
+
+  .highlight {
+    font-size: 0.75rem;
+  }
+}

@@ -10,13 +10,13 @@ body {
 
 /* Selection styling */
 ::selection {
-  background-color: var(--neon-cyan);
+  background-color: var(--neon-mint);
   color: var(--bg-void);
 }
 
 /* Focus styling for accessibility */
 :focus-visible {
-  outline: 2px solid var(--neon-cyan);
+  outline: 2px solid var(--neon-mint);
   outline-offset: 2px;
 }
 
@@ -36,16 +36,16 @@ body {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--neon-cyan-glow);
+  background: var(--neon-mint-glow);
 }
 
 /* Utility classes */
-.neon-text-cyan {
-  color: var(--neon-cyan);
+.neon-text-mint {
+  color: var(--neon-mint);
   text-shadow:
-    0 0 5px var(--neon-cyan),
-    0 0 10px var(--neon-cyan),
-    0 0 20px var(--neon-cyan-glow);
+    0 0 5px var(--neon-mint),
+    0 0 10px var(--neon-mint),
+    0 0 20px var(--neon-mint-glow);
 }
 
 .neon-text-magenta {
@@ -64,11 +64,45 @@ body {
     0 0 20px var(--neon-purple-glow);
 }
 
+.neon-text-orange {
+  color: var(--neon-orange);
+  text-shadow:
+    0 0 5px var(--neon-orange),
+    0 0 10px var(--neon-orange),
+    0 0 20px var(--neon-orange-glow);
+}
+
+/* Reusable orange accent line */
+.accent-line-orange {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 150px;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--neon-orange),
+    transparent
+  );
+  box-shadow: 0 0 15px var(--neon-orange-glow);
+  z-index: 2;
+}
+
+/* Blinking cursor effect */
+.blinking-cursor {
+  color: var(--neon-orange);
+  font-weight: 700;
+  animation: blink 1s ease-in-out infinite;
+}
+
 /* Mobile performance: reduce glow effects */
 @media (max-width: 640px) {
-  .neon-text-cyan,
+  .neon-text-mint,
   .neon-text-magenta,
-  .neon-text-purple {
+  .neon-text-purple,
+  .neon-text-orange {
     text-shadow:
       0 0 5px currentColor,
       0 0 10px currentColor;
@@ -77,9 +111,10 @@ body {
 
 /* Reduce effects for low-powered devices */
 @media (prefers-reduced-motion: reduce) {
-  .neon-text-cyan,
+  .neon-text-mint,
   .neon-text-magenta,
-  .neon-text-purple {
+  .neon-text-purple,
+  .neon-text-orange {
     text-shadow: 0 0 5px currentColor;
   }
 }

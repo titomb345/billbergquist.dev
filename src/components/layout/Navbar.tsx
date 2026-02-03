@@ -11,8 +11,11 @@ function Navbar() {
         <Link to="/" className={styles.navLink}>
           Home
         </Link>
-        <Link to="/minesweeper" className={styles.navLink}>
-          Games
+        <Link to="/about" className={styles.navLink}>
+          About
+        </Link>
+        <Link to="/arcade" className={styles.navLink}>
+          Arcade
         </Link>
       </nav>
     </header>

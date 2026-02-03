@@ -6,14 +6,16 @@
   --bg-elevated: #1a1a2e;
 
   /* Neon accents */
-  --neon-cyan: #00f5ff;
+  --neon-mint: #00d4aa;
   --neon-magenta: #ff00ff;
   --neon-purple: #bf00ff;
+  --neon-orange: #ff6a00;
 
   /* Neon glow variants (for shadows) */
-  --neon-cyan-glow: rgba(0, 245, 255, 0.5);
+  --neon-mint-glow: rgba(0, 212, 170, 0.5);
   --neon-magenta-glow: rgba(255, 0, 255, 0.5);
   --neon-purple-glow: rgba(191, 0, 255, 0.5);
+  --neon-orange-glow: rgba(255, 106, 0, 0.5);
 
   /* Text */
   --text-primary: #ffffff;

@@ -40,20 +40,20 @@
 /* Primary variant - Cyan */
 .primary {
   background-color: transparent;
-  border-color: var(--neon-cyan);
-  color: var(--neon-cyan);
+  border-color: var(--neon-mint);
+  color: var(--neon-mint);
   box-shadow:
-    0 0 5px var(--neon-cyan-glow),
-    inset 0 0 5px var(--neon-cyan-glow);
+    0 0 5px var(--neon-mint-glow),
+    inset 0 0 5px var(--neon-mint-glow);
 }
 
 .primary:hover {
-  background-color: var(--neon-cyan);
+  background-color: var(--neon-mint);
   color: var(--bg-void);
   box-shadow:
-    0 0 10px var(--neon-cyan),
-    0 0 20px var(--neon-cyan-glow),
-    0 0 30px var(--neon-cyan-glow);
+    0 0 10px var(--neon-mint),
+    0 0 20px var(--neon-mint-glow),
+    0 0 30px var(--neon-mint-glow);
 }
 
 /* Secondary variant - Magenta */
@@ -75,6 +75,25 @@
     0 0 30px var(--neon-magenta-glow);
 }
 
+/* Accent variant - Orange */
+.accent {
+  background-color: transparent;
+  border-color: var(--neon-orange);
+  color: var(--neon-orange);
+  box-shadow:
+    0 0 5px var(--neon-orange-glow),
+    inset 0 0 5px var(--neon-orange-glow);
+}
+
+.accent:hover {
+  background-color: var(--neon-orange);
+  color: var(--bg-void);
+  box-shadow:
+    0 0 10px var(--neon-orange),
+    0 0 20px var(--neon-orange-glow),
+    0 0 30px var(--neon-orange-glow);
+}
+
 /* Ghost variant */
 .ghost {
   background-color: transparent;
@@ -83,9 +102,9 @@
 }
 
 .ghost:hover {
-  border-color: var(--neon-cyan);
-  color: var(--neon-cyan);
-  box-shadow: 0 0 5px var(--neon-cyan-glow);
+  border-color: var(--neon-mint);
+  color: var(--neon-mint);
+  box-shadow: 0 0 5px var(--neon-mint-glow);
 }
 
 /* Sizes */

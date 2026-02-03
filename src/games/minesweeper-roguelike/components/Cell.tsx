@@ -1,0 +1,307 @@
+import { memo } from 'react';
+import { Cell as CellType, CellState } from '../types';
+import { MineIcon, FlagIcon } from './icons';
+
+interface CellProps {
+  cell: CellType;
+  onReveal: (row: number, col: number) => void;
+  onFlag: (row: number, col: number) => void;
+  onChord: (row: number, col: number) => void;
+  gameOver: boolean;
+  hasDanger?: boolean; // For Danger Sense power-up
+  hasPatternMemory?: boolean; // For Pattern Memory power-up (safe diagonal glow)
+  heatMapEnabled?: boolean; // For Heat Map power-up
+  xRayMode?: boolean; // For X-Ray Vision targeting
+  peekMode?: boolean; // For Peek targeting
+  safePathMode?: boolean; // For Safe Path targeting
+  defusalKitMode?: boolean; // For Defusal Kit targeting
+  surveyMode?: boolean; // For Survey targeting
+  peekValue?: number | 'mine' | null; // The peeked value to display
+  onXRay?: (row: number, col: number) => void;
+  onPeek?: (row: number, col: number) => void;
+  onSafePath?: (row: number, col: number) => void;
+  onDefusalKit?: (row: number, col: number) => void;
+  onSurvey?: (row: number, col: number) => void;
+  onHover?: (row: number, col: number) => void; // For Mine Detector
+  onHoverEnd?: () => void; // For Mine Detector
+  inDetectorZone?: boolean; // For Mine Detector visual overlay
+  isChordHighlighted?: boolean; // For chord highlight preview
+  onChordHighlightStart?: (row: number, col: number) => void;
+  onChordHighlightEnd?: () => void;
+  isFaded?: boolean; // A4: Amnesia - number has faded
+}
+
+function CellComponent({
+  cell,
+  onReveal,
+  onFlag,
+  onChord,
+  gameOver,
+  hasDanger = false,
+  hasPatternMemory = false,
+  heatMapEnabled = false,
+  xRayMode = false,
+  peekMode = false,
+  safePathMode = false,
+  defusalKitMode = false,
+  surveyMode = false,
+  peekValue = null,
+  onXRay,
+  onPeek,
+  onSafePath,
+  onDefusalKit,
+  onSurvey,
+  onHover,
+  onHoverEnd,
+  inDetectorZone = false,
+  isChordHighlighted = false,
+  onChordHighlightStart,
+  onChordHighlightEnd,
+  isFaded = false,
+}: CellProps) {
+  const handleClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (gameOver) return;
+
+    // X-Ray mode takes precedence
+    if (xRayMode && onXRay) {
+      onXRay(cell.row, cell.col);
+      return;
+    }
+
+    // Peek mode
+    if (peekMode && onPeek && cell.state === CellState.Hidden) {
+      onPeek(cell.row, cell.col);
+      return;
+    }
+
+    // Safe Path mode - works on hidden cells
+    if (safePathMode && onSafePath && cell.state === CellState.Hidden) {
+      onSafePath(cell.row, cell.col);
+      return;
+    }
+
+    // Defusal Kit mode - works on flagged cells
+    if (defusalKitMode && onDefusalKit && cell.state === CellState.Flagged) {
+      onDefusalKit(cell.row, cell.col);
+      return;
+    }
+
+    // Survey mode - works on hidden cells
+    if (surveyMode && onSurvey && cell.state === CellState.Hidden) {
+      onSurvey(cell.row, cell.col);
+      return;
+    }
+
+    if (cell.state === CellState.Revealed && cell.adjacentMines > 0) {
+      onChord(cell.row, cell.col);
+    } else if (cell.state === CellState.Hidden) {
+      onReveal(cell.row, cell.col);
+    }
+  };
+
+  const handleContextMenu = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (gameOver) return;
+    onFlag(cell.row, cell.col);
+  };
+
+
+  const getClassName = () => {
+    const classes = ['cell'];
+
+    if (cell.state === CellState.Hidden) {
+      classes.push('cell-hidden');
+      if (hasDanger) {
+        classes.push('cell-danger');
+      }
+      if (hasPatternMemory) {
+        classes.push('cell-pattern-memory');
+      }
+      if (xRayMode) {
+        classes.push('cell-xray-target');
+      }
+      if (peekMode) {
+        classes.push('cell-peek-target');
+      }
+      if (safePathMode) {
+        classes.push('cell-safe-path-target');
+      }
+      if (surveyMode) {
+        classes.push('cell-survey-target');
+      }
+      if (peekValue !== null) {
+        classes.push('cell-peeked');
+      }
+      if (inDetectorZone) {
+        classes.push('cell-detector-zone');
+      }
+      if (isChordHighlighted) {
+        classes.push('cell-chord-highlight');
+      }
+    } else if (cell.state === CellState.Flagged) {
+      classes.push('cell-flagged');
+      if (defusalKitMode) {
+        classes.push('cell-defusal-target');
+      }
+      if (inDetectorZone) {
+        classes.push('cell-detector-zone');
+      }
+      if (isChordHighlighted) {
+        classes.push('cell-chord-highlight');
+      }
+    } else if (cell.state === CellState.Revealed) {
+      classes.push('cell-revealed');
+      if (cell.isMine) {
+        classes.push('cell-mine');
+      } else if (cell.adjacentMines > 0) {
+        classes.push(`cell-${cell.adjacentMines}`);
+        // A4: Faded cell styling
+        if (isFaded) {
+          classes.push('cell-faded');
+        }
+        // Add heat map class if enabled (but not for faded cells)
+        if (heatMapEnabled && !isFaded) {
+          if (cell.adjacentMines <= 2) {
+            classes.push('cell-heat-low');
+          } else if (cell.adjacentMines <= 4) {
+            classes.push('cell-heat-medium');
+          } else {
+            classes.push('cell-heat-high');
+          }
+        }
+      }
+    }
+
+    return classes.join(' ');
+  };
+
+  const getContent = () => {
+    // Show peek value if this cell is being peeked
+    if (peekValue !== null && cell.state === CellState.Hidden) {
+      if (peekValue === 'mine') {
+        return <MineIcon />;
+      }
+      if (peekValue > 0) {
+        return <span className={`peek-number cell-${peekValue}`}>{peekValue}</span>;
+      }
+      return <span className="peek-number">0</span>;
+    }
+
+    if (cell.state === CellState.Flagged) {
+      return <FlagIcon />;
+    }
+    if (cell.state === CellState.Revealed) {
+      if (cell.isMine) {
+        return <MineIcon />;
+      }
+      if (cell.adjacentMines > 0) {
+        // A4: Show "?" for faded cells
+        if (isFaded) {
+          return <span className="faded-number">?</span>;
+        }
+        return cell.adjacentMines;
+      }
+    }
+    return null;
+  };
+
+  const handleMouseEnter = (e: React.MouseEvent) => {
+    if (onHover && cell.state === CellState.Hidden) {
+      onHover(cell.row, cell.col);
+    }
+
+    // If mouse button is held and entering a revealed numbered cell, show chord highlight
+    if (e.buttons > 0 && !gameOver) {
+      if (
+        onChordHighlightStart &&
+        cell.state === CellState.Revealed &&
+        cell.adjacentMines > 0
+      ) {
+        onChordHighlightStart(cell.row, cell.col);
+      } else if (onChordHighlightEnd) {
+        // Clear highlight when moving to a non-chordable cell while button held
+        onChordHighlightEnd();
+      }
+    }
+  };
+
+  const handleMouseLeave = () => {
+    if (onHoverEnd) {
+      onHoverEnd();
+    }
+    if (onChordHighlightEnd) {
+      onChordHighlightEnd();
+    }
+  };
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    // Handle middle-click for chord
+    if (e.button === 1) {
+      e.preventDefault();
+      if (gameOver) return;
+      if (cell.state === CellState.Revealed && cell.adjacentMines > 0) {
+        onChord(cell.row, cell.col);
+      }
+      return;
+    }
+
+    // Show chord highlight on mousedown for revealed numbered cells
+    if (
+      onChordHighlightStart &&
+      cell.state === CellState.Revealed &&
+      cell.adjacentMines > 0 &&
+      !gameOver
+    ) {
+      onChordHighlightStart(cell.row, cell.col);
+    }
+  };
+
+  const handleMouseUp = () => {
+    if (onChordHighlightEnd) {
+      onChordHighlightEnd();
+    }
+  };
+
+  return (
+    <div
+      className={getClassName()}
+      onClick={handleClick}
+      onContextMenu={handleContextMenu}
+      onMouseDown={handleMouseDown}
+      onMouseUp={handleMouseUp}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
+      {getContent()}
+    </div>
+  );
+}
+
+// Memoize Cell to prevent re-renders when props haven't changed
+// On a 12x12 board, this prevents 144 unnecessary re-renders per state change
+// Note: Callback props (onReveal, onFlag, onChord, onXRay, onHover, onHoverEnd,
+// onChordHighlightStart, onChordHighlightEnd) are assumed stable via useCallback
+// in parent - not compared here for performance
+const Cell = memo(CellComponent, (prev, next) => {
+  return (
+    prev.cell.state === next.cell.state &&
+    prev.cell.adjacentMines === next.cell.adjacentMines &&
+    prev.cell.isMine === next.cell.isMine &&
+    prev.gameOver === next.gameOver &&
+    prev.hasDanger === next.hasDanger &&
+    prev.hasPatternMemory === next.hasPatternMemory &&
+    prev.heatMapEnabled === next.heatMapEnabled &&
+    prev.xRayMode === next.xRayMode &&
+    prev.peekMode === next.peekMode &&
+    prev.safePathMode === next.safePathMode &&
+    prev.defusalKitMode === next.defusalKitMode &&
+    prev.surveyMode === next.surveyMode &&
+    prev.peekValue === next.peekValue &&
+    prev.inDetectorZone === next.inDetectorZone &&
+    prev.isChordHighlighted === next.isChordHighlighted &&
+    prev.isFaded === next.isFaded
+  );
+});
+
+export default Cell;

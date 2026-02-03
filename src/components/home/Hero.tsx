@@ -1,4 +1,3 @@
-import GlowText from '../ui/GlowText';
 import Button from '../ui/Button';
 import styles from './Hero.module.css';
 
@@ -19,25 +18,27 @@ function Hero({ onEnterArcade }: HeroProps) {
   return (
     <section className={styles.hero}>
       <div className={styles.content}>
-        <GlowText
-          size="xlarge"
-          color="cyan"
-          animated
-          className={styles.title}
-        >
-          BILL BERGQUIST
-        </GlowText>
-        <p className={styles.subtitle}>
-          <span className={styles.subtitleBracket}>&lt;</span>
-          {' Arcade Hub '}
-          <span className={styles.subtitleBracket}>/&gt;</span>
+        <p className={styles.greeting}>
+          <span className={styles.hello}>Hello</span>, I'm
+        </p>
+        <h1 className={styles.name}>
+          <span className={styles.firstName}>Bill</span>
+          <span className={styles.lastName}>Bergquist</span>
+        </h1>
+        <div className={styles.role}>
+          <span className={styles.roleText}>Staff Software Engineer</span>
+          <span className="blinking-cursor">_</span>
+        </div>
+        <p className={styles.tagline}>
+          Building elegant solutions with modern web technologies
         </p>
         <div className={styles.cta}>
-          <Button variant="primary" size="large" onClick={handleClick}>
-            Enter Arcade
+          <Button variant="accent" size="large" onClick={handleClick}>
+            View My Work
           </Button>
         </div>
       </div>
+      <div className="accent-line-orange" />
     </section>
   );
 }

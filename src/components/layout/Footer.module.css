@@ -19,7 +19,7 @@
 }
 
 .socialLink:hover {
-  color: var(--neon-cyan);
+  color: var(--neon-mint);
 }
 
 .socialLink svg {
@@ -29,7 +29,7 @@
 }
 
 .socialLink:hover svg {
-  filter: drop-shadow(0 0 5px var(--neon-cyan));
+  filter: drop-shadow(0 0 5px var(--neon-mint));
 }
 
 .divider {
