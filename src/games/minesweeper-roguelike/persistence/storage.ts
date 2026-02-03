@@ -21,7 +21,7 @@ import { createRoguelikeInitialState, createInitialRunState } from '../logic/rog
 import { getPowerUpById } from '../constants';
 
 const GAME_STATE_KEY = 'minesweeper-descent-save';
-const STATS_KEY = 'minesweeper-roguelike-stats';
+const STATS_KEY = 'minesweeper-descent-stats';
 
 // Simple checksum using string hashing
 function computeChecksum(data: object): string {
@@ -68,6 +68,8 @@ function toGamePhase(phase: string): GamePhase {
       return GamePhase.Draft;
     case 'exploding':
       return GamePhase.Exploding;
+    case 'iron-will-save':
+      return GamePhase.IronWillSave;
     case 'run-over':
       return GamePhase.RunOver;
     case 'victory':
@@ -105,6 +107,10 @@ export function saveGameState(state: RoguelikeGameState): void {
       dangerCells: Array.from(state.dangerCells),
       explodedCell: state.explodedCell,
       closeCallCell: state.closeCallCell,
+      // Active relic visual state
+      surveyResult: state.surveyResult,
+      probabilityLensCells: Array.from(state.probabilityLensCells),
+      peekCell: state.peekCell,
     };
 
     const checksum = computeChecksum(serializable);
@@ -120,16 +126,23 @@ export function saveGameState(state: RoguelikeGameState): void {
   }
 }
 
-// TEMPORARY: Set to false to restore normal behavior
-const SKIP_LOAD_FOR_TESTING = true;
-
 export function loadGameState(): RoguelikeGameState | null {
-  if (SKIP_LOAD_FOR_TESTING) return null;
   try {
     const saved = localStorage.getItem(GAME_STATE_KEY);
     if (!saved) return null;
 
     const parsed = JSON.parse(saved);
+
+    // Verify checksum on raw parsed data BEFORE any transformations
+    // (migrations and Zod can both add/modify fields)
+    if (
+      typeof parsed.checksum === 'string' &&
+      !verifyChecksum(parsed as Record<string, unknown>, parsed.checksum)
+    ) {
+      console.warn('Game state checksum mismatch - data may be corrupted');
+      clearGameState();
+      return null;
+    }
 
     // Handle legacy saves without version (treat as version 0)
     const version = parsed.version ?? 0;
@@ -149,13 +162,6 @@ export function loadGameState(): RoguelikeGameState | null {
     }
 
     const validated = result.data;
-
-    // Verify checksum
-    if (!verifyChecksum(validated as Record<string, unknown>, validated.checksum)) {
-      console.warn('Game state checksum mismatch - data may be corrupted');
-      clearGameState();
-      return null;
-    }
 
     // Only restore active game phases
     if (
@@ -221,6 +227,13 @@ export function loadGameState(): RoguelikeGameState | null {
       ironWillAvailable: validated.run.ironWillAvailable,
       xRayUsedThisFloor: validated.run.xRayUsedThisFloor,
       luckyStartUsedThisFloor: validated.run.luckyStartUsedThisFloor,
+      quickRecoveryUsedThisRun: validated.run.quickRecoveryUsedThisRun,
+      momentumActive: validated.run.momentumActive,
+      peekUsedThisFloor: validated.run.peekUsedThisFloor,
+      safePathUsedThisFloor: validated.run.safePathUsedThisFloor,
+      defusalKitUsedThisFloor: validated.run.defusalKitUsedThisFloor,
+      surveyUsedThisFloor: validated.run.surveyUsedThisFloor,
+      probabilityLensUsedThisFloor: validated.run.probabilityLensUsedThisFloor,
       seed: validated.run.seed,
       ascensionLevel: (validated.run.ascensionLevel ?? 0) as RunState['ascensionLevel'],
     };
@@ -254,6 +267,10 @@ export function loadGameState(): RoguelikeGameState | null {
       dangerCells: new Set(validated.dangerCells),
       explodedCell: validated.explodedCell,
       closeCallCell: validated.closeCallCell,
+      // Active relic visual state
+      surveyResult: validated.surveyResult,
+      probabilityLensCells: new Set(validated.probabilityLensCells),
+      peekCell: validated.peekCell,
     };
   } catch (e) {
     console.warn('Failed to load game state:', e);
