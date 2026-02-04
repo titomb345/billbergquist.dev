@@ -203,7 +203,7 @@ function Minesweeper({ resetRef }: MinesweeperProps) {
   const handleRunEnd = () => {
     const isVictory = state.phase === GamePhase.Victory;
     recordRun(state.run.currentFloor, state.run.score, state.run.ascensionLevel, isVictory);
-    startRun(0); // Default to normal difficulty
+    startRun(state.run.ascensionLevel); // Preserve current ascension level
   };
 
   // Start a new run at a specific ascension level (for ascension unlock button)

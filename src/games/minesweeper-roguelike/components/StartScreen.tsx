@@ -37,22 +37,21 @@ function StartScreen({ stats, onStartRun }: StartScreenProps) {
       {stats.highestAscensionUnlocked > 0 && (
         <div className="ascension-selector">
           <div className="ascension-buttons">
-            {availableAscensions.map((level) => (
-              <button
-                key={level}
-                className={`ascension-button ${selectedAscension === level ? 'selected' : ''} ${level > 0 ? 'ascension-active' : ''}`}
-                onClick={() => setSelectedAscension(level)}
-              >
-                {level === 0 ? 'Normal' : `A${level}`}
-              </button>
-            ))}
+            {availableAscensions.map((level) => {
+              const isSelected = selectedAscension === level;
+              const isIncluded = level > 0 && level < selectedAscension;
+              return (
+                <button
+                  key={level}
+                  className={`ascension-button ${isSelected ? 'selected' : ''} ${isIncluded ? 'included' : ''} ${level > 0 ? 'ascension-active' : ''}`}
+                  onClick={() => setSelectedAscension(level)}
+                >
+                  {level === 0 ? 'Normal' : `A${level}`}
+                </button>
+              );
+            })}
           </div>
           <p className="ascension-description">{ASCENSION_INFO[selectedAscension].description}</p>
-          {selectedAscension > 0 && (
-            <p className="ascension-cumulative">
-              Includes: {Array.from({ length: selectedAscension }, (_, i) => `A${i + 1}`).join(' + ')}
-            </p>
-          )}
         </div>
       )}
 
