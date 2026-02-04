@@ -8,9 +8,10 @@ const PARTICLE_DATA = Array.from({ length: 8 }, (_, i) => ({
 
 interface IronWillSaveOverlayProps {
   onComplete: () => void;
+  traumaStacks: number; // Current trauma (after this trigger)
 }
 
-function IronWillSaveOverlay({ onComplete }: IronWillSaveOverlayProps) {
+function IronWillSaveOverlay({ onComplete, traumaStacks }: IronWillSaveOverlayProps) {
   const [phase, setPhase] = useState<'explosion' | 'shield'>('explosion');
 
   useEffect(() => {
@@ -68,6 +69,10 @@ function IronWillSaveOverlay({ onComplete }: IronWillSaveOverlayProps) {
 
             {/* Iron Will text */}
             <div className="iron-will-text">IRON WILL!</div>
+            <div className="iron-will-trauma-text">
+              Mines grow denser (+5%)
+              {traumaStacks > 1 && <span className="iron-will-trauma-total"> | Total: +{traumaStacks * 5}%</span>}
+            </div>
           </div>
         )}
       </div>

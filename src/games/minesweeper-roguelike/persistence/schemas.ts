@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { ALL_POWER_UP_IDS } from '../constants';
 
-export const GAME_STATE_VERSION = 3;
+export const GAME_STATE_VERSION = 4;
 export const STATS_VERSION = 3;
 
 // Cell schema
@@ -79,7 +79,8 @@ export const RunStateSchema = z.object({
   currentFloor: z.number().int().min(1).max(10),
   score: z.number().int().min(0),
   activePowerUps: z.array(LenientPowerUpSchema),
-  ironWillAvailable: z.boolean(),
+  ironWillUsedThisFloor: z.boolean().default(false),
+  traumaStacks: z.number().int().min(0).default(0),
   xRayUsedThisFloor: z.boolean(),
   luckyStartUsedThisFloor: z.boolean(),
   quickRecoveryUsedThisRun: z.boolean().default(false),

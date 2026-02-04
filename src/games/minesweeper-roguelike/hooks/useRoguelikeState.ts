@@ -77,7 +77,8 @@ function applyIronWillProtection(
   saved: boolean;
   savedCell: { row: number; col: number } | null;
 } {
-  if (hasPowerUp(run, 'iron-will') && run.ironWillAvailable) {
+  // Check per-floor usage instead of run-wide availability
+  if (hasPowerUp(run, 'iron-will') && !run.ironWillUsedThisFloor) {
     let newBoard: Cell[][];
     if (chordCenter) {
       // For chord hits, flag only revealed mines in the chord area (3x3 around chord center)
@@ -108,7 +109,11 @@ function applyIronWillProtection(
     }
     return {
       board: newBoard,
-      run: { ...run, ironWillAvailable: false },
+      run: {
+        ...run,
+        ironWillUsedThisFloor: true,
+        traumaStacks: run.traumaStacks + 1,
+      },
       saved: true,
       savedCell: { row: mineRow, col: mineCol },
     };
@@ -529,10 +534,10 @@ function roguelikeReducer(
       const hasOraclesGift = newPowerUps.some((p) => p.id === 'oracles-gift');
       const modifiers = getAscensionModifiers(state.run.ascensionLevel);
 
-      // Set up next floor (with Oracle's Gift density bonus if applicable)
+      // Set up next floor (with Oracle's Gift density bonus and trauma stacks if applicable)
       const nextFloor = state.run.currentFloor + 1;
       const extraDensity = hasOraclesGift ? ORACLES_GIFT_MINE_DENSITY_BONUS : 0;
-      const floorConfig = getFloorConfig(nextFloor, state.isMobile, state.run.ascensionLevel, extraDensity);
+      const floorConfig = getFloorConfig(nextFloor, state.isMobile, state.run.ascensionLevel, extraDensity, state.run.traumaStacks);
       const newBoard = createEmptyBoard(floorConfig);
 
       // A2: Initialize countdown timer if applicable
@@ -550,6 +555,7 @@ function roguelikeReducer(
           ...state.run,
           activePowerUps: newPowerUps,
           currentFloor: nextFloor,
+          ironWillUsedThisFloor: false, // Reset shield for new floor
           xRayUsedThisFloor: false,
           luckyStartUsedThisFloor: false,
           momentumActive: false,
@@ -578,10 +584,10 @@ function roguelikeReducer(
       const modifiers = getAscensionModifiers(state.run.ascensionLevel);
       const hasOraclesGiftSkip = hasPowerUp(state.run, 'oracles-gift');
 
-      // Set up next floor with bonus points (with Oracle's Gift density bonus if applicable)
+      // Set up next floor with bonus points (with Oracle's Gift density bonus and trauma stacks if applicable)
       const nextFloor = state.run.currentFloor + 1;
       const extraDensitySkip = hasOraclesGiftSkip ? ORACLES_GIFT_MINE_DENSITY_BONUS : 0;
-      const floorConfig = getFloorConfig(nextFloor, state.isMobile, state.run.ascensionLevel, extraDensitySkip);
+      const floorConfig = getFloorConfig(nextFloor, state.isMobile, state.run.ascensionLevel, extraDensitySkip, state.run.traumaStacks);
       const newBoard = createEmptyBoard(floorConfig);
 
       // A2: Initialize countdown timer if applicable
@@ -599,6 +605,7 @@ function roguelikeReducer(
           ...state.run,
           currentFloor: nextFloor,
           score: state.run.score + action.bonusPoints,
+          ironWillUsedThisFloor: false, // Reset shield for new floor
           xRayUsedThisFloor: false,
           luckyStartUsedThisFloor: false,
           momentumActive: false,
@@ -754,7 +761,11 @@ function roguelikeReducer(
         run: newRun,
         phase: newPhase,
         draftOptions: newDraftOptions,
-        minesRemaining: state.floorConfig.mines - countFlags(newBoard) - 1, // One less mine now
+        floorConfig: {
+          ...state.floorConfig,
+          mines: state.floorConfig.mines - 1,
+        },
+        minesRemaining: state.floorConfig.mines - 1 - countFlags(newBoard),
       };
     }
 
@@ -768,11 +779,11 @@ function roguelikeReducer(
         state.cellsRevealedThisFloor < 10;
 
       if (canUseQuickRecovery) {
-        // Restart the current floor (with Oracle's Gift density bonus if applicable)
+        // Restart the current floor (with Oracle's Gift density bonus and trauma stacks if applicable)
         const modifiers = getAscensionModifiers(state.run.ascensionLevel);
         const hasOraclesGiftRecovery = hasPowerUp(state.run, 'oracles-gift');
         const extraDensityRecovery = hasOraclesGiftRecovery ? ORACLES_GIFT_MINE_DENSITY_BONUS : 0;
-        const floorConfig = getFloorConfig(state.run.currentFloor, state.isMobile, state.run.ascensionLevel, extraDensityRecovery);
+        const floorConfig = getFloorConfig(state.run.currentFloor, state.isMobile, state.run.ascensionLevel, extraDensityRecovery, state.run.traumaStacks);
         const newBoard = createEmptyBoard(floorConfig);
 
         // A2: Reset countdown timer if applicable
@@ -796,6 +807,7 @@ function roguelikeReducer(
           run: {
             ...state.run,
             quickRecoveryUsedThisRun: true,
+            ironWillUsedThisFloor: false, // Reset shield for floor restart
             xRayUsedThisFloor: false,
             luckyStartUsedThisFloor: false,
             momentumActive: false,

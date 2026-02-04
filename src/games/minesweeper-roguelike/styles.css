@@ -764,6 +764,12 @@
   font-size: 0.75rem;
   color: var(--text-secondary);
   line-height: 1.5;
+  white-space: pre-line;
+}
+
+.powerup-tooltip-trauma {
+  color: var(--neon-red);
+  font-weight: bold;
 }
 
 .powerup-tooltip-status {
@@ -2649,6 +2655,42 @@
       0 0 60px var(--neon-mint),
       0 0 80px var(--neon-mint),
       2px 2px 0 rgba(0, 0, 0, 0.8);
+  }
+}
+
+/* Trauma text - appears below IRON WILL */
+.iron-will-trauma-text {
+  font-family: var(--font-heading);
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: var(--neon-red);
+  text-shadow:
+    0 0 8px var(--neon-red),
+    0 0 16px rgba(255, 50, 50, 0.5),
+    1px 1px 0 rgba(0, 0, 0, 0.8);
+  letter-spacing: 0.1em;
+  margin-top: 0.5rem;
+  animation: ironWillTraumaFadeIn 0.5s ease-out 0.8s forwards;
+  opacity: 0;
+  z-index: 1;
+}
+
+.iron-will-trauma-total {
+  color: var(--neon-amber);
+  text-shadow:
+    0 0 8px var(--neon-amber),
+    0 0 16px rgba(255, 180, 50, 0.5),
+    1px 1px 0 rgba(0, 0, 0, 0.8);
+}
+
+@keyframes ironWillTraumaFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 

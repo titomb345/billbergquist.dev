@@ -53,6 +53,24 @@ export const gameStateMigrations: Record<number, MigrationFn> = {
     const { unlocks: _, ...rest } = s;
     return rest;
   },
+  // v3 → v4: Iron Will rework - convert ironWillAvailable to ironWillUsedThisFloor + traumaStacks
+  3: (state: unknown) => {
+    const s = state as Record<string, unknown>;
+    const run = (s.run ?? {}) as Record<string, unknown>;
+    // Map ironWillAvailable: true → ironWillUsedThisFloor: false (shield available)
+    // Map ironWillAvailable: false → ironWillUsedThisFloor: true (shield used)
+    const ironWillAvailable = run.ironWillAvailable ?? true;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { ironWillAvailable: _, ...restRun } = run;
+    return {
+      ...s,
+      run: {
+        ...restRun,
+        ironWillUsedThisFloor: !ironWillAvailable,
+        traumaStacks: 0, // Old saves start with 0 trauma
+      },
+    };
+  },
 };
 
 // Stats migrations

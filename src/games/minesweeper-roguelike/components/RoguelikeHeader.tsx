@@ -171,7 +171,14 @@ function RoguelikeHeader({
               </span>
               {hoveredPowerUp.isUsed && <span className="powerup-tooltip-status">USED</span>}
             </div>
-            <span className="powerup-tooltip-desc">{hoveredPowerUp.powerUp.description}</span>
+            <span className="powerup-tooltip-desc">
+              {hoveredPowerUp.powerUp.description}
+              {hoveredPowerUp.powerUp.id === 'iron-will' && run.traumaStacks > 0 && (
+                <span className="powerup-tooltip-trauma">
+                  {'\n\n'}Trauma: {run.traumaStacks} stack{run.traumaStacks > 1 ? 's' : ''} (+{run.traumaStacks * 5}% mines)
+                </span>
+              )}
+            </span>
             <span
               className="powerup-tooltip-arrow"
               style={{ left: `calc(50% + ${hoveredPowerUp.arrowOffset}px)` }}
@@ -193,7 +200,8 @@ function RoguelikeHeader({
           const isSurveyUsed = isSurvey && run.surveyUsedThisFloor;
           const isProbabilityLens = powerUp.id === 'probability-lens';
           const isProbabilityLensUsed = isProbabilityLens && run.probabilityLensUsedThisFloor;
-          const isIronWillUsed = !run.ironWillAvailable && powerUp.id === 'iron-will';
+          // Check per-floor usage instead of run-wide availability
+          const isIronWillUsed = run.ironWillUsedThisFloor && powerUp.id === 'iron-will';
           const isQuickRecoveryUsed =
             powerUp.id === 'quick-recovery' && run.quickRecoveryUsedThisRun;
           const isUsed =
