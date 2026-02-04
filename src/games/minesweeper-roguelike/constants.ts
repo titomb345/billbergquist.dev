@@ -33,15 +33,17 @@ export function getFloorConfig(
   floor: number,
   isMobile: boolean,
   ascensionLevel: AscensionLevel = 0,
-  extraMineDensityBonus: number = 0 // Additional mine density modifier (e.g., 0.15 for Oracle's Gift)
+  extraMineDensityBonus: number = 0, // Additional mine density modifier (e.g., 0.15 for Oracle's Gift)
+  traumaStacks: number = 0 // Iron Will trauma stacks (+5% per stack)
 ): FloorConfig {
   const configs = isMobile ? MOBILE_FLOOR_CONFIGS : FLOOR_CONFIGS;
   const index = Math.min(floor - 1, configs.length - 1);
   const baseConfig = configs[index];
 
-  // Calculate total mine density bonus
+  // Calculate total mine density bonus (additive)
   const modifiers = getAscensionModifiers(ascensionLevel);
-  const totalDensityBonus = modifiers.mineDensityBonus + extraMineDensityBonus;
+  const traumaBonus = traumaStacks * 0.05; // +5% per trauma stack
+  const totalDensityBonus = modifiers.mineDensityBonus + extraMineDensityBonus + traumaBonus;
 
   if (totalDensityBonus > 0) {
     const bonusMines = Math.floor(baseConfig.mines * totalDensityBonus);
@@ -56,10 +58,10 @@ export function getFloorConfig(
 
 // Rarity weights for draft selection (must sum to 100)
 export const RARITY_WEIGHTS: Record<Rarity, number> = {
-  common: 50,
+  common: 60,
   uncommon: 30,
-  rare: 15,
-  epic: 5,
+  rare: 8,
+  epic: 2,
 };
 
 // Rarity display colors (for UI)
@@ -251,7 +253,7 @@ export const EPIC_POWER_UPS: PowerUp[] = [
   {
     id: 'iron-will',
     name: 'Iron Will',
-    description: 'Survive one mine click per run (mine becomes flagged instead)',
+    description: 'Survive one mine click per floor. Each trigger permanently increases mine density by 5%.',
     icon: '🛡️',
     type: 'passive',
     rarity: 'epic',

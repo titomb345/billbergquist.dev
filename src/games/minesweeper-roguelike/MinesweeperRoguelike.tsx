@@ -304,7 +304,7 @@ function Minesweeper({ resetRef }: MinesweeperProps) {
 
       {/* Iron Will Save Animation */}
       {state.phase === GamePhase.IronWillSave && (
-        <IronWillSaveOverlay onComplete={ironWillComplete} />
+        <IronWillSaveOverlay onComplete={ironWillComplete} traumaStacks={state.run.traumaStacks} />
       )}
 
       {/* Explosion Animation */}

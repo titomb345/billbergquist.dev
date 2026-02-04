@@ -26,7 +26,8 @@ export function createInitialRunState(ascensionLevel: AscensionLevel = 0): RunSt
     currentFloor: 1,
     score: 0,
     activePowerUps: hasAllPowerupsParam() ? [...POWER_UP_POOL] : [],
-    ironWillAvailable: true,
+    ironWillUsedThisFloor: false,
+    traumaStacks: 0,
     xRayUsedThisFloor: false,
     luckyStartUsedThisFloor: false,
     quickRecoveryUsedThisRun: false,
@@ -49,7 +50,7 @@ export function createRoguelikeInitialState(
   // Check for Oracle's Gift in debug mode (allpowerups param)
   const hasOraclesGift = hasAllPowerupsParam();
   const extraDensity = hasOraclesGift ? ORACLES_GIFT_MINE_DENSITY_BONUS : 0;
-  const floorConfig = getFloorConfig(1, isMobile, ascensionLevel, extraDensity);
+  const floorConfig = getFloorConfig(1, isMobile, ascensionLevel, extraDensity, 0); // 0 trauma at start
   return {
     phase: GamePhase.Start,
     board: createEmptyBoard(floorConfig),
@@ -83,7 +84,7 @@ export function setupFloor(state: RoguelikeGameState, floor: number): RoguelikeG
   // Apply Oracle's Gift mine density bonus if player has it
   const hasOraclesGift = hasPowerUp(state.run, 'oracles-gift');
   const extraDensity = hasOraclesGift ? ORACLES_GIFT_MINE_DENSITY_BONUS : 0;
-  const floorConfig = getFloorConfig(floor, state.isMobile, state.run.ascensionLevel, extraDensity);
+  const floorConfig = getFloorConfig(floor, state.isMobile, state.run.ascensionLevel, extraDensity, state.run.traumaStacks);
   const board = createEmptyBoard(floorConfig);
 
   // Check if player has Heat Map power-up
@@ -117,6 +118,7 @@ export function setupFloor(state: RoguelikeGameState, floor: number): RoguelikeG
     run: {
       ...state.run,
       currentFloor: floor,
+      ironWillUsedThisFloor: false, // Reset shield for new floor
       xRayUsedThisFloor: false,
       luckyStartUsedThisFloor: false,
       momentumActive: false,

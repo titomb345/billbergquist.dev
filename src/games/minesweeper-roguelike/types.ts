@@ -127,7 +127,8 @@ export interface RunState {
   currentFloor: number;
   score: number;
   activePowerUps: PowerUp[];
-  ironWillAvailable: boolean;
+  ironWillUsedThisFloor: boolean; // Per-floor shield (true = already used this floor)
+  traumaStacks: number; // Cumulative trauma from Iron Will triggers (+5% mine density each)
   xRayUsedThisFloor: boolean;
   luckyStartUsedThisFloor: boolean;
   quickRecoveryUsedThisRun: boolean; // Quick Recovery: one restart per run
