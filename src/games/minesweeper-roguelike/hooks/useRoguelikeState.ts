@@ -42,6 +42,7 @@ import {
   calculateSafestCells,
   calculateOracleGiftCells,
   calculateMineCount4x4,
+  getUnrevealedZeroCellCount,
 } from '../logic/roguelikeLogic';
 import {
   getFloorConfig,
@@ -195,6 +196,7 @@ function roguelikeReducer(state: RoguelikeGameState, action: RoguelikeAction): R
       let newDangerCells = state.dangerCells;
       let newZeroCellCount: number | null = state.zeroCellCount;
       let newCellsRevealedThisFloor = state.cellsRevealedThisFloor;
+      let sixthSenseTriggered = false;
 
       // Handle first click - place mines after
       if (state.isFirstClick) {
@@ -213,12 +215,7 @@ function roguelikeReducer(state: RoguelikeGameState, action: RoguelikeAction): R
           newBoard = placeMines(createEmptyBoard(config), config, row, col);
         }
 
-        // Apply Sixth Sense on first click
-        if (hasPowerUp(state.run, 'sixth-sense')) {
-          newBoard = applySixthSense(newBoard, row, col);
-        } else {
-          newBoard = revealCell(newBoard, row, col);
-        }
+        newBoard = revealCell(newBoard, row, col);
 
         // Apply Lucky Start after mines are placed (if not used yet this floor)
         if (hasPowerUp(state.run, 'lucky-start') && !state.run.luckyStartUsedThisFloor) {
@@ -249,9 +246,26 @@ function roguelikeReducer(state: RoguelikeGameState, action: RoguelikeAction): R
         // Normal reveal
         const prevRevealed = countRevealedCells(state.board);
 
-        // If momentum is active and this cell is a mine, protect the player
+        // Sixth Sense interception: armed + non-zero cell + unrevealed 0-cells exist
         const targetCell = state.board[row][col];
-        if (state.run.momentumActive && targetCell.isMine) {
+        const sixthSenseActive =
+          hasPowerUp(state.run, 'sixth-sense') &&
+          state.run.sixthSenseArmed &&
+          state.run.sixthSenseChargesRemaining > 0;
+
+        if (
+          sixthSenseActive &&
+          !targetCell.isMine &&
+          targetCell.adjacentMines > 0 &&
+          getUnrevealedZeroCellCount(state.board) > 0
+        ) {
+          // Redirect to nearest 0-cell for cascade, then reveal original cell
+          newBoard = applySixthSense(state.board, row, col);
+          newRun.sixthSenseChargesRemaining = state.run.sixthSenseChargesRemaining - 1;
+          newRun.sixthSenseArmed = false;
+          sixthSenseTriggered = true;
+        } else if (state.run.momentumActive && targetCell.isMine) {
+          // If momentum is active and this cell is a mine, protect the player
           // Momentum saves from mine - flag it instead of revealing
           newBoard = state.board.map((r) =>
             r.map((c) => (c.row === row && c.col === col ? { ...c, state: CellState.Flagged } : c))
@@ -359,6 +373,7 @@ function roguelikeReducer(state: RoguelikeGameState, action: RoguelikeAction): R
         cellRevealTimes: newCellRevealTimes,
         patternMemoryCells: newPatternMemoryCells,
         oracleGiftCells: newOracleGiftCells,
+        sixthSenseTriggered,
       };
     }
 
@@ -573,6 +588,8 @@ function roguelikeReducer(state: RoguelikeGameState, action: RoguelikeAction): R
           surveyUsedThisFloor: false,
           probabilityLensUsedThisFloor: false,
           mineDetectorScansRemaining: 3,
+          sixthSenseChargesRemaining: 1,
+          sixthSenseArmed: false,
         },
         draftOptions: [],
         dangerCells: new Set(),
@@ -586,6 +603,7 @@ function roguelikeReducer(state: RoguelikeGameState, action: RoguelikeAction): R
         oracleGiftCells: new Set(),
         mineDetectorScannedCells: new Set(),
         mineDetectorResult: null,
+        sixthSenseTriggered: false,
       };
     }
 
@@ -632,6 +650,8 @@ function roguelikeReducer(state: RoguelikeGameState, action: RoguelikeAction): R
           surveyUsedThisFloor: false,
           probabilityLensUsedThisFloor: false,
           mineDetectorScansRemaining: 3,
+          sixthSenseChargesRemaining: 1,
+          sixthSenseArmed: false,
         },
         draftOptions: [],
         dangerCells: new Set(),
@@ -645,6 +665,7 @@ function roguelikeReducer(state: RoguelikeGameState, action: RoguelikeAction): R
         oracleGiftCells: new Set(),
         mineDetectorScannedCells: new Set(),
         mineDetectorResult: null,
+        sixthSenseTriggered: false,
       };
     }
 
@@ -834,6 +855,7 @@ function roguelikeReducer(state: RoguelikeGameState, action: RoguelikeAction): R
           oracleGiftCells: new Set(),
           mineDetectorScannedCells: new Set(),
           mineDetectorResult: null,
+          sixthSenseTriggered: false,
           run: {
             ...state.run,
             quickRecoveryUsedThisRun: true,
@@ -847,6 +869,8 @@ function roguelikeReducer(state: RoguelikeGameState, action: RoguelikeAction): R
             surveyUsedThisFloor: false,
             probabilityLensUsedThisFloor: false,
             mineDetectorScansRemaining: 3,
+            sixthSenseChargesRemaining: 1,
+            sixthSenseArmed: false,
           },
         };
       }
@@ -1006,6 +1030,22 @@ function roguelikeReducer(state: RoguelikeGameState, action: RoguelikeAction): R
       };
     }
 
+    case 'TOGGLE_SIXTH_SENSE_ARM': {
+      if (state.phase !== GamePhase.Playing) return state;
+      if (!hasPowerUp(state.run, 'sixth-sense')) return state;
+      if (state.run.sixthSenseChargesRemaining <= 0) return state;
+      if (state.isFirstClick) return state;
+      return {
+        ...state,
+        run: { ...state.run, sixthSenseArmed: !state.run.sixthSenseArmed },
+      };
+    }
+
+    case 'CLEAR_SIXTH_SENSE_TRIGGERED': {
+      if (!state.sixthSenseTriggered) return state;
+      return { ...state, sixthSenseTriggered: false };
+    }
+
     default:
       return state;
   }
@@ -1150,6 +1190,10 @@ export function useRoguelikeState(isMobile: boolean = false) {
     dispatch({ type: 'USE_MINE_DETECTOR', row, col });
   }, []);
 
+  const toggleSixthSenseArm = useCallback(() => {
+    dispatch({ type: 'TOGGLE_SIXTH_SENSE_ARM' });
+  }, []);
+
   // Auto-clear peek after a short delay
   useEffect(() => {
     if (!state.peekCell) return;
@@ -1172,6 +1216,17 @@ export function useRoguelikeState(isMobile: boolean = false) {
     return () => clearTimeout(timeout);
   }, [state.mineDetectorResult]);
 
+  // Auto-clear sixth sense triggered toast after 2 seconds
+  useEffect(() => {
+    if (!state.sixthSenseTriggered) return;
+
+    const timeout = setTimeout(() => {
+      dispatch({ type: 'CLEAR_SIXTH_SENSE_TRIGGERED' });
+    }, 2000);
+
+    return () => clearTimeout(timeout);
+  }, [state.sixthSenseTriggered]);
+
   // Note: Probability Lens highlights persist until floor end (no auto-clear timer)
   // This gives players time to act on the strategic guidance
 
@@ -1190,6 +1245,7 @@ export function useRoguelikeState(isMobile: boolean = false) {
     useSurvey,
     useProbabilityLens,
     useMineDetector,
+    toggleSixthSenseArm,
     selectPowerUp,
     skipDraft,
     explosionComplete,

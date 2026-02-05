@@ -44,6 +44,8 @@ export function createInitialRunState(ascensionLevel: AscensionLevel = 0): RunSt
     surveyUsedThisFloor: false,
     probabilityLensUsedThisFloor: false,
     mineDetectorScansRemaining: 3,
+    sixthSenseChargesRemaining: 1,
+    sixthSenseArmed: false,
     seed: generateRunSeed(),
     ascensionLevel,
   };
@@ -84,6 +86,7 @@ export function createRoguelikeInitialState(
     oracleGiftCells: new Set(),
     mineDetectorScannedCells: new Set(),
     mineDetectorResult: null,
+    sixthSenseTriggered: false,
   };
 }
 
@@ -132,6 +135,7 @@ export function setupFloor(state: RoguelikeGameState, floor: number): RoguelikeG
     oracleGiftCells: new Set(),
     mineDetectorScannedCells: new Set(),
     mineDetectorResult: null,
+    sixthSenseTriggered: false,
     run: {
       ...state.run,
       currentFloor: floor,
@@ -145,6 +149,8 @@ export function setupFloor(state: RoguelikeGameState, floor: number): RoguelikeG
       surveyUsedThisFloor: false,
       probabilityLensUsedThisFloor: false,
       mineDetectorScansRemaining: 3,
+      sixthSenseChargesRemaining: 1,
+      sixthSenseArmed: false,
     },
   };
 }
@@ -277,6 +283,19 @@ export function applySixthSense(board: Cell[][], clickRow: number, clickCol: num
 
   // Fallback: just reveal the clicked cell normally
   return revealCell(board, clickRow, clickCol);
+}
+
+// Count unrevealed 0-cells on the board (for Sixth Sense availability check)
+export function getUnrevealedZeroCellCount(board: Cell[][]): number {
+  let count = 0;
+  for (const row of board) {
+    for (const cell of row) {
+      if (!cell.isMine && cell.adjacentMines === 0 && cell.state === CellState.Hidden) {
+        count++;
+      }
+    }
+  }
+  return count;
 }
 
 // Apply X-Ray Vision: safely reveal 3x3 area

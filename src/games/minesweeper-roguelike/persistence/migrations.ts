@@ -83,6 +83,20 @@ export const gameStateMigrations: Record<number, MigrationFn> = {
       },
     };
   },
+  // v5 → v6: Sixth Sense rework - add charge/arm/triggered fields
+  5: (state: unknown) => {
+    const s = state as Record<string, unknown>;
+    const run = (s.run ?? {}) as Record<string, unknown>;
+    return {
+      ...s,
+      sixthSenseTriggered: false,
+      run: {
+        ...run,
+        sixthSenseChargesRemaining: 1,
+        sixthSenseArmed: false,
+      },
+    };
+  },
 };
 
 // Stats migrations
