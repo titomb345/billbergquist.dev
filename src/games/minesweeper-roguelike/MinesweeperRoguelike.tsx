@@ -203,6 +203,7 @@ function Minesweeper({ resetRef }: MinesweeperProps) {
   };
 
   const handleMineDetectorClick = (row: number, col: number) => {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     useMineDetector(row, col);
     setMineDetectorMode(false);
   };

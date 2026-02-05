@@ -49,7 +49,6 @@ export const gameStateMigrations: Record<number, MigrationFn> = {
   // v2 → v3: Remove unlocks (all powerups now always available)
   2: (state: unknown) => {
     const s = state as Record<string, unknown>;
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { unlocks: _, ...rest } = s;
     return rest;
   },
@@ -60,7 +59,6 @@ export const gameStateMigrations: Record<number, MigrationFn> = {
     // Map ironWillAvailable: true → ironWillUsedThisFloor: false (shield available)
     // Map ironWillAvailable: false → ironWillUsedThisFloor: true (shield used)
     const ironWillAvailable = run.ironWillAvailable ?? true;
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { ironWillAvailable: _, ...restRun } = run;
     return {
       ...s,
@@ -111,7 +109,6 @@ export const statsMigrations: Record<number, MigrationFn> = {
   // v2 → v3: Remove unlocks (all powerups now always available)
   2: (state: unknown) => {
     const s = state as Record<string, unknown>;
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { unlocks: _, ...rest } = s;
     return rest;
   },
