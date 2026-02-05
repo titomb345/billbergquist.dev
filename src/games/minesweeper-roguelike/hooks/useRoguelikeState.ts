@@ -41,6 +41,7 @@ import {
   calculatePatternMemoryCell,
   calculateSafestCells,
   calculateOracleGiftCells,
+  calculateMineCount4x4,
 } from '../logic/roguelikeLogic';
 import { getFloorConfig, selectDraftOptions, getAvailablePowerUps, ORACLES_GIFT_MINE_DENSITY_BONUS } from '../constants';
 import { saveGameState, loadGameState, clearGameState } from '../persistence';
@@ -564,6 +565,7 @@ function roguelikeReducer(
           defusalKitUsedThisFloor: false,
           surveyUsedThisFloor: false,
           probabilityLensUsedThisFloor: false,
+          mineDetectorScansRemaining: 3,
         },
         draftOptions: [],
         dangerCells: new Set(),
@@ -575,6 +577,8 @@ function roguelikeReducer(
         cellsRevealedThisFloor: 0,
         probabilityLensCells: new Set(),
         oracleGiftCells: new Set(),
+        mineDetectorScannedCells: new Set(),
+        mineDetectorResult: null,
       };
     }
 
@@ -614,6 +618,7 @@ function roguelikeReducer(
           defusalKitUsedThisFloor: false,
           surveyUsedThisFloor: false,
           probabilityLensUsedThisFloor: false,
+          mineDetectorScansRemaining: 3,
         },
         draftOptions: [],
         dangerCells: new Set(),
@@ -625,6 +630,8 @@ function roguelikeReducer(
         cellsRevealedThisFloor: 0,
         probabilityLensCells: new Set(),
         oracleGiftCells: new Set(),
+        mineDetectorScannedCells: new Set(),
+        mineDetectorResult: null,
       };
     }
 
@@ -804,6 +811,8 @@ function roguelikeReducer(
           cellsRevealedThisFloor: 0,
           probabilityLensCells: new Set(),
           oracleGiftCells: new Set(),
+          mineDetectorScannedCells: new Set(),
+          mineDetectorResult: null,
           run: {
             ...state.run,
             quickRecoveryUsedThisRun: true,
@@ -816,6 +825,7 @@ function roguelikeReducer(
             defusalKitUsedThisFloor: false,
             surveyUsedThisFloor: false,
             probabilityLensUsedThisFloor: false,
+            mineDetectorScansRemaining: 3,
           },
         };
       }
@@ -938,6 +948,44 @@ function roguelikeReducer(
       return {
         ...state,
         probabilityLensCells: new Set(),
+      };
+    }
+
+    case 'USE_MINE_DETECTOR': {
+      if (state.phase !== GamePhase.Playing) return state;
+      if (!hasPowerUp(state.run, 'mine-detector')) return state;
+      if (state.run.mineDetectorScansRemaining <= 0) return state;
+      if (state.isFirstClick) return state;
+
+      const { row, col } = action;
+      const cell = state.board[row][col];
+      if (cell.state !== CellState.Hidden) return state;
+
+      // No-repeat rule: if cell already scanned, do nothing
+      const cellKey = `${row},${col}`;
+      if (state.mineDetectorScannedCells.has(cellKey)) return state;
+
+      const count = calculateMineCount4x4(state.board, row, col);
+      const newScannedCells = new Set(state.mineDetectorScannedCells);
+      newScannedCells.add(cellKey);
+
+      return {
+        ...state,
+        mineDetectorScannedCells: newScannedCells,
+        mineDetectorResult: { row, col, count },
+        run: {
+          ...state.run,
+          mineDetectorScansRemaining: state.run.mineDetectorScansRemaining - 1,
+          momentumActive: false, // Using ability clears momentum
+        },
+      };
+    }
+
+    case 'CLEAR_MINE_DETECTOR_RESULT': {
+      if (!state.mineDetectorResult) return state;
+      return {
+        ...state,
+        mineDetectorResult: null,
       };
     }
 
@@ -1081,6 +1129,10 @@ export function useRoguelikeState(isMobile: boolean = false) {
     dispatch({ type: 'USE_PROBABILITY_LENS' });
   }, []);
 
+  const useMineDetector = useCallback((row: number, col: number) => {
+    dispatch({ type: 'USE_MINE_DETECTOR', row, col });
+  }, []);
+
   // Auto-clear peek after a short delay
   useEffect(() => {
     if (!state.peekCell) return;
@@ -1091,6 +1143,17 @@ export function useRoguelikeState(isMobile: boolean = false) {
 
     return () => clearTimeout(timeout);
   }, [state.peekCell]);
+
+  // Auto-clear mine detector result after 3 seconds
+  useEffect(() => {
+    if (!state.mineDetectorResult) return;
+
+    const timeout = setTimeout(() => {
+      dispatch({ type: 'CLEAR_MINE_DETECTOR_RESULT' });
+    }, 3000);
+
+    return () => clearTimeout(timeout);
+  }, [state.mineDetectorResult]);
 
   // Note: Probability Lens highlights persist until floor end (no auto-clear timer)
   // This gives players time to act on the strategic guidance
@@ -1109,6 +1172,7 @@ export function useRoguelikeState(isMobile: boolean = false) {
     useDefusalKit,
     useSurvey,
     useProbabilityLens,
+    useMineDetector,
     selectPowerUp,
     skipDraft,
     explosionComplete,

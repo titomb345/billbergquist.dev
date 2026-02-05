@@ -168,18 +168,20 @@ export const UNCOMMON_POWER_UPS: PowerUp[] = [
     type: 'passive',
     rarity: 'uncommon',
   },
-  {
-    id: 'mine-detector',
-    name: 'Mine Detector',
-    description: 'Hover shows mine count in 5×5 area',
-    icon: '📡',
-    type: 'passive',
-    rarity: 'uncommon',
-  },
 ];
 
 // ==================== RARE RELICS ====================
 export const RARE_POWER_UPS: PowerUp[] = [
+  {
+    id: 'mine-detector',
+    name: 'Mine Detector',
+    description: 'Scan a 4×4 region to learn how many mines it contains. 3 scans per floor. Each cell can only be scanned once per floor.',
+    icon: '📡',
+    type: 'active',
+    rarity: 'rare',
+    usesPerFloor: 3,
+    activeHint: 'Click a cell to scan for nearby mines',
+  },
   {
     id: 'peek',
     name: 'Peek',

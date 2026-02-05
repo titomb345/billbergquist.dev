@@ -602,6 +602,7 @@
 .powerup-icon-wrapper.safe-path.safe-path-active .powerup-icon-emoji,
 .powerup-icon-wrapper.defusal-kit.defusal-kit-active .powerup-icon-emoji,
 .powerup-icon-wrapper.survey.survey-active .powerup-icon-emoji,
+.powerup-icon-wrapper.mine-detector.mine-detector-active .powerup-icon-emoji,
 .powerup-icon-wrapper.probability-lens.probability-lens-active .powerup-icon-emoji {
   animation: none;
   transform: scale(1.3);
@@ -627,6 +628,10 @@
   filter: drop-shadow(0 0 10px var(--neon-yellow)) drop-shadow(0 0 20px var(--neon-yellow-glow));
 }
 
+.powerup-icon-wrapper.mine-detector.mine-detector-active .powerup-icon-emoji {
+  filter: drop-shadow(0 0 10px #00f5ff) drop-shadow(0 0 20px rgba(0, 245, 255, 0.5));
+}
+
 .powerup-icon-wrapper.probability-lens.probability-lens-active .powerup-icon-emoji {
   filter: drop-shadow(0 0 10px var(--neon-purple)) drop-shadow(0 0 20px var(--neon-purple-glow));
 }
@@ -643,6 +648,13 @@
   border-color: var(--neon-yellow) !important;
   background: rgba(245, 158, 11, 0.1) !important;
   color: var(--neon-yellow) !important;
+}
+
+/* Mine Detector hint styling */
+.mine-detector-hint {
+  border-color: #00f5ff !important;
+  background: rgba(0, 245, 255, 0.1) !important;
+  color: #00f5ff !important;
 }
 
 /* Survey badge styling - yellow variant in top right, above red X */
@@ -1028,6 +1040,82 @@
   background: var(--neon-1);
   box-shadow: 0 0 5px var(--neon-1);
   pointer-events: none;
+}
+
+/* Mine Detector scan mode - target cursor on hidden cells */
+.cell-detector-target {
+  cursor: crosshair;
+  border-color: #00f5ff !important;
+  box-shadow: inset 0 0 10px rgba(0, 245, 255, 0.3) !important;
+}
+
+/* Mine Detector - already scanned cell indicator (shown only during scan mode) */
+.cell-detector-already-scanned {
+  position: relative;
+  cursor: not-allowed;
+  opacity: 0.5;
+  border-color: rgba(0, 245, 255, 0.3) !important;
+}
+
+.cell-detector-already-scanned::after {
+  content: '✓';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 0.65rem;
+  color: rgba(0, 245, 255, 0.6);
+  pointer-events: none;
+}
+
+/* Mine Detector scan result - cell stays hidden-looking, number floats as badge */
+.cell-detector-scanned {
+  position: relative;
+  border-color: rgba(0, 245, 255, 0.4) !important;
+}
+
+.detector-scan-number {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 3px;
+  font-size: 0.7rem;
+  font-weight: bold;
+  font-family: var(--font-mono);
+  color: #00f5ff;
+  background: rgba(0, 0, 0, 0.9);
+  border: 1px solid #00f5ff;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-shadow: 0 0 5px #00f5ff;
+  box-shadow: 0 0 6px rgba(0, 245, 255, 0.5);
+  z-index: 5;
+  animation: detector-badge-in 0.2s ease-out, detector-fade 3s ease-out forwards;
+}
+
+@keyframes detector-badge-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes detector-fade {
+  0%,
+  70% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
 }
 
 /* Chord Highlight - visual feedback when pressing on numbered cell */

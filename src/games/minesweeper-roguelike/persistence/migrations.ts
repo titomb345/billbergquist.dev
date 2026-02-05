@@ -71,6 +71,20 @@ export const gameStateMigrations: Record<number, MigrationFn> = {
       },
     };
   },
+  // v4 → v5: Mine Detector rework - add scan fields
+  4: (state: unknown) => {
+    const s = state as Record<string, unknown>;
+    const run = (s.run ?? {}) as Record<string, unknown>;
+    return {
+      ...s,
+      mineDetectorScannedCells: [],
+      mineDetectorResult: null,
+      run: {
+        ...run,
+        mineDetectorScansRemaining: 3,
+      },
+    };
+  },
 };
 
 // Stats migrations

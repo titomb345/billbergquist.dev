@@ -111,6 +111,8 @@ export function saveGameState(state: RoguelikeGameState): void {
       surveyResult: state.surveyResult,
       probabilityLensCells: Array.from(state.probabilityLensCells),
       peekCell: state.peekCell,
+      mineDetectorScannedCells: Array.from(state.mineDetectorScannedCells),
+      mineDetectorResult: state.mineDetectorResult,
     };
 
     const checksum = computeChecksum(serializable);
@@ -235,6 +237,7 @@ export function loadGameState(): RoguelikeGameState | null {
       defusalKitUsedThisFloor: validated.run.defusalKitUsedThisFloor,
       surveyUsedThisFloor: validated.run.surveyUsedThisFloor,
       probabilityLensUsedThisFloor: validated.run.probabilityLensUsedThisFloor,
+      mineDetectorScansRemaining: validated.run.mineDetectorScansRemaining,
       seed: validated.run.seed,
       ascensionLevel: (validated.run.ascensionLevel ?? 0) as RunState['ascensionLevel'],
     };
@@ -272,6 +275,8 @@ export function loadGameState(): RoguelikeGameState | null {
       surveyResult: validated.surveyResult,
       probabilityLensCells: new Set(validated.probabilityLensCells),
       peekCell: validated.peekCell,
+      mineDetectorScannedCells: new Set(validated.mineDetectorScannedCells),
+      mineDetectorResult: validated.mineDetectorResult,
     };
   } catch (e) {
     console.warn('Failed to load game state:', e);

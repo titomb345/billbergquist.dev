@@ -37,6 +37,7 @@ export function createInitialRunState(ascensionLevel: AscensionLevel = 0): RunSt
     defusalKitUsedThisFloor: false,
     surveyUsedThisFloor: false,
     probabilityLensUsedThisFloor: false,
+    mineDetectorScansRemaining: 3,
     seed: generateRunSeed(),
     ascensionLevel,
   };
@@ -75,6 +76,8 @@ export function createRoguelikeInitialState(
     fadedCells: new Set(),
     probabilityLensCells: new Set(),
     oracleGiftCells: new Set(),
+    mineDetectorScannedCells: new Set(),
+    mineDetectorResult: null,
   };
 }
 
@@ -115,6 +118,8 @@ export function setupFloor(state: RoguelikeGameState, floor: number): RoguelikeG
     fadedCells: new Set(), // A4: Reset faded cells for new floor
     probabilityLensCells: new Set(),
     oracleGiftCells: new Set(),
+    mineDetectorScannedCells: new Set(),
+    mineDetectorResult: null,
     run: {
       ...state.run,
       currentFloor: floor,
@@ -127,6 +132,7 @@ export function setupFloor(state: RoguelikeGameState, floor: number): RoguelikeG
       defusalKitUsedThisFloor: false,
       surveyUsedThisFloor: false,
       probabilityLensUsedThisFloor: false,
+      mineDetectorScansRemaining: 3,
     },
   };
 }
@@ -348,8 +354,9 @@ export function isFinalFloor(floor: number): boolean {
   return floor >= MAX_FLOOR;
 }
 
-// Calculate mine count in 5×5 area for Mine Detector power-up
-export function calculateMineCount5x5(
+// Calculate mine count in 4×4 area for Mine Detector power-up
+// Offsets: -1, 0, +1, +2 in both dimensions (target cell near center), clamped to board bounds
+export function calculateMineCount4x4(
   board: Cell[][],
   centerRow: number,
   centerCol: number
@@ -358,8 +365,8 @@ export function calculateMineCount5x5(
   const cols = board[0]?.length || 0;
   let count = 0;
 
-  for (let dr = -2; dr <= 2; dr++) {
-    for (let dc = -2; dc <= 2; dc++) {
+  for (let dr = -1; dr <= 2; dr++) {
+    for (let dc = -1; dc <= 2; dc++) {
       const r = centerRow + dr;
       const c = centerCol + dc;
       if (r >= 0 && r < rows && c >= 0 && c < cols && board[r][c].isMine) {
