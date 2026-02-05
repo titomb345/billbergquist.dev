@@ -107,9 +107,7 @@ function Board({
               surveyMode={surveyMode}
               mineDetectorMode={mineDetectorMode}
               peekValue={
-                peekCell?.row === cell.row && peekCell?.col === cell.col
-                  ? peekCell.value
-                  : null
+                peekCell?.row === cell.row && peekCell?.col === cell.col ? peekCell.value : null
               }
               mineDetectorResultValue={
                 mineDetectorResult?.row === cell.row && mineDetectorResult?.col === cell.col

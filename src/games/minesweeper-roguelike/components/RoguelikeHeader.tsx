@@ -115,7 +115,13 @@ function RoguelikeHeader({
     // Calculate how far down from the container top the icon's bottom is
     const topOffset = iconRect.bottom - containerRect.top;
 
-    setHoveredPowerUp({ powerUp, isUsed, tooltipOffset: clampedTooltipOffset, arrowOffset, topOffset });
+    setHoveredPowerUp({
+      powerUp,
+      isUsed,
+      tooltipOffset: clampedTooltipOffset,
+      arrowOffset,
+      topOffset,
+    });
   };
 
   const hasRelics = run.activePowerUps.length > 0;
@@ -181,7 +187,8 @@ function RoguelikeHeader({
               {hoveredPowerUp.powerUp.description}
               {hoveredPowerUp.powerUp.id === 'iron-will' && run.traumaStacks > 0 && (
                 <span className="powerup-tooltip-trauma">
-                  {'\n\n'}Trauma: {run.traumaStacks} stack{run.traumaStacks > 1 ? 's' : ''} (+{run.traumaStacks * 5}% mines)
+                  {'\n\n'}Trauma: {run.traumaStacks} stack{run.traumaStacks > 1 ? 's' : ''} (+
+                  {run.traumaStacks * 5}% mines)
                 </span>
               )}
             </span>
@@ -228,8 +235,10 @@ function RoguelikeHeader({
           const isSafePathClickable = isSafePath && canUseSafePath && onToggleSafePath;
           const isDefusalKitClickable = isDefusalKit && canUseDefusalKit && onToggleDefusalKit;
           const isSurveyClickable = isSurvey && canUseSurvey && onToggleSurvey;
-          const isMineDetectorClickable = isMineDetector && canUseMineDetector && onToggleMineDetector;
-          const isProbabilityLensClickable = isProbabilityLens && canUseProbabilityLens && onUseProbabilityLens;
+          const isMineDetectorClickable =
+            isMineDetector && canUseMineDetector && onToggleMineDetector;
+          const isProbabilityLensClickable =
+            isProbabilityLens && canUseProbabilityLens && onUseProbabilityLens;
           const isClickable =
             isXRayClickable ||
             isPeekClickable ||

@@ -147,11 +147,7 @@ describe('calculatePatternMemoryCell', () => {
     expect(result).not.toBe(null);
 
     // Should be one of the 8 surrounding cells
-    const validCells = [
-      '0,0', '0,1', '0,2',
-      '1,0',        '1,2',
-      '2,0', '2,1', '2,2',
-    ];
+    const validCells = ['0,0', '0,1', '0,2', '1,0', '1,2', '2,0', '2,1', '2,2'];
     expect(validCells).toContain(result);
   });
 

@@ -1,5 +1,11 @@
 import { Cell, CellState, GamePhase, PowerUpId, RoguelikeGameState, RunState } from '../types';
-import { getFloorConfig, SCORING, MAX_FLOOR, POWER_UP_POOL, ORACLES_GIFT_MINE_DENSITY_BONUS } from '../constants';
+import {
+  getFloorConfig,
+  SCORING,
+  MAX_FLOOR,
+  POWER_UP_POOL,
+  ORACLES_GIFT_MINE_DENSITY_BONUS,
+} from '../constants';
 import { createEmptyBoard, revealCell, revealCascade } from './gameLogic';
 import { AscensionLevel, getAscensionModifiers } from '../ascension';
 
@@ -87,7 +93,13 @@ export function setupFloor(state: RoguelikeGameState, floor: number): RoguelikeG
   // Apply Oracle's Gift mine density bonus if player has it
   const hasOraclesGift = hasPowerUp(state.run, 'oracles-gift');
   const extraDensity = hasOraclesGift ? ORACLES_GIFT_MINE_DENSITY_BONUS : 0;
-  const floorConfig = getFloorConfig(floor, state.isMobile, state.run.ascensionLevel, extraDensity, state.run.traumaStacks);
+  const floorConfig = getFloorConfig(
+    floor,
+    state.isMobile,
+    state.run.ascensionLevel,
+    extraDensity,
+    state.run.traumaStacks
+  );
   const board = createEmptyBoard(floorConfig);
 
   // Check if player has Heat Map power-up
@@ -390,11 +402,7 @@ export function calculateChordHighlightCells(
   const centerCell = board[centerRow]?.[centerCol];
 
   // Only highlight if the center cell is a revealed numbered cell
-  if (
-    !centerCell ||
-    centerCell.state !== CellState.Revealed ||
-    centerCell.adjacentMines === 0
-  ) {
+  if (!centerCell || centerCell.state !== CellState.Revealed || centerCell.adjacentMines === 0) {
     return cells;
   }
 
@@ -498,11 +506,7 @@ export function calculatePatternMemoryCell(
 }
 
 // Apply Safe Path: reveal up to 5 safe cells in a row or column
-export function applySafePath(
-  board: Cell[][],
-  direction: 'row' | 'col',
-  index: number
-): Cell[][] {
+export function applySafePath(board: Cell[][], direction: 'row' | 'col', index: number): Cell[][] {
   let newBoard = board.map((r) => r.map((c) => ({ ...c })));
   const rows = newBoard.length;
   const cols = newBoard[0]?.length || 0;

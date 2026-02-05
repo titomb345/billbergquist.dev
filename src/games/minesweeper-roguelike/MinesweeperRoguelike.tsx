@@ -68,7 +68,14 @@ function Minesweeper({ resetRef }: MinesweeperProps) {
       recordRun(state.run.currentFloor, state.run.score, state.run.ascensionLevel, isVictory);
     }
     goToStart();
-  }, [state.phase, state.run.currentFloor, state.run.score, state.run.ascensionLevel, goToStart, recordRun]);
+  }, [
+    state.phase,
+    state.run.currentFloor,
+    state.run.score,
+    state.run.ascensionLevel,
+    goToStart,
+    recordRun,
+  ]);
 
   // Expose reset function to parent via ref
   useEffect(() => {
@@ -88,7 +95,8 @@ function Minesweeper({ resetRef }: MinesweeperProps) {
 
   // Mine Detector: active scan mode
   const hasMineDetector = state.run.activePowerUps.some((p) => p.id === 'mine-detector');
-  const canUseMineDetector = hasMineDetector && state.run.mineDetectorScansRemaining > 0 && !state.isFirstClick;
+  const canUseMineDetector =
+    hasMineDetector && state.run.mineDetectorScansRemaining > 0 && !state.isFirstClick;
 
   const handleCellHover = useCallback((row: number, col: number) => {
     setHoveredCell({ row, col });
@@ -124,7 +132,8 @@ function Minesweeper({ resetRef }: MinesweeperProps) {
 
   // Check if Defusal Kit is available
   const hasDefusalKit = state.run.activePowerUps.some((p) => p.id === 'defusal-kit');
-  const canUseDefusalKit = hasDefusalKit && !state.run.defusalKitUsedThisFloor && !state.isFirstClick;
+  const canUseDefusalKit =
+    hasDefusalKit && !state.run.defusalKitUsedThisFloor && !state.isFirstClick;
 
   // Check if Survey is available
   const hasSurvey = state.run.activePowerUps.some((p) => p.id === 'survey');
@@ -132,7 +141,8 @@ function Minesweeper({ resetRef }: MinesweeperProps) {
 
   // Check if Probability Lens is available
   const hasProbabilityLens = state.run.activePowerUps.some((p) => p.id === 'probability-lens');
-  const canUseProbabilityLens = hasProbabilityLens && !state.run.probabilityLensUsedThisFloor && !state.isFirstClick;
+  const canUseProbabilityLens =
+    hasProbabilityLens && !state.run.probabilityLensUsedThisFloor && !state.isFirstClick;
 
   const clearAllModes = () => {
     setXRayMode(false);
@@ -264,12 +274,36 @@ function Minesweeper({ resetRef }: MinesweeperProps) {
             probabilityLensActive={state.probabilityLensCells.size > 0}
           />
           <div className="board-with-hints">
-            {xRayMode && <div className="xray-hint">{state.run.activePowerUps.find(p => p.id === 'x-ray-vision')?.activeHint}</div>}
-            {peekMode && <div className="xray-hint peek-hint">{state.run.activePowerUps.find(p => p.id === 'peek')?.activeHint}</div>}
-            {safePathMode && <div className="xray-hint safe-path-hint">{state.run.activePowerUps.find(p => p.id === 'safe-path')?.activeHint}</div>}
-            {defusalKitMode && <div className="xray-hint defusal-hint">{state.run.activePowerUps.find(p => p.id === 'defusal-kit')?.activeHint}</div>}
-            {surveyMode && <div className="xray-hint survey-hint">{state.run.activePowerUps.find(p => p.id === 'survey')?.activeHint}</div>}
-            {mineDetectorMode && <div className="xray-hint mine-detector-hint">{state.run.activePowerUps.find(p => p.id === 'mine-detector')?.activeHint}</div>}
+            {xRayMode && (
+              <div className="xray-hint">
+                {state.run.activePowerUps.find((p) => p.id === 'x-ray-vision')?.activeHint}
+              </div>
+            )}
+            {peekMode && (
+              <div className="xray-hint peek-hint">
+                {state.run.activePowerUps.find((p) => p.id === 'peek')?.activeHint}
+              </div>
+            )}
+            {safePathMode && (
+              <div className="xray-hint safe-path-hint">
+                {state.run.activePowerUps.find((p) => p.id === 'safe-path')?.activeHint}
+              </div>
+            )}
+            {defusalKitMode && (
+              <div className="xray-hint defusal-hint">
+                {state.run.activePowerUps.find((p) => p.id === 'defusal-kit')?.activeHint}
+              </div>
+            )}
+            {surveyMode && (
+              <div className="xray-hint survey-hint">
+                {state.run.activePowerUps.find((p) => p.id === 'survey')?.activeHint}
+              </div>
+            )}
+            {mineDetectorMode && (
+              <div className="xray-hint mine-detector-hint">
+                {state.run.activePowerUps.find((p) => p.id === 'mine-detector')?.activeHint}
+              </div>
+            )}
             <div className="minesweeper">
               <Board
                 board={state.board}

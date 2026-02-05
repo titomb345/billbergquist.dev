@@ -175,7 +175,8 @@ export const RARE_POWER_UPS: PowerUp[] = [
   {
     id: 'mine-detector',
     name: 'Mine Detector',
-    description: 'Scan a 4×4 region to learn how many mines it contains. 3 scans per floor. Each cell can only be scanned once per floor.',
+    description:
+      'Scan a 4×4 region to learn how many mines it contains. 3 scans per floor. Each cell can only be scanned once per floor.',
     icon: '📡',
     type: 'active',
     rarity: 'rare',
@@ -205,7 +206,8 @@ export const RARE_POWER_UPS: PowerUp[] = [
   {
     id: 'defusal-kit',
     name: 'Defusal Kit',
-    description: 'Once per floor, remove a correctly flagged mine. Incorrect flags waste the charge',
+    description:
+      'Once per floor, remove a correctly flagged mine. Incorrect flags waste the charge',
     icon: '🔧',
     type: 'active',
     rarity: 'rare',
@@ -255,7 +257,8 @@ export const EPIC_POWER_UPS: PowerUp[] = [
   {
     id: 'iron-will',
     name: 'Iron Will',
-    description: 'Survive one mine click per floor. Each trigger permanently increases mine density by 5%.',
+    description:
+      'Survive one mine click per floor. Each trigger permanently increases mine density by 5%.',
     icon: '🛡️',
     type: 'passive',
     rarity: 'epic',

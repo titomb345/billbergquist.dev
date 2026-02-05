@@ -129,7 +129,6 @@ function CellComponent({
     onFlag(cell.row, cell.col);
   };
 
-
   const getClassName = () => {
     const classes = ['cell'];
 
@@ -259,11 +258,7 @@ function CellComponent({
 
     // If mouse button is held and entering a revealed numbered cell, show chord highlight
     if (e.buttons > 0 && !gameOver) {
-      if (
-        onChordHighlightStart &&
-        cell.state === CellState.Revealed &&
-        cell.adjacentMines > 0
-      ) {
+      if (onChordHighlightStart && cell.state === CellState.Revealed && cell.adjacentMines > 0) {
         onChordHighlightStart(cell.row, cell.col);
       } else if (onChordHighlightEnd) {
         // Clear highlight when moving to a non-chordable cell while button held

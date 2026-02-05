@@ -380,8 +380,10 @@ export function loadStats(): RoguelikeStats {
       bestFloor: validated.bestFloor,
       bestScore: validated.bestScore,
       floorsCleared: validated.floorsCleared,
-      highestAscensionUnlocked: (validated.highestAscensionUnlocked ?? 0) as RoguelikeStats['highestAscensionUnlocked'],
-      highestAscensionCleared: (validated.highestAscensionCleared ?? 0) as RoguelikeStats['highestAscensionCleared'],
+      highestAscensionUnlocked: (validated.highestAscensionUnlocked ??
+        0) as RoguelikeStats['highestAscensionUnlocked'],
+      highestAscensionCleared: (validated.highestAscensionCleared ??
+        0) as RoguelikeStats['highestAscensionCleared'],
     };
   } catch (e) {
     console.warn('Failed to load stats:', e);
