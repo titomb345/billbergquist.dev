@@ -76,8 +76,8 @@ export type PowerUpId =
   | 'survey'
   | 'momentum'
   | 'lucky-start'
-  | 'sixth-sense'
   // Rare
+  | 'sixth-sense'
   | 'mine-detector'
   | 'peek'
   | 'safe-path'
@@ -139,6 +139,8 @@ export interface RunState {
   surveyUsedThisFloor: boolean; // Survey: reveal mine count in row/col per floor
   probabilityLensUsedThisFloor: boolean; // Probability Lens: highlight safest cells per floor
   mineDetectorScansRemaining: number; // Mine Detector: scans left this floor (starts at 3)
+  sixthSenseChargesRemaining: number; // Sixth Sense: charges left this floor (starts at 1)
+  sixthSenseArmed: boolean; // Sixth Sense: currently armed for next click
   seed: string; // Run seed for sharing/comparing runs
   ascensionLevel: import('./ascension').AscensionLevel; // Current ascension level for this run
 }
@@ -180,6 +182,7 @@ export interface RoguelikeGameState {
   oracleGiftCells: Set<string>; // Oracle's Gift: cells in 50/50 situations that are safe
   mineDetectorScannedCells: Set<string>; // Cell keys "row,col" scanned this floor (no-repeat)
   mineDetectorResult: { row: number; col: number; count: number } | null; // Last scan result
+  sixthSenseTriggered: boolean; // Sixth Sense: redirect just occurred (for toast message)
 }
 
 // Roguelike-specific actions
@@ -209,4 +212,6 @@ export type RoguelikeAction =
   | { type: 'USE_PROBABILITY_LENS' }
   | { type: 'CLEAR_PROBABILITY_LENS' }
   | { type: 'USE_MINE_DETECTOR'; row: number; col: number }
-  | { type: 'CLEAR_MINE_DETECTOR_RESULT' };
+  | { type: 'CLEAR_MINE_DETECTOR_RESULT' }
+  | { type: 'TOGGLE_SIXTH_SENSE_ARM' }
+  | { type: 'CLEAR_SIXTH_SENSE_TRIGGERED' };

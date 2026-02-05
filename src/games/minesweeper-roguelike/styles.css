@@ -603,7 +603,8 @@
 .powerup-icon-wrapper.defusal-kit.defusal-kit-active .powerup-icon-emoji,
 .powerup-icon-wrapper.survey.survey-active .powerup-icon-emoji,
 .powerup-icon-wrapper.mine-detector.mine-detector-active .powerup-icon-emoji,
-.powerup-icon-wrapper.probability-lens.probability-lens-active .powerup-icon-emoji {
+.powerup-icon-wrapper.probability-lens.probability-lens-active .powerup-icon-emoji,
+.powerup-icon-wrapper.sixth-sense.sixth-sense-active .powerup-icon-emoji {
   animation: none;
   transform: scale(1.3);
 }
@@ -636,6 +637,10 @@
   filter: drop-shadow(0 0 10px var(--neon-purple)) drop-shadow(0 0 20px var(--neon-purple-glow));
 }
 
+.powerup-icon-wrapper.sixth-sense.sixth-sense-active .powerup-icon-emoji {
+  filter: drop-shadow(0 0 10px var(--neon-yellow)) drop-shadow(0 0 20px var(--neon-yellow-glow));
+}
+
 /* Peek hint styling */
 .peek-hint {
   border-color: var(--neon-purple) !important;
@@ -655,6 +660,40 @@
   border-color: #00f5ff !important;
   background: rgba(0, 245, 255, 0.1) !important;
   color: #00f5ff !important;
+}
+
+/* Sixth Sense hint styling */
+.sixth-sense-hint {
+  border-color: var(--neon-yellow) !important;
+  background: rgba(245, 158, 11, 0.1) !important;
+  color: var(--neon-yellow) !important;
+}
+
+/* Sixth Sense triggered toast */
+.sixth-sense-toast {
+  text-align: center;
+  padding: 6px 16px;
+  margin-bottom: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--neon-yellow);
+  background: rgba(245, 158, 11, 0.15);
+  border: 1px solid var(--neon-yellow);
+  border-radius: var(--radius-sm);
+  text-shadow: 0 0 8px var(--neon-yellow);
+  animation: sixth-sense-toast-fade 2s ease-out forwards;
+}
+
+@keyframes sixth-sense-toast-fade {
+  0% {
+    opacity: 1;
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
 }
 
 /* Survey badge styling - yellow variant in top right, above red X */

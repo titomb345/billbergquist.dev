@@ -33,6 +33,10 @@ interface RoguelikeHeaderProps {
   canUseProbabilityLens?: boolean;
   onUseProbabilityLens?: () => void;
   probabilityLensActive?: boolean;
+  sixthSenseArmed?: boolean;
+  canUseSixthSense?: boolean;
+  onToggleSixthSenseArm?: () => void;
+  sixthSenseChargesRemaining?: number;
 }
 
 interface HoveredPowerUp {
@@ -73,6 +77,10 @@ function RoguelikeHeader({
   canUseProbabilityLens = false,
   onUseProbabilityLens,
   probabilityLensActive = false,
+  sixthSenseArmed = false,
+  canUseSixthSense = false,
+  onToggleSixthSenseArm,
+  sixthSenseChargesRemaining = 0,
 }: RoguelikeHeaderProps) {
   const [hoveredPowerUp, setHoveredPowerUp] = useState<HoveredPowerUp | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -215,6 +223,8 @@ function RoguelikeHeader({
           const isMineDetectorUsed = isMineDetector && run.mineDetectorScansRemaining <= 0;
           const isProbabilityLens = powerUp.id === 'probability-lens';
           const isProbabilityLensUsed = isProbabilityLens && run.probabilityLensUsedThisFloor;
+          const isSixthSense = powerUp.id === 'sixth-sense';
+          const isSixthSenseUsed = isSixthSense && run.sixthSenseChargesRemaining <= 0;
           // Check per-floor usage instead of run-wide availability
           const isIronWillUsed = run.ironWillUsedThisFloor && powerUp.id === 'iron-will';
           const isQuickRecoveryUsed =
@@ -227,6 +237,7 @@ function RoguelikeHeader({
             isSurveyUsed ||
             isMineDetectorUsed ||
             isProbabilityLensUsed ||
+            isSixthSenseUsed ||
             isIronWillUsed ||
             isQuickRecoveryUsed;
 
@@ -239,6 +250,7 @@ function RoguelikeHeader({
             isMineDetector && canUseMineDetector && onToggleMineDetector;
           const isProbabilityLensClickable =
             isProbabilityLens && canUseProbabilityLens && onUseProbabilityLens;
+          const isSixthSenseClickable = isSixthSense && canUseSixthSense && onToggleSixthSenseArm;
           const isClickable =
             isXRayClickable ||
             isPeekClickable ||
@@ -246,12 +258,14 @@ function RoguelikeHeader({
             isDefusalKitClickable ||
             isSurveyClickable ||
             isMineDetectorClickable ||
-            isProbabilityLensClickable;
+            isProbabilityLensClickable ||
+            isSixthSenseClickable;
 
           const showSurveyResult = isSurvey && surveyResult != null;
           const isFloorScout = powerUp.id === 'floor-scout';
           const showMineDetectorBadge = isMineDetector;
           const showZeroCellCount = isFloorScout && zeroCellCount != null;
+          const showSixthSenseBadge = isSixthSense;
 
           const getClickHandler = () => {
             if (isXRayClickable) return onToggleXRay;
@@ -261,13 +275,14 @@ function RoguelikeHeader({
             if (isSurveyClickable) return onToggleSurvey;
             if (isMineDetectorClickable) return onToggleMineDetector;
             if (isProbabilityLensClickable) return onUseProbabilityLens;
+            if (isSixthSenseClickable) return onToggleSixthSenseArm;
             return undefined;
           };
 
           return (
             <span
               key={powerUp.id}
-              className={`powerup-icon-wrapper rarity-${powerUp.rarity} ${isUsed ? 'used' : ''} ${isXRay ? 'xray' : ''} ${xRayMode ? 'xray-active' : ''} ${isPeek ? 'peek' : ''} ${peekMode ? 'peek-active' : ''} ${isSafePath ? 'safe-path' : ''} ${safePathMode ? 'safe-path-active' : ''} ${isDefusalKit ? 'defusal-kit' : ''} ${defusalKitMode ? 'defusal-kit-active' : ''} ${isSurvey ? 'survey' : ''} ${surveyMode ? 'survey-active' : ''} ${isMineDetector ? 'mine-detector' : ''} ${mineDetectorMode ? 'mine-detector-active' : ''} ${isProbabilityLens ? 'probability-lens' : ''} ${probabilityLensActive ? 'probability-lens-active' : ''} ${isClickable ? 'clickable' : ''} ${showSurveyResult || showZeroCellCount ? 'detector-active' : ''}`}
+              className={`powerup-icon-wrapper rarity-${powerUp.rarity} ${isUsed ? 'used' : ''} ${isXRay ? 'xray' : ''} ${xRayMode ? 'xray-active' : ''} ${isPeek ? 'peek' : ''} ${peekMode ? 'peek-active' : ''} ${isSafePath ? 'safe-path' : ''} ${safePathMode ? 'safe-path-active' : ''} ${isDefusalKit ? 'defusal-kit' : ''} ${defusalKitMode ? 'defusal-kit-active' : ''} ${isSurvey ? 'survey' : ''} ${surveyMode ? 'survey-active' : ''} ${isMineDetector ? 'mine-detector' : ''} ${mineDetectorMode ? 'mine-detector-active' : ''} ${isProbabilityLens ? 'probability-lens' : ''} ${probabilityLensActive ? 'probability-lens-active' : ''} ${isSixthSense ? 'sixth-sense' : ''} ${isSixthSense && sixthSenseArmed ? 'sixth-sense-active' : ''} ${isClickable ? 'clickable' : ''} ${showSurveyResult || showZeroCellCount ? 'detector-active' : ''}`}
               onMouseEnter={(e) => handleMouseEnter(powerUp, isUsed, e.currentTarget)}
               onMouseLeave={() => setHoveredPowerUp(null)}
               onClick={getClickHandler()}
@@ -285,6 +300,9 @@ function RoguelikeHeader({
               )}
               {showZeroCellCount && (
                 <span className="mine-detector-badge floor-scout-badge">{zeroCellCount}</span>
+              )}
+              {showSixthSenseBadge && (
+                <span className="mine-detector-badge">{sixthSenseChargesRemaining}</span>
               )}
             </span>
           );

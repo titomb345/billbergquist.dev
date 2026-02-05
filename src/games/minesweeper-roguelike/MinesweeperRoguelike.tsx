@@ -37,6 +37,7 @@ function Minesweeper({ resetRef }: MinesweeperProps) {
     useSurvey,
     useProbabilityLens,
     useMineDetector,
+    toggleSixthSenseArm,
     selectPowerUp,
     skipDraft,
     explosionComplete,
@@ -144,6 +145,11 @@ function Minesweeper({ resetRef }: MinesweeperProps) {
   const canUseProbabilityLens =
     hasProbabilityLens && !state.run.probabilityLensUsedThisFloor && !state.isFirstClick;
 
+  // Check if Sixth Sense is available
+  const hasSixthSense = state.run.activePowerUps.some((p) => p.id === 'sixth-sense');
+  const canUseSixthSense =
+    hasSixthSense && state.run.sixthSenseChargesRemaining > 0 && !state.isFirstClick;
+
   const clearAllModes = () => {
     setXRayMode(false);
     setPeekMode(false);
@@ -151,6 +157,9 @@ function Minesweeper({ resetRef }: MinesweeperProps) {
     setDefusalKitMode(false);
     setSurveyMode(false);
     setMineDetectorMode(false);
+    if (state.run.sixthSenseArmed) {
+      toggleSixthSenseArm();
+    }
   };
 
   const handlePeekClick = (row: number, col: number) => {
@@ -219,6 +228,17 @@ function Minesweeper({ resetRef }: MinesweeperProps) {
     useProbabilityLens();
   };
 
+  const handleToggleSixthSenseArm = () => {
+    // Clear other modes first, then toggle arm
+    setXRayMode(false);
+    setPeekMode(false);
+    setSafePathMode(false);
+    setDefusalKitMode(false);
+    setSurveyMode(false);
+    setMineDetectorMode(false);
+    toggleSixthSenseArm();
+  };
+
   const isGameOver = state.phase === GamePhase.RunOver || state.phase === GamePhase.Victory;
 
   // Record run on game over/victory
@@ -273,6 +293,10 @@ function Minesweeper({ resetRef }: MinesweeperProps) {
             canUseProbabilityLens={canUseProbabilityLens}
             onUseProbabilityLens={handleUseProbabilityLens}
             probabilityLensActive={state.probabilityLensCells.size > 0}
+            sixthSenseArmed={state.run.sixthSenseArmed}
+            canUseSixthSense={canUseSixthSense}
+            onToggleSixthSenseArm={handleToggleSixthSenseArm}
+            sixthSenseChargesRemaining={state.run.sixthSenseChargesRemaining}
           />
           <div className="board-with-hints">
             {xRayMode && (
@@ -304,6 +328,14 @@ function Minesweeper({ resetRef }: MinesweeperProps) {
               <div className="xray-hint mine-detector-hint">
                 {state.run.activePowerUps.find((p) => p.id === 'mine-detector')?.activeHint}
               </div>
+            )}
+            {state.run.sixthSenseArmed && (
+              <div className="xray-hint sixth-sense-hint">
+                {state.run.activePowerUps.find((p) => p.id === 'sixth-sense')?.activeHint}
+              </div>
+            )}
+            {state.sixthSenseTriggered && (
+              <div className="sixth-sense-toast">Sixth Sense triggered!</div>
             )}
             <div className="minesweeper">
               <Board

@@ -227,10 +227,13 @@ export const RARE_POWER_UPS: PowerUp[] = [
   {
     id: 'sixth-sense',
     name: 'Sixth Sense',
-    description: 'First click redirected to nearest 0-cell for max cascade',
+    description:
+      'Arm to redirect your next non-zero reveal into a cascade (once per floor). Does not consume a charge unless a redirect occurs.',
     icon: '✨',
-    type: 'passive',
+    type: 'active',
     rarity: 'rare',
+    usesPerFloor: 1,
+    activeHint: 'Sixth Sense armed — click a cell to trigger cascade redirect',
   },
 ];
 
