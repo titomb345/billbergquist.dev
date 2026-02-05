@@ -25,7 +25,10 @@ interface RoguelikeHeaderProps {
   canUseSurvey?: boolean;
   onToggleSurvey?: () => void;
   surveyResult?: { direction: 'row' | 'col'; index: number; mineCount: number } | null;
-  mineDetectorCount?: number | null;
+  mineDetectorMode?: boolean;
+  canUseMineDetector?: boolean;
+  onToggleMineDetector?: () => void;
+  mineDetectorScansRemaining?: number;
   zeroCellCount?: number | null;
   canUseProbabilityLens?: boolean;
   onUseProbabilityLens?: () => void;
@@ -62,7 +65,10 @@ function RoguelikeHeader({
   canUseSurvey = false,
   onToggleSurvey,
   surveyResult,
-  mineDetectorCount,
+  mineDetectorMode = false,
+  canUseMineDetector = false,
+  onToggleMineDetector,
+  mineDetectorScansRemaining = 0,
   zeroCellCount,
   canUseProbabilityLens = false,
   onUseProbabilityLens,
@@ -109,7 +115,13 @@ function RoguelikeHeader({
     // Calculate how far down from the container top the icon's bottom is
     const topOffset = iconRect.bottom - containerRect.top;
 
-    setHoveredPowerUp({ powerUp, isUsed, tooltipOffset: clampedTooltipOffset, arrowOffset, topOffset });
+    setHoveredPowerUp({
+      powerUp,
+      isUsed,
+      tooltipOffset: clampedTooltipOffset,
+      arrowOffset,
+      topOffset,
+    });
   };
 
   const hasRelics = run.activePowerUps.length > 0;
@@ -175,7 +187,8 @@ function RoguelikeHeader({
               {hoveredPowerUp.powerUp.description}
               {hoveredPowerUp.powerUp.id === 'iron-will' && run.traumaStacks > 0 && (
                 <span className="powerup-tooltip-trauma">
-                  {'\n\n'}Trauma: {run.traumaStacks} stack{run.traumaStacks > 1 ? 's' : ''} (+{run.traumaStacks * 5}% mines)
+                  {'\n\n'}Trauma: {run.traumaStacks} stack{run.traumaStacks > 1 ? 's' : ''} (+
+                  {run.traumaStacks * 5}% mines)
                 </span>
               )}
             </span>
@@ -198,6 +211,8 @@ function RoguelikeHeader({
           const isDefusalKitUsed = isDefusalKit && run.defusalKitUsedThisFloor;
           const isSurvey = powerUp.id === 'survey';
           const isSurveyUsed = isSurvey && run.surveyUsedThisFloor;
+          const isMineDetector = powerUp.id === 'mine-detector';
+          const isMineDetectorUsed = isMineDetector && run.mineDetectorScansRemaining <= 0;
           const isProbabilityLens = powerUp.id === 'probability-lens';
           const isProbabilityLensUsed = isProbabilityLens && run.probabilityLensUsedThisFloor;
           // Check per-floor usage instead of run-wide availability
@@ -210,6 +225,7 @@ function RoguelikeHeader({
             isSafePathUsed ||
             isDefusalKitUsed ||
             isSurveyUsed ||
+            isMineDetectorUsed ||
             isProbabilityLensUsed ||
             isIronWillUsed ||
             isQuickRecoveryUsed;
@@ -219,19 +235,22 @@ function RoguelikeHeader({
           const isSafePathClickable = isSafePath && canUseSafePath && onToggleSafePath;
           const isDefusalKitClickable = isDefusalKit && canUseDefusalKit && onToggleDefusalKit;
           const isSurveyClickable = isSurvey && canUseSurvey && onToggleSurvey;
-          const isProbabilityLensClickable = isProbabilityLens && canUseProbabilityLens && onUseProbabilityLens;
+          const isMineDetectorClickable =
+            isMineDetector && canUseMineDetector && onToggleMineDetector;
+          const isProbabilityLensClickable =
+            isProbabilityLens && canUseProbabilityLens && onUseProbabilityLens;
           const isClickable =
             isXRayClickable ||
             isPeekClickable ||
             isSafePathClickable ||
             isDefusalKitClickable ||
             isSurveyClickable ||
+            isMineDetectorClickable ||
             isProbabilityLensClickable;
 
           const showSurveyResult = isSurvey && surveyResult != null;
-          const isMineDetector = powerUp.id === 'mine-detector';
           const isFloorScout = powerUp.id === 'floor-scout';
-          const showDetectorCount = isMineDetector && mineDetectorCount != null;
+          const showMineDetectorBadge = isMineDetector;
           const showZeroCellCount = isFloorScout && zeroCellCount != null;
 
           const getClickHandler = () => {
@@ -240,6 +259,7 @@ function RoguelikeHeader({
             if (isSafePathClickable) return onToggleSafePath;
             if (isDefusalKitClickable) return onToggleDefusalKit;
             if (isSurveyClickable) return onToggleSurvey;
+            if (isMineDetectorClickable) return onToggleMineDetector;
             if (isProbabilityLensClickable) return onUseProbabilityLens;
             return undefined;
           };
@@ -247,7 +267,7 @@ function RoguelikeHeader({
           return (
             <span
               key={powerUp.id}
-              className={`powerup-icon-wrapper rarity-${powerUp.rarity} ${isUsed ? 'used' : ''} ${isXRay ? 'xray' : ''} ${xRayMode ? 'xray-active' : ''} ${isPeek ? 'peek' : ''} ${peekMode ? 'peek-active' : ''} ${isSafePath ? 'safe-path' : ''} ${safePathMode ? 'safe-path-active' : ''} ${isDefusalKit ? 'defusal-kit' : ''} ${defusalKitMode ? 'defusal-kit-active' : ''} ${isSurvey ? 'survey' : ''} ${surveyMode ? 'survey-active' : ''} ${isProbabilityLens ? 'probability-lens' : ''} ${probabilityLensActive ? 'probability-lens-active' : ''} ${isClickable ? 'clickable' : ''} ${showSurveyResult || showDetectorCount || showZeroCellCount ? 'detector-active' : ''}`}
+              className={`powerup-icon-wrapper rarity-${powerUp.rarity} ${isUsed ? 'used' : ''} ${isXRay ? 'xray' : ''} ${xRayMode ? 'xray-active' : ''} ${isPeek ? 'peek' : ''} ${peekMode ? 'peek-active' : ''} ${isSafePath ? 'safe-path' : ''} ${safePathMode ? 'safe-path-active' : ''} ${isDefusalKit ? 'defusal-kit' : ''} ${defusalKitMode ? 'defusal-kit-active' : ''} ${isSurvey ? 'survey' : ''} ${surveyMode ? 'survey-active' : ''} ${isMineDetector ? 'mine-detector' : ''} ${mineDetectorMode ? 'mine-detector-active' : ''} ${isProbabilityLens ? 'probability-lens' : ''} ${probabilityLensActive ? 'probability-lens-active' : ''} ${isClickable ? 'clickable' : ''} ${showSurveyResult || showZeroCellCount ? 'detector-active' : ''}`}
               onMouseEnter={(e) => handleMouseEnter(powerUp, isUsed, e.currentTarget)}
               onMouseLeave={() => setHoveredPowerUp(null)}
               onClick={getClickHandler()}
@@ -260,8 +280,8 @@ function RoguelikeHeader({
               {showSurveyResult && (
                 <span className="mine-detector-badge survey-badge">{surveyResult.mineCount}</span>
               )}
-              {showDetectorCount && (
-                <span className="mine-detector-badge">{mineDetectorCount}</span>
+              {showMineDetectorBadge && (
+                <span className="mine-detector-badge">{mineDetectorScansRemaining}</span>
               )}
               {showZeroCellCount && (
                 <span className="mine-detector-badge floor-scout-badge">{zeroCellCount}</span>

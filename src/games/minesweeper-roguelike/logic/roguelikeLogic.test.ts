@@ -4,7 +4,7 @@ import {
   calculateFloorClearBonus,
   countRevealedCells,
   checkFloorCleared,
-  calculateMineCount5x5,
+  calculateMineCount4x4,
   countZeroCells,
   calculatePatternMemoryCell,
 } from './roguelikeLogic';
@@ -84,18 +84,21 @@ describe('checkFloorCleared', () => {
   });
 });
 
-describe('calculateMineCount5x5', () => {
-  it('counts mines within 5x5 area and respects boundaries', () => {
+describe('calculateMineCount4x4', () => {
+  it('counts mines within 4x4 area (offsets -1 to +2) and respects boundaries', () => {
     const board = createTestBoard(7, 7);
     board[3][3].isMine = true; // Center
-    board[1][1].isMine = true; // Within 5x5 of center
-    board[0][0].isMine = true; // Outside 5x5 from center (3,3)
+    board[2][2].isMine = true; // Within 4x4 of center (offset -1,-1)
+    board[5][5].isMine = true; // Within 4x4 of center (offset +2,+2)
+    board[1][1].isMine = true; // Outside 4x4 from center (3,3) - offset -2,-2
 
-    // From center (3,3), should see 2 mines (at 3,3 and 1,1)
-    expect(calculateMineCount5x5(board, 3, 3)).toBe(2);
+    // From center (3,3), 4x4 covers rows 2-5, cols 2-5
+    // Should see mines at (3,3), (2,2), (5,5) = 3
+    expect(calculateMineCount4x4(board, 3, 3)).toBe(3);
 
-    // From corner (0,0), should only see mines within bounds
-    expect(calculateMineCount5x5(board, 0, 0)).toBe(2);
+    // From corner (0,0), 4x4 covers rows -1 to 2, cols -1 to 2 (clamped to 0-2)
+    // Should see mines at (1,1) and (2,2) = 2
+    expect(calculateMineCount4x4(board, 0, 0)).toBe(2);
   });
 });
 
@@ -144,11 +147,7 @@ describe('calculatePatternMemoryCell', () => {
     expect(result).not.toBe(null);
 
     // Should be one of the 8 surrounding cells
-    const validCells = [
-      '0,0', '0,1', '0,2',
-      '1,0',        '1,2',
-      '2,0', '2,1', '2,2',
-    ];
+    const validCells = ['0,0', '0,1', '0,2', '1,0', '1,2', '2,0', '2,1', '2,2'];
     expect(validCells).toContain(result);
   });
 

@@ -10,7 +10,7 @@ import RunOverScreen from './components/RunOverScreen';
 import ExplosionOverlay from './components/ExplosionOverlay';
 import FloorClearOverlay from './components/FloorClearOverlay';
 import IronWillSaveOverlay from './components/IronWillSaveOverlay';
-import { isFinalFloor, calculateMineCount5x5 } from './logic/roguelikeLogic';
+import { isFinalFloor } from './logic/roguelikeLogic';
 import { GamePhase } from './types';
 import { AscensionLevel } from './ascension';
 import './styles.css';
@@ -36,6 +36,7 @@ function Minesweeper({ resetRef }: MinesweeperProps) {
     useDefusalKit,
     useSurvey,
     useProbabilityLens,
+    useMineDetector,
     selectPowerUp,
     skipDraft,
     explosionComplete,
@@ -50,6 +51,7 @@ function Minesweeper({ resetRef }: MinesweeperProps) {
   const [safePathMode, setSafePathMode] = useState(false);
   const [defusalKitMode, setDefusalKitMode] = useState(false);
   const [surveyMode, setSurveyMode] = useState(false);
+  const [mineDetectorMode, setMineDetectorMode] = useState(false);
   const [hoveredCell, setHoveredCell] = useState<{ row: number; col: number } | null>(null);
 
   // Wrapper that records the run before going to start (if a run was active)
@@ -66,7 +68,14 @@ function Minesweeper({ resetRef }: MinesweeperProps) {
       recordRun(state.run.currentFloor, state.run.score, state.run.ascensionLevel, isVictory);
     }
     goToStart();
-  }, [state.phase, state.run.currentFloor, state.run.score, state.run.ascensionLevel, goToStart, recordRun]);
+  }, [
+    state.phase,
+    state.run.currentFloor,
+    state.run.score,
+    state.run.ascensionLevel,
+    goToStart,
+    recordRun,
+  ]);
 
   // Expose reset function to parent via ref
   useEffect(() => {
@@ -84,12 +93,10 @@ function Minesweeper({ resetRef }: MinesweeperProps) {
     startRun(ascensionLevel);
   };
 
-  // Mine Detector: calculate 5×5 mine count when hovering
+  // Mine Detector: active scan mode
   const hasMineDetector = state.run.activePowerUps.some((p) => p.id === 'mine-detector');
-  const mineDetectorCount =
-    hasMineDetector && hoveredCell && !state.isFirstClick
-      ? calculateMineCount5x5(state.board, hoveredCell.row, hoveredCell.col)
-      : null;
+  const canUseMineDetector =
+    hasMineDetector && state.run.mineDetectorScansRemaining > 0 && !state.isFirstClick;
 
   const handleCellHover = useCallback((row: number, col: number) => {
     setHoveredCell({ row, col });
@@ -125,7 +132,8 @@ function Minesweeper({ resetRef }: MinesweeperProps) {
 
   // Check if Defusal Kit is available
   const hasDefusalKit = state.run.activePowerUps.some((p) => p.id === 'defusal-kit');
-  const canUseDefusalKit = hasDefusalKit && !state.run.defusalKitUsedThisFloor && !state.isFirstClick;
+  const canUseDefusalKit =
+    hasDefusalKit && !state.run.defusalKitUsedThisFloor && !state.isFirstClick;
 
   // Check if Survey is available
   const hasSurvey = state.run.activePowerUps.some((p) => p.id === 'survey');
@@ -133,7 +141,8 @@ function Minesweeper({ resetRef }: MinesweeperProps) {
 
   // Check if Probability Lens is available
   const hasProbabilityLens = state.run.activePowerUps.some((p) => p.id === 'probability-lens');
-  const canUseProbabilityLens = hasProbabilityLens && !state.run.probabilityLensUsedThisFloor && !state.isFirstClick;
+  const canUseProbabilityLens =
+    hasProbabilityLens && !state.run.probabilityLensUsedThisFloor && !state.isFirstClick;
 
   const clearAllModes = () => {
     setXRayMode(false);
@@ -141,6 +150,7 @@ function Minesweeper({ resetRef }: MinesweeperProps) {
     setSafePathMode(false);
     setDefusalKitMode(false);
     setSurveyMode(false);
+    setMineDetectorMode(false);
   };
 
   const handlePeekClick = (row: number, col: number) => {
@@ -190,6 +200,18 @@ function Minesweeper({ resetRef }: MinesweeperProps) {
     const newMode = !surveyMode;
     clearAllModes();
     setSurveyMode(newMode);
+  };
+
+  const handleMineDetectorClick = (row: number, col: number) => {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    useMineDetector(row, col);
+    setMineDetectorMode(false);
+  };
+
+  const handleToggleMineDetectorMode = () => {
+    const newMode = !mineDetectorMode;
+    clearAllModes();
+    setMineDetectorMode(newMode);
   };
 
   const handleUseProbabilityLens = () => {
@@ -243,18 +265,46 @@ function Minesweeper({ resetRef }: MinesweeperProps) {
             canUseSurvey={canUseSurvey}
             onToggleSurvey={handleToggleSurveyMode}
             surveyResult={state.surveyResult}
-            mineDetectorCount={mineDetectorCount}
+            mineDetectorMode={mineDetectorMode}
+            canUseMineDetector={canUseMineDetector}
+            onToggleMineDetector={handleToggleMineDetectorMode}
+            mineDetectorScansRemaining={state.run.mineDetectorScansRemaining}
             zeroCellCount={state.zeroCellCount}
             canUseProbabilityLens={canUseProbabilityLens}
             onUseProbabilityLens={handleUseProbabilityLens}
             probabilityLensActive={state.probabilityLensCells.size > 0}
           />
           <div className="board-with-hints">
-            {xRayMode && <div className="xray-hint">{state.run.activePowerUps.find(p => p.id === 'x-ray-vision')?.activeHint}</div>}
-            {peekMode && <div className="xray-hint peek-hint">{state.run.activePowerUps.find(p => p.id === 'peek')?.activeHint}</div>}
-            {safePathMode && <div className="xray-hint safe-path-hint">{state.run.activePowerUps.find(p => p.id === 'safe-path')?.activeHint}</div>}
-            {defusalKitMode && <div className="xray-hint defusal-hint">{state.run.activePowerUps.find(p => p.id === 'defusal-kit')?.activeHint}</div>}
-            {surveyMode && <div className="xray-hint survey-hint">{state.run.activePowerUps.find(p => p.id === 'survey')?.activeHint}</div>}
+            {xRayMode && (
+              <div className="xray-hint">
+                {state.run.activePowerUps.find((p) => p.id === 'x-ray-vision')?.activeHint}
+              </div>
+            )}
+            {peekMode && (
+              <div className="xray-hint peek-hint">
+                {state.run.activePowerUps.find((p) => p.id === 'peek')?.activeHint}
+              </div>
+            )}
+            {safePathMode && (
+              <div className="xray-hint safe-path-hint">
+                {state.run.activePowerUps.find((p) => p.id === 'safe-path')?.activeHint}
+              </div>
+            )}
+            {defusalKitMode && (
+              <div className="xray-hint defusal-hint">
+                {state.run.activePowerUps.find((p) => p.id === 'defusal-kit')?.activeHint}
+              </div>
+            )}
+            {surveyMode && (
+              <div className="xray-hint survey-hint">
+                {state.run.activePowerUps.find((p) => p.id === 'survey')?.activeHint}
+              </div>
+            )}
+            {mineDetectorMode && (
+              <div className="xray-hint mine-detector-hint">
+                {state.run.activePowerUps.find((p) => p.id === 'mine-detector')?.activeHint}
+              </div>
+            )}
             <div className="minesweeper">
               <Board
                 board={state.board}
@@ -270,15 +320,19 @@ function Minesweeper({ resetRef }: MinesweeperProps) {
                 safePathMode={safePathMode && canUseSafePath}
                 defusalKitMode={defusalKitMode && canUseDefusalKit}
                 surveyMode={surveyMode && canUseSurvey}
+                mineDetectorMode={mineDetectorMode && canUseMineDetector}
                 peekCell={state.peekCell}
+                mineDetectorResult={state.mineDetectorResult}
                 onXRay={handleXRayClick}
                 onPeek={handlePeekClick}
                 onSafePath={handleSafePathClick}
                 onDefusalKit={handleDefusalKitClick}
                 onSurvey={handleSurveyClick}
-                onCellHover={hasMineDetector ? handleCellHover : undefined}
-                onCellHoverEnd={hasMineDetector ? handleCellHoverEnd : undefined}
-                detectorCenter={hasMineDetector && !state.isFirstClick ? hoveredCell : null}
+                onMineDetector={handleMineDetectorClick}
+                onCellHover={mineDetectorMode ? handleCellHover : undefined}
+                onCellHoverEnd={mineDetectorMode ? handleCellHoverEnd : undefined}
+                mineDetectorScannedCells={state.mineDetectorScannedCells}
+                detectorCenter={mineDetectorMode && !state.isFirstClick ? hoveredCell : null}
                 chordHighlightCells={state.chordHighlightCells}
                 onChordHighlightStart={setChordHighlight}
                 onChordHighlightEnd={clearChordHighlight}

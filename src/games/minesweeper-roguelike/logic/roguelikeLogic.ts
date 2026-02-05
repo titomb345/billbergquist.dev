@@ -1,5 +1,11 @@
 import { Cell, CellState, GamePhase, PowerUpId, RoguelikeGameState, RunState } from '../types';
-import { getFloorConfig, SCORING, MAX_FLOOR, POWER_UP_POOL, ORACLES_GIFT_MINE_DENSITY_BONUS } from '../constants';
+import {
+  getFloorConfig,
+  SCORING,
+  MAX_FLOOR,
+  POWER_UP_POOL,
+  ORACLES_GIFT_MINE_DENSITY_BONUS,
+} from '../constants';
 import { createEmptyBoard, revealCell, revealCascade } from './gameLogic';
 import { AscensionLevel, getAscensionModifiers } from '../ascension';
 
@@ -37,6 +43,7 @@ export function createInitialRunState(ascensionLevel: AscensionLevel = 0): RunSt
     defusalKitUsedThisFloor: false,
     surveyUsedThisFloor: false,
     probabilityLensUsedThisFloor: false,
+    mineDetectorScansRemaining: 3,
     seed: generateRunSeed(),
     ascensionLevel,
   };
@@ -75,6 +82,8 @@ export function createRoguelikeInitialState(
     fadedCells: new Set(),
     probabilityLensCells: new Set(),
     oracleGiftCells: new Set(),
+    mineDetectorScannedCells: new Set(),
+    mineDetectorResult: null,
   };
 }
 
@@ -84,7 +93,13 @@ export function setupFloor(state: RoguelikeGameState, floor: number): RoguelikeG
   // Apply Oracle's Gift mine density bonus if player has it
   const hasOraclesGift = hasPowerUp(state.run, 'oracles-gift');
   const extraDensity = hasOraclesGift ? ORACLES_GIFT_MINE_DENSITY_BONUS : 0;
-  const floorConfig = getFloorConfig(floor, state.isMobile, state.run.ascensionLevel, extraDensity, state.run.traumaStacks);
+  const floorConfig = getFloorConfig(
+    floor,
+    state.isMobile,
+    state.run.ascensionLevel,
+    extraDensity,
+    state.run.traumaStacks
+  );
   const board = createEmptyBoard(floorConfig);
 
   // Check if player has Heat Map power-up
@@ -115,6 +130,8 @@ export function setupFloor(state: RoguelikeGameState, floor: number): RoguelikeG
     fadedCells: new Set(), // A4: Reset faded cells for new floor
     probabilityLensCells: new Set(),
     oracleGiftCells: new Set(),
+    mineDetectorScannedCells: new Set(),
+    mineDetectorResult: null,
     run: {
       ...state.run,
       currentFloor: floor,
@@ -127,6 +144,7 @@ export function setupFloor(state: RoguelikeGameState, floor: number): RoguelikeG
       defusalKitUsedThisFloor: false,
       surveyUsedThisFloor: false,
       probabilityLensUsedThisFloor: false,
+      mineDetectorScansRemaining: 3,
     },
   };
 }
@@ -348,8 +366,9 @@ export function isFinalFloor(floor: number): boolean {
   return floor >= MAX_FLOOR;
 }
 
-// Calculate mine count in 5×5 area for Mine Detector power-up
-export function calculateMineCount5x5(
+// Calculate mine count in 4×4 area for Mine Detector power-up
+// Offsets: -1, 0, +1, +2 in both dimensions (target cell near center), clamped to board bounds
+export function calculateMineCount4x4(
   board: Cell[][],
   centerRow: number,
   centerCol: number
@@ -358,8 +377,8 @@ export function calculateMineCount5x5(
   const cols = board[0]?.length || 0;
   let count = 0;
 
-  for (let dr = -2; dr <= 2; dr++) {
-    for (let dc = -2; dc <= 2; dc++) {
+  for (let dr = -1; dr <= 2; dr++) {
+    for (let dc = -1; dc <= 2; dc++) {
       const r = centerRow + dr;
       const c = centerCol + dc;
       if (r >= 0 && r < rows && c >= 0 && c < cols && board[r][c].isMine) {
@@ -383,11 +402,7 @@ export function calculateChordHighlightCells(
   const centerCell = board[centerRow]?.[centerCol];
 
   // Only highlight if the center cell is a revealed numbered cell
-  if (
-    !centerCell ||
-    centerCell.state !== CellState.Revealed ||
-    centerCell.adjacentMines === 0
-  ) {
+  if (!centerCell || centerCell.state !== CellState.Revealed || centerCell.adjacentMines === 0) {
     return cells;
   }
 
@@ -491,11 +506,7 @@ export function calculatePatternMemoryCell(
 }
 
 // Apply Safe Path: reveal up to 5 safe cells in a row or column
-export function applySafePath(
-  board: Cell[][],
-  direction: 'row' | 'col',
-  index: number
-): Cell[][] {
+export function applySafePath(board: Cell[][], direction: 'row' | 'col', index: number): Cell[][] {
   let newBoard = board.map((r) => r.map((c) => ({ ...c })));
   const rows = newBoard.length;
   const cols = newBoard[0]?.length || 0;

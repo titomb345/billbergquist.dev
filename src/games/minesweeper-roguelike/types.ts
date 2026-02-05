@@ -77,8 +77,8 @@ export type PowerUpId =
   | 'momentum'
   | 'lucky-start'
   | 'sixth-sense'
-  | 'mine-detector'
   // Rare
+  | 'mine-detector'
   | 'peek'
   | 'safe-path'
   | 'defusal-kit'
@@ -138,6 +138,7 @@ export interface RunState {
   defusalKitUsedThisFloor: boolean; // Defusal Kit: remove one mine per floor
   surveyUsedThisFloor: boolean; // Survey: reveal mine count in row/col per floor
   probabilityLensUsedThisFloor: boolean; // Probability Lens: highlight safest cells per floor
+  mineDetectorScansRemaining: number; // Mine Detector: scans left this floor (starts at 3)
   seed: string; // Run seed for sharing/comparing runs
   ascensionLevel: import('./ascension').AscensionLevel; // Current ascension level for this run
 }
@@ -177,6 +178,8 @@ export interface RoguelikeGameState {
   fadedCells: Set<string>; // A4: "row,col" cells that have faded (numbers hidden)
   probabilityLensCells: Set<string>; // Probability Lens: highlighted safest cells
   oracleGiftCells: Set<string>; // Oracle's Gift: cells in 50/50 situations that are safe
+  mineDetectorScannedCells: Set<string>; // Cell keys "row,col" scanned this floor (no-repeat)
+  mineDetectorResult: { row: number; col: number; count: number } | null; // Last scan result
 }
 
 // Roguelike-specific actions
@@ -204,4 +207,6 @@ export type RoguelikeAction =
   | { type: 'CLEAR_CHORD_HIGHLIGHT' }
   | { type: 'UPDATE_FADED_CELLS' } // A4: Check and update faded cells
   | { type: 'USE_PROBABILITY_LENS' }
-  | { type: 'CLEAR_PROBABILITY_LENS' };
+  | { type: 'CLEAR_PROBABILITY_LENS' }
+  | { type: 'USE_MINE_DETECTOR'; row: number; col: number }
+  | { type: 'CLEAR_MINE_DETECTOR_RESULT' };

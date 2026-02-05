@@ -16,12 +16,16 @@ interface CellProps {
   safePathMode?: boolean; // For Safe Path targeting
   defusalKitMode?: boolean; // For Defusal Kit targeting
   surveyMode?: boolean; // For Survey targeting
+  mineDetectorMode?: boolean; // For Mine Detector scan targeting
   peekValue?: number | 'mine' | null; // The peeked value to display
+  mineDetectorResultValue?: number | null; // Mine Detector scan result for this cell
   onXRay?: (row: number, col: number) => void;
   onPeek?: (row: number, col: number) => void;
   onSafePath?: (row: number, col: number) => void;
   onDefusalKit?: (row: number, col: number) => void;
   onSurvey?: (row: number, col: number) => void;
+  onMineDetector?: (row: number, col: number) => void;
+  isMineDetectorScanned?: boolean; // This cell was already scanned this floor
   onHover?: (row: number, col: number) => void; // For Mine Detector
   onHoverEnd?: () => void; // For Mine Detector
   inDetectorZone?: boolean; // For Mine Detector visual overlay
@@ -49,12 +53,16 @@ function CellComponent({
   safePathMode = false,
   defusalKitMode = false,
   surveyMode = false,
+  mineDetectorMode = false,
   peekValue = null,
+  mineDetectorResultValue = null,
   onXRay,
   onPeek,
   onSafePath,
   onDefusalKit,
   onSurvey,
+  onMineDetector,
+  isMineDetectorScanned = false,
   onHover,
   onHoverEnd,
   inDetectorZone = false,
@@ -95,6 +103,13 @@ function CellComponent({
       return;
     }
 
+    // Mine Detector mode - works on hidden cells that haven't been scanned yet
+    if (mineDetectorMode && onMineDetector && cell.state === CellState.Hidden) {
+      if (isMineDetectorScanned) return; // Already scanned, do nothing
+      onMineDetector(cell.row, cell.col);
+      return;
+    }
+
     // Survey mode - works on hidden cells
     if (surveyMode && onSurvey && cell.state === CellState.Hidden) {
       onSurvey(cell.row, cell.col);
@@ -113,7 +128,6 @@ function CellComponent({
     if (gameOver) return;
     onFlag(cell.row, cell.col);
   };
-
 
   const getClassName = () => {
     const classes = ['cell'];
@@ -143,6 +157,15 @@ function CellComponent({
       }
       if (surveyMode && hoveredRow === cell.row) {
         classes.push('cell-row-highlight-yellow');
+      }
+      if (mineDetectorMode && !isMineDetectorScanned) {
+        classes.push('cell-detector-target');
+      }
+      if (mineDetectorMode && isMineDetectorScanned) {
+        classes.push('cell-detector-already-scanned');
+      }
+      if (mineDetectorResultValue !== null) {
+        classes.push('cell-detector-scanned');
       }
       if (peekValue !== null) {
         classes.push('cell-peeked');
@@ -191,6 +214,11 @@ function CellComponent({
   };
 
   const getContent = () => {
+    // Show mine detector scan result
+    if (mineDetectorResultValue !== null && cell.state === CellState.Hidden) {
+      return <span className="detector-scan-number">{mineDetectorResultValue}</span>;
+    }
+
     // Show peek value if this cell is being peeked
     if (peekValue !== null && cell.state === CellState.Hidden) {
       if (peekValue === 'mine') {
@@ -230,11 +258,7 @@ function CellComponent({
 
     // If mouse button is held and entering a revealed numbered cell, show chord highlight
     if (e.buttons > 0 && !gameOver) {
-      if (
-        onChordHighlightStart &&
-        cell.state === CellState.Revealed &&
-        cell.adjacentMines > 0
-      ) {
+      if (onChordHighlightStart && cell.state === CellState.Revealed && cell.adjacentMines > 0) {
         onChordHighlightStart(cell.row, cell.col);
       } else if (onChordHighlightEnd) {
         // Clear highlight when moving to a non-chordable cell while button held
@@ -317,7 +341,10 @@ const Cell = memo(CellComponent, (prev, next) => {
     prev.safePathMode === next.safePathMode &&
     prev.defusalKitMode === next.defusalKitMode &&
     prev.surveyMode === next.surveyMode &&
+    prev.mineDetectorMode === next.mineDetectorMode &&
+    prev.isMineDetectorScanned === next.isMineDetectorScanned &&
     prev.peekValue === next.peekValue &&
+    prev.mineDetectorResultValue === next.mineDetectorResultValue &&
     prev.inDetectorZone === next.inDetectorZone &&
     prev.isChordHighlighted === next.isChordHighlighted &&
     prev.isFaded === next.isFaded &&
