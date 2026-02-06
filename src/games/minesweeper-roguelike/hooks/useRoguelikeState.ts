@@ -615,7 +615,7 @@ function roguelikeReducer(state: RoguelikeGameState, action: RoguelikeAction): R
           peekUsedThisFloor: false,
           safePathUsedThisFloor: false,
           defusalKitUsedThisFloor: false,
-          surveyUsedThisFloor: false,
+          surveyChargesRemaining: 2,
           probabilityLensUsedThisFloor: false,
           mineDetectorScansRemaining: 3,
           sixthSenseChargesRemaining: 1,
@@ -626,7 +626,7 @@ function roguelikeReducer(state: RoguelikeGameState, action: RoguelikeAction): R
         patternMemoryCells: new Set(),
         zeroCellCount: null,
         peekCell: null,
-        surveyResult: null,
+        surveyedRows: new Map(),
         heatMapEnabled: hasHeatMap,
         cellsRevealedThisFloor: 0,
         probabilityLensCells: new Set(),
@@ -678,7 +678,7 @@ function roguelikeReducer(state: RoguelikeGameState, action: RoguelikeAction): R
           peekUsedThisFloor: false,
           safePathUsedThisFloor: false,
           defusalKitUsedThisFloor: false,
-          surveyUsedThisFloor: false,
+          surveyChargesRemaining: 2,
           probabilityLensUsedThisFloor: false,
           mineDetectorScansRemaining: 3,
           sixthSenseChargesRemaining: 1,
@@ -689,7 +689,7 @@ function roguelikeReducer(state: RoguelikeGameState, action: RoguelikeAction): R
         patternMemoryCells: new Set(),
         zeroCellCount: null,
         peekCell: null,
-        surveyResult: null,
+        surveyedRows: new Map(),
         heatMapEnabled: hasPowerUp(state.run, 'heat-map'),
         cellsRevealedThisFloor: 0,
         probabilityLensCells: new Set(),
@@ -779,20 +779,27 @@ function roguelikeReducer(state: RoguelikeGameState, action: RoguelikeAction): R
     case 'USE_SURVEY': {
       if (state.phase !== GamePhase.Playing) return state;
       if (!hasPowerUp(state.run, 'survey')) return state;
-      if (state.run.surveyUsedThisFloor) return state;
+      if (state.run.surveyChargesRemaining <= 0) return state;
       if (state.isFirstClick) return state;
 
       const { direction, index } = action;
+
+      // Don't allow re-surveying an already surveyed row
+      if (direction === 'row' && state.surveyedRows.has(index)) return state;
+
       const mineCount = calculateLineMineCount(state.board, direction, index);
+
+      const newSurveyedRows = new Map(state.surveyedRows);
+      newSurveyedRows.set(index, mineCount);
 
       return {
         ...state,
         run: {
           ...state.run,
-          surveyUsedThisFloor: true,
+          surveyChargesRemaining: state.run.surveyChargesRemaining - 1,
           momentumActive: false,
         },
-        surveyResult: { direction, index, mineCount },
+        surveyedRows: newSurveyedRows,
       };
     }
 
@@ -906,7 +913,7 @@ function roguelikeReducer(state: RoguelikeGameState, action: RoguelikeAction): R
             peekUsedThisFloor: false,
             safePathUsedThisFloor: false,
             defusalKitUsedThisFloor: false,
-            surveyUsedThisFloor: false,
+            surveyChargesRemaining: 2,
             probabilityLensUsedThisFloor: false,
             mineDetectorScansRemaining: 3,
             sixthSenseChargesRemaining: 1,

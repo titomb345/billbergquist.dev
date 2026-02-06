@@ -26,6 +26,7 @@ interface CellProps {
   onSurvey?: (row: number, col: number) => void;
   onMineDetector?: (row: number, col: number) => void;
   isMineDetectorScanned?: boolean; // This cell was already scanned this floor
+  isSurveyAlreadyDone?: boolean; // This cell's row was already surveyed this floor
   onHover?: (row: number, col: number) => void; // For Mine Detector
   onHoverEnd?: () => void; // For Mine Detector
   inDetectorZone?: boolean; // For Mine Detector visual overlay
@@ -63,6 +64,7 @@ function CellComponent({
   onSurvey,
   onMineDetector,
   isMineDetectorScanned = false,
+  isSurveyAlreadyDone = false,
   onHover,
   onHoverEnd,
   inDetectorZone = false,
@@ -110,8 +112,9 @@ function CellComponent({
       return;
     }
 
-    // Survey mode - works on hidden cells
+    // Survey mode - works on hidden cells in unsurveyed rows
     if (surveyMode && onSurvey && cell.state === CellState.Hidden) {
+      if (isSurveyAlreadyDone) return; // Already surveyed, do nothing
       onSurvey(cell.row, cell.col);
       return;
     }
@@ -155,8 +158,11 @@ function CellComponent({
       if (safePathMode && hoveredRow === cell.row) {
         classes.push('cell-row-highlight-green');
       }
-      if (surveyMode && hoveredRow === cell.row) {
+      if (surveyMode && hoveredRow === cell.row && !isSurveyAlreadyDone) {
         classes.push('cell-row-highlight-yellow');
+      }
+      if (surveyMode && isSurveyAlreadyDone) {
+        classes.push('cell-survey-already-done');
       }
       if (mineDetectorMode && !isMineDetectorScanned) {
         classes.push('cell-detector-target');
@@ -343,6 +349,7 @@ const Cell = memo(CellComponent, (prev, next) => {
     prev.surveyMode === next.surveyMode &&
     prev.mineDetectorMode === next.mineDetectorMode &&
     prev.isMineDetectorScanned === next.isMineDetectorScanned &&
+    prev.isSurveyAlreadyDone === next.isSurveyAlreadyDone &&
     prev.peekValue === next.peekValue &&
     prev.mineDetectorResultValue === next.mineDetectorResultValue &&
     prev.inDetectorZone === next.inDetectorZone &&

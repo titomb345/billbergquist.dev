@@ -137,7 +137,7 @@ export interface RunState {
   peekUsedThisFloor: boolean; // Peek: preview one cell per floor
   safePathUsedThisFloor: boolean; // Safe Path: reveal row/col per floor
   defusalKitUsedThisFloor: boolean; // Defusal Kit: remove one mine per floor
-  surveyUsedThisFloor: boolean; // Survey: reveal mine count in row/col per floor
+  surveyChargesRemaining: number; // Survey: charges left this floor (starts at 2)
   probabilityLensUsedThisFloor: boolean; // Probability Lens: highlight safest cells per floor
   mineDetectorScansRemaining: number; // Mine Detector: scans left this floor (starts at 3)
   sixthSenseChargesRemaining: number; // Sixth Sense: charges left this floor (starts at 1)
@@ -176,7 +176,7 @@ export interface RoguelikeGameState {
   peekCell: { row: number; col: number; value: number | 'mine' } | null; // Peek preview
   heatMapEnabled: boolean; // Heat Map: tint revealed numbers by danger
   cellsRevealedThisFloor: number; // Count of safe cells revealed this floor
-  surveyResult: { direction: 'row' | 'col'; index: number; mineCount: number } | null; // Survey result
+  surveyedRows: Map<number, number>; // Survey: rowIndex -> mineCount (persists for floor)
   cellRevealTimes: Map<string, number>; // A4: "row,col" -> timestamp when revealed (for amnesia)
   fadedCells: Set<string>; // A4: "row,col" cells that have faded (numbers hidden)
   probabilityLensCells: Set<string>; // Probability Lens: highlighted safest cells

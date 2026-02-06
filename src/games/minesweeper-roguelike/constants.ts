@@ -145,12 +145,12 @@ export const UNCOMMON_POWER_UPS: PowerUp[] = [
   {
     id: 'survey',
     name: 'Survey',
-    description: 'Once per floor, reveal mine count in a chosen row',
+    description: 'Survey a row to learn exactly how many mines it contains. (2 uses per floor)',
     icon: '📊',
     type: 'active',
     rarity: 'uncommon',
-    usesPerFloor: 1,
-    activeHint: 'Click a cell to count mines in that row',
+    usesPerFloor: 2,
+    activeHint: 'Click a row marker to count mines in that row',
   },
   {
     id: 'momentum',
