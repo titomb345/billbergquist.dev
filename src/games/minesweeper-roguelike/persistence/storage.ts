@@ -108,7 +108,7 @@ export function saveGameState(state: RoguelikeGameState): void {
       explodedCell: state.explodedCell,
       closeCallCell: state.closeCallCell,
       // Active relic visual state
-      surveyResult: state.surveyResult,
+      surveyedRows: Array.from(state.surveyedRows.entries()),
       probabilityLensCells: Array.from(state.probabilityLensCells),
       peekCell: state.peekCell,
       mineDetectorScannedCells: Array.from(state.mineDetectorScannedCells),
@@ -237,7 +237,7 @@ export function loadGameState(): RoguelikeGameState | null {
       peekUsedThisFloor: validated.run.peekUsedThisFloor,
       safePathUsedThisFloor: validated.run.safePathUsedThisFloor,
       defusalKitUsedThisFloor: validated.run.defusalKitUsedThisFloor,
-      surveyUsedThisFloor: validated.run.surveyUsedThisFloor,
+      surveyChargesRemaining: validated.run.surveyChargesRemaining,
       probabilityLensUsedThisFloor: validated.run.probabilityLensUsedThisFloor,
       mineDetectorScansRemaining: validated.run.mineDetectorScansRemaining,
       sixthSenseChargesRemaining: validated.run.sixthSenseChargesRemaining,
@@ -276,7 +276,7 @@ export function loadGameState(): RoguelikeGameState | null {
       explodedCell: validated.explodedCell,
       closeCallCell: validated.closeCallCell,
       // Active relic visual state
-      surveyResult: validated.surveyResult,
+      surveyedRows: new Map(validated.surveyedRows),
       probabilityLensCells: new Set(validated.probabilityLensCells),
       peekCell: validated.peekCell,
       mineDetectorScannedCells: new Set(validated.mineDetectorScannedCells),

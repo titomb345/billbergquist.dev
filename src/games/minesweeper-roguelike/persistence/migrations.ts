@@ -109,6 +109,30 @@ export const gameStateMigrations: Record<number, MigrationFn> = {
       },
     };
   },
+  // v7 → v8: Survey rebalance - convert boolean to charges, single result to persisted map
+  7: (state: unknown) => {
+    const s = state as Record<string, unknown>;
+    const run = (s.run ?? {}) as Record<string, unknown>;
+    const surveyUsed = run.surveyUsedThisFloor === true;
+    const { surveyUsedThisFloor: _, ...restRun } = run;
+
+    // Convert old single surveyResult to surveyedRows array
+    const oldResult = s.surveyResult as { direction: string; index: number; mineCount: number } | null;
+    const surveyedRows: [number, number][] = [];
+    if (oldResult && oldResult.direction === 'row') {
+      surveyedRows.push([oldResult.index, oldResult.mineCount]);
+    }
+    const { surveyResult: __, ...restState } = s;
+
+    return {
+      ...restState,
+      surveyedRows,
+      run: {
+        ...restRun,
+        surveyChargesRemaining: surveyUsed ? 0 : 2,
+      },
+    };
+  },
 };
 
 // Stats migrations

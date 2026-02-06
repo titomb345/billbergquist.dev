@@ -42,7 +42,7 @@ export function createInitialRunState(ascensionLevel: AscensionLevel = 0): RunSt
     peekUsedThisFloor: false,
     safePathUsedThisFloor: false,
     defusalKitUsedThisFloor: false,
-    surveyUsedThisFloor: false,
+    surveyChargesRemaining: 2,
     probabilityLensUsedThisFloor: false,
     mineDetectorScansRemaining: 3,
     sixthSenseChargesRemaining: 1,
@@ -78,7 +78,7 @@ export function createRoguelikeInitialState(
     closeCallCell: null,
     zeroCellCount: null,
     peekCell: null,
-    surveyResult: null,
+    surveyedRows: new Map(),
     heatMapEnabled: true, // TEMPORARY: Enable for testing
     cellsRevealedThisFloor: 0,
     cellRevealTimes: new Map(),
@@ -127,7 +127,7 @@ export function setupFloor(state: RoguelikeGameState, floor: number): RoguelikeG
     closeCallCell: null,
     zeroCellCount: null, // Will be set after first click if Floor Scout is active
     peekCell: null,
-    surveyResult: null,
+    surveyedRows: new Map(),
     heatMapEnabled: hasHeatMap,
     cellsRevealedThisFloor: 0,
     cellRevealTimes: new Map(), // A4: Reset reveal times for new floor
@@ -148,7 +148,7 @@ export function setupFloor(state: RoguelikeGameState, floor: number): RoguelikeG
       peekUsedThisFloor: false,
       safePathUsedThisFloor: false,
       defusalKitUsedThisFloor: false,
-      surveyUsedThisFloor: false,
+      surveyChargesRemaining: 2,
       probabilityLensUsedThisFloor: false,
       mineDetectorScansRemaining: 3,
       sixthSenseChargesRemaining: 1,

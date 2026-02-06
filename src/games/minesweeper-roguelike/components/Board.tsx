@@ -21,6 +21,7 @@ interface BoardProps {
   onSafePath?: (row: number, col: number) => void;
   onDefusalKit?: (row: number, col: number) => void;
   surveyMode?: boolean;
+  surveyedRows?: Map<number, number>;
   mineDetectorMode?: boolean;
   onSurvey?: (row: number, col: number) => void;
   onMineDetector?: (row: number, col: number) => void;
@@ -51,6 +52,7 @@ function Board({
   safePathMode = false,
   defusalKitMode = false,
   surveyMode = false,
+  surveyedRows,
   mineDetectorMode = false,
   peekCell,
   mineDetectorResult,
@@ -82,13 +84,54 @@ function Board({
     return rowDiff >= -1 && rowDiff <= 2 && colDiff >= -1 && colDiff <= 2;
   };
 
+  // Show row markers when survey mode is active OR when there are surveyed rows to display
+  const showRowMarkers = surveyMode || (surveyedRows && surveyedRows.size > 0);
+
   return (
     <div
-      className={`minesweeper-board ${xRayMode ? 'xray-mode' : ''}`}
+      className={`minesweeper-board ${xRayMode ? 'xray-mode' : ''} ${showRowMarkers ? 'has-survey-markers' : ''}`}
       onContextMenu={(e) => e.preventDefault()}
     >
       {board.map((row, rowIndex) => (
         <div key={rowIndex} className="board-row">
+          {showRowMarkers && (() => {
+            const isSurveyed = surveyedRows?.has(rowIndex);
+            const mineCount = surveyedRows?.get(rowIndex);
+            const isHovered = surveyMode && hoveredRow === rowIndex && !isSurveyed;
+            // When not in survey mode, only render markers for surveyed rows
+            if (!surveyMode && !isSurveyed) {
+              return <div className="survey-row-marker placeholder" />;
+            }
+            return (
+              <div
+                className={`survey-row-marker ${isSurveyed ? 'surveyed' : ''} ${surveyMode && !isSurveyed ? 'active' : ''} ${surveyMode && isSurveyed ? 'surveyed-targeting' : ''} ${isHovered ? 'hovered' : ''}`}
+                onClick={() => {
+                  if (surveyMode && !isSurveyed && onSurvey) {
+                    onSurvey(rowIndex, 0);
+                  }
+                }}
+                onMouseEnter={() => {
+                  if (surveyMode && !isSurveyed) {
+                    setHoveredRow(rowIndex);
+                  }
+                }}
+                onMouseLeave={() => {
+                  if (surveyMode) {
+                    setHoveredRow(null);
+                  }
+                }}
+              >
+                {isSurveyed ? (
+                  <span className="survey-badge-result">
+                    <span className="survey-badge-mine">💣</span>
+                    <span className="survey-badge-count">{mineCount}</span>
+                  </span>
+                ) : (
+                  <span className="survey-marker-dot">▶</span>
+                )}
+              </div>
+            );
+          })()}
           {row.map((cell) => (
             <Cell
               key={`${cell.row}-${cell.col}`}
@@ -120,6 +163,7 @@ function Board({
               onDefusalKit={onDefusalKit}
               onSurvey={onSurvey}
               onMineDetector={onMineDetector}
+              isSurveyAlreadyDone={surveyMode && (surveyedRows?.has(cell.row) ?? false)}
               isMineDetectorScanned={mineDetectorScannedCells?.has(`${cell.row},${cell.col}`)}
               onHover={onCellHover}
               onHoverEnd={onCellHoverEnd}

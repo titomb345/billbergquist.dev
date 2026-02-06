@@ -138,7 +138,8 @@ function Minesweeper({ resetRef }: MinesweeperProps) {
 
   // Check if Survey is available
   const hasSurvey = state.run.activePowerUps.some((p) => p.id === 'survey');
-  const canUseSurvey = hasSurvey && !state.run.surveyUsedThisFloor && !state.isFirstClick;
+  const canUseSurvey =
+    hasSurvey && state.run.surveyChargesRemaining > 0 && !state.isFirstClick;
 
   // Check if Probability Lens is available
   const hasProbabilityLens = state.run.activePowerUps.some((p) => p.id === 'probability-lens');
@@ -284,7 +285,7 @@ function Minesweeper({ resetRef }: MinesweeperProps) {
             surveyMode={surveyMode}
             canUseSurvey={canUseSurvey}
             onToggleSurvey={handleToggleSurveyMode}
-            surveyResult={state.surveyResult}
+            surveyChargesRemaining={state.run.surveyChargesRemaining}
             mineDetectorMode={mineDetectorMode}
             canUseMineDetector={canUseMineDetector}
             onToggleMineDetector={handleToggleMineDetectorMode}
@@ -360,6 +361,7 @@ function Minesweeper({ resetRef }: MinesweeperProps) {
                 onSafePath={handleSafePathClick}
                 onDefusalKit={handleDefusalKitClick}
                 onSurvey={handleSurveyClick}
+                surveyedRows={state.surveyedRows}
                 onMineDetector={handleMineDetectorClick}
                 onCellHover={mineDetectorMode ? handleCellHover : undefined}
                 onCellHoverEnd={mineDetectorMode ? handleCellHoverEnd : undefined}

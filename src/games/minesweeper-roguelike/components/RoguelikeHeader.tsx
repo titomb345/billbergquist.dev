@@ -24,7 +24,7 @@ interface RoguelikeHeaderProps {
   surveyMode?: boolean;
   canUseSurvey?: boolean;
   onToggleSurvey?: () => void;
-  surveyResult?: { direction: 'row' | 'col'; index: number; mineCount: number } | null;
+  surveyChargesRemaining?: number;
   mineDetectorMode?: boolean;
   canUseMineDetector?: boolean;
   onToggleMineDetector?: () => void;
@@ -68,7 +68,7 @@ function RoguelikeHeader({
   surveyMode = false,
   canUseSurvey = false,
   onToggleSurvey,
-  surveyResult,
+  surveyChargesRemaining = 0,
   mineDetectorMode = false,
   canUseMineDetector = false,
   onToggleMineDetector,
@@ -228,7 +228,7 @@ function RoguelikeHeader({
           const isDefusalKit = powerUp.id === 'defusal-kit';
           const isDefusalKitUsed = isDefusalKit && run.defusalKitUsedThisFloor;
           const isSurvey = powerUp.id === 'survey';
-          const isSurveyUsed = isSurvey && run.surveyUsedThisFloor;
+          const isSurveyUsed = isSurvey && run.surveyChargesRemaining <= 0;
           const isMineDetector = powerUp.id === 'mine-detector';
           const isMineDetectorUsed = isMineDetector && run.mineDetectorScansRemaining <= 0;
           const isProbabilityLens = powerUp.id === 'probability-lens';
@@ -272,7 +272,7 @@ function RoguelikeHeader({
             isProbabilityLensClickable ||
             isSixthSenseClickable;
 
-          const showSurveyResult = isSurvey && surveyResult != null;
+          const showSurveyBadge = isSurvey;
           const isFloorScout = powerUp.id === 'floor-scout';
           const showMineDetectorBadge = isMineDetector;
           const showZeroCellCount = isFloorScout && zeroCellCount != null;
@@ -293,7 +293,7 @@ function RoguelikeHeader({
           return (
             <span
               key={powerUp.id}
-              className={`powerup-icon-wrapper rarity-${powerUp.rarity} ${isUsed ? 'used' : ''} ${isXRay ? 'xray' : ''} ${xRayMode ? 'xray-active' : ''} ${isPeek ? 'peek' : ''} ${peekMode ? 'peek-active' : ''} ${isSafePath ? 'safe-path' : ''} ${safePathMode ? 'safe-path-active' : ''} ${isDefusalKit ? 'defusal-kit' : ''} ${defusalKitMode ? 'defusal-kit-active' : ''} ${isSurvey ? 'survey' : ''} ${surveyMode ? 'survey-active' : ''} ${isMineDetector ? 'mine-detector' : ''} ${mineDetectorMode ? 'mine-detector-active' : ''} ${isProbabilityLens ? 'probability-lens' : ''} ${probabilityLensActive ? 'probability-lens-active' : ''} ${isSixthSense ? 'sixth-sense' : ''} ${isSixthSense && sixthSenseArmed ? 'sixth-sense-active' : ''} ${isClickable ? 'clickable' : ''} ${showSurveyResult || showZeroCellCount ? 'detector-active' : ''}`}
+              className={`powerup-icon-wrapper rarity-${powerUp.rarity} ${isUsed ? 'used' : ''} ${isXRay ? 'xray' : ''} ${xRayMode ? 'xray-active' : ''} ${isPeek ? 'peek' : ''} ${peekMode ? 'peek-active' : ''} ${isSafePath ? 'safe-path' : ''} ${safePathMode ? 'safe-path-active' : ''} ${isDefusalKit ? 'defusal-kit' : ''} ${defusalKitMode ? 'defusal-kit-active' : ''} ${isSurvey ? 'survey' : ''} ${surveyMode ? 'survey-active' : ''} ${isMineDetector ? 'mine-detector' : ''} ${mineDetectorMode ? 'mine-detector-active' : ''} ${isProbabilityLens ? 'probability-lens' : ''} ${probabilityLensActive ? 'probability-lens-active' : ''} ${isSixthSense ? 'sixth-sense' : ''} ${isSixthSense && sixthSenseArmed ? 'sixth-sense-active' : ''} ${isClickable ? 'clickable' : ''} ${showZeroCellCount ? 'detector-active' : ''}`}
               onMouseEnter={(e) => handleMouseEnter(powerUp, isUsed, e.currentTarget)}
               onMouseLeave={() => setHoveredPowerUp(null)}
               onClick={getClickHandler()}
@@ -303,8 +303,8 @@ function RoguelikeHeader({
               </span>
               {/* Lightning badge for active-type relics */}
               {isActive && <span className="active-relic-badge">⚡</span>}
-              {showSurveyResult && (
-                <span className="mine-detector-badge survey-badge">{surveyResult.mineCount}</span>
+              {showSurveyBadge && (
+                <span className="mine-detector-badge survey-badge">{surveyChargesRemaining}</span>
               )}
               {showMineDetectorBadge && (
                 <span className="mine-detector-badge">{mineDetectorScansRemaining}</span>

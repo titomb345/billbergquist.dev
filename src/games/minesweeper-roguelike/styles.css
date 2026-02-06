@@ -991,6 +991,97 @@
   cursor: crosshair;
 }
 
+/* Survey left-edge row markers - absolutely positioned so they don't shift the board */
+.minesweeper-board.has-survey-markers .board-row {
+  position: relative;
+}
+
+.survey-row-marker {
+  position: absolute;
+  right: 100%;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 100%;
+  cursor: default;
+  user-select: none;
+}
+
+.survey-row-marker.active {
+  cursor: crosshair;
+  color: var(--neon-yellow);
+  opacity: 0.7;
+  transition: opacity 0.15s, text-shadow 0.15s;
+}
+
+.survey-row-marker.active:hover,
+.survey-row-marker.hovered {
+  opacity: 1;
+  text-shadow: 0 0 8px var(--neon-yellow-glow);
+}
+
+/* Surveyed badge - full opacity when not in targeting mode */
+.survey-row-marker.surveyed {
+  cursor: default;
+}
+
+/* Dimmed when in targeting mode (already used) */
+.survey-row-marker.surveyed-targeting {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Invisible placeholder - still absolutely positioned, no layout impact */
+.survey-row-marker.placeholder {
+  visibility: hidden;
+}
+
+.survey-marker-dot {
+  font-size: 10px;
+  line-height: 1;
+}
+
+.survey-badge-result {
+  display: flex;
+  align-items: center;
+  gap: 1px;
+  font-size: 11px;
+  line-height: 1;
+  color: var(--neon-yellow);
+  text-shadow: 0 0 6px var(--neon-yellow-glow);
+}
+
+.survey-badge-mine {
+  font-size: 9px;
+}
+
+.survey-badge-count {
+  font-weight: 700;
+  font-family: 'Courier New', monospace;
+}
+
+/* Survey - already surveyed cell indicator (shown only during survey mode) */
+.cell-survey-already-done {
+  position: relative;
+  cursor: not-allowed;
+  opacity: 0.5;
+  border-color: rgba(234, 179, 8, 0.3) !important;
+}
+
+.cell-survey-already-done::after {
+  content: '✓';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 10px;
+  color: var(--neon-yellow);
+  opacity: 0.6;
+  pointer-events: none;
+}
+
 /* Peeked cell - show the value temporarily */
 .cell-peeked {
   background: rgba(168, 85, 247, 0.3) !important;
