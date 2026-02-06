@@ -10,6 +10,7 @@ import RunOverScreen from './components/RunOverScreen';
 import ExplosionOverlay from './components/ExplosionOverlay';
 import FloorClearOverlay from './components/FloorClearOverlay';
 import IronWillSaveOverlay from './components/IronWillSaveOverlay';
+import PauseOverlay from './components/PauseOverlay';
 import GameToast from './components/GameToast';
 import { isFinalFloor, hasPowerUp } from './logic/roguelikeLogic';
 import { GamePhase } from './types';
@@ -19,9 +20,11 @@ import './styles.css';
 
 interface MinesweeperProps {
   resetRef?: MutableRefObject<(() => void) | null>;
+  isPaused?: boolean;
+  onResume?: () => void;
 }
 
-function Minesweeper({ resetRef }: MinesweeperProps) {
+function Minesweeper({ resetRef, isPaused = false, onResume }: MinesweeperProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const isConstrained = useContainerWidth(containerRef);
   const { stats, recordRun } = useRoguelikeStats();
@@ -41,13 +44,12 @@ function Minesweeper({ resetRef }: MinesweeperProps) {
     useMineDetector,
     toggleSixthSenseArm,
     selectPowerUp,
-    skipDraft,
     explosionComplete,
     floorClearComplete,
     ironWillComplete,
     setChordHighlight,
     clearChordHighlight,
-  } = useRoguelikeState(isConstrained);
+  } = useRoguelikeState(isConstrained, isPaused);
 
   const [xRayMode, setXRayMode] = useState(false);
   const [peekMode, setPeekMode] = useState(false);
@@ -92,8 +94,17 @@ function Minesweeper({ resetRef }: MinesweeperProps) {
     };
   }, [resetRef, handleGoToStart]);
 
+  // Auto-clear pause when phase changes away from Playing
+  useEffect(() => {
+    if (state.phase !== GamePhase.Playing && isPaused) {
+      onResume?.();
+    }
+  }, [state.phase, isPaused, onResume]);
+
   const handleStartRun = (ascensionLevel: AscensionLevel = 0) => {
-    startRun(ascensionLevel);
+    const params = new URLSearchParams(window.location.search);
+    const startFloor = parseInt(params.get('floor') ?? '', 10);
+    startRun(ascensionLevel, startFloor > 0 ? startFloor : undefined);
   };
 
   // Compute mine density info (single source of truth for HUD display)
@@ -363,6 +374,9 @@ function Minesweeper({ resetRef }: MinesweeperProps) {
               />
             </div>
           </div>
+          {isPaused && onResume && (
+            <PauseOverlay onResume={onResume} onRestartRun={handleGoToStart} />
+          )}
         </>
       )}
 
@@ -373,7 +387,6 @@ function Minesweeper({ resetRef }: MinesweeperProps) {
           floorCleared={state.run.currentFloor}
           score={state.run.score}
           onSelect={selectPowerUp}
-          onContinue={() => skipDraft(500)}
         />
       )}
 
