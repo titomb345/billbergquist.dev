@@ -175,26 +175,6 @@ function roguelikeReducer(state: RoguelikeGameState, action: RoguelikeAction): R
     case 'TICK': {
       if (state.phase !== GamePhase.Playing) return state;
 
-      const modifiers = getAscensionModifiers(state.run.ascensionLevel);
-
-      // A2: Countdown timer mode
-      if (modifiers.timerCountdown !== null) {
-        const newTime = state.time - 1;
-        if (newTime <= 0) {
-          // Time's up - explode!
-          return {
-            ...state,
-            time: 0,
-            phase: GamePhase.Exploding,
-            explodedCell: null, // No specific cell exploded
-          };
-        }
-        return {
-          ...state,
-          time: newTime,
-        };
-      }
-
       // Normal count-up timer
       return {
         ...state,
@@ -225,11 +205,12 @@ function roguelikeReducer(state: RoguelikeGameState, action: RoguelikeAction): R
         const hasBreathingRoom = hasPowerUp(state.run, 'breathing-room');
         const modifiers = getAscensionModifiers(state.run.ascensionLevel);
 
-        if (hasCautiousStart || hasBreathingRoom || modifiers.toroidal) {
+        if (hasCautiousStart || hasBreathingRoom || modifiers.toroidal || modifiers.coldStart) {
           newBoard = placeMinesWithConstraints(createEmptyBoard(config), config, row, col, {
             cautiousStart: hasCautiousStart,
             breathingRoom: hasBreathingRoom,
             toroidal: modifiers.toroidal,
+            coldStart: modifiers.coldStart,
           });
         } else {
           newBoard = placeMines(createEmptyBoard(config), config, row, col);
@@ -578,7 +559,6 @@ function roguelikeReducer(state: RoguelikeGameState, action: RoguelikeAction): R
       const newPowerUps = [...state.run.activePowerUps, action.powerUp];
       const hasHeatMap = newPowerUps.some((p) => p.id === 'heat-map');
       const hasOraclesGift = newPowerUps.some((p) => p.id === 'oracles-gift');
-      const modifiers = getAscensionModifiers(state.run.ascensionLevel);
 
       // Set up next floor (with Oracle's Gift density bonus and trauma stacks if applicable)
       const nextFloor = state.run.currentFloor + 1;
@@ -592,16 +572,13 @@ function roguelikeReducer(state: RoguelikeGameState, action: RoguelikeAction): R
       );
       const newBoard = createEmptyBoard(floorConfig);
 
-      // A2: Initialize countdown timer if applicable
-      const initialTime = modifiers.timerCountdown ?? 0;
-
       return {
         ...state,
         phase: GamePhase.Playing,
         board: newBoard,
         floorConfig,
         minesRemaining: floorConfig.mines,
-        time: initialTime,
+        time: 0,
         isFirstClick: true,
         run: {
           ...state.run,
@@ -640,7 +617,6 @@ function roguelikeReducer(state: RoguelikeGameState, action: RoguelikeAction): R
     case 'SKIP_DRAFT': {
       if (state.phase !== GamePhase.Draft) return state;
 
-      const modifiers = getAscensionModifiers(state.run.ascensionLevel);
       const hasOraclesGiftSkip = hasPowerUp(state.run, 'oracles-gift');
 
       // Set up next floor with bonus points (with Oracle's Gift density bonus and trauma stacks if applicable)
@@ -655,16 +631,13 @@ function roguelikeReducer(state: RoguelikeGameState, action: RoguelikeAction): R
       );
       const newBoard = createEmptyBoard(floorConfig);
 
-      // A2: Initialize countdown timer if applicable
-      const initialTime = modifiers.timerCountdown ?? 0;
-
       return {
         ...state,
         phase: GamePhase.Playing,
         board: newBoard,
         floorConfig,
         minesRemaining: floorConfig.mines,
-        time: initialTime,
+        time: 0,
         isFirstClick: true,
         run: {
           ...state.run,
@@ -869,7 +842,6 @@ function roguelikeReducer(state: RoguelikeGameState, action: RoguelikeAction): R
 
       if (canUseQuickRecovery) {
         // Restart the current floor (with Oracle's Gift density bonus and trauma stacks if applicable)
-        const modifiers = getAscensionModifiers(state.run.ascensionLevel);
         const hasOraclesGiftRecovery = hasPowerUp(state.run, 'oracles-gift');
         const extraDensityRecovery = hasOraclesGiftRecovery ? ORACLES_GIFT_MINE_DENSITY_BONUS : 0;
         const floorConfig = getFloorConfig(
@@ -881,16 +853,13 @@ function roguelikeReducer(state: RoguelikeGameState, action: RoguelikeAction): R
         );
         const newBoard = createEmptyBoard(floorConfig);
 
-        // A2: Reset countdown timer if applicable
-        const initialTime = modifiers.timerCountdown ?? 0;
-
         return {
           ...state,
           phase: GamePhase.Playing,
           board: newBoard,
           floorConfig,
           minesRemaining: floorConfig.mines,
-          time: initialTime,
+          time: 0,
           isFirstClick: true,
           explodedCell: null,
           dangerCells: new Set(),

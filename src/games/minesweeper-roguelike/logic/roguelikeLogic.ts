@@ -7,7 +7,7 @@ import {
   ORACLES_GIFT_MINE_DENSITY_BONUS,
 } from '../constants';
 import { createEmptyBoard, revealCell, revealCascade } from './gameLogic';
-import { AscensionLevel, getAscensionModifiers } from '../ascension';
+import { AscensionLevel } from '../ascension';
 
 // Check for debug URL parameter to enable all powerups
 function hasAllPowerupsParam(): boolean {
@@ -93,7 +93,6 @@ export function createRoguelikeInitialState(
 
 // Set up a new floor (called when starting run or advancing to next floor)
 export function setupFloor(state: RoguelikeGameState, floor: number): RoguelikeGameState {
-  const modifiers = getAscensionModifiers(state.run.ascensionLevel);
   // Apply Oracle's Gift mine density bonus if player has it
   const hasOraclesGift = hasPowerUp(state.run, 'oracles-gift');
   const extraDensity = hasOraclesGift ? ORACLES_GIFT_MINE_DENSITY_BONUS : 0;
@@ -109,16 +108,13 @@ export function setupFloor(state: RoguelikeGameState, floor: number): RoguelikeG
   // Check if player has Heat Map power-up
   const hasHeatMap = hasPowerUp(state.run, 'heat-map');
 
-  // A2: Initialize countdown timer if applicable
-  const initialTime = modifiers.timerCountdown ?? 0;
-
   return {
     ...state,
     phase: GamePhase.Playing,
     board,
     floorConfig,
     minesRemaining: floorConfig.mines,
-    time: initialTime,
+    time: 0,
     isFirstClick: true,
     dangerCells: new Set(),
     chordHighlightCells: new Set(),
