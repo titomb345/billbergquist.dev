@@ -1,7 +1,6 @@
 import { useState, useRef } from 'react';
 import { RunState, PowerUp } from '../types';
 import { MAX_FLOOR } from '../constants';
-import { getAscensionModifiers } from '../ascension';
 
 interface RoguelikeHeaderProps {
   floor: number;
@@ -134,11 +133,6 @@ function RoguelikeHeader({
 
   const hasRelics = run.activePowerUps.length > 0;
 
-  // A2: Check if timer is in countdown mode and low
-  const modifiers = getAscensionModifiers(run.ascensionLevel);
-  const isCountdownMode = modifiers.timerCountdown !== null;
-  const isTimerLow = isCountdownMode && time < 30;
-
   return (
     <div className="roguelike-header">
       {/* Stats Row */}
@@ -157,8 +151,8 @@ function RoguelikeHeader({
           <span className="stat-value mines-value">{formatNumber(minesRemaining)}</span>
         </div>
         <div className="roguelike-stat-item">
-          <span className="stat-label">{isCountdownMode ? 'LEFT' : 'TIME'}</span>
-          <span className={`stat-value time-value ${isTimerLow ? 'timer-warning' : ''}`}>
+          <span className="stat-label">TIME</span>
+          <span className="stat-value time-value">
             {formatNumber(time)}
           </span>
         </div>

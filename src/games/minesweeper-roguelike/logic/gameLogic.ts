@@ -266,6 +266,7 @@ export interface PlaceMinesOptions {
   cautiousStart?: boolean; // First click cell must have ≤2 adjacent mines
   breathingRoom?: boolean; // 2×2 area around first click must be safe
   toroidal?: boolean; // A5: Wrap coordinates at edges
+  coldStart?: boolean; // A1: Only exclude clicked cell, not 3×3
 }
 
 // Place mines with optional power-up constraints
@@ -295,6 +296,9 @@ export function placeMinesWithConstraints(
         }
       }
     }
+  } else if (options.coldStart) {
+    // A1: Only exclude the clicked cell itself (no guaranteed cascade)
+    excludeSet.add(`${excludeRow},${excludeCol}`);
   } else {
     // Default: exclude clicked cell and its neighbors (3×3)
     for (let dr = -1; dr <= 1; dr++) {
