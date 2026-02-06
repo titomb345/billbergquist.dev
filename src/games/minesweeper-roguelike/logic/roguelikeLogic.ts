@@ -79,7 +79,6 @@ export function createRoguelikeInitialState(
     zeroCellCount: null,
     peekCell: null,
     surveyedRows: new Map(),
-    heatMapEnabled: true, // TEMPORARY: Enable for testing
     cellsRevealedThisFloor: 0,
     cellRevealTimes: new Map(),
     fadedCells: new Set(),
@@ -105,9 +104,6 @@ export function setupFloor(state: RoguelikeGameState, floor: number): RoguelikeG
   );
   const board = createEmptyBoard(floorConfig);
 
-  // Check if player has Heat Map power-up
-  const hasHeatMap = hasPowerUp(state.run, 'heat-map');
-
   return {
     ...state,
     phase: GamePhase.Playing,
@@ -124,7 +120,6 @@ export function setupFloor(state: RoguelikeGameState, floor: number): RoguelikeG
     zeroCellCount: null, // Will be set after first click if Floor Scout is active
     peekCell: null,
     surveyedRows: new Map(),
-    heatMapEnabled: hasHeatMap,
     cellsRevealedThisFloor: 0,
     cellRevealTimes: new Map(), // A4: Reset reveal times for new floor
     fadedCells: new Set(), // A4: Reset faded cells for new floor

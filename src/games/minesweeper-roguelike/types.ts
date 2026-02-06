@@ -67,7 +67,6 @@ export type PowerUpId =
   | 'edge-walker'
   | 'danger-sense'
   | 'cautious-start'
-  | 'heat-map'
   | 'breathing-room'
   | 'floor-scout'
   // Uncommon
@@ -174,7 +173,6 @@ export interface RoguelikeGameState {
   closeCallCell: { row: number; col: number } | null; // Cell where Iron Will saved player
   zeroCellCount: number | null; // Floor Scout: count of cells with 0 adjacent mines
   peekCell: { row: number; col: number; value: number | 'mine' } | null; // Peek preview
-  heatMapEnabled: boolean; // Heat Map: tint revealed numbers by danger
   cellsRevealedThisFloor: number; // Count of safe cells revealed this floor
   surveyedRows: Map<number, number>; // Survey: rowIndex -> mineCount (persists for floor)
   cellRevealTimes: Map<string, number>; // A4: "row,col" -> timestamp when revealed (for amnesia)
