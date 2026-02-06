@@ -75,6 +75,9 @@ function CellComponent({
   hasProbabilityLens = false,
   hasOracleGift = false,
 }: CellProps) {
+  const isTargeting =
+    xRayMode || peekMode || safePathMode || defusalKitMode || surveyMode || mineDetectorMode;
+
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
     if (gameOver) return;
@@ -117,6 +120,9 @@ function CellComponent({
       return;
     }
 
+    // Block normal reveal/chord when a power-up targeting mode is active
+    if (isTargeting) return;
+
     if (cell.state === CellState.Revealed && cell.adjacentMines > 0) {
       onChord(cell.row, cell.col);
     } else if (cell.state === CellState.Hidden) {
@@ -127,6 +133,7 @@ function CellComponent({
   const handleContextMenu = (e: React.MouseEvent) => {
     e.preventDefault();
     if (gameOver) return;
+    if (isTargeting) return;
     onFlag(cell.row, cell.col);
   };
 
@@ -278,6 +285,7 @@ function CellComponent({
     if (e.button === 1) {
       e.preventDefault();
       if (gameOver) return;
+      if (isTargeting) return;
       if (cell.state === CellState.Revealed && cell.adjacentMines > 0) {
         onChord(cell.row, cell.col);
       }

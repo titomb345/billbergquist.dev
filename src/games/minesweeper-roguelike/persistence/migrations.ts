@@ -133,6 +133,31 @@ export const gameStateMigrations: Record<number, MigrationFn> = {
       },
     };
   },
+  // v8 → v9: Replace Cautious Start with False Start - add per-floor state
+  8: (state: unknown) => {
+    const s = state as Record<string, unknown>;
+    const run = (s.run ?? {}) as Record<string, unknown>;
+    return {
+      ...s,
+      falseStartTriggered: false,
+      run: {
+        ...run,
+        falseStartAvailableThisFloor: true,
+      },
+    };
+  },
+  // v9 → v10: Pattern Memory once-per-floor limit
+  9: (state: unknown) => {
+    const s = state as Record<string, unknown>;
+    const run = (s.run ?? {}) as Record<string, unknown>;
+    return {
+      ...s,
+      run: {
+        ...run,
+        patternMemoryAvailableThisFloor: true,
+      },
+    };
+  },
 };
 
 // Stats migrations

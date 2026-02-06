@@ -10,6 +10,7 @@ import RunOverScreen from './components/RunOverScreen';
 import ExplosionOverlay from './components/ExplosionOverlay';
 import FloorClearOverlay from './components/FloorClearOverlay';
 import IronWillSaveOverlay from './components/IronWillSaveOverlay';
+import GameToast from './components/GameToast';
 import { isFinalFloor, hasPowerUp } from './logic/roguelikeLogic';
 import { GamePhase } from './types';
 import { AscensionLevel } from './ascension';
@@ -316,44 +317,15 @@ function Minesweeper({ resetRef }: MinesweeperProps) {
             sixthSenseChargesRemaining={state.run.sixthSenseChargesRemaining}
           />
           <div className="board-with-hints">
-            {xRayMode && (
-              <div className="xray-hint">
-                {state.run.activePowerUps.find((p) => p.id === 'x-ray-vision')?.activeHint}
-              </div>
-            )}
-            {peekMode && (
-              <div className="xray-hint peek-hint">
-                {state.run.activePowerUps.find((p) => p.id === 'peek')?.activeHint}
-              </div>
-            )}
-            {safePathMode && (
-              <div className="xray-hint safe-path-hint">
-                {state.run.activePowerUps.find((p) => p.id === 'safe-path')?.activeHint}
-              </div>
-            )}
-            {defusalKitMode && (
-              <div className="xray-hint defusal-hint">
-                {state.run.activePowerUps.find((p) => p.id === 'defusal-kit')?.activeHint}
-              </div>
-            )}
-            {surveyMode && (
-              <div className="xray-hint survey-hint">
-                {state.run.activePowerUps.find((p) => p.id === 'survey')?.activeHint}
-              </div>
-            )}
-            {mineDetectorMode && (
-              <div className="xray-hint mine-detector-hint">
-                {state.run.activePowerUps.find((p) => p.id === 'mine-detector')?.activeHint}
-              </div>
-            )}
-            {state.run.sixthSenseArmed && (
-              <div className="xray-hint sixth-sense-hint">
-                {state.run.activePowerUps.find((p) => p.id === 'sixth-sense')?.activeHint}
-              </div>
-            )}
-            {state.sixthSenseTriggered && (
-              <div className="sixth-sense-toast">Sixth Sense triggered!</div>
-            )}
+            <GameToast variant="hint" visible={xRayMode} message={state.run.activePowerUps.find((p) => p.id === 'x-ray-vision')?.activeHint ?? ''} color="var(--neon-mint)" />
+            <GameToast variant="hint" visible={peekMode} message={state.run.activePowerUps.find((p) => p.id === 'peek')?.activeHint ?? ''} color="var(--neon-purple)" />
+            <GameToast variant="hint" visible={safePathMode} message={state.run.activePowerUps.find((p) => p.id === 'safe-path')?.activeHint ?? ''} color="var(--neon-mint)" />
+            <GameToast variant="hint" visible={defusalKitMode} message={state.run.activePowerUps.find((p) => p.id === 'defusal-kit')?.activeHint ?? ''} color="var(--neon-mint)" />
+            <GameToast variant="hint" visible={surveyMode} message={state.run.activePowerUps.find((p) => p.id === 'survey')?.activeHint ?? ''} color="var(--neon-yellow)" />
+            <GameToast variant="hint" visible={mineDetectorMode} message={state.run.activePowerUps.find((p) => p.id === 'mine-detector')?.activeHint ?? ''} color="#00f5ff" />
+            <GameToast variant="hint" visible={state.run.sixthSenseArmed} message={state.run.activePowerUps.find((p) => p.id === 'sixth-sense')?.activeHint ?? ''} color="var(--neon-yellow)" />
+            <GameToast visible={state.sixthSenseTriggered} message="Sixth Sense triggered!" color="var(--neon-yellow)" />
+            <GameToast visible={state.falseStartTriggered} message="False Start — Flag removed" color="#f87171" />
             <div className="minesweeper">
               <Board
                 board={state.board}

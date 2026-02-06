@@ -66,7 +66,7 @@ export type PowerUpId =
   // Common
   | 'edge-walker'
   | 'danger-sense'
-  | 'cautious-start'
+  | 'false-start'
   | 'breathing-room'
   | 'floor-scout'
   // Uncommon
@@ -141,6 +141,8 @@ export interface RunState {
   mineDetectorScansRemaining: number; // Mine Detector: scans left this floor (starts at 3)
   sixthSenseChargesRemaining: number; // Sixth Sense: charges left this floor (starts at 1)
   sixthSenseArmed: boolean; // Sixth Sense: currently armed for next click
+  falseStartAvailableThisFloor: boolean; // False Start: available to catch one incorrect flag
+  patternMemoryAvailableThisFloor: boolean; // Pattern Memory: once per floor trigger
   seed: string; // Run seed for sharing/comparing runs
   ascensionLevel: import('./ascension').AscensionLevel; // Current ascension level for this run
 }
@@ -182,6 +184,7 @@ export interface RoguelikeGameState {
   mineDetectorScannedCells: Set<string>; // Cell keys "row,col" scanned this floor (no-repeat)
   mineDetectorResult: { row: number; col: number; count: number } | null; // Last scan result
   sixthSenseTriggered: boolean; // Sixth Sense: redirect just occurred (for toast message)
+  falseStartTriggered: boolean; // False Start: incorrect flag was just caught (for toast message)
 }
 
 // Roguelike-specific actions
@@ -213,4 +216,5 @@ export type RoguelikeAction =
   | { type: 'USE_MINE_DETECTOR'; row: number; col: number }
   | { type: 'CLEAR_MINE_DETECTOR_RESULT' }
   | { type: 'TOGGLE_SIXTH_SENSE_ARM' }
-  | { type: 'CLEAR_SIXTH_SENSE_TRIGGERED' };
+  | { type: 'CLEAR_SIXTH_SENSE_TRIGGERED' }
+  | { type: 'CLEAR_FALSE_START_TRIGGERED' };
