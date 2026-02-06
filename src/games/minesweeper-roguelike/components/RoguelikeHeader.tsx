@@ -199,6 +199,16 @@ function RoguelikeHeader({
                   {run.traumaStacks * 5}% mines)
                 </span>
               )}
+              {hoveredPowerUp.powerUp.id === 'quick-recovery' && run.quickRecoveryUsedThisRun && (
+                <span className="powerup-tooltip-trauma">{'\n\n'}Already used this run.</span>
+              )}
+              {hoveredPowerUp.powerUp.id === 'quick-recovery' &&
+                !run.quickRecoveryUsedThisRun &&
+                !run.quickRecoveryEligibleThisFloor && (
+                  <span className="powerup-tooltip-trauma">
+                    {'\n\n'}Too late to trigger this floor.
+                  </span>
+                )}
             </span>
             <span
               className="powerup-tooltip-arrow"
@@ -228,7 +238,8 @@ function RoguelikeHeader({
           // Check per-floor usage instead of run-wide availability
           const isIronWillUsed = run.ironWillUsedThisFloor && powerUp.id === 'iron-will';
           const isQuickRecoveryUsed =
-            powerUp.id === 'quick-recovery' && run.quickRecoveryUsedThisRun;
+            powerUp.id === 'quick-recovery' &&
+            (run.quickRecoveryUsedThisRun || !run.quickRecoveryEligibleThisFloor);
           const isUsed =
             isXRayUsed ||
             isPeekUsed ||

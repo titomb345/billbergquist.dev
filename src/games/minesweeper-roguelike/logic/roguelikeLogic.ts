@@ -37,6 +37,7 @@ export function createInitialRunState(ascensionLevel: AscensionLevel = 0): RunSt
     xRayUsedThisFloor: false,
     luckyStartUsedThisFloor: false,
     quickRecoveryUsedThisRun: false,
+    quickRecoveryEligibleThisFloor: true,
     momentumActive: false,
     peekUsedThisFloor: false,
     safePathUsedThisFloor: false,
@@ -140,6 +141,7 @@ export function setupFloor(state: RoguelikeGameState, floor: number): RoguelikeG
       ...state.run,
       currentFloor: floor,
       ironWillUsedThisFloor: false, // Reset shield for new floor
+      quickRecoveryEligibleThisFloor: !state.run.quickRecoveryUsedThisRun,
       xRayUsedThisFloor: false,
       luckyStartUsedThisFloor: false,
       momentumActive: false,

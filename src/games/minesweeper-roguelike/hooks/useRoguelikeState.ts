@@ -128,6 +128,26 @@ function applyIronWillProtection(
   return { board, run, saved: false, savedCell: null };
 }
 
+// Check if Quick Recovery eligibility should be revoked (progress >= 25%)
+function checkQuickRecoveryEligibility(
+  run: RunState,
+  board: Cell[][],
+  floorConfig: { rows: number; cols: number; mines: number }
+): RunState {
+  if (!run.quickRecoveryEligibleThisFloor) return run;
+  if (run.quickRecoveryUsedThisRun) return run;
+  if (!hasPowerUp(run, 'quick-recovery')) return run;
+
+  const totalSafeCells = floorConfig.rows * floorConfig.cols - floorConfig.mines;
+  if (totalSafeCells <= 0) return run;
+
+  const revealedSafeCells = countRevealedCells(board);
+  if (revealedSafeCells / totalSafeCells >= 0.25) {
+    return { ...run, quickRecoveryEligibleThisFloor: false };
+  }
+  return run;
+}
+
 function roguelikeReducer(state: RoguelikeGameState, action: RoguelikeAction): RoguelikeGameState {
   switch (action.type) {
     case 'START_RUN': {
@@ -358,6 +378,9 @@ function roguelikeReducer(state: RoguelikeGameState, action: RoguelikeAction): R
       // Oracle's Gift: recalculate 50/50 safe cells
       const newOracleGiftCells = calculateOracleGiftCells(newBoard, newRun);
 
+      // Update Quick Recovery eligibility based on progress
+      newRun = checkQuickRecoveryEligibility(newRun, newBoard, state.floorConfig);
+
       return {
         ...state,
         board: newBoard,
@@ -490,6 +513,9 @@ function roguelikeReducer(state: RoguelikeGameState, action: RoguelikeAction): R
       // Oracle's Gift: recalculate 50/50 safe cells
       const chordOracleGiftCells = calculateOracleGiftCells(finalBoard, newRun);
 
+      // Update Quick Recovery eligibility based on progress
+      newRun = checkQuickRecoveryEligibility(newRun, finalBoard, state.floorConfig);
+
       return {
         ...state,
         board: finalBoard,
@@ -533,10 +559,13 @@ function roguelikeReducer(state: RoguelikeGameState, action: RoguelikeAction): R
         newDraftOptions = clearResult.draftOptions;
       }
 
+      // Update Quick Recovery eligibility based on progress
+      const xRayCheckedRun = checkQuickRecoveryEligibility(newRun, newBoard, state.floorConfig);
+
       return {
         ...state,
         board: newBoard,
-        run: newRun,
+        run: xRayCheckedRun,
         phase: newPhase,
         draftOptions: newDraftOptions,
         minesRemaining: state.floorConfig.mines - countFlags(newBoard),
@@ -579,6 +608,7 @@ function roguelikeReducer(state: RoguelikeGameState, action: RoguelikeAction): R
           activePowerUps: newPowerUps,
           currentFloor: nextFloor,
           ironWillUsedThisFloor: false, // Reset shield for new floor
+          quickRecoveryEligibleThisFloor: !state.run.quickRecoveryUsedThisRun,
           xRayUsedThisFloor: false,
           luckyStartUsedThisFloor: false,
           momentumActive: false,
@@ -641,6 +671,7 @@ function roguelikeReducer(state: RoguelikeGameState, action: RoguelikeAction): R
           currentFloor: nextFloor,
           score: state.run.score + action.bonusPoints,
           ironWillUsedThisFloor: false, // Reset shield for new floor
+          quickRecoveryEligibleThisFloor: !state.run.quickRecoveryUsedThisRun,
           xRayUsedThisFloor: false,
           luckyStartUsedThisFloor: false,
           momentumActive: false,
@@ -732,10 +763,13 @@ function roguelikeReducer(state: RoguelikeGameState, action: RoguelikeAction): R
         newDraftOptions = clearResult.draftOptions;
       }
 
+      // Update Quick Recovery eligibility based on progress
+      const safePathCheckedRun = checkQuickRecoveryEligibility(newRun, newBoard, state.floorConfig);
+
       return {
         ...state,
         board: newBoard,
-        run: newRun,
+        run: safePathCheckedRun,
         phase: newPhase,
         draftOptions: newDraftOptions,
         minesRemaining: state.floorConfig.mines - countFlags(newBoard),
@@ -798,16 +832,17 @@ function roguelikeReducer(state: RoguelikeGameState, action: RoguelikeAction): R
         newDraftOptions = clearResult.draftOptions;
       }
 
+      // Update Quick Recovery eligibility based on progress (use updated mine count)
+      const defusalFloorConfig = { ...state.floorConfig, mines: state.floorConfig.mines - 1 };
+      const defusalCheckedRun = checkQuickRecoveryEligibility(newRun, newBoard, defusalFloorConfig);
+
       return {
         ...state,
         board: newBoard,
-        run: newRun,
+        run: defusalCheckedRun,
         phase: newPhase,
         draftOptions: newDraftOptions,
-        floorConfig: {
-          ...state.floorConfig,
-          mines: state.floorConfig.mines - 1,
-        },
+        floorConfig: defusalFloorConfig,
         minesRemaining: state.floorConfig.mines - 1 - countFlags(newBoard),
       };
     }
@@ -815,11 +850,15 @@ function roguelikeReducer(state: RoguelikeGameState, action: RoguelikeAction): R
     case 'EXPLOSION_COMPLETE': {
       if (state.phase !== GamePhase.Exploding) return state;
 
-      // Check if Quick Recovery applies (died before revealing 10 cells, not used this run)
+      // Check if Quick Recovery applies (progress < 25%, not used this run)
+      const totalSafeCells =
+        state.floorConfig.rows * state.floorConfig.cols - state.floorConfig.mines;
+      const floorProgress =
+        totalSafeCells > 0 ? countRevealedCells(state.board) / totalSafeCells : 1;
       const canUseQuickRecovery =
         hasPowerUp(state.run, 'quick-recovery') &&
         !state.run.quickRecoveryUsedThisRun &&
-        state.cellsRevealedThisFloor < 10;
+        floorProgress < 0.25;
 
       if (canUseQuickRecovery) {
         // Restart the current floor (with Oracle's Gift density bonus and trauma stacks if applicable)
@@ -859,6 +898,7 @@ function roguelikeReducer(state: RoguelikeGameState, action: RoguelikeAction): R
           run: {
             ...state.run,
             quickRecoveryUsedThisRun: true,
+            quickRecoveryEligibleThisFloor: false, // Consumed this run
             ironWillUsedThisFloor: false, // Reset shield for floor restart
             xRayUsedThisFloor: false,
             luckyStartUsedThisFloor: false,

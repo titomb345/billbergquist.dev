@@ -232,6 +232,7 @@ export function loadGameState(): RoguelikeGameState | null {
       xRayUsedThisFloor: validated.run.xRayUsedThisFloor,
       luckyStartUsedThisFloor: validated.run.luckyStartUsedThisFloor,
       quickRecoveryUsedThisRun: validated.run.quickRecoveryUsedThisRun,
+      quickRecoveryEligibleThisFloor: validated.run.quickRecoveryEligibleThisFloor,
       momentumActive: validated.run.momentumActive,
       peekUsedThisFloor: validated.run.peekUsedThisFloor,
       safePathUsedThisFloor: validated.run.safePathUsedThisFloor,

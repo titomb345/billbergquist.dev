@@ -107,14 +107,6 @@ export const COMMON_POWER_UPS: PowerUp[] = [
     rarity: 'common',
   },
   {
-    id: 'quick-recovery',
-    name: 'Quick Recovery',
-    description: 'If you die before revealing 10 cells, restart floor once per run',
-    icon: '💫',
-    type: 'passive',
-    rarity: 'common',
-  },
-  {
     id: 'breathing-room',
     name: 'Breathing Room',
     description: 'First click each floor guarantees 2×2 safe area',
@@ -134,6 +126,14 @@ export const COMMON_POWER_UPS: PowerUp[] = [
 
 // ==================== UNCOMMON RELICS ====================
 export const UNCOMMON_POWER_UPS: PowerUp[] = [
+  {
+    id: 'quick-recovery',
+    name: 'Quick Recovery',
+    description: 'If you die before reaching 25% floor progress, restart floor once per run',
+    icon: '💫',
+    type: 'passive',
+    rarity: 'uncommon',
+  },
   {
     id: 'pattern-memory',
     name: 'Pattern Memory',

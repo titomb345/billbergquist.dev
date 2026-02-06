@@ -97,6 +97,18 @@ export const gameStateMigrations: Record<number, MigrationFn> = {
       },
     };
   },
+  // v6 → v7: Quick Recovery rebalance - add per-floor eligibility tracking
+  6: (state: unknown) => {
+    const s = state as Record<string, unknown>;
+    const run = (s.run ?? {}) as Record<string, unknown>;
+    return {
+      ...s,
+      run: {
+        ...run,
+        quickRecoveryEligibleThisFloor: true,
+      },
+    };
+  },
 };
 
 // Stats migrations

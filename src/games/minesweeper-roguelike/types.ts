@@ -68,10 +68,10 @@ export type PowerUpId =
   | 'danger-sense'
   | 'cautious-start'
   | 'heat-map'
-  | 'quick-recovery'
   | 'breathing-room'
   | 'floor-scout'
   // Uncommon
+  | 'quick-recovery'
   | 'pattern-memory'
   | 'survey'
   | 'momentum'
@@ -132,6 +132,7 @@ export interface RunState {
   xRayUsedThisFloor: boolean;
   luckyStartUsedThisFloor: boolean;
   quickRecoveryUsedThisRun: boolean; // Quick Recovery: one restart per run
+  quickRecoveryEligibleThisFloor: boolean; // Quick Recovery: false once progress >= 25%
   momentumActive: boolean; // Momentum: next click guaranteed safe after big cascade
   peekUsedThisFloor: boolean; // Peek: preview one cell per floor
   safePathUsedThisFloor: boolean; // Safe Path: reveal row/col per floor
@@ -174,7 +175,7 @@ export interface RoguelikeGameState {
   zeroCellCount: number | null; // Floor Scout: count of cells with 0 adjacent mines
   peekCell: { row: number; col: number; value: number | 'mine' } | null; // Peek preview
   heatMapEnabled: boolean; // Heat Map: tint revealed numbers by danger
-  cellsRevealedThisFloor: number; // For Quick Recovery check
+  cellsRevealedThisFloor: number; // Count of safe cells revealed this floor
   surveyResult: { direction: 'row' | 'col'; index: number; mineCount: number } | null; // Survey result
   cellRevealTimes: Map<string, number>; // A4: "row,col" -> timestamp when revealed (for amnesia)
   fadedCells: Set<string>; // A4: "row,col" cells that have faded (numbers hidden)

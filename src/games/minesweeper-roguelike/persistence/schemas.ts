@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { ALL_POWER_UP_IDS } from '../constants';
 
-export const GAME_STATE_VERSION = 6;
+export const GAME_STATE_VERSION = 7;
 export const STATS_VERSION = 3;
 
 // Cell schema
@@ -84,6 +84,7 @@ export const RunStateSchema = z.object({
   xRayUsedThisFloor: z.boolean(),
   luckyStartUsedThisFloor: z.boolean(),
   quickRecoveryUsedThisRun: z.boolean().default(false),
+  quickRecoveryEligibleThisFloor: z.boolean().default(true),
   momentumActive: z.boolean().default(false),
   peekUsedThisFloor: z.boolean().default(false),
   safePathUsedThisFloor: z.boolean().default(false),
