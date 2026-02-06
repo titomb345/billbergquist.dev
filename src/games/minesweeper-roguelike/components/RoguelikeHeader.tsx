@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 import { RunState, PowerUp } from '../types';
-import { MAX_FLOOR } from '../constants';
+import { MAX_FLOOR, MineDensityInfo } from '../constants';
 
 interface RoguelikeHeaderProps {
   floor: number;
@@ -29,6 +29,7 @@ interface RoguelikeHeaderProps {
   onToggleMineDetector?: () => void;
   mineDetectorScansRemaining?: number;
   zeroCellCount?: number | null;
+  densityInfo?: MineDensityInfo;
   canUseProbabilityLens?: boolean;
   onUseProbabilityLens?: () => void;
   probabilityLensActive?: boolean;
@@ -73,6 +74,7 @@ function RoguelikeHeader({
   onToggleMineDetector,
   mineDetectorScansRemaining = 0,
   zeroCellCount,
+  densityInfo,
   canUseProbabilityLens = false,
   onUseProbabilityLens,
   probabilityLensActive = false,
@@ -82,6 +84,7 @@ function RoguelikeHeader({
   sixthSenseChargesRemaining = 0,
 }: RoguelikeHeaderProps) {
   const [hoveredPowerUp, setHoveredPowerUp] = useState<HoveredPowerUp | null>(null);
+  const [densityHovered, setDensityHovered] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   const formatNumber = (num: number): string => {
@@ -150,6 +153,67 @@ function RoguelikeHeader({
           <span className="stat-label">MINES</span>
           <span className="stat-value mines-value">{formatNumber(minesRemaining)}</span>
         </div>
+        {densityInfo && (
+          <div
+            className="roguelike-stat-item density-stat"
+            onMouseEnter={() => setDensityHovered(true)}
+            onMouseLeave={() => setDensityHovered(false)}
+          >
+            <span className="stat-label">DENSITY</span>
+            <span className="stat-value density-value">
+              {Math.round(densityInfo.effectiveDensityPercent)}%
+            </span>
+            {densityHovered && (
+              <div className="density-tooltip">
+                <div className="density-tooltip-title">Mine Density</div>
+                <div className="density-tooltip-row">
+                  <span className="density-tooltip-item-label">Base</span>
+                  <span className="density-tooltip-item-value">
+                    {densityInfo.baseMines} mines
+                  </span>
+                </div>
+                {densityInfo.modifiers.length > 0 && (
+                  <>
+                    {densityInfo.modifiers.map((mod, i) => (
+                      <div key={i} className="density-tooltip-row density-tooltip-modifier">
+                        <span className="density-tooltip-item-label">
+                          {mod.label} (+{Math.round(mod.percent)}%)
+                        </span>
+                      </div>
+                    ))}
+                    <div className="density-tooltip-row">
+                      <span className="density-tooltip-item-label">Bonus</span>
+                      <span className="density-tooltip-item-value">
+                        +{densityInfo.bonusMines} mines
+                      </span>
+                    </div>
+                  </>
+                )}
+                <div className="density-tooltip-divider" />
+                <div className="density-tooltip-row density-tooltip-total">
+                  <span className="density-tooltip-item-label">Total</span>
+                  <span className="density-tooltip-item-value">
+                    {densityInfo.effectiveMines} mines (
+                    {Math.round(densityInfo.effectiveDensityPercent)}%)
+                  </span>
+                </div>
+                {densityInfo.projectedNextFloor && (
+                  <>
+                    <div className="density-tooltip-divider" />
+                    <div className="density-tooltip-row density-tooltip-projection">
+                      <span className="density-tooltip-item-label">
+                        Next floor (+{densityInfo.projectedNextFloor.traumaBonusPercent}% trauma)
+                      </span>
+                      <span className="density-tooltip-item-value">
+                        {Math.round(densityInfo.projectedNextFloor.effectiveDensityPercent)}%
+                      </span>
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
+          </div>
+        )}
         <div className="roguelike-stat-item">
           <span className="stat-label">TIME</span>
           <span className="stat-value time-value">

@@ -10,7 +10,6 @@ interface CellProps {
   gameOver: boolean;
   hasDanger?: boolean; // For Danger Sense power-up
   hasPatternMemory?: boolean; // For Pattern Memory power-up (safe diagonal glow)
-  heatMapEnabled?: boolean; // For Heat Map power-up
   xRayMode?: boolean; // For X-Ray Vision targeting
   peekMode?: boolean; // For Peek targeting
   safePathMode?: boolean; // For Safe Path targeting
@@ -48,7 +47,6 @@ function CellComponent({
   gameOver,
   hasDanger = false,
   hasPatternMemory = false,
-  heatMapEnabled = false,
   xRayMode = false,
   peekMode = false,
   safePathMode = false,
@@ -203,16 +201,6 @@ function CellComponent({
         if (isFaded) {
           classes.push('cell-faded');
         }
-        // Add heat map class if enabled (but not for faded cells)
-        if (heatMapEnabled && !isFaded) {
-          if (cell.adjacentMines <= 2) {
-            classes.push('cell-heat-low');
-          } else if (cell.adjacentMines <= 4) {
-            classes.push('cell-heat-medium');
-          } else {
-            classes.push('cell-heat-high');
-          }
-        }
       }
     }
 
@@ -341,7 +329,6 @@ const Cell = memo(CellComponent, (prev, next) => {
     prev.gameOver === next.gameOver &&
     prev.hasDanger === next.hasDanger &&
     prev.hasPatternMemory === next.hasPatternMemory &&
-    prev.heatMapEnabled === next.heatMapEnabled &&
     prev.xRayMode === next.xRayMode &&
     prev.peekMode === next.peekMode &&
     prev.safePathMode === next.safePathMode &&

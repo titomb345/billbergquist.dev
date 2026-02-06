@@ -10,7 +10,6 @@ interface BoardProps {
   gameOver: boolean;
   dangerCells?: Set<string>;
   patternMemoryCells?: Set<string>;
-  heatMapEnabled?: boolean;
   xRayMode?: boolean;
   peekMode?: boolean;
   safePathMode?: boolean;
@@ -46,7 +45,6 @@ function Board({
   gameOver,
   dangerCells,
   patternMemoryCells,
-  heatMapEnabled = false,
   xRayMode = false,
   peekMode = false,
   safePathMode = false,
@@ -142,7 +140,6 @@ function Board({
               gameOver={gameOver}
               hasDanger={dangerCells?.has(`${cell.row},${cell.col}`)}
               hasPatternMemory={patternMemoryCells?.has(`${cell.row},${cell.col}`)}
-              heatMapEnabled={heatMapEnabled}
               xRayMode={xRayMode}
               peekMode={peekMode}
               safePathMode={safePathMode}

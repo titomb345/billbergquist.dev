@@ -29,31 +29,121 @@ export const MOBILE_FLOOR_CONFIGS: FloorConfig[] = [
   { floor: 10, rows: 13, cols: 10, mines: 40 },
 ];
 
+// Mine density modifier for tooltip display
+export interface MineDensityBreakdownItem {
+  label: string;
+  percent: number; // raw modifier % (e.g., 12 for Oracle's Gift)
+}
+
+// Complete density info returned by the single source of truth function
+export interface MineDensityInfo {
+  baseMines: number;
+  bonusMines: number;
+  effectiveMines: number;
+  totalCells: number;
+  effectiveDensityPercent: number; // 0-100
+  modifiers: MineDensityBreakdownItem[]; // active modifiers with their % rates
+  projectedNextFloor: {
+    effectiveDensityPercent: number;
+    traumaBonusPercent: number;
+  } | null;
+}
+
+// Single source of truth for mine density calculation.
+// Used for BOTH mine placement (via getFloorConfig) and HUD display.
+export function computeMineDensityForFloor(params: {
+  floor: number;
+  isMobile: boolean;
+  ascensionLevel: AscensionLevel;
+  hasOraclesGift: boolean;
+  traumaStacks: number; // trauma at floor generation time (for "this floor")
+  currentTraumaStacks?: number; // current trauma (may be higher if Iron Will triggered mid-floor)
+}): MineDensityInfo {
+  const { floor, isMobile, ascensionLevel, hasOraclesGift, traumaStacks } = params;
+  const currentTraumaStacks = params.currentTraumaStacks ?? traumaStacks;
+
+  const configs = isMobile ? MOBILE_FLOOR_CONFIGS : FLOOR_CONFIGS;
+  const index = Math.min(floor - 1, configs.length - 1);
+  const baseConfig = configs[index];
+  const totalCells = baseConfig.rows * baseConfig.cols;
+
+  const modifiers = getAscensionModifiers(ascensionLevel);
+  const oracleBonus = hasOraclesGift ? ORACLES_GIFT_MINE_DENSITY_BONUS : 0;
+  const traumaBonus = traumaStacks * 0.05;
+  const totalDensityBonus = modifiers.mineDensityBonus + oracleBonus + traumaBonus;
+
+  const bonusMines = totalDensityBonus > 0 ? Math.floor(baseConfig.mines * totalDensityBonus) : 0;
+  const effectiveMines = baseConfig.mines + bonusMines;
+  const effectiveDensityPercent = (effectiveMines / totalCells) * 100;
+
+  // Build modifiers list (only active ones)
+  const densityModifiers: MineDensityBreakdownItem[] = [];
+  if (modifiers.mineDensityBonus > 0) {
+    densityModifiers.push({ label: 'Ascension (A3)', percent: modifiers.mineDensityBonus * 100 });
+  }
+  if (hasOraclesGift) {
+    densityModifiers.push({
+      label: "Oracle's Gift",
+      percent: ORACLES_GIFT_MINE_DENSITY_BONUS * 100,
+    });
+  }
+  if (traumaBonus > 0) {
+    densityModifiers.push({ label: 'Iron Will Trauma', percent: traumaBonus * 100 });
+  }
+
+  // Next floor projection (only if trauma stacks exist)
+  let projectedNextFloor: MineDensityInfo['projectedNextFloor'] = null;
+  if (currentTraumaStacks > 0 && floor < configs.length) {
+    const nextFloor = floor + 1;
+    const nextIndex = nextFloor - 1;
+    const nextBaseConfig = configs[nextIndex];
+    const nextTotalCells = nextBaseConfig.rows * nextBaseConfig.cols;
+    const nextTraumaBonus = currentTraumaStacks * 0.05;
+    const nextTotalDensityBonus = modifiers.mineDensityBonus + oracleBonus + nextTraumaBonus;
+    const nextBonusMines =
+      nextTotalDensityBonus > 0 ? Math.floor(nextBaseConfig.mines * nextTotalDensityBonus) : 0;
+    const nextEffectiveMines = nextBaseConfig.mines + nextBonusMines;
+    projectedNextFloor = {
+      effectiveDensityPercent: (nextEffectiveMines / nextTotalCells) * 100,
+      traumaBonusPercent: currentTraumaStacks * 5,
+    };
+  }
+
+  return {
+    baseMines: baseConfig.mines,
+    bonusMines,
+    effectiveMines,
+    totalCells,
+    effectiveDensityPercent,
+    modifiers: densityModifiers,
+    projectedNextFloor,
+  };
+}
+
 export function getFloorConfig(
   floor: number,
   isMobile: boolean,
   ascensionLevel: AscensionLevel = 0,
-  extraMineDensityBonus: number = 0, // Additional mine density modifier (e.g., 0.15 for Oracle's Gift)
+  extraMineDensityBonus: number = 0, // Additional mine density modifier (e.g., 0.12 for Oracle's Gift)
   traumaStacks: number = 0 // Iron Will trauma stacks (+5% per stack)
 ): FloorConfig {
   const configs = isMobile ? MOBILE_FLOOR_CONFIGS : FLOOR_CONFIGS;
   const index = Math.min(floor - 1, configs.length - 1);
   const baseConfig = configs[index];
 
-  // Calculate total mine density bonus (additive)
-  const modifiers = getAscensionModifiers(ascensionLevel);
-  const traumaBonus = traumaStacks * 0.05; // +5% per trauma stack
-  const totalDensityBonus = modifiers.mineDensityBonus + extraMineDensityBonus + traumaBonus;
+  // Delegate to the single source of truth
+  const densityInfo = computeMineDensityForFloor({
+    floor,
+    isMobile,
+    ascensionLevel,
+    hasOraclesGift: extraMineDensityBonus > 0,
+    traumaStacks,
+  });
 
-  if (totalDensityBonus > 0) {
-    const bonusMines = Math.floor(baseConfig.mines * totalDensityBonus);
-    return {
-      ...baseConfig,
-      mines: baseConfig.mines + bonusMines,
-    };
-  }
-
-  return baseConfig;
+  return {
+    ...baseConfig,
+    mines: densityInfo.effectiveMines,
+  };
 }
 
 // Rarity weights for draft selection (must sum to 100)
@@ -95,14 +185,6 @@ export const COMMON_POWER_UPS: PowerUp[] = [
     name: 'Cautious Start',
     description: 'First click each floor guaranteed to have ≤2 adjacent mines',
     icon: '🐢',
-    type: 'passive',
-    rarity: 'common',
-  },
-  {
-    id: 'heat-map',
-    name: 'Heat Map',
-    description: 'Revealed numbers tinted by danger (blue 1-2, orange 3-4, red 5+)',
-    icon: '🌡️',
     type: 'passive',
     rarity: 'common',
   },
@@ -252,7 +334,7 @@ export const EPIC_POWER_UPS: PowerUp[] = [
   {
     id: 'oracles-gift',
     name: "Oracle's Gift",
-    description: 'All true 50/50 situations show the safe choice. BUT: +15% mine density',
+    description: 'All true 50/50 situations show the safe choice. BUT: +12% mine density',
     icon: '🌟',
     type: 'passive',
     rarity: 'epic',
@@ -338,5 +420,5 @@ export function selectDraftOptions(
 
 export const MAX_FLOOR = 10;
 
-// Oracle's Gift mine density bonus (+15%)
-export const ORACLES_GIFT_MINE_DENSITY_BONUS = 0.15;
+// Oracle's Gift mine density bonus (+12%)
+export const ORACLES_GIFT_MINE_DENSITY_BONUS = 0.12;

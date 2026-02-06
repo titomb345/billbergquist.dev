@@ -10,9 +10,10 @@ import RunOverScreen from './components/RunOverScreen';
 import ExplosionOverlay from './components/ExplosionOverlay';
 import FloorClearOverlay from './components/FloorClearOverlay';
 import IronWillSaveOverlay from './components/IronWillSaveOverlay';
-import { isFinalFloor } from './logic/roguelikeLogic';
+import { isFinalFloor, hasPowerUp } from './logic/roguelikeLogic';
 import { GamePhase } from './types';
 import { AscensionLevel } from './ascension';
+import { computeMineDensityForFloor } from './constants';
 import './styles.css';
 
 interface MinesweeperProps {
@@ -93,6 +94,20 @@ function Minesweeper({ resetRef }: MinesweeperProps) {
   const handleStartRun = (ascensionLevel: AscensionLevel = 0) => {
     startRun(ascensionLevel);
   };
+
+  // Compute mine density info (single source of truth for HUD display)
+  // Iron Will can only trigger once per floor, so if it was used, trauma was 1 less at generation time
+  const traumaAtFloorGen = state.run.ironWillUsedThisFloor
+    ? state.run.traumaStacks - 1
+    : state.run.traumaStacks;
+  const densityInfo = computeMineDensityForFloor({
+    floor: state.run.currentFloor,
+    isMobile: isConstrained,
+    ascensionLevel: state.run.ascensionLevel,
+    hasOraclesGift: hasPowerUp(state.run, 'oracles-gift'),
+    traumaStacks: traumaAtFloorGen,
+    currentTraumaStacks: state.run.traumaStacks,
+  });
 
   // Mine Detector: active scan mode
   const hasMineDetector = state.run.activePowerUps.some((p) => p.id === 'mine-detector');
@@ -270,6 +285,7 @@ function Minesweeper({ resetRef }: MinesweeperProps) {
             time={state.time}
             minesRemaining={state.minesRemaining}
             run={state.run}
+            densityInfo={densityInfo}
             xRayMode={xRayMode}
             canUseXRay={canUseXRay}
             onToggleXRay={handleToggleXRayMode}
@@ -347,7 +363,6 @@ function Minesweeper({ resetRef }: MinesweeperProps) {
                 gameOver={false}
                 dangerCells={state.dangerCells}
                 patternMemoryCells={state.patternMemoryCells}
-                heatMapEnabled={state.heatMapEnabled}
                 xRayMode={xRayMode && canUseXRay}
                 peekMode={peekMode && canUsePeek}
                 safePathMode={safePathMode && canUseSafePath}

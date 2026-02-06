@@ -557,7 +557,6 @@ function roguelikeReducer(state: RoguelikeGameState, action: RoguelikeAction): R
       if (state.phase !== GamePhase.Draft) return state;
 
       const newPowerUps = [...state.run.activePowerUps, action.powerUp];
-      const hasHeatMap = newPowerUps.some((p) => p.id === 'heat-map');
       const hasOraclesGift = newPowerUps.some((p) => p.id === 'oracles-gift');
 
       // Set up next floor (with Oracle's Gift density bonus and trauma stacks if applicable)
@@ -604,7 +603,6 @@ function roguelikeReducer(state: RoguelikeGameState, action: RoguelikeAction): R
         zeroCellCount: null,
         peekCell: null,
         surveyedRows: new Map(),
-        heatMapEnabled: hasHeatMap,
         cellsRevealedThisFloor: 0,
         probabilityLensCells: new Set(),
         oracleGiftCells: new Set(),
@@ -663,7 +661,6 @@ function roguelikeReducer(state: RoguelikeGameState, action: RoguelikeAction): R
         zeroCellCount: null,
         peekCell: null,
         surveyedRows: new Map(),
-        heatMapEnabled: hasPowerUp(state.run, 'heat-map'),
         cellsRevealedThisFloor: 0,
         probabilityLensCells: new Set(),
         oracleGiftCells: new Set(),
