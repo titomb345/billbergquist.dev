@@ -119,7 +119,8 @@ export enum GamePhase {
 }
 
 // Ascension level type (re-exported from ascension.ts for convenience)
-export type { AscensionLevel } from './ascension';
+import type { AscensionLevel } from './ascension';
+export type { AscensionLevel };
 
 // Run state tracks current roguelike run
 export interface RunState {
@@ -144,7 +145,7 @@ export interface RunState {
   falseStartAvailableThisFloor: boolean; // False Start: available to catch one incorrect flag
   patternMemoryAvailableThisFloor: boolean; // Pattern Memory: once per floor trigger
   seed: string; // Run seed for sharing/comparing runs
-  ascensionLevel: import('./ascension').AscensionLevel; // Current ascension level for this run
+  ascensionLevel: AscensionLevel; // Current ascension level for this run
 }
 
 // Meta-progression stats persisted to localStorage
@@ -153,8 +154,8 @@ export interface RoguelikeStats {
   bestFloor: number;
   bestScore: number;
   floorsCleared: number;
-  highestAscensionUnlocked: import('./ascension').AscensionLevel; // 0-5, unlocks on victory
-  highestAscensionCleared: import('./ascension').AscensionLevel; // 0-5, highest won
+  highestAscensionUnlocked: AscensionLevel; // 0-5, unlocks on victory
+  highestAscensionCleared: AscensionLevel; // 0-5, highest won
 }
 
 // Full roguelike game state
@@ -189,7 +190,7 @@ export interface RoguelikeGameState {
 
 // Roguelike-specific actions
 export type RoguelikeAction =
-  | { type: 'START_RUN'; isMobile: boolean; ascensionLevel: import('./ascension').AscensionLevel }
+  | { type: 'START_RUN'; isMobile: boolean; ascensionLevel: AscensionLevel; startFloor?: number }
   | { type: 'GO_TO_START' }
   | { type: 'REVEAL_CELL'; row: number; col: number }
   | { type: 'TOGGLE_FLAG'; row: number; col: number }
@@ -202,7 +203,6 @@ export type RoguelikeAction =
   | { type: 'USE_SURVEY'; direction: 'row' | 'col'; index: number }
   | { type: 'USE_QUICK_RECOVERY' }
   | { type: 'SELECT_POWER_UP'; powerUp: PowerUp }
-  | { type: 'SKIP_DRAFT'; bonusPoints: number }
   | { type: 'TICK' }
   | { type: 'SET_MOBILE'; isMobile: boolean }
   | { type: 'EXPLOSION_COMPLETE' }

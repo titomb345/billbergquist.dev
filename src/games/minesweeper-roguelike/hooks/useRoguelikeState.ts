@@ -151,8 +151,12 @@ function checkQuickRecoveryEligibility(
 function roguelikeReducer(state: RoguelikeGameState, action: RoguelikeAction): RoguelikeGameState {
   switch (action.type) {
     case 'START_RUN': {
+      const startFloor = action.startFloor ?? 1;
       const newState = createRoguelikeInitialState(action.isMobile, action.ascensionLevel);
-      return setupFloor(newState, 1);
+      if (startFloor > 1) {
+        newState.run.currentFloor = startFloor - 1;
+      }
+      return setupFloor(newState, startFloor);
     }
 
     case 'GO_TO_START': {
@@ -624,67 +628,6 @@ function roguelikeReducer(state: RoguelikeGameState, action: RoguelikeAction): R
       };
     }
 
-    case 'SKIP_DRAFT': {
-      if (state.phase !== GamePhase.Draft) return state;
-
-      const hasOraclesGiftSkip = hasPowerUp(state.run, 'oracles-gift');
-
-      // Set up next floor with bonus points (with Oracle's Gift density bonus and trauma stacks if applicable)
-      const nextFloor = state.run.currentFloor + 1;
-      const extraDensitySkip = hasOraclesGiftSkip ? ORACLES_GIFT_MINE_DENSITY_BONUS : 0;
-      const floorConfig = getFloorConfig(
-        nextFloor,
-        state.isMobile,
-        state.run.ascensionLevel,
-        extraDensitySkip,
-        state.run.traumaStacks
-      );
-      const newBoard = createEmptyBoard(floorConfig);
-
-      return {
-        ...state,
-        phase: GamePhase.Playing,
-        board: newBoard,
-        floorConfig,
-        minesRemaining: floorConfig.mines,
-        time: 0,
-        isFirstClick: true,
-        run: {
-          ...state.run,
-          currentFloor: nextFloor,
-          score: state.run.score + action.bonusPoints,
-          ironWillUsedThisFloor: false, // Reset shield for new floor
-          quickRecoveryEligibleThisFloor: !state.run.quickRecoveryUsedThisRun,
-          xRayUsedThisFloor: false,
-          luckyStartUsedThisFloor: false,
-          momentumActive: false,
-          peekUsedThisFloor: false,
-          safePathUsedThisFloor: false,
-          defusalKitUsedThisFloor: false,
-          surveyChargesRemaining: 2,
-          probabilityLensUsedThisFloor: false,
-          mineDetectorScansRemaining: 3,
-          sixthSenseChargesRemaining: 1,
-          sixthSenseArmed: false,
-          falseStartAvailableThisFloor: true,
-          patternMemoryAvailableThisFloor: true,
-        },
-        draftOptions: [],
-        dangerCells: new Set(),
-        patternMemoryCells: new Set(),
-        zeroCellCount: null,
-        peekCell: null,
-        surveyedRows: new Map(),
-        cellsRevealedThisFloor: 0,
-        probabilityLensCells: new Set(),
-        oracleGiftCells: new Set(),
-        mineDetectorScannedCells: new Set(),
-        mineDetectorResult: null,
-        sixthSenseTriggered: false,
-        falseStartTriggered: false,
-      };
-    }
-
     case 'USE_PEEK': {
       if (state.phase !== GamePhase.Playing) return state;
       if (!hasPowerUp(state.run, 'peek')) return state;
@@ -1087,7 +1030,7 @@ function roguelikeReducer(state: RoguelikeGameState, action: RoguelikeAction): R
   }
 }
 
-export function useRoguelikeState(isMobile: boolean = false) {
+export function useRoguelikeState(isMobile: boolean = false, isPaused: boolean = false) {
   const [state, dispatch] = useReducer(
     roguelikeReducer,
     { isMobile },
@@ -1121,31 +1064,31 @@ export function useRoguelikeState(isMobile: boolean = false) {
 
   // Timer effect
   useEffect(() => {
-    if (state.phase !== GamePhase.Playing) return;
+    if (state.phase !== GamePhase.Playing || isPaused) return;
 
     const interval = setInterval(() => {
       dispatch({ type: 'TICK' });
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [state.phase]);
+  }, [state.phase, isPaused]);
 
   // A4: Amnesia effect - check for faded cells every 500ms
   useEffect(() => {
     const modifiers = getAscensionModifiers(state.run.ascensionLevel);
     if (modifiers.amnesiaSeconds === null) return;
-    if (state.phase !== GamePhase.Playing) return;
+    if (state.phase !== GamePhase.Playing || isPaused) return;
 
     const interval = setInterval(() => {
       dispatch({ type: 'UPDATE_FADED_CELLS' });
     }, 500);
 
     return () => clearInterval(interval);
-  }, [state.phase, state.run.ascensionLevel]);
+  }, [state.phase, state.run.ascensionLevel, isPaused]);
 
   const startRun = useCallback(
-    (ascensionLevel: AscensionLevel = 0) => {
-      dispatch({ type: 'START_RUN', isMobile, ascensionLevel });
+    (ascensionLevel: AscensionLevel = 0, startFloor?: number) => {
+      dispatch({ type: 'START_RUN', isMobile, ascensionLevel, startFloor });
     },
     [isMobile]
   );
@@ -1172,10 +1115,6 @@ export function useRoguelikeState(isMobile: boolean = false) {
 
   const selectPowerUp = useCallback((powerUp: PowerUp) => {
     dispatch({ type: 'SELECT_POWER_UP', powerUp });
-  }, []);
-
-  const skipDraft = useCallback((bonusPoints: number) => {
-    dispatch({ type: 'SKIP_DRAFT', bonusPoints });
   }, []);
 
   const explosionComplete = useCallback(() => {
@@ -1294,7 +1233,6 @@ export function useRoguelikeState(isMobile: boolean = false) {
     useMineDetector,
     toggleSixthSenseArm,
     selectPowerUp,
-    skipDraft,
     explosionComplete,
     floorClearComplete,
     ironWillComplete,
