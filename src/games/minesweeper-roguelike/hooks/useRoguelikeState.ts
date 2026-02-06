@@ -201,13 +201,11 @@ function roguelikeReducer(state: RoguelikeGameState, action: RoguelikeAction): R
       // Handle first click - place mines after
       if (state.isFirstClick) {
         const config = state.floorConfig;
-        const hasCautiousStart = hasPowerUp(state.run, 'cautious-start');
         const hasBreathingRoom = hasPowerUp(state.run, 'breathing-room');
         const modifiers = getAscensionModifiers(state.run.ascensionLevel);
 
-        if (hasCautiousStart || hasBreathingRoom || modifiers.toroidal || modifiers.coldStart) {
+        if (hasBreathingRoom || modifiers.toroidal || modifiers.coldStart) {
           newBoard = placeMinesWithConstraints(createEmptyBoard(config), config, row, col, {
-            cautiousStart: hasCautiousStart,
             breathingRoom: hasBreathingRoom,
             toroidal: modifiers.toroidal,
             coldStart: modifiers.coldStart,
@@ -336,23 +334,19 @@ function roguelikeReducer(state: RoguelikeGameState, action: RoguelikeAction): R
         }
       }
 
-      // Pattern Memory: check for newly revealed 3+ cells
+      // Pattern Memory: only trigger on the clicked cell (not cascades), once per floor
       let newPatternMemoryCells = state.patternMemoryCells;
-      if (hasPowerUp(state.run, 'pattern-memory')) {
-        // Find all cells that were just revealed with 3+ adjacent mines
-        for (let r = 0; r < newBoard.length; r++) {
-          for (let c = 0; c < newBoard[r].length; c++) {
-            const wasHidden = state.board[r]?.[c]?.state !== CellState.Revealed;
-            const isNowRevealed = newBoard[r][c].state === CellState.Revealed;
-            const has3Plus = newBoard[r][c].adjacentMines >= 3;
-
-            if (wasHidden && isNowRevealed && has3Plus && !newBoard[r][c].isMine) {
-              const safeCell = calculatePatternMemoryCell(newBoard, r, c);
-              if (safeCell && !newPatternMemoryCells.has(safeCell)) {
-                newPatternMemoryCells = new Set([...newPatternMemoryCells, safeCell]);
-              }
-            }
-          }
+      if (
+        hasPowerUp(newRun, 'pattern-memory') &&
+        newRun.patternMemoryAvailableThisFloor &&
+        newBoard[row][col].state === CellState.Revealed &&
+        newBoard[row][col].adjacentMines >= 3 &&
+        !newBoard[row][col].isMine
+      ) {
+        const safeCell = calculatePatternMemoryCell(newBoard, row, col);
+        if (safeCell) {
+          newPatternMemoryCells = new Set([...newPatternMemoryCells, safeCell]);
+          newRun = { ...newRun, patternMemoryAvailableThisFloor: false };
         }
       }
 
@@ -388,6 +382,20 @@ function roguelikeReducer(state: RoguelikeGameState, action: RoguelikeAction): R
       const { row, col } = action;
       const cell = state.board[row][col];
       if (cell.state === CellState.Revealed) return state;
+
+      // False Start: catch incorrect flags when placing (not removing)
+      if (
+        cell.state === CellState.Hidden &&
+        hasPowerUp(state.run, 'false-start') &&
+        state.run.falseStartAvailableThisFloor &&
+        !cell.isMine
+      ) {
+        return {
+          ...state,
+          run: { ...state.run, falseStartAvailableThisFloor: false, momentumActive: false },
+          falseStartTriggered: true,
+        };
+      }
 
       const newBoard = toggleFlag(state.board, row, col);
 
@@ -473,18 +481,19 @@ function roguelikeReducer(state: RoguelikeGameState, action: RoguelikeAction): R
 
       // Pattern Memory: check for newly revealed 3+ cells
       let newPatternMemoryCells = state.patternMemoryCells;
-      if (hasPowerUp(state.run, 'pattern-memory')) {
-        // Find all cells that were just revealed with 3+ adjacent mines
-        for (let r = 0; r < finalBoard.length; r++) {
-          for (let c = 0; c < finalBoard[r].length; c++) {
+      if (hasPowerUp(newRun, 'pattern-memory') && newRun.patternMemoryAvailableThisFloor) {
+        // Find first newly revealed 3+ cell from chord and trigger once
+        for (let r = 0; r < finalBoard.length && newRun.patternMemoryAvailableThisFloor; r++) {
+          for (let c = 0; c < finalBoard[r].length && newRun.patternMemoryAvailableThisFloor; c++) {
             const wasHidden = state.board[r]?.[c]?.state !== CellState.Revealed;
             const isNowRevealed = finalBoard[r][c].state === CellState.Revealed;
             const has3Plus = finalBoard[r][c].adjacentMines >= 3;
 
             if (wasHidden && isNowRevealed && has3Plus && !finalBoard[r][c].isMine) {
               const safeCell = calculatePatternMemoryCell(finalBoard, r, c);
-              if (safeCell && !newPatternMemoryCells.has(safeCell)) {
+              if (safeCell) {
                 newPatternMemoryCells = new Set([...newPatternMemoryCells, safeCell]);
+                newRun = { ...newRun, patternMemoryAvailableThisFloor: false };
               }
             }
           }
@@ -596,6 +605,8 @@ function roguelikeReducer(state: RoguelikeGameState, action: RoguelikeAction): R
           mineDetectorScansRemaining: 3,
           sixthSenseChargesRemaining: 1,
           sixthSenseArmed: false,
+          falseStartAvailableThisFloor: true,
+          patternMemoryAvailableThisFloor: true,
         },
         draftOptions: [],
         dangerCells: new Set(),
@@ -609,6 +620,7 @@ function roguelikeReducer(state: RoguelikeGameState, action: RoguelikeAction): R
         mineDetectorScannedCells: new Set(),
         mineDetectorResult: null,
         sixthSenseTriggered: false,
+        falseStartTriggered: false,
       };
     }
 
@@ -654,6 +666,8 @@ function roguelikeReducer(state: RoguelikeGameState, action: RoguelikeAction): R
           mineDetectorScansRemaining: 3,
           sixthSenseChargesRemaining: 1,
           sixthSenseArmed: false,
+          falseStartAvailableThisFloor: true,
+          patternMemoryAvailableThisFloor: true,
         },
         draftOptions: [],
         dangerCells: new Set(),
@@ -667,6 +681,7 @@ function roguelikeReducer(state: RoguelikeGameState, action: RoguelikeAction): R
         mineDetectorScannedCells: new Set(),
         mineDetectorResult: null,
         sixthSenseTriggered: false,
+        falseStartTriggered: false,
       };
     }
 
@@ -868,6 +883,7 @@ function roguelikeReducer(state: RoguelikeGameState, action: RoguelikeAction): R
           mineDetectorScannedCells: new Set(),
           mineDetectorResult: null,
           sixthSenseTriggered: false,
+          falseStartTriggered: false,
           run: {
             ...state.run,
             quickRecoveryUsedThisRun: true,
@@ -884,6 +900,8 @@ function roguelikeReducer(state: RoguelikeGameState, action: RoguelikeAction): R
             mineDetectorScansRemaining: 3,
             sixthSenseChargesRemaining: 1,
             sixthSenseArmed: false,
+            falseStartAvailableThisFloor: true,
+            patternMemoryAvailableThisFloor: true,
           },
         };
       }
@@ -1057,6 +1075,11 @@ function roguelikeReducer(state: RoguelikeGameState, action: RoguelikeAction): R
     case 'CLEAR_SIXTH_SENSE_TRIGGERED': {
       if (!state.sixthSenseTriggered) return state;
       return { ...state, sixthSenseTriggered: false };
+    }
+
+    case 'CLEAR_FALSE_START_TRIGGERED': {
+      if (!state.falseStartTriggered) return state;
+      return { ...state, falseStartTriggered: false };
     }
 
     default:
@@ -1239,6 +1262,17 @@ export function useRoguelikeState(isMobile: boolean = false) {
 
     return () => clearTimeout(timeout);
   }, [state.sixthSenseTriggered]);
+
+  // Auto-clear false start triggered toast after 2 seconds
+  useEffect(() => {
+    if (!state.falseStartTriggered) return;
+
+    const timeout = setTimeout(() => {
+      dispatch({ type: 'CLEAR_FALSE_START_TRIGGERED' });
+    }, 2000);
+
+    return () => clearTimeout(timeout);
+  }, [state.falseStartTriggered]);
 
   // Note: Probability Lens highlights persist until floor end (no auto-clear timer)
   // This gives players time to act on the strategic guidance

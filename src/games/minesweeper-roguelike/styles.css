@@ -742,50 +742,38 @@
   filter: drop-shadow(0 0 10px var(--neon-yellow)) drop-shadow(0 0 20px var(--neon-yellow-glow));
 }
 
-/* Peek hint styling */
-.peek-hint {
-  border-color: var(--neon-purple) !important;
-  background: rgba(168, 85, 247, 0.1) !important;
-  color: var(--neon-purple) !important;
-}
-
-/* Survey hint styling */
-.survey-hint {
-  border-color: var(--neon-yellow) !important;
-  background: rgba(245, 158, 11, 0.1) !important;
-  color: var(--neon-yellow) !important;
-}
-
-/* Mine Detector hint styling */
-.mine-detector-hint {
-  border-color: #00f5ff !important;
-  background: rgba(0, 245, 255, 0.1) !important;
-  color: #00f5ff !important;
-}
-
-/* Sixth Sense hint styling */
-.sixth-sense-hint {
-  border-color: var(--neon-yellow) !important;
-  background: rgba(245, 158, 11, 0.1) !important;
-  color: var(--neon-yellow) !important;
-}
-
-/* Sixth Sense triggered toast */
-.sixth-sense-toast {
+/* Unified game toast — positioned above board, no layout shift */
+.game-toast {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-bottom: 8px;
+  z-index: 10;
+  white-space: nowrap;
   text-align: center;
-  padding: 6px 16px;
-  margin-bottom: 6px;
+  padding: 6px 12px;
+  color: var(--toast-color);
+  background: color-mix(in srgb, var(--toast-color) 15%, transparent);
+  border: 1px solid var(--toast-color);
+  border-radius: var(--radius-sm);
+  pointer-events: none;
+}
+
+.game-toast--hint {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  animation: blink 1s ease-in-out infinite;
+}
+
+.game-toast--toast {
   font-size: 13px;
   font-weight: 600;
-  color: var(--neon-yellow);
-  background: rgba(245, 158, 11, 0.15);
-  border: 1px solid var(--neon-yellow);
-  border-radius: var(--radius-sm);
-  text-shadow: 0 0 8px var(--neon-yellow);
-  animation: sixth-sense-toast-fade 2s ease-out forwards;
+  text-shadow: 0 0 8px var(--toast-color);
+  animation: game-toast-fade 2s ease-out forwards;
 }
 
-@keyframes sixth-sense-toast-fade {
+@keyframes game-toast-fade {
   0% {
     opacity: 1;
   }
@@ -998,26 +986,6 @@
 /* Board wrapper for absolute hint positioning */
 .board-with-hints {
   position: relative;
-}
-
-/* X-Ray Mode hint - absolute position to avoid board shift */
-.xray-hint {
-  position: absolute;
-  bottom: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  margin-bottom: 8px;
-  z-index: 10;
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  color: var(--neon-mint);
-  text-align: center;
-  padding: 6px 12px;
-  background: rgba(0, 245, 255, 0.1);
-  border: 1px solid var(--neon-mint);
-  border-radius: var(--radius-sm);
-  animation: blink 1s ease-in-out infinite;
-  white-space: nowrap;
 }
 
 @keyframes blink {

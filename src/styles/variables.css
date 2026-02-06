@@ -10,12 +10,14 @@
   --neon-magenta: #ff00ff;
   --neon-purple: #bf00ff;
   --neon-orange: #ff6a00;
+  --neon-yellow: #f59e0b;
 
   /* Neon glow variants (for shadows) */
   --neon-mint-glow: rgba(0, 212, 170, 0.5);
   --neon-magenta-glow: rgba(255, 0, 255, 0.5);
   --neon-purple-glow: rgba(191, 0, 255, 0.5);
   --neon-orange-glow: rgba(255, 106, 0, 0.5);
+  --neon-yellow-glow: rgba(245, 158, 11, 0.5);
 
   /* Text */
   --text-primary: #ffffff;

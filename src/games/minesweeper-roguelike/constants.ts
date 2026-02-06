@@ -1,32 +1,34 @@
 import { FloorConfig, PowerUp, PowerUpId, Rarity } from './types';
 import { AscensionLevel, getAscensionModifiers } from './ascension';
 
-// Floor configurations - escalate from floor 1 (6x6, 4 mines) to floor 10 (12x12, 40 mines)
+// Floor configurations - monotonic density ramp from ~17% to ~29%
+// F1:16.7% F2:18.4% F3:20.3% F4:21.9% F5:22.2% F6:23.5% F7:24.0% F8:28.0% F9:28.9% F10:29.2%
 export const FLOOR_CONFIGS: FloorConfig[] = [
-  { floor: 1, rows: 6, cols: 6, mines: 4 },
-  { floor: 2, rows: 7, cols: 7, mines: 6 },
-  { floor: 3, rows: 8, cols: 8, mines: 10 },
-  { floor: 4, rows: 8, cols: 8, mines: 12 },
-  { floor: 5, rows: 9, cols: 9, mines: 15 },
-  { floor: 6, rows: 9, cols: 9, mines: 18 },
-  { floor: 7, rows: 10, cols: 10, mines: 22 },
+  { floor: 1, rows: 6, cols: 6, mines: 6 },
+  { floor: 2, rows: 7, cols: 7, mines: 9 },
+  { floor: 3, rows: 8, cols: 8, mines: 13 },
+  { floor: 4, rows: 8, cols: 8, mines: 14 },
+  { floor: 5, rows: 9, cols: 9, mines: 18 },
+  { floor: 6, rows: 9, cols: 9, mines: 19 },
+  { floor: 7, rows: 10, cols: 10, mines: 24 },
   { floor: 8, rows: 10, cols: 10, mines: 28 },
-  { floor: 9, rows: 11, cols: 11, mines: 34 },
-  { floor: 10, rows: 12, cols: 12, mines: 40 },
+  { floor: 9, rows: 11, cols: 11, mines: 35 },
+  { floor: 10, rows: 12, cols: 12, mines: 42 },
 ];
 
 // Mobile floor configs - keep boards more square/portrait-oriented
+// Density matched to desktop: ~17% → ~29% monotonic ramp
 export const MOBILE_FLOOR_CONFIGS: FloorConfig[] = [
-  { floor: 1, rows: 6, cols: 6, mines: 4 },
-  { floor: 2, rows: 7, cols: 7, mines: 6 },
-  { floor: 3, rows: 8, cols: 8, mines: 10 },
-  { floor: 4, rows: 9, cols: 8, mines: 12 },
-  { floor: 5, rows: 10, cols: 8, mines: 15 },
-  { floor: 6, rows: 10, cols: 9, mines: 18 },
-  { floor: 7, rows: 11, cols: 9, mines: 22 },
-  { floor: 8, rows: 12, cols: 9, mines: 28 },
-  { floor: 9, rows: 12, cols: 10, mines: 34 },
-  { floor: 10, rows: 13, cols: 10, mines: 40 },
+  { floor: 1, rows: 6, cols: 6, mines: 6 },
+  { floor: 2, rows: 7, cols: 7, mines: 9 },
+  { floor: 3, rows: 8, cols: 8, mines: 13 },
+  { floor: 4, rows: 9, cols: 8, mines: 16 },
+  { floor: 5, rows: 10, cols: 8, mines: 18 },
+  { floor: 6, rows: 10, cols: 9, mines: 21 },
+  { floor: 7, rows: 11, cols: 9, mines: 24 },
+  { floor: 8, rows: 12, cols: 9, mines: 30 },
+  { floor: 9, rows: 12, cols: 10, mines: 35 },
+  { floor: 10, rows: 13, cols: 10, mines: 38 },
 ];
 
 // Mine density modifier for tooltip display
@@ -181,10 +183,10 @@ export const COMMON_POWER_UPS: PowerUp[] = [
     rarity: 'common',
   },
   {
-    id: 'cautious-start',
-    name: 'Cautious Start',
-    description: 'First click each floor guaranteed to have ≤2 adjacent mines',
-    icon: '🐢',
+    id: 'false-start',
+    name: 'False Start',
+    description: 'Once per floor, your first incorrect flag is forgiven',
+    icon: '🚩',
     type: 'passive',
     rarity: 'common',
   },
@@ -219,7 +221,7 @@ export const UNCOMMON_POWER_UPS: PowerUp[] = [
   {
     id: 'pattern-memory',
     name: 'Pattern Memory',
-    description: 'After revealing a 3+ cell, one random safe neighbor glows',
+    description: 'Once per floor, revealing a 3+ cell highlights a safe neighbor',
     icon: '🧩',
     type: 'passive',
     rarity: 'uncommon',

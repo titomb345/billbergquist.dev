@@ -47,6 +47,8 @@ export function createInitialRunState(ascensionLevel: AscensionLevel = 0): RunSt
     mineDetectorScansRemaining: 3,
     sixthSenseChargesRemaining: 1,
     sixthSenseArmed: false,
+    falseStartAvailableThisFloor: true,
+    patternMemoryAvailableThisFloor: true,
     seed: generateRunSeed(),
     ascensionLevel,
   };
@@ -87,6 +89,7 @@ export function createRoguelikeInitialState(
     mineDetectorScannedCells: new Set(),
     mineDetectorResult: null,
     sixthSenseTriggered: false,
+    falseStartTriggered: false,
   };
 }
 
@@ -128,6 +131,7 @@ export function setupFloor(state: RoguelikeGameState, floor: number): RoguelikeG
     mineDetectorScannedCells: new Set(),
     mineDetectorResult: null,
     sixthSenseTriggered: false,
+    falseStartTriggered: false,
     run: {
       ...state.run,
       currentFloor: floor,
@@ -144,6 +148,8 @@ export function setupFloor(state: RoguelikeGameState, floor: number): RoguelikeG
       mineDetectorScansRemaining: 3,
       sixthSenseChargesRemaining: 1,
       sixthSenseArmed: false,
+      falseStartAvailableThisFloor: true,
+      patternMemoryAvailableThisFloor: true,
     },
   };
 }

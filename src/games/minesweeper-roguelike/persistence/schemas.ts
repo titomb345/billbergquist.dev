@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { ALL_POWER_UP_IDS } from '../constants';
 
-export const GAME_STATE_VERSION = 8;
+export const GAME_STATE_VERSION = 10;
 export const STATS_VERSION = 3;
 
 // Cell schema
@@ -94,6 +94,8 @@ export const RunStateSchema = z.object({
   mineDetectorScansRemaining: z.number().int().min(0).max(5).default(3),
   sixthSenseChargesRemaining: z.number().int().min(0).max(1).default(1),
   sixthSenseArmed: z.boolean().default(false),
+  falseStartAvailableThisFloor: z.boolean().default(true),
+  patternMemoryAvailableThisFloor: z.boolean().default(true),
   seed: z.string(),
   ascensionLevel: AscensionLevelSchema.default(0),
 });
@@ -141,6 +143,7 @@ export const SerializedGameStateSchema = z.object({
     .nullable()
     .default(null),
   sixthSenseTriggered: z.boolean().default(false),
+  falseStartTriggered: z.boolean().default(false),
 });
 
 // Stats schema
