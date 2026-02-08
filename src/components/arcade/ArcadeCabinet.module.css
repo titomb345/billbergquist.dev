@@ -12,13 +12,13 @@
   position: relative;
   width: 100%;
   max-width: 720px;
-  padding: var(--space-lg) var(--space-xl);
+  padding: 1.5rem var(--space-xl);
   background: linear-gradient(
     180deg,
     #1a1a2e 0%,
     #0f0f14 100%
   );
-  border: 4px solid #2a2a35;
+  border: 3px solid #232330;
   border-radius: var(--radius-lg) var(--radius-lg) 0 0;
   text-align: center;
   overflow: hidden;
@@ -38,7 +38,7 @@
     var(--marquee-glow, var(--neon-magenta-glow)) 0%,
     transparent 70%
   );
-  opacity: 0.6;
+  opacity: 0.45;
   pointer-events: none;
   animation: marquee-breathe 3s ease-in-out infinite;
 }
@@ -51,15 +51,15 @@
   letter-spacing: 4px;
   color: var(--marquee-color, var(--neon-magenta));
   text-shadow:
-    0 0 10px var(--marquee-color, var(--neon-magenta)),
-    0 0 20px var(--marquee-color, var(--neon-magenta)),
-    0 0 40px var(--marquee-glow, var(--neon-magenta-glow));
+    0 0 8px var(--marquee-color, var(--neon-magenta)),
+    0 0 15px var(--marquee-color, var(--neon-magenta)),
+    0 0 30px var(--marquee-glow, var(--neon-magenta-glow));
   margin: 0;
 }
 
 .freePlay {
   position: relative;
-  margin-top: var(--space-sm);
+  margin-top: 0.25rem;
   font-family: var(--font-heading);
   font-size: 0.75rem;
   letter-spacing: 3px;
@@ -74,11 +74,11 @@
 .tMolding {
   width: 100%;
   max-width: 720px;
-  height: 6px;
+  height: 4px;
   background: var(--marquee-color, var(--neon-magenta));
   box-shadow:
-    0 0 10px var(--marquee-color, var(--neon-magenta)),
-    0 0 20px var(--marquee-glow, var(--neon-magenta-glow));
+    0 0 4px var(--marquee-color, var(--neon-magenta)),
+    0 0 8px var(--marquee-glow, var(--neon-magenta-glow));
 }
 
 /* CRT Screen Frame */
@@ -92,10 +92,10 @@
     #1a1a22 50%,
     #0f0f14 100%
   );
-  border: 4px solid #2a2a35;
+  border: 3px solid #232330;
   border-top: none;
   padding: var(--space-lg);
-  box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.3);
 }
 
 /* Speaker grilles on sides */
@@ -128,8 +128,8 @@
   border-radius: 20px / 10px;
   padding: var(--space-md);
   box-shadow:
-    inset 0 0 100px rgba(0, 0, 0, 0.5),
-    0 0 15px var(--neon-glow, var(--neon-mint-glow));
+    inset 0 0 80px rgba(0, 0, 0, 0.5),
+    0 0 8px var(--neon-glow, var(--neon-mint-glow));
   overflow: hidden;
 }
 
@@ -140,8 +140,8 @@
   inset: 0;
   border-radius: 20px / 10px;
   box-shadow:
-    inset 0 0 20px var(--neon-glow, rgba(0, 255, 0, 0.3)),
-    inset 0 0 50px rgba(0, 255, 0, 0.06);
+    inset 0 0 12px var(--neon-glow, rgba(0, 255, 0, 0.2)),
+    inset 0 0 30px rgba(0, 255, 0, 0.04);
   pointer-events: none;
 }
 
@@ -191,8 +191,8 @@
   border-radius: 20px / 10px;
   background: radial-gradient(
     ellipse at center,
-    transparent 50%,
-    rgba(0, 0, 0, 0.4) 100%
+    transparent 40%,
+    rgba(0, 0, 0, 0.5) 100%
   );
   pointer-events: none;
 }
@@ -214,7 +214,7 @@
     #1a1a22 0%,
     #0f0f14 100%
   );
-  border: 4px solid #2a2a35;
+  border: 3px solid #232330;
   border-top: none;
   border-radius: 0 0 var(--radius-lg) var(--radius-lg);
   padding: var(--space-md) var(--space-lg);
@@ -225,85 +225,128 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
-/* Back button - arcade style */
-.backButton {
-  display: inline-flex;
+/* Round arcade button — outer element is the hit area */
+.arcadeButton {
+  position: relative;
+  display: flex;
   align-items: center;
   justify-content: center;
-  gap: var(--space-sm);
-  padding: var(--space-sm) var(--space-md);
-  font-family: var(--font-heading);
-  font-size: 0.75rem;
-  letter-spacing: 2px;
-  color: var(--neon-purple);
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: none;
   background: transparent;
-  border: 2px solid var(--neon-purple);
-  border-radius: var(--radius-sm);
   cursor: pointer;
-  transition: var(--transition-fast);
+  transition: transform 0.1s ease;
+  padding: 0;
+}
+
+/* Visible button face — fixed size, centered */
+.arcadeButton::after {
+  content: '';
+  position: absolute;
+  width: 52px;
+  height: 52px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: linear-gradient(145deg, #32323e 0%, #1e1e2a 60%, #14141e 100%);
+  pointer-events: none;
+  z-index: 0;
+  transition: box-shadow 0.15s ease, background 0.15s ease;
+}
+
+.arcadeButton svg {
+  position: relative;
+  z-index: 1;
+  width: 18px;
+  height: 18px;
+  pointer-events: none;
+}
+
+.arcadeButton:hover {
+  transform: translateY(-1px) scale(1.02);
+}
+
+.arcadeButton:active {
+  transform: translateY(2px) scale(0.98);
+}
+
+/* Pause button — magenta accent */
+.arcadeButtonPause {
+  color: var(--neon-magenta);
+}
+
+.arcadeButtonPause::after {
+  border: 3px solid var(--neon-magenta);
   box-shadow:
-    0 0 5px var(--neon-purple-glow),
-    inset 0 0 5px var(--neon-purple-glow);
+    0 4px 0 #0a0a12,
+    0 2px 6px rgba(0, 0, 0, 0.5),
+    0 0 8px var(--neon-magenta-glow),
+    inset 0 1px 1px rgba(255, 255, 255, 0.08);
 }
 
-.backButton:hover {
-  background: rgba(191, 0, 255, 0.1);
+.arcadeButtonPause:hover::after {
   box-shadow:
-    0 0 10px var(--neon-purple),
-    0 0 20px var(--neon-purple-glow),
-    inset 0 0 10px var(--neon-purple-glow);
+    0 4px 0 #0a0a12,
+    0 2px 6px rgba(0, 0, 0, 0.5),
+    0 0 15px var(--neon-magenta),
+    0 0 25px var(--neon-magenta-glow),
+    inset 0 1px 1px rgba(255, 255, 255, 0.08);
 }
 
-.backButton:active {
-  transform: scale(0.98);
+.arcadeButtonPause:active::after {
+  box-shadow:
+    0 0 0 #0a0a12,
+    0 0 5px var(--neon-magenta-glow),
+    inset 0 2px 4px rgba(0, 0, 0, 0.4);
 }
 
-.backButton svg {
-  width: 14px;
-  height: 14px;
+/* Pause button active/pressed state (game is paused) */
+.arcadeButtonActive::after {
+  background: linear-gradient(145deg, #3a1a30 0%, #2a0a20 100%);
+  box-shadow:
+    0 4px 0 #0a0a12,
+    0 2px 6px rgba(0, 0, 0, 0.5),
+    0 0 12px var(--neon-magenta),
+    0 0 20px var(--neon-magenta-glow),
+    inset 0 0 10px var(--neon-magenta-glow);
+}
+
+/* Reset button — orange accent (slightly hotter glow) */
+.arcadeButtonReset {
+  color: var(--neon-orange);
+}
+
+.arcadeButtonReset::after {
+  border: 3px solid var(--neon-orange);
+  box-shadow:
+    0 4px 0 #0a0a12,
+    0 2px 6px rgba(0, 0, 0, 0.5),
+    0 0 8px var(--neon-orange-glow),
+    inset 0 1px 1px rgba(255, 255, 255, 0.08);
+}
+
+.arcadeButtonReset:hover::after {
+  box-shadow:
+    0 4px 0 #0a0a12,
+    0 2px 6px rgba(0, 0, 0, 0.5),
+    0 0 20px var(--neon-orange),
+    0 0 36px var(--neon-orange-glow),
+    inset 0 1px 1px rgba(255, 255, 255, 0.08);
+}
+
+.arcadeButtonReset:active::after {
+  box-shadow:
+    0 0 0 #0a0a12,
+    0 0 5px var(--neon-orange-glow),
+    inset 0 2px 4px rgba(0, 0, 0, 0.4);
 }
 
 /* Spaced control panel when both buttons present */
 .controlPanelSpaced {
   justify-content: space-between;
-}
-
-/* Reset button - matches back button */
-.resetButton {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-sm);
-  padding: var(--space-sm) var(--space-md);
-  font-family: var(--font-heading);
-  font-size: 0.75rem;
-  letter-spacing: 2px;
-  color: var(--neon-purple);
-  background: transparent;
-  border: 2px solid var(--neon-purple);
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  transition: var(--transition-fast);
-  box-shadow:
-    0 0 5px var(--neon-purple-glow),
-    inset 0 0 5px var(--neon-purple-glow);
-}
-
-.resetButton:hover {
-  background: rgba(191, 0, 255, 0.1);
-  box-shadow:
-    0 0 10px var(--neon-purple),
-    0 0 20px var(--neon-purple-glow),
-    inset 0 0 10px var(--neon-purple-glow);
-}
-
-.resetButton:active {
-  transform: scale(0.98);
-}
-
-.resetButton svg {
-  width: 14px;
-  height: 14px;
 }
 
 /* Power LED indicator */
@@ -313,20 +356,20 @@
   right: 20px;
   width: 8px;
   height: 8px;
-  background: #00ff00;
+  background: rgba(0, 255, 0, 0.8);
   border-radius: 50%;
   box-shadow:
-    0 0 5px #00ff00,
-    0 0 10px #00ff00;
-  animation: led-pulse 2s ease-in-out infinite;
+    0 0 4px rgba(0, 255, 0, 0.6),
+    0 0 6px rgba(0, 255, 0, 0.3);
+  animation: led-breathe 4s ease-in-out infinite;
 }
 
-@keyframes led-pulse {
+@keyframes led-breathe {
   0%, 100% {
-    opacity: 0.4;
+    opacity: 0.3;
   }
   50% {
-    opacity: 1;
+    opacity: 0.75;
   }
 }
 
@@ -362,7 +405,7 @@
   }
 
   .marquee {
-    padding: var(--space-md) var(--space-lg);
+    padding: 0.75rem var(--space-lg);
   }
 
   .marqueeTitle {
@@ -389,10 +432,19 @@
     transform: perspective(500px) rotateX(10deg);
   }
 
-  .backButton,
-  .resetButton {
-    font-size: 0.625rem;
-    padding: var(--space-xs) var(--space-sm);
+  .arcadeButton {
+    width: 56px;
+    height: 56px;
+  }
+
+  .arcadeButton::after {
+    width: 44px;
+    height: 44px;
+  }
+
+  .arcadeButton svg {
+    width: 16px;
+    height: 16px;
   }
 }
 
@@ -411,6 +463,21 @@
   .movingScanline,
   .vignette {
     border-radius: 12px / 6px;
+  }
+
+  .arcadeButton {
+    width: 52px;
+    height: 52px;
+  }
+
+  .arcadeButton::after {
+    width: 40px;
+    height: 40px;
+  }
+
+  .arcadeButton svg {
+    width: 14px;
+    height: 14px;
   }
 }
 
@@ -437,10 +504,10 @@
 @keyframes marquee-breathe {
   0%,
   100% {
-    opacity: 0.4;
+    opacity: 0.3;
   }
   50% {
-    opacity: 0.7;
+    opacity: 0.5;
   }
 }
 

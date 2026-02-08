@@ -263,9 +263,9 @@ export function countFlags(board: Cell[][]): number {
 
 // Options for power-up constrained mine placement
 export interface PlaceMinesOptions {
-  cautiousStart?: boolean; // First click cell must have ≤2 adjacent mines
   breathingRoom?: boolean; // 2×2 area around first click must be safe
   toroidal?: boolean; // A5: Wrap coordinates at edges
+  coldStart?: boolean; // A1: Only exclude clicked cell, not 3×3
 }
 
 // Place mines with optional power-up constraints
@@ -295,6 +295,9 @@ export function placeMinesWithConstraints(
         }
       }
     }
+  } else if (options.coldStart) {
+    // A1: Only exclude the clicked cell itself (no guaranteed cascade)
+    excludeSet.add(`${excludeRow},${excludeCol}`);
   } else {
     // Default: exclude clicked cell and its neighbors (3×3)
     for (let dr = -1; dr <= 1; dr++) {
@@ -318,51 +321,21 @@ export function placeMinesWithConstraints(
     }
   }
 
-  // If Cautious Start is enabled, we need to ensure the clicked cell has ≤2 adjacent mines
-  // Try up to 50 times to find a valid configuration
-  const maxAttempts = options.cautiousStart ? 50 : 1;
-
-  for (let attempt = 0; attempt < maxAttempts; attempt++) {
-    const newBoard = board.map((row) => row.map((cell) => ({ ...cell, isMine: false, adjacentMines: 0 })));
-
-    // Shuffle valid positions
-    const shuffled = [...validPositions];
-    for (let i = shuffled.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-    }
-
-    // Place mines
-    const minePositions = shuffled.slice(0, mines);
-    for (const [row, col] of minePositions) {
-      newBoard[row][col].isMine = true;
-    }
-
-    // Calculate adjacent mines
-    const finalBoard = calculateAdjacentMines(newBoard, options.toroidal ?? false);
-
-    // Check Cautious Start constraint
-    if (options.cautiousStart) {
-      const clickedCell = finalBoard[excludeRow][excludeCol];
-      if (clickedCell.adjacentMines > 2) {
-        continue; // Try again
-      }
-    }
-
-    return finalBoard;
-  }
-
-  // Fallback: return the last attempt even if it doesn't meet constraints
-  // This should rarely happen with reasonable board/mine configurations
   const newBoard = board.map((row) => row.map((cell) => ({ ...cell, isMine: false, adjacentMines: 0 })));
+
+  // Shuffle valid positions
   const shuffled = [...validPositions];
   for (let i = shuffled.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
   }
+
+  // Place mines
   const minePositions = shuffled.slice(0, mines);
   for (const [row, col] of minePositions) {
     newBoard[row][col].isMine = true;
   }
+
+  // Calculate adjacent mines
   return calculateAdjacentMines(newBoard, options.toroidal ?? false);
 }

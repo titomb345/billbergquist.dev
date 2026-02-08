@@ -49,9 +49,114 @@ export const gameStateMigrations: Record<number, MigrationFn> = {
   // v2 → v3: Remove unlocks (all powerups now always available)
   2: (state: unknown) => {
     const s = state as Record<string, unknown>;
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { unlocks: _, ...rest } = s;
     return rest;
+  },
+  // v3 → v4: Iron Will rework - convert ironWillAvailable to ironWillUsedThisFloor + traumaStacks
+  3: (state: unknown) => {
+    const s = state as Record<string, unknown>;
+    const run = (s.run ?? {}) as Record<string, unknown>;
+    // Map ironWillAvailable: true → ironWillUsedThisFloor: false (shield available)
+    // Map ironWillAvailable: false → ironWillUsedThisFloor: true (shield used)
+    const ironWillAvailable = run.ironWillAvailable ?? true;
+    const { ironWillAvailable: _, ...restRun } = run;
+    return {
+      ...s,
+      run: {
+        ...restRun,
+        ironWillUsedThisFloor: !ironWillAvailable,
+        traumaStacks: 0, // Old saves start with 0 trauma
+      },
+    };
+  },
+  // v4 → v5: Mine Detector rework - add scan fields
+  4: (state: unknown) => {
+    const s = state as Record<string, unknown>;
+    const run = (s.run ?? {}) as Record<string, unknown>;
+    return {
+      ...s,
+      mineDetectorScannedCells: [],
+      mineDetectorResult: null,
+      run: {
+        ...run,
+        mineDetectorScansRemaining: 3,
+      },
+    };
+  },
+  // v5 → v6: Sixth Sense rework - add charge/arm/triggered fields
+  5: (state: unknown) => {
+    const s = state as Record<string, unknown>;
+    const run = (s.run ?? {}) as Record<string, unknown>;
+    return {
+      ...s,
+      sixthSenseTriggered: false,
+      run: {
+        ...run,
+        sixthSenseChargesRemaining: 1,
+        sixthSenseArmed: false,
+      },
+    };
+  },
+  // v6 → v7: Quick Recovery rebalance - add per-floor eligibility tracking
+  6: (state: unknown) => {
+    const s = state as Record<string, unknown>;
+    const run = (s.run ?? {}) as Record<string, unknown>;
+    return {
+      ...s,
+      run: {
+        ...run,
+        quickRecoveryEligibleThisFloor: true,
+      },
+    };
+  },
+  // v7 → v8: Survey rebalance - convert boolean to charges, single result to persisted map
+  7: (state: unknown) => {
+    const s = state as Record<string, unknown>;
+    const run = (s.run ?? {}) as Record<string, unknown>;
+    const surveyUsed = run.surveyUsedThisFloor === true;
+    const { surveyUsedThisFloor: _, ...restRun } = run;
+
+    // Convert old single surveyResult to surveyedRows array
+    const oldResult = s.surveyResult as { direction: string; index: number; mineCount: number } | null;
+    const surveyedRows: [number, number][] = [];
+    if (oldResult && oldResult.direction === 'row') {
+      surveyedRows.push([oldResult.index, oldResult.mineCount]);
+    }
+    const { surveyResult: __, ...restState } = s;
+
+    return {
+      ...restState,
+      surveyedRows,
+      run: {
+        ...restRun,
+        surveyChargesRemaining: surveyUsed ? 0 : 2,
+      },
+    };
+  },
+  // v8 → v9: Replace Cautious Start with False Start - add per-floor state
+  8: (state: unknown) => {
+    const s = state as Record<string, unknown>;
+    const run = (s.run ?? {}) as Record<string, unknown>;
+    return {
+      ...s,
+      falseStartTriggered: false,
+      run: {
+        ...run,
+        falseStartAvailableThisFloor: true,
+      },
+    };
+  },
+  // v9 → v10: Pattern Memory once-per-floor limit
+  9: (state: unknown) => {
+    const s = state as Record<string, unknown>;
+    const run = (s.run ?? {}) as Record<string, unknown>;
+    return {
+      ...s,
+      run: {
+        ...run,
+        patternMemoryAvailableThisFloor: true,
+      },
+    };
   },
 };
 
@@ -79,7 +184,6 @@ export const statsMigrations: Record<number, MigrationFn> = {
   // v2 → v3: Remove unlocks (all powerups now always available)
   2: (state: unknown) => {
     const s = state as Record<string, unknown>;
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { unlocks: _, ...rest } = s;
     return rest;
   },

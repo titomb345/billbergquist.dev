@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { ALL_POWER_UP_IDS } from '../constants';
 
-export const GAME_STATE_VERSION = 3;
+export const GAME_STATE_VERSION = 10;
 export const STATS_VERSION = 3;
 
 // Cell schema
@@ -79,28 +79,29 @@ export const RunStateSchema = z.object({
   currentFloor: z.number().int().min(1).max(10),
   score: z.number().int().min(0),
   activePowerUps: z.array(LenientPowerUpSchema),
-  ironWillAvailable: z.boolean(),
+  ironWillUsedThisFloor: z.boolean().default(false),
+  traumaStacks: z.number().int().min(0).default(0),
   xRayUsedThisFloor: z.boolean(),
   luckyStartUsedThisFloor: z.boolean(),
   quickRecoveryUsedThisRun: z.boolean().default(false),
+  quickRecoveryEligibleThisFloor: z.boolean().default(true),
   momentumActive: z.boolean().default(false),
   peekUsedThisFloor: z.boolean().default(false),
   safePathUsedThisFloor: z.boolean().default(false),
   defusalKitUsedThisFloor: z.boolean().default(false),
-  surveyUsedThisFloor: z.boolean().default(false),
+  surveyChargesRemaining: z.number().int().min(0).max(3).default(2),
   probabilityLensUsedThisFloor: z.boolean().default(false),
+  mineDetectorScansRemaining: z.number().int().min(0).max(5).default(3),
+  sixthSenseChargesRemaining: z.number().int().min(0).max(1).default(1),
+  sixthSenseArmed: z.boolean().default(false),
+  falseStartAvailableThisFloor: z.boolean().default(true),
+  patternMemoryAvailableThisFloor: z.boolean().default(true),
   seed: z.string(),
   ascensionLevel: AscensionLevelSchema.default(0),
 });
 
-// Survey result schema
-export const SurveyResultSchema = z
-  .object({
-    direction: z.enum(['row', 'col']),
-    index: z.number().int().min(0),
-    mineCount: z.number().int().min(0),
-  })
-  .nullable();
+// Surveyed rows schema (serialized Map<number, number> as array of [rowIndex, mineCount] tuples)
+export const SurveyedRowsSchema = z.array(z.tuple([z.number().int().min(0), z.number().int().min(0)])).default([]);
 
 // Peek cell schema (value can be number 0-8 or 'mine')
 export const PeekCellSchema = z
@@ -129,9 +130,20 @@ export const SerializedGameStateSchema = z.object({
   explodedCell: z.object({ row: z.number(), col: z.number() }).nullable(),
   closeCallCell: z.object({ row: z.number(), col: z.number() }).nullable(),
   // Active relic visual state
-  surveyResult: SurveyResultSchema.default(null),
+  surveyedRows: SurveyedRowsSchema,
   probabilityLensCells: z.array(z.string()).default([]), // Serialized Set
   peekCell: PeekCellSchema.default(null),
+  mineDetectorScannedCells: z.array(z.string()).default([]), // Serialized Set
+  mineDetectorResult: z
+    .object({
+      row: z.number().int().min(0),
+      col: z.number().int().min(0),
+      count: z.number().int().min(0),
+    })
+    .nullable()
+    .default(null),
+  sixthSenseTriggered: z.boolean().default(false),
+  falseStartTriggered: z.boolean().default(false),
 });
 
 // Stats schema

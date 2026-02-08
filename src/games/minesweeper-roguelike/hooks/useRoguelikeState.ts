@@ -41,8 +41,15 @@ import {
   calculatePatternMemoryCell,
   calculateSafestCells,
   calculateOracleGiftCells,
+  calculateMineCount4x4,
+  getUnrevealedZeroCellCount,
 } from '../logic/roguelikeLogic';
-import { getFloorConfig, selectDraftOptions, getAvailablePowerUps, ORACLES_GIFT_MINE_DENSITY_BONUS } from '../constants';
+import {
+  getFloorConfig,
+  selectDraftOptions,
+  getAvailablePowerUps,
+  ORACLES_GIFT_MINE_DENSITY_BONUS,
+} from '../constants';
 import { saveGameState, loadGameState, clearGameState } from '../persistence';
 import { AscensionLevel, getAscensionModifiers } from '../ascension';
 
@@ -77,7 +84,8 @@ function applyIronWillProtection(
   saved: boolean;
   savedCell: { row: number; col: number } | null;
 } {
-  if (hasPowerUp(run, 'iron-will') && run.ironWillAvailable) {
+  // Check per-floor usage instead of run-wide availability
+  if (hasPowerUp(run, 'iron-will') && !run.ironWillUsedThisFloor) {
     let newBoard: Cell[][];
     if (chordCenter) {
       // For chord hits, flag only revealed mines in the chord area (3x3 around chord center)
@@ -108,7 +116,11 @@ function applyIronWillProtection(
     }
     return {
       board: newBoard,
-      run: { ...run, ironWillAvailable: false },
+      run: {
+        ...run,
+        ironWillUsedThisFloor: true,
+        traumaStacks: run.traumaStacks + 1,
+      },
       saved: true,
       savedCell: { row: mineRow, col: mineCol },
     };
@@ -116,14 +128,35 @@ function applyIronWillProtection(
   return { board, run, saved: false, savedCell: null };
 }
 
-function roguelikeReducer(
-  state: RoguelikeGameState,
-  action: RoguelikeAction
-): RoguelikeGameState {
+// Check if Quick Recovery eligibility should be revoked (progress >= 25%)
+function checkQuickRecoveryEligibility(
+  run: RunState,
+  board: Cell[][],
+  floorConfig: { rows: number; cols: number; mines: number }
+): RunState {
+  if (!run.quickRecoveryEligibleThisFloor) return run;
+  if (run.quickRecoveryUsedThisRun) return run;
+  if (!hasPowerUp(run, 'quick-recovery')) return run;
+
+  const totalSafeCells = floorConfig.rows * floorConfig.cols - floorConfig.mines;
+  if (totalSafeCells <= 0) return run;
+
+  const revealedSafeCells = countRevealedCells(board);
+  if (revealedSafeCells / totalSafeCells >= 0.25) {
+    return { ...run, quickRecoveryEligibleThisFloor: false };
+  }
+  return run;
+}
+
+function roguelikeReducer(state: RoguelikeGameState, action: RoguelikeAction): RoguelikeGameState {
   switch (action.type) {
     case 'START_RUN': {
+      const startFloor = action.startFloor ?? 1;
       const newState = createRoguelikeInitialState(action.isMobile, action.ascensionLevel);
-      return setupFloor(newState, 1);
+      if (startFloor > 1) {
+        newState.run.currentFloor = startFloor - 1;
+      }
+      return setupFloor(newState, startFloor);
     }
 
     case 'GO_TO_START': {
@@ -146,26 +179,6 @@ function roguelikeReducer(
     case 'TICK': {
       if (state.phase !== GamePhase.Playing) return state;
 
-      const modifiers = getAscensionModifiers(state.run.ascensionLevel);
-
-      // A2: Countdown timer mode
-      if (modifiers.timerCountdown !== null) {
-        const newTime = state.time - 1;
-        if (newTime <= 0) {
-          // Time's up - explode!
-          return {
-            ...state,
-            time: 0,
-            phase: GamePhase.Exploding,
-            explodedCell: null, // No specific cell exploded
-          };
-        }
-        return {
-          ...state,
-          time: newTime,
-        };
-      }
-
       // Normal count-up timer
       return {
         ...state,
@@ -187,30 +200,25 @@ function roguelikeReducer(
       let newDangerCells = state.dangerCells;
       let newZeroCellCount: number | null = state.zeroCellCount;
       let newCellsRevealedThisFloor = state.cellsRevealedThisFloor;
+      let sixthSenseTriggered = false;
 
       // Handle first click - place mines after
       if (state.isFirstClick) {
         const config = state.floorConfig;
-        const hasCautiousStart = hasPowerUp(state.run, 'cautious-start');
         const hasBreathingRoom = hasPowerUp(state.run, 'breathing-room');
         const modifiers = getAscensionModifiers(state.run.ascensionLevel);
 
-        if (hasCautiousStart || hasBreathingRoom || modifiers.toroidal) {
+        if (hasBreathingRoom || modifiers.toroidal || modifiers.coldStart) {
           newBoard = placeMinesWithConstraints(createEmptyBoard(config), config, row, col, {
-            cautiousStart: hasCautiousStart,
             breathingRoom: hasBreathingRoom,
             toroidal: modifiers.toroidal,
+            coldStart: modifiers.coldStart,
           });
         } else {
           newBoard = placeMines(createEmptyBoard(config), config, row, col);
         }
 
-        // Apply Sixth Sense on first click
-        if (hasPowerUp(state.run, 'sixth-sense')) {
-          newBoard = applySixthSense(newBoard, row, col);
-        } else {
-          newBoard = revealCell(newBoard, row, col);
-        }
+        newBoard = revealCell(newBoard, row, col);
 
         // Apply Lucky Start after mines are placed (if not used yet this floor)
         if (hasPowerUp(state.run, 'lucky-start') && !state.run.luckyStartUsedThisFloor) {
@@ -241,14 +249,29 @@ function roguelikeReducer(
         // Normal reveal
         const prevRevealed = countRevealedCells(state.board);
 
-        // If momentum is active and this cell is a mine, protect the player
+        // Sixth Sense interception: armed + non-zero cell + unrevealed 0-cells exist
         const targetCell = state.board[row][col];
-        if (state.run.momentumActive && targetCell.isMine) {
+        const sixthSenseActive =
+          hasPowerUp(state.run, 'sixth-sense') &&
+          state.run.sixthSenseArmed &&
+          state.run.sixthSenseChargesRemaining > 0;
+
+        if (
+          sixthSenseActive &&
+          !targetCell.isMine &&
+          targetCell.adjacentMines > 0 &&
+          getUnrevealedZeroCellCount(state.board) > 0
+        ) {
+          // Redirect to nearest 0-cell for cascade, then reveal original cell
+          newBoard = applySixthSense(state.board, row, col);
+          newRun.sixthSenseChargesRemaining = state.run.sixthSenseChargesRemaining - 1;
+          newRun.sixthSenseArmed = false;
+          sixthSenseTriggered = true;
+        } else if (state.run.momentumActive && targetCell.isMine) {
+          // If momentum is active and this cell is a mine, protect the player
           // Momentum saves from mine - flag it instead of revealing
           newBoard = state.board.map((r) =>
-            r.map((c) =>
-              c.row === row && c.col === col ? { ...c, state: CellState.Flagged } : c
-            )
+            r.map((c) => (c.row === row && c.col === col ? { ...c, state: CellState.Flagged } : c))
           );
           newRun.momentumActive = false; // Momentum used up
         } else {
@@ -315,28 +338,27 @@ function roguelikeReducer(
         }
       }
 
-      // Pattern Memory: check for newly revealed 3+ cells
+      // Pattern Memory: only trigger on the clicked cell (not cascades), once per floor
       let newPatternMemoryCells = state.patternMemoryCells;
-      if (hasPowerUp(state.run, 'pattern-memory')) {
-        // Find all cells that were just revealed with 3+ adjacent mines
-        for (let r = 0; r < newBoard.length; r++) {
-          for (let c = 0; c < newBoard[r].length; c++) {
-            const wasHidden = state.board[r]?.[c]?.state !== CellState.Revealed;
-            const isNowRevealed = newBoard[r][c].state === CellState.Revealed;
-            const has3Plus = newBoard[r][c].adjacentMines >= 3;
-
-            if (wasHidden && isNowRevealed && has3Plus && !newBoard[r][c].isMine) {
-              const safeCell = calculatePatternMemoryCell(newBoard, r, c);
-              if (safeCell && !newPatternMemoryCells.has(safeCell)) {
-                newPatternMemoryCells = new Set([...newPatternMemoryCells, safeCell]);
-              }
-            }
-          }
+      if (
+        hasPowerUp(newRun, 'pattern-memory') &&
+        newRun.patternMemoryAvailableThisFloor &&
+        newBoard[row][col].state === CellState.Revealed &&
+        newBoard[row][col].adjacentMines >= 3 &&
+        !newBoard[row][col].isMine
+      ) {
+        const safeCell = calculatePatternMemoryCell(newBoard, row, col);
+        if (safeCell) {
+          newPatternMemoryCells = new Set([...newPatternMemoryCells, safeCell]);
+          newRun = { ...newRun, patternMemoryAvailableThisFloor: false };
         }
       }
 
       // Oracle's Gift: recalculate 50/50 safe cells
       const newOracleGiftCells = calculateOracleGiftCells(newBoard, newRun);
+
+      // Update Quick Recovery eligibility based on progress
+      newRun = checkQuickRecoveryEligibility(newRun, newBoard, state.floorConfig);
 
       return {
         ...state,
@@ -353,6 +375,7 @@ function roguelikeReducer(
         cellRevealTimes: newCellRevealTimes,
         patternMemoryCells: newPatternMemoryCells,
         oracleGiftCells: newOracleGiftCells,
+        sixthSenseTriggered,
       };
     }
 
@@ -364,12 +387,27 @@ function roguelikeReducer(
       const cell = state.board[row][col];
       if (cell.state === CellState.Revealed) return state;
 
+      // False Start: catch incorrect flags when placing (not removing)
+      if (
+        cell.state === CellState.Hidden &&
+        hasPowerUp(state.run, 'false-start') &&
+        state.run.falseStartAvailableThisFloor &&
+        !cell.isMine
+      ) {
+        return {
+          ...state,
+          run: { ...state.run, falseStartAvailableThisFloor: false, momentumActive: false },
+          falseStartTriggered: true,
+        };
+      }
+
       const newBoard = toggleFlag(state.board, row, col);
 
       // Clear momentum on flag (as per design)
-      const newRun = hasPowerUp(state.run, 'momentum') && state.run.momentumActive
-        ? { ...state.run, momentumActive: false }
-        : state.run;
+      const newRun =
+        hasPowerUp(state.run, 'momentum') && state.run.momentumActive
+          ? { ...state.run, momentumActive: false }
+          : state.run;
 
       // Oracle's Gift: recalculate 50/50 safe cells (flagging can change the situation)
       const flagOracleGiftCells = calculateOracleGiftCells(newBoard, newRun);
@@ -447,18 +485,19 @@ function roguelikeReducer(
 
       // Pattern Memory: check for newly revealed 3+ cells
       let newPatternMemoryCells = state.patternMemoryCells;
-      if (hasPowerUp(state.run, 'pattern-memory')) {
-        // Find all cells that were just revealed with 3+ adjacent mines
-        for (let r = 0; r < finalBoard.length; r++) {
-          for (let c = 0; c < finalBoard[r].length; c++) {
+      if (hasPowerUp(newRun, 'pattern-memory') && newRun.patternMemoryAvailableThisFloor) {
+        // Find first newly revealed 3+ cell from chord and trigger once
+        for (let r = 0; r < finalBoard.length && newRun.patternMemoryAvailableThisFloor; r++) {
+          for (let c = 0; c < finalBoard[r].length && newRun.patternMemoryAvailableThisFloor; c++) {
             const wasHidden = state.board[r]?.[c]?.state !== CellState.Revealed;
             const isNowRevealed = finalBoard[r][c].state === CellState.Revealed;
             const has3Plus = finalBoard[r][c].adjacentMines >= 3;
 
             if (wasHidden && isNowRevealed && has3Plus && !finalBoard[r][c].isMine) {
               const safeCell = calculatePatternMemoryCell(finalBoard, r, c);
-              if (safeCell && !newPatternMemoryCells.has(safeCell)) {
+              if (safeCell) {
                 newPatternMemoryCells = new Set([...newPatternMemoryCells, safeCell]);
+                newRun = { ...newRun, patternMemoryAvailableThisFloor: false };
               }
             }
           }
@@ -467,6 +506,9 @@ function roguelikeReducer(
 
       // Oracle's Gift: recalculate 50/50 safe cells
       const chordOracleGiftCells = calculateOracleGiftCells(finalBoard, newRun);
+
+      // Update Quick Recovery eligibility based on progress
+      newRun = checkQuickRecoveryEligibility(newRun, finalBoard, state.floorConfig);
 
       return {
         ...state,
@@ -511,10 +553,13 @@ function roguelikeReducer(
         newDraftOptions = clearResult.draftOptions;
       }
 
+      // Update Quick Recovery eligibility based on progress
+      const xRayCheckedRun = checkQuickRecoveryEligibility(newRun, newBoard, state.floorConfig);
+
       return {
         ...state,
         board: newBoard,
-        run: newRun,
+        run: xRayCheckedRun,
         phase: newPhase,
         draftOptions: newDraftOptions,
         minesRemaining: state.floorConfig.mines - countFlags(newBoard),
@@ -525,18 +570,19 @@ function roguelikeReducer(
       if (state.phase !== GamePhase.Draft) return state;
 
       const newPowerUps = [...state.run.activePowerUps, action.powerUp];
-      const hasHeatMap = newPowerUps.some((p) => p.id === 'heat-map');
       const hasOraclesGift = newPowerUps.some((p) => p.id === 'oracles-gift');
-      const modifiers = getAscensionModifiers(state.run.ascensionLevel);
 
-      // Set up next floor (with Oracle's Gift density bonus if applicable)
+      // Set up next floor (with Oracle's Gift density bonus and trauma stacks if applicable)
       const nextFloor = state.run.currentFloor + 1;
       const extraDensity = hasOraclesGift ? ORACLES_GIFT_MINE_DENSITY_BONUS : 0;
-      const floorConfig = getFloorConfig(nextFloor, state.isMobile, state.run.ascensionLevel, extraDensity);
+      const floorConfig = getFloorConfig(
+        nextFloor,
+        state.isMobile,
+        state.run.ascensionLevel,
+        extraDensity,
+        state.run.traumaStacks
+      );
       const newBoard = createEmptyBoard(floorConfig);
-
-      // A2: Initialize countdown timer if applicable
-      const initialTime = modifiers.timerCountdown ?? 0;
 
       return {
         ...state,
@@ -544,80 +590,41 @@ function roguelikeReducer(
         board: newBoard,
         floorConfig,
         minesRemaining: floorConfig.mines,
-        time: initialTime,
+        time: 0,
         isFirstClick: true,
         run: {
           ...state.run,
           activePowerUps: newPowerUps,
           currentFloor: nextFloor,
+          ironWillUsedThisFloor: false, // Reset shield for new floor
+          quickRecoveryEligibleThisFloor: !state.run.quickRecoveryUsedThisRun,
           xRayUsedThisFloor: false,
           luckyStartUsedThisFloor: false,
           momentumActive: false,
           peekUsedThisFloor: false,
           safePathUsedThisFloor: false,
           defusalKitUsedThisFloor: false,
-          surveyUsedThisFloor: false,
+          surveyChargesRemaining: 2,
           probabilityLensUsedThisFloor: false,
+          mineDetectorScansRemaining: 3,
+          sixthSenseChargesRemaining: 1,
+          sixthSenseArmed: false,
+          falseStartAvailableThisFloor: true,
+          patternMemoryAvailableThisFloor: true,
         },
         draftOptions: [],
         dangerCells: new Set(),
         patternMemoryCells: new Set(),
         zeroCellCount: null,
         peekCell: null,
-        surveyResult: null,
-        heatMapEnabled: hasHeatMap,
+        surveyedRows: new Map(),
         cellsRevealedThisFloor: 0,
         probabilityLensCells: new Set(),
         oracleGiftCells: new Set(),
-      };
-    }
-
-    case 'SKIP_DRAFT': {
-      if (state.phase !== GamePhase.Draft) return state;
-
-      const modifiers = getAscensionModifiers(state.run.ascensionLevel);
-      const hasOraclesGiftSkip = hasPowerUp(state.run, 'oracles-gift');
-
-      // Set up next floor with bonus points (with Oracle's Gift density bonus if applicable)
-      const nextFloor = state.run.currentFloor + 1;
-      const extraDensitySkip = hasOraclesGiftSkip ? ORACLES_GIFT_MINE_DENSITY_BONUS : 0;
-      const floorConfig = getFloorConfig(nextFloor, state.isMobile, state.run.ascensionLevel, extraDensitySkip);
-      const newBoard = createEmptyBoard(floorConfig);
-
-      // A2: Initialize countdown timer if applicable
-      const initialTime = modifiers.timerCountdown ?? 0;
-
-      return {
-        ...state,
-        phase: GamePhase.Playing,
-        board: newBoard,
-        floorConfig,
-        minesRemaining: floorConfig.mines,
-        time: initialTime,
-        isFirstClick: true,
-        run: {
-          ...state.run,
-          currentFloor: nextFloor,
-          score: state.run.score + action.bonusPoints,
-          xRayUsedThisFloor: false,
-          luckyStartUsedThisFloor: false,
-          momentumActive: false,
-          peekUsedThisFloor: false,
-          safePathUsedThisFloor: false,
-          defusalKitUsedThisFloor: false,
-          surveyUsedThisFloor: false,
-          probabilityLensUsedThisFloor: false,
-        },
-        draftOptions: [],
-        dangerCells: new Set(),
-        patternMemoryCells: new Set(),
-        zeroCellCount: null,
-        peekCell: null,
-        surveyResult: null,
-        heatMapEnabled: hasPowerUp(state.run, 'heat-map'),
-        cellsRevealedThisFloor: 0,
-        probabilityLensCells: new Set(),
-        oracleGiftCells: new Set(),
+        mineDetectorScannedCells: new Set(),
+        mineDetectorResult: null,
+        sixthSenseTriggered: false,
+        falseStartTriggered: false,
       };
     }
 
@@ -669,7 +676,9 @@ function roguelikeReducer(
         ...state.run,
         safePathUsedThisFloor: true,
         momentumActive: false,
-        score: state.run.score + calculateRevealScore(newRevealed - prevRevealed, state.run.currentFloor),
+        score:
+          state.run.score +
+          calculateRevealScore(newRevealed - prevRevealed, state.run.currentFloor),
       };
 
       let newPhase: GamePhase = state.phase;
@@ -682,10 +691,13 @@ function roguelikeReducer(
         newDraftOptions = clearResult.draftOptions;
       }
 
+      // Update Quick Recovery eligibility based on progress
+      const safePathCheckedRun = checkQuickRecoveryEligibility(newRun, newBoard, state.floorConfig);
+
       return {
         ...state,
         board: newBoard,
-        run: newRun,
+        run: safePathCheckedRun,
         phase: newPhase,
         draftOptions: newDraftOptions,
         minesRemaining: state.floorConfig.mines - countFlags(newBoard),
@@ -695,20 +707,27 @@ function roguelikeReducer(
     case 'USE_SURVEY': {
       if (state.phase !== GamePhase.Playing) return state;
       if (!hasPowerUp(state.run, 'survey')) return state;
-      if (state.run.surveyUsedThisFloor) return state;
+      if (state.run.surveyChargesRemaining <= 0) return state;
       if (state.isFirstClick) return state;
 
       const { direction, index } = action;
+
+      // Don't allow re-surveying an already surveyed row
+      if (direction === 'row' && state.surveyedRows.has(index)) return state;
+
       const mineCount = calculateLineMineCount(state.board, direction, index);
+
+      const newSurveyedRows = new Map(state.surveyedRows);
+      newSurveyedRows.set(index, mineCount);
 
       return {
         ...state,
         run: {
           ...state.run,
-          surveyUsedThisFloor: true,
+          surveyChargesRemaining: state.run.surveyChargesRemaining - 1,
           momentumActive: false,
         },
-        surveyResult: { direction, index, mineCount },
+        surveyedRows: newSurveyedRows,
       };
     }
 
@@ -748,35 +767,46 @@ function roguelikeReducer(
         newDraftOptions = clearResult.draftOptions;
       }
 
+      // Update Quick Recovery eligibility based on progress (use updated mine count)
+      const defusalFloorConfig = { ...state.floorConfig, mines: state.floorConfig.mines - 1 };
+      const defusalCheckedRun = checkQuickRecoveryEligibility(newRun, newBoard, defusalFloorConfig);
+
       return {
         ...state,
         board: newBoard,
-        run: newRun,
+        run: defusalCheckedRun,
         phase: newPhase,
         draftOptions: newDraftOptions,
-        minesRemaining: state.floorConfig.mines - countFlags(newBoard) - 1, // One less mine now
+        floorConfig: defusalFloorConfig,
+        minesRemaining: state.floorConfig.mines - 1 - countFlags(newBoard),
       };
     }
 
     case 'EXPLOSION_COMPLETE': {
       if (state.phase !== GamePhase.Exploding) return state;
 
-      // Check if Quick Recovery applies (died before revealing 10 cells, not used this run)
+      // Check if Quick Recovery applies (progress < 25%, not used this run)
+      const totalSafeCells =
+        state.floorConfig.rows * state.floorConfig.cols - state.floorConfig.mines;
+      const floorProgress =
+        totalSafeCells > 0 ? countRevealedCells(state.board) / totalSafeCells : 1;
       const canUseQuickRecovery =
         hasPowerUp(state.run, 'quick-recovery') &&
         !state.run.quickRecoveryUsedThisRun &&
-        state.cellsRevealedThisFloor < 10;
+        floorProgress < 0.25;
 
       if (canUseQuickRecovery) {
-        // Restart the current floor (with Oracle's Gift density bonus if applicable)
-        const modifiers = getAscensionModifiers(state.run.ascensionLevel);
+        // Restart the current floor (with Oracle's Gift density bonus and trauma stacks if applicable)
         const hasOraclesGiftRecovery = hasPowerUp(state.run, 'oracles-gift');
         const extraDensityRecovery = hasOraclesGiftRecovery ? ORACLES_GIFT_MINE_DENSITY_BONUS : 0;
-        const floorConfig = getFloorConfig(state.run.currentFloor, state.isMobile, state.run.ascensionLevel, extraDensityRecovery);
+        const floorConfig = getFloorConfig(
+          state.run.currentFloor,
+          state.isMobile,
+          state.run.ascensionLevel,
+          extraDensityRecovery,
+          state.run.traumaStacks
+        );
         const newBoard = createEmptyBoard(floorConfig);
-
-        // A2: Reset countdown timer if applicable
-        const initialTime = modifiers.timerCountdown ?? 0;
 
         return {
           ...state,
@@ -784,7 +814,7 @@ function roguelikeReducer(
           board: newBoard,
           floorConfig,
           minesRemaining: floorConfig.mines,
-          time: initialTime,
+          time: 0,
           isFirstClick: true,
           explodedCell: null,
           dangerCells: new Set(),
@@ -793,17 +823,28 @@ function roguelikeReducer(
           cellsRevealedThisFloor: 0,
           probabilityLensCells: new Set(),
           oracleGiftCells: new Set(),
+          mineDetectorScannedCells: new Set(),
+          mineDetectorResult: null,
+          sixthSenseTriggered: false,
+          falseStartTriggered: false,
           run: {
             ...state.run,
             quickRecoveryUsedThisRun: true,
+            quickRecoveryEligibleThisFloor: false, // Consumed this run
+            ironWillUsedThisFloor: false, // Reset shield for floor restart
             xRayUsedThisFloor: false,
             luckyStartUsedThisFloor: false,
             momentumActive: false,
             peekUsedThisFloor: false,
             safePathUsedThisFloor: false,
             defusalKitUsedThisFloor: false,
-            surveyUsedThisFloor: false,
+            surveyChargesRemaining: 2,
             probabilityLensUsedThisFloor: false,
+            mineDetectorScansRemaining: 3,
+            sixthSenseChargesRemaining: 1,
+            sixthSenseArmed: false,
+            falseStartAvailableThisFloor: true,
+            patternMemoryAvailableThisFloor: true,
           },
         };
       }
@@ -848,11 +889,7 @@ function roguelikeReducer(
 
     case 'SET_CHORD_HIGHLIGHT': {
       if (state.phase !== GamePhase.Playing) return state;
-      const chordHighlightCells = calculateChordHighlightCells(
-        state.board,
-        action.row,
-        action.col
-      );
+      const chordHighlightCells = calculateChordHighlightCells(state.board, action.row, action.col);
       return {
         ...state,
         chordHighlightCells,
@@ -929,12 +966,71 @@ function roguelikeReducer(
       };
     }
 
+    case 'USE_MINE_DETECTOR': {
+      if (state.phase !== GamePhase.Playing) return state;
+      if (!hasPowerUp(state.run, 'mine-detector')) return state;
+      if (state.run.mineDetectorScansRemaining <= 0) return state;
+      if (state.isFirstClick) return state;
+
+      const { row, col } = action;
+      const cell = state.board[row][col];
+      if (cell.state !== CellState.Hidden) return state;
+
+      // No-repeat rule: if cell already scanned, do nothing
+      const cellKey = `${row},${col}`;
+      if (state.mineDetectorScannedCells.has(cellKey)) return state;
+
+      const count = calculateMineCount4x4(state.board, row, col);
+      const newScannedCells = new Set(state.mineDetectorScannedCells);
+      newScannedCells.add(cellKey);
+
+      return {
+        ...state,
+        mineDetectorScannedCells: newScannedCells,
+        mineDetectorResult: { row, col, count },
+        run: {
+          ...state.run,
+          mineDetectorScansRemaining: state.run.mineDetectorScansRemaining - 1,
+          momentumActive: false, // Using ability clears momentum
+        },
+      };
+    }
+
+    case 'CLEAR_MINE_DETECTOR_RESULT': {
+      if (!state.mineDetectorResult) return state;
+      return {
+        ...state,
+        mineDetectorResult: null,
+      };
+    }
+
+    case 'TOGGLE_SIXTH_SENSE_ARM': {
+      if (state.phase !== GamePhase.Playing) return state;
+      if (!hasPowerUp(state.run, 'sixth-sense')) return state;
+      if (state.run.sixthSenseChargesRemaining <= 0) return state;
+      if (state.isFirstClick) return state;
+      return {
+        ...state,
+        run: { ...state.run, sixthSenseArmed: !state.run.sixthSenseArmed },
+      };
+    }
+
+    case 'CLEAR_SIXTH_SENSE_TRIGGERED': {
+      if (!state.sixthSenseTriggered) return state;
+      return { ...state, sixthSenseTriggered: false };
+    }
+
+    case 'CLEAR_FALSE_START_TRIGGERED': {
+      if (!state.falseStartTriggered) return state;
+      return { ...state, falseStartTriggered: false };
+    }
+
     default:
       return state;
   }
 }
 
-export function useRoguelikeState(isMobile: boolean = false) {
+export function useRoguelikeState(isMobile: boolean = false, isPaused: boolean = false) {
   const [state, dispatch] = useReducer(
     roguelikeReducer,
     { isMobile },
@@ -968,31 +1064,31 @@ export function useRoguelikeState(isMobile: boolean = false) {
 
   // Timer effect
   useEffect(() => {
-    if (state.phase !== GamePhase.Playing) return;
+    if (state.phase !== GamePhase.Playing || isPaused) return;
 
     const interval = setInterval(() => {
       dispatch({ type: 'TICK' });
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [state.phase]);
+  }, [state.phase, isPaused]);
 
   // A4: Amnesia effect - check for faded cells every 500ms
   useEffect(() => {
     const modifiers = getAscensionModifiers(state.run.ascensionLevel);
     if (modifiers.amnesiaSeconds === null) return;
-    if (state.phase !== GamePhase.Playing) return;
+    if (state.phase !== GamePhase.Playing || isPaused) return;
 
     const interval = setInterval(() => {
       dispatch({ type: 'UPDATE_FADED_CELLS' });
     }, 500);
 
     return () => clearInterval(interval);
-  }, [state.phase, state.run.ascensionLevel]);
+  }, [state.phase, state.run.ascensionLevel, isPaused]);
 
   const startRun = useCallback(
-    (ascensionLevel: AscensionLevel = 0) => {
-      dispatch({ type: 'START_RUN', isMobile, ascensionLevel });
+    (ascensionLevel: AscensionLevel = 0, startFloor?: number) => {
+      dispatch({ type: 'START_RUN', isMobile, ascensionLevel, startFloor });
     },
     [isMobile]
   );
@@ -1019,10 +1115,6 @@ export function useRoguelikeState(isMobile: boolean = false) {
 
   const selectPowerUp = useCallback((powerUp: PowerUp) => {
     dispatch({ type: 'SELECT_POWER_UP', powerUp });
-  }, []);
-
-  const skipDraft = useCallback((bonusPoints: number) => {
-    dispatch({ type: 'SKIP_DRAFT', bonusPoints });
   }, []);
 
   const explosionComplete = useCallback(() => {
@@ -1069,6 +1161,14 @@ export function useRoguelikeState(isMobile: boolean = false) {
     dispatch({ type: 'USE_PROBABILITY_LENS' });
   }, []);
 
+  const useMineDetector = useCallback((row: number, col: number) => {
+    dispatch({ type: 'USE_MINE_DETECTOR', row, col });
+  }, []);
+
+  const toggleSixthSenseArm = useCallback(() => {
+    dispatch({ type: 'TOGGLE_SIXTH_SENSE_ARM' });
+  }, []);
+
   // Auto-clear peek after a short delay
   useEffect(() => {
     if (!state.peekCell) return;
@@ -1079,6 +1179,39 @@ export function useRoguelikeState(isMobile: boolean = false) {
 
     return () => clearTimeout(timeout);
   }, [state.peekCell]);
+
+  // Auto-clear mine detector result after 3 seconds
+  useEffect(() => {
+    if (!state.mineDetectorResult) return;
+
+    const timeout = setTimeout(() => {
+      dispatch({ type: 'CLEAR_MINE_DETECTOR_RESULT' });
+    }, 3000);
+
+    return () => clearTimeout(timeout);
+  }, [state.mineDetectorResult]);
+
+  // Auto-clear sixth sense triggered toast after 2 seconds
+  useEffect(() => {
+    if (!state.sixthSenseTriggered) return;
+
+    const timeout = setTimeout(() => {
+      dispatch({ type: 'CLEAR_SIXTH_SENSE_TRIGGERED' });
+    }, 2000);
+
+    return () => clearTimeout(timeout);
+  }, [state.sixthSenseTriggered]);
+
+  // Auto-clear false start triggered toast after 2 seconds
+  useEffect(() => {
+    if (!state.falseStartTriggered) return;
+
+    const timeout = setTimeout(() => {
+      dispatch({ type: 'CLEAR_FALSE_START_TRIGGERED' });
+    }, 2000);
+
+    return () => clearTimeout(timeout);
+  }, [state.falseStartTriggered]);
 
   // Note: Probability Lens highlights persist until floor end (no auto-clear timer)
   // This gives players time to act on the strategic guidance
@@ -1097,8 +1230,9 @@ export function useRoguelikeState(isMobile: boolean = false) {
     useDefusalKit,
     useSurvey,
     useProbabilityLens,
+    useMineDetector,
+    toggleSixthSenseArm,
     selectPowerUp,
-    skipDraft,
     explosionComplete,
     floorClearComplete,
     ironWillComplete,

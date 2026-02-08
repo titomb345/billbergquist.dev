@@ -10,18 +10,22 @@ interface CellProps {
   gameOver: boolean;
   hasDanger?: boolean; // For Danger Sense power-up
   hasPatternMemory?: boolean; // For Pattern Memory power-up (safe diagonal glow)
-  heatMapEnabled?: boolean; // For Heat Map power-up
   xRayMode?: boolean; // For X-Ray Vision targeting
   peekMode?: boolean; // For Peek targeting
   safePathMode?: boolean; // For Safe Path targeting
   defusalKitMode?: boolean; // For Defusal Kit targeting
   surveyMode?: boolean; // For Survey targeting
+  mineDetectorMode?: boolean; // For Mine Detector scan targeting
   peekValue?: number | 'mine' | null; // The peeked value to display
+  mineDetectorResultValue?: number | null; // Mine Detector scan result for this cell
   onXRay?: (row: number, col: number) => void;
   onPeek?: (row: number, col: number) => void;
   onSafePath?: (row: number, col: number) => void;
   onDefusalKit?: (row: number, col: number) => void;
   onSurvey?: (row: number, col: number) => void;
+  onMineDetector?: (row: number, col: number) => void;
+  isMineDetectorScanned?: boolean; // This cell was already scanned this floor
+  isSurveyAlreadyDone?: boolean; // This cell's row was already surveyed this floor
   onHover?: (row: number, col: number) => void; // For Mine Detector
   onHoverEnd?: () => void; // For Mine Detector
   inDetectorZone?: boolean; // For Mine Detector visual overlay
@@ -43,18 +47,22 @@ function CellComponent({
   gameOver,
   hasDanger = false,
   hasPatternMemory = false,
-  heatMapEnabled = false,
   xRayMode = false,
   peekMode = false,
   safePathMode = false,
   defusalKitMode = false,
   surveyMode = false,
+  mineDetectorMode = false,
   peekValue = null,
+  mineDetectorResultValue = null,
   onXRay,
   onPeek,
   onSafePath,
   onDefusalKit,
   onSurvey,
+  onMineDetector,
+  isMineDetectorScanned = false,
+  isSurveyAlreadyDone = false,
   onHover,
   onHoverEnd,
   inDetectorZone = false,
@@ -67,6 +75,9 @@ function CellComponent({
   hasProbabilityLens = false,
   hasOracleGift = false,
 }: CellProps) {
+  const isTargeting =
+    xRayMode || peekMode || safePathMode || defusalKitMode || surveyMode || mineDetectorMode;
+
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
     if (gameOver) return;
@@ -95,11 +106,22 @@ function CellComponent({
       return;
     }
 
-    // Survey mode - works on hidden cells
+    // Mine Detector mode - works on hidden cells that haven't been scanned yet
+    if (mineDetectorMode && onMineDetector && cell.state === CellState.Hidden) {
+      if (isMineDetectorScanned) return; // Already scanned, do nothing
+      onMineDetector(cell.row, cell.col);
+      return;
+    }
+
+    // Survey mode - works on hidden cells in unsurveyed rows
     if (surveyMode && onSurvey && cell.state === CellState.Hidden) {
+      if (isSurveyAlreadyDone) return; // Already surveyed, do nothing
       onSurvey(cell.row, cell.col);
       return;
     }
+
+    // Block normal reveal/chord when a power-up targeting mode is active
+    if (isTargeting) return;
 
     if (cell.state === CellState.Revealed && cell.adjacentMines > 0) {
       onChord(cell.row, cell.col);
@@ -111,9 +133,9 @@ function CellComponent({
   const handleContextMenu = (e: React.MouseEvent) => {
     e.preventDefault();
     if (gameOver) return;
+    if (isTargeting) return;
     onFlag(cell.row, cell.col);
   };
-
 
   const getClassName = () => {
     const classes = ['cell'];
@@ -141,8 +163,20 @@ function CellComponent({
       if (safePathMode && hoveredRow === cell.row) {
         classes.push('cell-row-highlight-green');
       }
-      if (surveyMode && hoveredRow === cell.row) {
+      if (surveyMode && hoveredRow === cell.row && !isSurveyAlreadyDone) {
         classes.push('cell-row-highlight-yellow');
+      }
+      if (surveyMode && isSurveyAlreadyDone) {
+        classes.push('cell-survey-already-done');
+      }
+      if (mineDetectorMode && !isMineDetectorScanned) {
+        classes.push('cell-detector-target');
+      }
+      if (mineDetectorMode && isMineDetectorScanned) {
+        classes.push('cell-detector-already-scanned');
+      }
+      if (mineDetectorResultValue !== null) {
+        classes.push('cell-detector-scanned');
       }
       if (peekValue !== null) {
         classes.push('cell-peeked');
@@ -174,16 +208,6 @@ function CellComponent({
         if (isFaded) {
           classes.push('cell-faded');
         }
-        // Add heat map class if enabled (but not for faded cells)
-        if (heatMapEnabled && !isFaded) {
-          if (cell.adjacentMines <= 2) {
-            classes.push('cell-heat-low');
-          } else if (cell.adjacentMines <= 4) {
-            classes.push('cell-heat-medium');
-          } else {
-            classes.push('cell-heat-high');
-          }
-        }
       }
     }
 
@@ -191,6 +215,11 @@ function CellComponent({
   };
 
   const getContent = () => {
+    // Show mine detector scan result
+    if (mineDetectorResultValue !== null && cell.state === CellState.Hidden) {
+      return <span className="detector-scan-number">{mineDetectorResultValue}</span>;
+    }
+
     // Show peek value if this cell is being peeked
     if (peekValue !== null && cell.state === CellState.Hidden) {
       if (peekValue === 'mine') {
@@ -230,11 +259,7 @@ function CellComponent({
 
     // If mouse button is held and entering a revealed numbered cell, show chord highlight
     if (e.buttons > 0 && !gameOver) {
-      if (
-        onChordHighlightStart &&
-        cell.state === CellState.Revealed &&
-        cell.adjacentMines > 0
-      ) {
+      if (onChordHighlightStart && cell.state === CellState.Revealed && cell.adjacentMines > 0) {
         onChordHighlightStart(cell.row, cell.col);
       } else if (onChordHighlightEnd) {
         // Clear highlight when moving to a non-chordable cell while button held
@@ -260,6 +285,7 @@ function CellComponent({
     if (e.button === 1) {
       e.preventDefault();
       if (gameOver) return;
+      if (isTargeting) return;
       if (cell.state === CellState.Revealed && cell.adjacentMines > 0) {
         onChord(cell.row, cell.col);
       }
@@ -311,13 +337,16 @@ const Cell = memo(CellComponent, (prev, next) => {
     prev.gameOver === next.gameOver &&
     prev.hasDanger === next.hasDanger &&
     prev.hasPatternMemory === next.hasPatternMemory &&
-    prev.heatMapEnabled === next.heatMapEnabled &&
     prev.xRayMode === next.xRayMode &&
     prev.peekMode === next.peekMode &&
     prev.safePathMode === next.safePathMode &&
     prev.defusalKitMode === next.defusalKitMode &&
     prev.surveyMode === next.surveyMode &&
+    prev.mineDetectorMode === next.mineDetectorMode &&
+    prev.isMineDetectorScanned === next.isMineDetectorScanned &&
+    prev.isSurveyAlreadyDone === next.isSurveyAlreadyDone &&
     prev.peekValue === next.peekValue &&
+    prev.mineDetectorResultValue === next.mineDetectorResultValue &&
     prev.inDetectorZone === next.inDetectorZone &&
     prev.isChordHighlighted === next.isChordHighlighted &&
     prev.isFaded === next.isFaded &&

@@ -1,65 +1,159 @@
 import { FloorConfig, PowerUp, PowerUpId, Rarity } from './types';
 import { AscensionLevel, getAscensionModifiers } from './ascension';
 
-// Floor configurations - escalate from floor 1 (6x6, 4 mines) to floor 10 (12x12, 40 mines)
+// Floor configurations - monotonic density ramp from ~17% to ~29%
+// F1:16.7% F2:18.4% F3:20.3% F4:21.9% F5:22.2% F6:23.5% F7:24.0% F8:28.0% F9:28.9% F10:29.2%
 export const FLOOR_CONFIGS: FloorConfig[] = [
-  { floor: 1, rows: 6, cols: 6, mines: 4 },
-  { floor: 2, rows: 7, cols: 7, mines: 6 },
-  { floor: 3, rows: 8, cols: 8, mines: 10 },
-  { floor: 4, rows: 8, cols: 8, mines: 12 },
-  { floor: 5, rows: 9, cols: 9, mines: 15 },
-  { floor: 6, rows: 9, cols: 9, mines: 18 },
-  { floor: 7, rows: 10, cols: 10, mines: 22 },
+  { floor: 1, rows: 6, cols: 6, mines: 6 },
+  { floor: 2, rows: 7, cols: 7, mines: 9 },
+  { floor: 3, rows: 8, cols: 8, mines: 13 },
+  { floor: 4, rows: 8, cols: 8, mines: 14 },
+  { floor: 5, rows: 9, cols: 9, mines: 18 },
+  { floor: 6, rows: 9, cols: 9, mines: 19 },
+  { floor: 7, rows: 10, cols: 10, mines: 24 },
   { floor: 8, rows: 10, cols: 10, mines: 28 },
-  { floor: 9, rows: 11, cols: 11, mines: 34 },
-  { floor: 10, rows: 12, cols: 12, mines: 40 },
+  { floor: 9, rows: 11, cols: 11, mines: 35 },
+  { floor: 10, rows: 12, cols: 12, mines: 42 },
 ];
 
 // Mobile floor configs - keep boards more square/portrait-oriented
+// Density matched to desktop: ~17% → ~29% monotonic ramp
 export const MOBILE_FLOOR_CONFIGS: FloorConfig[] = [
-  { floor: 1, rows: 6, cols: 6, mines: 4 },
-  { floor: 2, rows: 7, cols: 7, mines: 6 },
-  { floor: 3, rows: 8, cols: 8, mines: 10 },
-  { floor: 4, rows: 9, cols: 8, mines: 12 },
-  { floor: 5, rows: 10, cols: 8, mines: 15 },
-  { floor: 6, rows: 10, cols: 9, mines: 18 },
-  { floor: 7, rows: 11, cols: 9, mines: 22 },
-  { floor: 8, rows: 12, cols: 9, mines: 28 },
-  { floor: 9, rows: 12, cols: 10, mines: 34 },
-  { floor: 10, rows: 13, cols: 10, mines: 40 },
+  { floor: 1, rows: 6, cols: 6, mines: 6 },
+  { floor: 2, rows: 7, cols: 7, mines: 9 },
+  { floor: 3, rows: 8, cols: 8, mines: 13 },
+  { floor: 4, rows: 9, cols: 8, mines: 16 },
+  { floor: 5, rows: 10, cols: 8, mines: 18 },
+  { floor: 6, rows: 10, cols: 9, mines: 21 },
+  { floor: 7, rows: 11, cols: 9, mines: 24 },
+  { floor: 8, rows: 12, cols: 9, mines: 30 },
+  { floor: 9, rows: 12, cols: 10, mines: 35 },
+  { floor: 10, rows: 13, cols: 10, mines: 38 },
 ];
+
+// Mine density modifier for tooltip display
+export interface MineDensityBreakdownItem {
+  label: string;
+  percent: number; // raw modifier % (e.g., 12 for Oracle's Gift)
+}
+
+// Complete density info returned by the single source of truth function
+export interface MineDensityInfo {
+  baseMines: number;
+  bonusMines: number;
+  effectiveMines: number;
+  totalCells: number;
+  effectiveDensityPercent: number; // 0-100
+  modifiers: MineDensityBreakdownItem[]; // active modifiers with their % rates
+  projectedNextFloor: {
+    effectiveDensityPercent: number;
+    traumaBonusPercent: number;
+  } | null;
+}
+
+// Single source of truth for mine density calculation.
+// Used for BOTH mine placement (via getFloorConfig) and HUD display.
+export function computeMineDensityForFloor(params: {
+  floor: number;
+  isMobile: boolean;
+  ascensionLevel: AscensionLevel;
+  hasOraclesGift: boolean;
+  traumaStacks: number; // trauma at floor generation time (for "this floor")
+  currentTraumaStacks?: number; // current trauma (may be higher if Iron Will triggered mid-floor)
+}): MineDensityInfo {
+  const { floor, isMobile, ascensionLevel, hasOraclesGift, traumaStacks } = params;
+  const currentTraumaStacks = params.currentTraumaStacks ?? traumaStacks;
+
+  const configs = isMobile ? MOBILE_FLOOR_CONFIGS : FLOOR_CONFIGS;
+  const index = Math.min(floor - 1, configs.length - 1);
+  const baseConfig = configs[index];
+  const totalCells = baseConfig.rows * baseConfig.cols;
+
+  const modifiers = getAscensionModifiers(ascensionLevel);
+  const oracleBonus = hasOraclesGift ? ORACLES_GIFT_MINE_DENSITY_BONUS : 0;
+  const traumaBonus = traumaStacks * 0.05;
+  const totalDensityBonus = modifiers.mineDensityBonus + oracleBonus + traumaBonus;
+
+  const bonusMines = totalDensityBonus > 0 ? Math.floor(baseConfig.mines * totalDensityBonus) : 0;
+  const effectiveMines = baseConfig.mines + bonusMines;
+  const effectiveDensityPercent = (effectiveMines / totalCells) * 100;
+
+  // Build modifiers list (only active ones)
+  const densityModifiers: MineDensityBreakdownItem[] = [];
+  if (modifiers.mineDensityBonus > 0) {
+    densityModifiers.push({ label: 'Ascension (A3)', percent: modifiers.mineDensityBonus * 100 });
+  }
+  if (hasOraclesGift) {
+    densityModifiers.push({
+      label: "Oracle's Gift",
+      percent: ORACLES_GIFT_MINE_DENSITY_BONUS * 100,
+    });
+  }
+  if (traumaBonus > 0) {
+    densityModifiers.push({ label: 'Iron Will Trauma', percent: traumaBonus * 100 });
+  }
+
+  // Next floor projection (only if trauma stacks exist)
+  let projectedNextFloor: MineDensityInfo['projectedNextFloor'] = null;
+  if (currentTraumaStacks > 0 && floor < configs.length) {
+    const nextFloor = floor + 1;
+    const nextIndex = nextFloor - 1;
+    const nextBaseConfig = configs[nextIndex];
+    const nextTotalCells = nextBaseConfig.rows * nextBaseConfig.cols;
+    const nextTraumaBonus = currentTraumaStacks * 0.05;
+    const nextTotalDensityBonus = modifiers.mineDensityBonus + oracleBonus + nextTraumaBonus;
+    const nextBonusMines =
+      nextTotalDensityBonus > 0 ? Math.floor(nextBaseConfig.mines * nextTotalDensityBonus) : 0;
+    const nextEffectiveMines = nextBaseConfig.mines + nextBonusMines;
+    projectedNextFloor = {
+      effectiveDensityPercent: (nextEffectiveMines / nextTotalCells) * 100,
+      traumaBonusPercent: currentTraumaStacks * 5,
+    };
+  }
+
+  return {
+    baseMines: baseConfig.mines,
+    bonusMines,
+    effectiveMines,
+    totalCells,
+    effectiveDensityPercent,
+    modifiers: densityModifiers,
+    projectedNextFloor,
+  };
+}
 
 export function getFloorConfig(
   floor: number,
   isMobile: boolean,
   ascensionLevel: AscensionLevel = 0,
-  extraMineDensityBonus: number = 0 // Additional mine density modifier (e.g., 0.15 for Oracle's Gift)
+  extraMineDensityBonus: number = 0, // Additional mine density modifier (e.g., 0.12 for Oracle's Gift)
+  traumaStacks: number = 0 // Iron Will trauma stacks (+5% per stack)
 ): FloorConfig {
   const configs = isMobile ? MOBILE_FLOOR_CONFIGS : FLOOR_CONFIGS;
   const index = Math.min(floor - 1, configs.length - 1);
   const baseConfig = configs[index];
 
-  // Calculate total mine density bonus
-  const modifiers = getAscensionModifiers(ascensionLevel);
-  const totalDensityBonus = modifiers.mineDensityBonus + extraMineDensityBonus;
+  // Delegate to the single source of truth
+  const densityInfo = computeMineDensityForFloor({
+    floor,
+    isMobile,
+    ascensionLevel,
+    hasOraclesGift: extraMineDensityBonus > 0,
+    traumaStacks,
+  });
 
-  if (totalDensityBonus > 0) {
-    const bonusMines = Math.floor(baseConfig.mines * totalDensityBonus);
-    return {
-      ...baseConfig,
-      mines: baseConfig.mines + bonusMines,
-    };
-  }
-
-  return baseConfig;
+  return {
+    ...baseConfig,
+    mines: densityInfo.effectiveMines,
+  };
 }
 
 // Rarity weights for draft selection (must sum to 100)
 export const RARITY_WEIGHTS: Record<Rarity, number> = {
-  common: 50,
+  common: 60,
   uncommon: 30,
-  rare: 15,
-  epic: 5,
+  rare: 8,
+  epic: 2,
 };
 
 // Rarity display colors (for UI)
@@ -89,26 +183,10 @@ export const COMMON_POWER_UPS: PowerUp[] = [
     rarity: 'common',
   },
   {
-    id: 'cautious-start',
-    name: 'Cautious Start',
-    description: 'First click each floor guaranteed to have ≤2 adjacent mines',
-    icon: '🐢',
-    type: 'passive',
-    rarity: 'common',
-  },
-  {
-    id: 'heat-map',
-    name: 'Heat Map',
-    description: 'Revealed numbers tinted by danger (blue 1-2, orange 3-4, red 5+)',
-    icon: '🌡️',
-    type: 'passive',
-    rarity: 'common',
-  },
-  {
-    id: 'quick-recovery',
-    name: 'Quick Recovery',
-    description: 'If you die before revealing 10 cells, restart floor once per run',
-    icon: '💫',
+    id: 'false-start',
+    name: 'False Start',
+    description: 'Once per floor, your first incorrect flag is forgiven',
+    icon: '🚩',
     type: 'passive',
     rarity: 'common',
   },
@@ -133,9 +211,17 @@ export const COMMON_POWER_UPS: PowerUp[] = [
 // ==================== UNCOMMON RELICS ====================
 export const UNCOMMON_POWER_UPS: PowerUp[] = [
   {
+    id: 'quick-recovery',
+    name: 'Quick Recovery',
+    description: 'If you die before reaching 25% floor progress, restart floor once per run',
+    icon: '💫',
+    type: 'passive',
+    rarity: 'uncommon',
+  },
+  {
     id: 'pattern-memory',
     name: 'Pattern Memory',
-    description: 'After revealing a 3+ cell, one random safe neighbor glows',
+    description: 'Once per floor, revealing a 3+ cell highlights a safe neighbor',
     icon: '🧩',
     type: 'passive',
     rarity: 'uncommon',
@@ -143,12 +229,12 @@ export const UNCOMMON_POWER_UPS: PowerUp[] = [
   {
     id: 'survey',
     name: 'Survey',
-    description: 'Once per floor, reveal mine count in a chosen row',
+    description: 'Survey a row to learn exactly how many mines it contains. (2 uses per floor)',
     icon: '📊',
     type: 'active',
     rarity: 'uncommon',
-    usesPerFloor: 1,
-    activeHint: 'Click a cell to count mines in that row',
+    usesPerFloor: 2,
+    activeHint: 'Click a row marker to count mines in that row',
   },
   {
     id: 'momentum',
@@ -166,18 +252,21 @@ export const UNCOMMON_POWER_UPS: PowerUp[] = [
     type: 'passive',
     rarity: 'uncommon',
   },
-  {
-    id: 'mine-detector',
-    name: 'Mine Detector',
-    description: 'Hover shows mine count in 5×5 area',
-    icon: '📡',
-    type: 'passive',
-    rarity: 'uncommon',
-  },
 ];
 
 // ==================== RARE RELICS ====================
 export const RARE_POWER_UPS: PowerUp[] = [
+  {
+    id: 'mine-detector',
+    name: 'Mine Detector',
+    description:
+      'Scan a 4×4 region to learn how many mines it contains. 3 scans per floor. Each cell can only be scanned once per floor.',
+    icon: '📡',
+    type: 'active',
+    rarity: 'rare',
+    usesPerFloor: 3,
+    activeHint: 'Click a cell to scan for nearby mines',
+  },
   {
     id: 'peek',
     name: 'Peek',
@@ -201,7 +290,8 @@ export const RARE_POWER_UPS: PowerUp[] = [
   {
     id: 'defusal-kit',
     name: 'Defusal Kit',
-    description: 'Once per floor, remove a correctly flagged mine. Incorrect flags waste the charge',
+    description:
+      'Once per floor, remove a correctly flagged mine. Incorrect flags waste the charge',
     icon: '🔧',
     type: 'active',
     rarity: 'rare',
@@ -221,10 +311,13 @@ export const RARE_POWER_UPS: PowerUp[] = [
   {
     id: 'sixth-sense',
     name: 'Sixth Sense',
-    description: 'First click redirected to nearest 0-cell for max cascade',
+    description:
+      'Arm to redirect your next non-zero reveal into a cascade (once per floor). Does not consume a charge unless a redirect occurs.',
     icon: '✨',
-    type: 'passive',
+    type: 'active',
     rarity: 'rare',
+    usesPerFloor: 1,
+    activeHint: 'Sixth Sense armed — click a cell to trigger cascade redirect',
   },
 ];
 
@@ -243,7 +336,7 @@ export const EPIC_POWER_UPS: PowerUp[] = [
   {
     id: 'oracles-gift',
     name: "Oracle's Gift",
-    description: 'All true 50/50 situations show the safe choice. BUT: +15% mine density',
+    description: 'All true 50/50 situations show the safe choice. BUT: +12% mine density',
     icon: '🌟',
     type: 'passive',
     rarity: 'epic',
@@ -251,7 +344,8 @@ export const EPIC_POWER_UPS: PowerUp[] = [
   {
     id: 'iron-will',
     name: 'Iron Will',
-    description: 'Survive one mine click per run (mine becomes flagged instead)',
+    description:
+      'Survive one mine click per floor. Each trigger permanently increases mine density by 5%.',
     icon: '🛡️',
     type: 'passive',
     rarity: 'epic',
@@ -328,5 +422,5 @@ export function selectDraftOptions(
 
 export const MAX_FLOOR = 10;
 
-// Oracle's Gift mine density bonus (+15%)
-export const ORACLES_GIFT_MINE_DENSITY_BONUS = 0.15;
+// Oracle's Gift mine density bonus (+12%)
+export const ORACLES_GIFT_MINE_DENSITY_BONUS = 0.12;

@@ -1,7 +1,13 @@
 import { Cell, CellState, GamePhase, PowerUpId, RoguelikeGameState, RunState } from '../types';
-import { getFloorConfig, SCORING, MAX_FLOOR, POWER_UP_POOL, ORACLES_GIFT_MINE_DENSITY_BONUS } from '../constants';
+import {
+  getFloorConfig,
+  SCORING,
+  MAX_FLOOR,
+  POWER_UP_POOL,
+  ORACLES_GIFT_MINE_DENSITY_BONUS,
+} from '../constants';
 import { createEmptyBoard, revealCell, revealCascade } from './gameLogic';
-import { AscensionLevel, getAscensionModifiers } from '../ascension';
+import { AscensionLevel } from '../ascension';
 
 // Check for debug URL parameter to enable all powerups
 function hasAllPowerupsParam(): boolean {
@@ -26,16 +32,23 @@ export function createInitialRunState(ascensionLevel: AscensionLevel = 0): RunSt
     currentFloor: 1,
     score: 0,
     activePowerUps: hasAllPowerupsParam() ? [...POWER_UP_POOL] : [],
-    ironWillAvailable: true,
+    ironWillUsedThisFloor: false,
+    traumaStacks: 0,
     xRayUsedThisFloor: false,
     luckyStartUsedThisFloor: false,
     quickRecoveryUsedThisRun: false,
+    quickRecoveryEligibleThisFloor: true,
     momentumActive: false,
     peekUsedThisFloor: false,
     safePathUsedThisFloor: false,
     defusalKitUsedThisFloor: false,
-    surveyUsedThisFloor: false,
+    surveyChargesRemaining: 2,
     probabilityLensUsedThisFloor: false,
+    mineDetectorScansRemaining: 3,
+    sixthSenseChargesRemaining: 1,
+    sixthSenseArmed: false,
+    falseStartAvailableThisFloor: true,
+    patternMemoryAvailableThisFloor: true,
     seed: generateRunSeed(),
     ascensionLevel,
   };
@@ -49,7 +62,7 @@ export function createRoguelikeInitialState(
   // Check for Oracle's Gift in debug mode (allpowerups param)
   const hasOraclesGift = hasAllPowerupsParam();
   const extraDensity = hasOraclesGift ? ORACLES_GIFT_MINE_DENSITY_BONUS : 0;
-  const floorConfig = getFloorConfig(1, isMobile, ascensionLevel, extraDensity);
+  const floorConfig = getFloorConfig(1, isMobile, ascensionLevel, extraDensity, 0); // 0 trauma at start
   return {
     phase: GamePhase.Start,
     board: createEmptyBoard(floorConfig),
@@ -67,30 +80,32 @@ export function createRoguelikeInitialState(
     closeCallCell: null,
     zeroCellCount: null,
     peekCell: null,
-    surveyResult: null,
-    heatMapEnabled: true, // TEMPORARY: Enable for testing
+    surveyedRows: new Map(),
     cellsRevealedThisFloor: 0,
     cellRevealTimes: new Map(),
     fadedCells: new Set(),
     probabilityLensCells: new Set(),
     oracleGiftCells: new Set(),
+    mineDetectorScannedCells: new Set(),
+    mineDetectorResult: null,
+    sixthSenseTriggered: false,
+    falseStartTriggered: false,
   };
 }
 
 // Set up a new floor (called when starting run or advancing to next floor)
 export function setupFloor(state: RoguelikeGameState, floor: number): RoguelikeGameState {
-  const modifiers = getAscensionModifiers(state.run.ascensionLevel);
   // Apply Oracle's Gift mine density bonus if player has it
   const hasOraclesGift = hasPowerUp(state.run, 'oracles-gift');
   const extraDensity = hasOraclesGift ? ORACLES_GIFT_MINE_DENSITY_BONUS : 0;
-  const floorConfig = getFloorConfig(floor, state.isMobile, state.run.ascensionLevel, extraDensity);
+  const floorConfig = getFloorConfig(
+    floor,
+    state.isMobile,
+    state.run.ascensionLevel,
+    extraDensity,
+    state.run.traumaStacks
+  );
   const board = createEmptyBoard(floorConfig);
-
-  // Check if player has Heat Map power-up
-  const hasHeatMap = hasPowerUp(state.run, 'heat-map');
-
-  // A2: Initialize countdown timer if applicable
-  const initialTime = modifiers.timerCountdown ?? 0;
 
   return {
     ...state,
@@ -98,7 +113,7 @@ export function setupFloor(state: RoguelikeGameState, floor: number): RoguelikeG
     board,
     floorConfig,
     minesRemaining: floorConfig.mines,
-    time: initialTime,
+    time: 0,
     isFirstClick: true,
     dangerCells: new Set(),
     chordHighlightCells: new Set(),
@@ -107,24 +122,34 @@ export function setupFloor(state: RoguelikeGameState, floor: number): RoguelikeG
     closeCallCell: null,
     zeroCellCount: null, // Will be set after first click if Floor Scout is active
     peekCell: null,
-    surveyResult: null,
-    heatMapEnabled: hasHeatMap,
+    surveyedRows: new Map(),
     cellsRevealedThisFloor: 0,
     cellRevealTimes: new Map(), // A4: Reset reveal times for new floor
     fadedCells: new Set(), // A4: Reset faded cells for new floor
     probabilityLensCells: new Set(),
     oracleGiftCells: new Set(),
+    mineDetectorScannedCells: new Set(),
+    mineDetectorResult: null,
+    sixthSenseTriggered: false,
+    falseStartTriggered: false,
     run: {
       ...state.run,
       currentFloor: floor,
+      ironWillUsedThisFloor: false, // Reset shield for new floor
+      quickRecoveryEligibleThisFloor: !state.run.quickRecoveryUsedThisRun,
       xRayUsedThisFloor: false,
       luckyStartUsedThisFloor: false,
       momentumActive: false,
       peekUsedThisFloor: false,
       safePathUsedThisFloor: false,
       defusalKitUsedThisFloor: false,
-      surveyUsedThisFloor: false,
+      surveyChargesRemaining: 2,
       probabilityLensUsedThisFloor: false,
+      mineDetectorScansRemaining: 3,
+      sixthSenseChargesRemaining: 1,
+      sixthSenseArmed: false,
+      falseStartAvailableThisFloor: true,
+      patternMemoryAvailableThisFloor: true,
     },
   };
 }
@@ -259,6 +284,19 @@ export function applySixthSense(board: Cell[][], clickRow: number, clickCol: num
   return revealCell(board, clickRow, clickCol);
 }
 
+// Count unrevealed 0-cells on the board (for Sixth Sense availability check)
+export function getUnrevealedZeroCellCount(board: Cell[][]): number {
+  let count = 0;
+  for (const row of board) {
+    for (const cell of row) {
+      if (!cell.isMine && cell.adjacentMines === 0 && cell.state === CellState.Hidden) {
+        count++;
+      }
+    }
+  }
+  return count;
+}
+
 // Apply X-Ray Vision: safely reveal 3x3 area
 export function applyXRayVision(board: Cell[][], centerRow: number, centerCol: number): Cell[][] {
   let newBoard = board.map((r) => r.map((c) => ({ ...c })));
@@ -346,8 +384,9 @@ export function isFinalFloor(floor: number): boolean {
   return floor >= MAX_FLOOR;
 }
 
-// Calculate mine count in 5×5 area for Mine Detector power-up
-export function calculateMineCount5x5(
+// Calculate mine count in 4×4 area for Mine Detector power-up
+// Offsets: -1, 0, +1, +2 in both dimensions (target cell near center), clamped to board bounds
+export function calculateMineCount4x4(
   board: Cell[][],
   centerRow: number,
   centerCol: number
@@ -356,8 +395,8 @@ export function calculateMineCount5x5(
   const cols = board[0]?.length || 0;
   let count = 0;
 
-  for (let dr = -2; dr <= 2; dr++) {
-    for (let dc = -2; dc <= 2; dc++) {
+  for (let dr = -1; dr <= 2; dr++) {
+    for (let dc = -1; dc <= 2; dc++) {
       const r = centerRow + dr;
       const c = centerCol + dc;
       if (r >= 0 && r < rows && c >= 0 && c < cols && board[r][c].isMine) {
@@ -381,11 +420,7 @@ export function calculateChordHighlightCells(
   const centerCell = board[centerRow]?.[centerCol];
 
   // Only highlight if the center cell is a revealed numbered cell
-  if (
-    !centerCell ||
-    centerCell.state !== CellState.Revealed ||
-    centerCell.adjacentMines === 0
-  ) {
+  if (!centerCell || centerCell.state !== CellState.Revealed || centerCell.adjacentMines === 0) {
     return cells;
   }
 
@@ -489,11 +524,7 @@ export function calculatePatternMemoryCell(
 }
 
 // Apply Safe Path: reveal up to 5 safe cells in a row or column
-export function applySafePath(
-  board: Cell[][],
-  direction: 'row' | 'col',
-  index: number
-): Cell[][] {
+export function applySafePath(board: Cell[][], direction: 'row' | 'col', index: number): Cell[][] {
   let newBoard = board.map((r) => r.map((c) => ({ ...c })));
   const rows = newBoard.length;
   const cols = newBoard[0]?.length || 0;

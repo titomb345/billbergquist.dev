@@ -1,7 +1,6 @@
 import { useState, useRef } from 'react';
 import { RunState, PowerUp } from '../types';
-import { MAX_FLOOR } from '../constants';
-import { getAscensionModifiers } from '../ascension';
+import { MAX_FLOOR, MineDensityInfo } from '../constants';
 
 interface RoguelikeHeaderProps {
   floor: number;
@@ -24,12 +23,20 @@ interface RoguelikeHeaderProps {
   surveyMode?: boolean;
   canUseSurvey?: boolean;
   onToggleSurvey?: () => void;
-  surveyResult?: { direction: 'row' | 'col'; index: number; mineCount: number } | null;
-  mineDetectorCount?: number | null;
+  surveyChargesRemaining?: number;
+  mineDetectorMode?: boolean;
+  canUseMineDetector?: boolean;
+  onToggleMineDetector?: () => void;
+  mineDetectorScansRemaining?: number;
   zeroCellCount?: number | null;
+  densityInfo?: MineDensityInfo;
   canUseProbabilityLens?: boolean;
   onUseProbabilityLens?: () => void;
   probabilityLensActive?: boolean;
+  sixthSenseArmed?: boolean;
+  canUseSixthSense?: boolean;
+  onToggleSixthSenseArm?: () => void;
+  sixthSenseChargesRemaining?: number;
 }
 
 interface HoveredPowerUp {
@@ -61,14 +68,23 @@ function RoguelikeHeader({
   surveyMode = false,
   canUseSurvey = false,
   onToggleSurvey,
-  surveyResult,
-  mineDetectorCount,
+  surveyChargesRemaining = 0,
+  mineDetectorMode = false,
+  canUseMineDetector = false,
+  onToggleMineDetector,
+  mineDetectorScansRemaining = 0,
   zeroCellCount,
+  densityInfo,
   canUseProbabilityLens = false,
   onUseProbabilityLens,
   probabilityLensActive = false,
+  sixthSenseArmed = false,
+  canUseSixthSense = false,
+  onToggleSixthSenseArm,
+  sixthSenseChargesRemaining = 0,
 }: RoguelikeHeaderProps) {
   const [hoveredPowerUp, setHoveredPowerUp] = useState<HoveredPowerUp | null>(null);
+  const [densityHovered, setDensityHovered] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   const formatNumber = (num: number): string => {
@@ -109,15 +125,16 @@ function RoguelikeHeader({
     // Calculate how far down from the container top the icon's bottom is
     const topOffset = iconRect.bottom - containerRect.top;
 
-    setHoveredPowerUp({ powerUp, isUsed, tooltipOffset: clampedTooltipOffset, arrowOffset, topOffset });
+    setHoveredPowerUp({
+      powerUp,
+      isUsed,
+      tooltipOffset: clampedTooltipOffset,
+      arrowOffset,
+      topOffset,
+    });
   };
 
   const hasRelics = run.activePowerUps.length > 0;
-
-  // A2: Check if timer is in countdown mode and low
-  const modifiers = getAscensionModifiers(run.ascensionLevel);
-  const isCountdownMode = modifiers.timerCountdown !== null;
-  const isTimerLow = isCountdownMode && time < 30;
 
   return (
     <div className="roguelike-header">
@@ -136,9 +153,70 @@ function RoguelikeHeader({
           <span className="stat-label">MINES</span>
           <span className="stat-value mines-value">{formatNumber(minesRemaining)}</span>
         </div>
+        {densityInfo && (
+          <div
+            className="roguelike-stat-item density-stat"
+            onMouseEnter={() => setDensityHovered(true)}
+            onMouseLeave={() => setDensityHovered(false)}
+          >
+            <span className="stat-label">DENSITY</span>
+            <span className="stat-value density-value">
+              {Math.round(densityInfo.effectiveDensityPercent)}%
+            </span>
+            {densityHovered && (
+              <div className="density-tooltip">
+                <div className="density-tooltip-title">Mine Density</div>
+                <div className="density-tooltip-row">
+                  <span className="density-tooltip-item-label">Base</span>
+                  <span className="density-tooltip-item-value">
+                    {densityInfo.baseMines} mines
+                  </span>
+                </div>
+                {densityInfo.modifiers.length > 0 && (
+                  <>
+                    {densityInfo.modifiers.map((mod, i) => (
+                      <div key={i} className="density-tooltip-row density-tooltip-modifier">
+                        <span className="density-tooltip-item-label">
+                          {mod.label} (+{Math.round(mod.percent)}%)
+                        </span>
+                      </div>
+                    ))}
+                    <div className="density-tooltip-row">
+                      <span className="density-tooltip-item-label">Bonus</span>
+                      <span className="density-tooltip-item-value">
+                        +{densityInfo.bonusMines} mines
+                      </span>
+                    </div>
+                  </>
+                )}
+                <div className="density-tooltip-divider" />
+                <div className="density-tooltip-row density-tooltip-total">
+                  <span className="density-tooltip-item-label">Total</span>
+                  <span className="density-tooltip-item-value">
+                    {densityInfo.effectiveMines} mines (
+                    {Math.round(densityInfo.effectiveDensityPercent)}%)
+                  </span>
+                </div>
+                {densityInfo.projectedNextFloor && (
+                  <>
+                    <div className="density-tooltip-divider" />
+                    <div className="density-tooltip-row density-tooltip-projection">
+                      <span className="density-tooltip-item-label">
+                        Next floor (+{densityInfo.projectedNextFloor.traumaBonusPercent}% trauma)
+                      </span>
+                      <span className="density-tooltip-item-value">
+                        {Math.round(densityInfo.projectedNextFloor.effectiveDensityPercent)}%
+                      </span>
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
+          </div>
+        )}
         <div className="roguelike-stat-item">
-          <span className="stat-label">{isCountdownMode ? 'LEFT' : 'TIME'}</span>
-          <span className={`stat-value time-value ${isTimerLow ? 'timer-warning' : ''}`}>
+          <span className="stat-label">TIME</span>
+          <span className="stat-value time-value">
             {formatNumber(time)}
           </span>
         </div>
@@ -171,7 +249,25 @@ function RoguelikeHeader({
               </span>
               {hoveredPowerUp.isUsed && <span className="powerup-tooltip-status">USED</span>}
             </div>
-            <span className="powerup-tooltip-desc">{hoveredPowerUp.powerUp.description}</span>
+            <span className="powerup-tooltip-desc">
+              {hoveredPowerUp.powerUp.description}
+              {hoveredPowerUp.powerUp.id === 'iron-will' && run.traumaStacks > 0 && (
+                <span className="powerup-tooltip-trauma">
+                  {'\n\n'}Trauma: {run.traumaStacks} stack{run.traumaStacks > 1 ? 's' : ''} (+
+                  {run.traumaStacks * 5}% mines)
+                </span>
+              )}
+              {hoveredPowerUp.powerUp.id === 'quick-recovery' && run.quickRecoveryUsedThisRun && (
+                <span className="powerup-tooltip-trauma">{'\n\n'}Already used this run.</span>
+              )}
+              {hoveredPowerUp.powerUp.id === 'quick-recovery' &&
+                !run.quickRecoveryUsedThisRun &&
+                !run.quickRecoveryEligibleThisFloor && (
+                  <span className="powerup-tooltip-trauma">
+                    {'\n\n'}Too late to trigger this floor.
+                  </span>
+                )}
+            </span>
             <span
               className="powerup-tooltip-arrow"
               style={{ left: `calc(50% + ${hoveredPowerUp.arrowOffset}px)` }}
@@ -190,19 +286,27 @@ function RoguelikeHeader({
           const isDefusalKit = powerUp.id === 'defusal-kit';
           const isDefusalKitUsed = isDefusalKit && run.defusalKitUsedThisFloor;
           const isSurvey = powerUp.id === 'survey';
-          const isSurveyUsed = isSurvey && run.surveyUsedThisFloor;
+          const isSurveyUsed = isSurvey && run.surveyChargesRemaining <= 0;
+          const isMineDetector = powerUp.id === 'mine-detector';
+          const isMineDetectorUsed = isMineDetector && run.mineDetectorScansRemaining <= 0;
           const isProbabilityLens = powerUp.id === 'probability-lens';
           const isProbabilityLensUsed = isProbabilityLens && run.probabilityLensUsedThisFloor;
-          const isIronWillUsed = !run.ironWillAvailable && powerUp.id === 'iron-will';
+          const isSixthSense = powerUp.id === 'sixth-sense';
+          const isSixthSenseUsed = isSixthSense && run.sixthSenseChargesRemaining <= 0;
+          // Check per-floor usage instead of run-wide availability
+          const isIronWillUsed = run.ironWillUsedThisFloor && powerUp.id === 'iron-will';
           const isQuickRecoveryUsed =
-            powerUp.id === 'quick-recovery' && run.quickRecoveryUsedThisRun;
+            powerUp.id === 'quick-recovery' &&
+            (run.quickRecoveryUsedThisRun || !run.quickRecoveryEligibleThisFloor);
           const isUsed =
             isXRayUsed ||
             isPeekUsed ||
             isSafePathUsed ||
             isDefusalKitUsed ||
             isSurveyUsed ||
+            isMineDetectorUsed ||
             isProbabilityLensUsed ||
+            isSixthSenseUsed ||
             isIronWillUsed ||
             isQuickRecoveryUsed;
 
@@ -211,20 +315,26 @@ function RoguelikeHeader({
           const isSafePathClickable = isSafePath && canUseSafePath && onToggleSafePath;
           const isDefusalKitClickable = isDefusalKit && canUseDefusalKit && onToggleDefusalKit;
           const isSurveyClickable = isSurvey && canUseSurvey && onToggleSurvey;
-          const isProbabilityLensClickable = isProbabilityLens && canUseProbabilityLens && onUseProbabilityLens;
+          const isMineDetectorClickable =
+            isMineDetector && canUseMineDetector && onToggleMineDetector;
+          const isProbabilityLensClickable =
+            isProbabilityLens && canUseProbabilityLens && onUseProbabilityLens;
+          const isSixthSenseClickable = isSixthSense && canUseSixthSense && onToggleSixthSenseArm;
           const isClickable =
             isXRayClickable ||
             isPeekClickable ||
             isSafePathClickable ||
             isDefusalKitClickable ||
             isSurveyClickable ||
-            isProbabilityLensClickable;
+            isMineDetectorClickable ||
+            isProbabilityLensClickable ||
+            isSixthSenseClickable;
 
-          const showSurveyResult = isSurvey && surveyResult != null;
-          const isMineDetector = powerUp.id === 'mine-detector';
+          const showSurveyBadge = isSurvey;
           const isFloorScout = powerUp.id === 'floor-scout';
-          const showDetectorCount = isMineDetector && mineDetectorCount != null;
+          const showMineDetectorBadge = isMineDetector;
           const showZeroCellCount = isFloorScout && zeroCellCount != null;
+          const showSixthSenseBadge = isSixthSense;
 
           const getClickHandler = () => {
             if (isXRayClickable) return onToggleXRay;
@@ -232,14 +342,16 @@ function RoguelikeHeader({
             if (isSafePathClickable) return onToggleSafePath;
             if (isDefusalKitClickable) return onToggleDefusalKit;
             if (isSurveyClickable) return onToggleSurvey;
+            if (isMineDetectorClickable) return onToggleMineDetector;
             if (isProbabilityLensClickable) return onUseProbabilityLens;
+            if (isSixthSenseClickable) return onToggleSixthSenseArm;
             return undefined;
           };
 
           return (
             <span
               key={powerUp.id}
-              className={`powerup-icon-wrapper rarity-${powerUp.rarity} ${isUsed ? 'used' : ''} ${isXRay ? 'xray' : ''} ${xRayMode ? 'xray-active' : ''} ${isPeek ? 'peek' : ''} ${peekMode ? 'peek-active' : ''} ${isSafePath ? 'safe-path' : ''} ${safePathMode ? 'safe-path-active' : ''} ${isDefusalKit ? 'defusal-kit' : ''} ${defusalKitMode ? 'defusal-kit-active' : ''} ${isSurvey ? 'survey' : ''} ${surveyMode ? 'survey-active' : ''} ${isProbabilityLens ? 'probability-lens' : ''} ${probabilityLensActive ? 'probability-lens-active' : ''} ${isClickable ? 'clickable' : ''} ${showSurveyResult || showDetectorCount || showZeroCellCount ? 'detector-active' : ''}`}
+              className={`powerup-icon-wrapper rarity-${powerUp.rarity} ${isActive ? 'type-active' : 'type-passive'} ${isUsed ? 'used' : ''} ${isXRay ? 'xray' : ''} ${xRayMode ? 'xray-active' : ''} ${isPeek ? 'peek' : ''} ${peekMode ? 'peek-active' : ''} ${isSafePath ? 'safe-path' : ''} ${safePathMode ? 'safe-path-active' : ''} ${isDefusalKit ? 'defusal-kit' : ''} ${defusalKitMode ? 'defusal-kit-active' : ''} ${isSurvey ? 'survey' : ''} ${surveyMode ? 'survey-active' : ''} ${isMineDetector ? 'mine-detector' : ''} ${mineDetectorMode ? 'mine-detector-active' : ''} ${isProbabilityLens ? 'probability-lens' : ''} ${probabilityLensActive ? 'probability-lens-active' : ''} ${isSixthSense ? 'sixth-sense' : ''} ${isSixthSense && sixthSenseArmed ? 'sixth-sense-active' : ''} ${isClickable ? 'clickable' : ''} ${showZeroCellCount ? 'detector-active' : ''}`}
               onMouseEnter={(e) => handleMouseEnter(powerUp, isUsed, e.currentTarget)}
               onMouseLeave={() => setHoveredPowerUp(null)}
               onClick={getClickHandler()}
@@ -249,14 +361,17 @@ function RoguelikeHeader({
               </span>
               {/* Lightning badge for active-type relics */}
               {isActive && <span className="active-relic-badge">⚡</span>}
-              {showSurveyResult && (
-                <span className="mine-detector-badge survey-badge">{surveyResult.mineCount}</span>
+              {showSurveyBadge && (
+                <span className="mine-detector-badge survey-badge">{surveyChargesRemaining}</span>
               )}
-              {showDetectorCount && (
-                <span className="mine-detector-badge">{mineDetectorCount}</span>
+              {showMineDetectorBadge && (
+                <span className="mine-detector-badge">{mineDetectorScansRemaining}</span>
               )}
               {showZeroCellCount && (
                 <span className="mine-detector-badge floor-scout-badge">{zeroCellCount}</span>
+              )}
+              {showSixthSenseBadge && (
+                <span className="mine-detector-badge">{sixthSenseChargesRemaining}</span>
               )}
             </span>
           );

@@ -108,9 +108,13 @@ export function saveGameState(state: RoguelikeGameState): void {
       explodedCell: state.explodedCell,
       closeCallCell: state.closeCallCell,
       // Active relic visual state
-      surveyResult: state.surveyResult,
+      surveyedRows: Array.from(state.surveyedRows.entries()),
       probabilityLensCells: Array.from(state.probabilityLensCells),
       peekCell: state.peekCell,
+      mineDetectorScannedCells: Array.from(state.mineDetectorScannedCells),
+      mineDetectorResult: state.mineDetectorResult,
+      sixthSenseTriggered: state.sixthSenseTriggered,
+      falseStartTriggered: state.falseStartTriggered,
     };
 
     const checksum = computeChecksum(serializable);
@@ -224,16 +228,23 @@ export function loadGameState(): RoguelikeGameState | null {
       currentFloor: validated.run.currentFloor,
       score: validated.run.score,
       activePowerUps,
-      ironWillAvailable: validated.run.ironWillAvailable,
+      ironWillUsedThisFloor: validated.run.ironWillUsedThisFloor,
+      traumaStacks: validated.run.traumaStacks,
       xRayUsedThisFloor: validated.run.xRayUsedThisFloor,
       luckyStartUsedThisFloor: validated.run.luckyStartUsedThisFloor,
       quickRecoveryUsedThisRun: validated.run.quickRecoveryUsedThisRun,
+      quickRecoveryEligibleThisFloor: validated.run.quickRecoveryEligibleThisFloor,
       momentumActive: validated.run.momentumActive,
       peekUsedThisFloor: validated.run.peekUsedThisFloor,
       safePathUsedThisFloor: validated.run.safePathUsedThisFloor,
       defusalKitUsedThisFloor: validated.run.defusalKitUsedThisFloor,
-      surveyUsedThisFloor: validated.run.surveyUsedThisFloor,
+      surveyChargesRemaining: validated.run.surveyChargesRemaining,
       probabilityLensUsedThisFloor: validated.run.probabilityLensUsedThisFloor,
+      mineDetectorScansRemaining: validated.run.mineDetectorScansRemaining,
+      sixthSenseChargesRemaining: validated.run.sixthSenseChargesRemaining,
+      sixthSenseArmed: validated.run.sixthSenseArmed,
+      falseStartAvailableThisFloor: validated.run.falseStartAvailableThisFloor,
+      patternMemoryAvailableThisFloor: validated.run.patternMemoryAvailableThisFloor,
       seed: validated.run.seed,
       ascensionLevel: (validated.run.ascensionLevel ?? 0) as RunState['ascensionLevel'],
     };
@@ -268,9 +279,13 @@ export function loadGameState(): RoguelikeGameState | null {
       explodedCell: validated.explodedCell,
       closeCallCell: validated.closeCallCell,
       // Active relic visual state
-      surveyResult: validated.surveyResult,
+      surveyedRows: new Map(validated.surveyedRows),
       probabilityLensCells: new Set(validated.probabilityLensCells),
       peekCell: validated.peekCell,
+      mineDetectorScannedCells: new Set(validated.mineDetectorScannedCells),
+      mineDetectorResult: validated.mineDetectorResult,
+      sixthSenseTriggered: validated.sixthSenseTriggered,
+      falseStartTriggered: validated.falseStartTriggered,
     };
   } catch (e) {
     console.warn('Failed to load game state:', e);
@@ -374,8 +389,10 @@ export function loadStats(): RoguelikeStats {
       bestFloor: validated.bestFloor,
       bestScore: validated.bestScore,
       floorsCleared: validated.floorsCleared,
-      highestAscensionUnlocked: (validated.highestAscensionUnlocked ?? 0) as RoguelikeStats['highestAscensionUnlocked'],
-      highestAscensionCleared: (validated.highestAscensionCleared ?? 0) as RoguelikeStats['highestAscensionCleared'],
+      highestAscensionUnlocked: (validated.highestAscensionUnlocked ??
+        0) as RoguelikeStats['highestAscensionUnlocked'],
+      highestAscensionCleared: (validated.highestAscensionCleared ??
+        0) as RoguelikeStats['highestAscensionCleared'],
     };
   } catch (e) {
     console.warn('Failed to load stats:', e);
