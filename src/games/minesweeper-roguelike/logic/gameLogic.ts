@@ -266,6 +266,7 @@ export interface PlaceMinesOptions {
   breathingRoom?: boolean; // 2×2 area around first click must be safe
   toroidal?: boolean; // A5: Wrap coordinates at edges
   coldStart?: boolean; // A1: Only exclude clicked cell, not 3×3
+  additionalExclusions?: Array<{ row: number; col: number }>; // Extra cells to exclude from mine placement
 }
 
 // Place mines with optional power-up constraints
@@ -308,6 +309,13 @@ export function placeMinesWithConstraints(
           excludeSet.add(`${r},${c}`);
         }
       }
+    }
+  }
+
+  // Add any additional exclusions (e.g., Cornerstone safe corner)
+  if (options.additionalExclusions) {
+    for (const cell of options.additionalExclusions) {
+      excludeSet.add(`${cell.row},${cell.col}`);
     }
   }
 

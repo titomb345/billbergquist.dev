@@ -1,34 +1,34 @@
 import { FloorConfig, PowerUp, PowerUpId, Rarity } from './types';
 import { AscensionLevel, getAscensionModifiers } from './ascension';
 
-// Floor configurations - monotonic density ramp from ~17% to ~29%
-// F1:16.7% F2:18.4% F3:20.3% F4:21.9% F5:22.2% F6:23.5% F7:24.0% F8:28.0% F9:28.9% F10:29.2%
+// Floor configurations - monotonic density ramp from ~14% to ~26%
+// F1:13.9% F2:16.3% F3:17.2% F4:18.8% F5:19.8% F6:22.2% F7:23.0% F8:25.0% F9:25.6% F10:26.4%
 export const FLOOR_CONFIGS: FloorConfig[] = [
-  { floor: 1, rows: 6, cols: 6, mines: 6 },
-  { floor: 2, rows: 7, cols: 7, mines: 9 },
-  { floor: 3, rows: 8, cols: 8, mines: 13 },
-  { floor: 4, rows: 8, cols: 8, mines: 14 },
-  { floor: 5, rows: 9, cols: 9, mines: 18 },
-  { floor: 6, rows: 9, cols: 9, mines: 19 },
-  { floor: 7, rows: 10, cols: 10, mines: 24 },
-  { floor: 8, rows: 10, cols: 10, mines: 28 },
-  { floor: 9, rows: 11, cols: 11, mines: 35 },
-  { floor: 10, rows: 12, cols: 12, mines: 42 },
+  { floor: 1, rows: 6, cols: 6, mines: 5 },
+  { floor: 2, rows: 7, cols: 7, mines: 8 },
+  { floor: 3, rows: 8, cols: 8, mines: 11 },
+  { floor: 4, rows: 8, cols: 8, mines: 12 },
+  { floor: 5, rows: 9, cols: 9, mines: 16 },
+  { floor: 6, rows: 9, cols: 9, mines: 18 },
+  { floor: 7, rows: 10, cols: 10, mines: 23 },
+  { floor: 8, rows: 10, cols: 10, mines: 25 },
+  { floor: 9, rows: 11, cols: 11, mines: 31 },
+  { floor: 10, rows: 12, cols: 12, mines: 38 },
 ];
 
 // Mobile floor configs - keep boards more square/portrait-oriented
-// Density matched to desktop: ~17% → ~29% monotonic ramp
+// Density matched to desktop: ~14% → ~26% monotonic ramp
 export const MOBILE_FLOOR_CONFIGS: FloorConfig[] = [
-  { floor: 1, rows: 6, cols: 6, mines: 6 },
-  { floor: 2, rows: 7, cols: 7, mines: 9 },
-  { floor: 3, rows: 8, cols: 8, mines: 13 },
-  { floor: 4, rows: 9, cols: 8, mines: 16 },
-  { floor: 5, rows: 10, cols: 8, mines: 18 },
-  { floor: 6, rows: 10, cols: 9, mines: 21 },
-  { floor: 7, rows: 11, cols: 9, mines: 24 },
-  { floor: 8, rows: 12, cols: 9, mines: 30 },
-  { floor: 9, rows: 12, cols: 10, mines: 35 },
-  { floor: 10, rows: 13, cols: 10, mines: 38 },
+  { floor: 1, rows: 6, cols: 6, mines: 5 },
+  { floor: 2, rows: 7, cols: 7, mines: 8 },
+  { floor: 3, rows: 8, cols: 8, mines: 11 },
+  { floor: 4, rows: 9, cols: 8, mines: 13 },
+  { floor: 5, rows: 10, cols: 8, mines: 16 },
+  { floor: 6, rows: 10, cols: 9, mines: 20 },
+  { floor: 7, rows: 11, cols: 9, mines: 23 },
+  { floor: 8, rows: 12, cols: 9, mines: 27 },
+  { floor: 9, rows: 12, cols: 10, mines: 31 },
+  { floor: 10, rows: 13, cols: 10, mines: 34 },
 ];
 
 // Mine density modifier for tooltip display
@@ -167,10 +167,10 @@ export const RARITY_COLORS: Record<Rarity, string> = {
 // ==================== COMMON RELICS ====================
 export const COMMON_POWER_UPS: PowerUp[] = [
   {
-    id: 'edge-walker',
-    name: 'Edge Walker',
-    description: 'All 4 corner cells revealed (if safe) or flagged (if mine) at floor start',
-    icon: '🧭',
+    id: 'cornerstone',
+    name: 'Cornerstone',
+    description: 'Reveal a guaranteed safe corner at floor start',
+    icon: '🔲',
     type: 'passive',
     rarity: 'common',
   },

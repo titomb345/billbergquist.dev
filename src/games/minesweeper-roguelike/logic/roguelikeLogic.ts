@@ -442,35 +442,18 @@ export function calculateChordHighlightCells(
   return cells;
 }
 
-// Apply Edge Walker: reveal/flag corner cells at floor start
-export function applyEdgeWalker(board: Cell[][]): Cell[][] {
-  const rows = board.length;
-  const cols = board[0]?.length || 0;
-  if (rows < 2 || cols < 2) return board;
-
+// Choose a random corner for Cornerstone power-up
+export function chooseCornerstoneCorner(
+  rows: number,
+  cols: number
+): { row: number; col: number } {
   const corners = [
     { row: 0, col: 0 },
     { row: 0, col: cols - 1 },
     { row: rows - 1, col: 0 },
     { row: rows - 1, col: cols - 1 },
   ];
-
-  let newBoard = board.map((r) => r.map((c) => ({ ...c })));
-
-  for (const { row, col } of corners) {
-    const cell = newBoard[row][col];
-    if (cell.state !== CellState.Hidden) continue;
-
-    if (cell.isMine) {
-      // Flag the mine
-      newBoard[row][col] = { ...cell, state: CellState.Flagged };
-    } else {
-      // Reveal the cell
-      newBoard = revealCell(newBoard, row, col);
-    }
-  }
-
-  return newBoard;
+  return corners[Math.floor(Math.random() * corners.length)];
 }
 
 // Count cells with 0 adjacent mines for Floor Scout
