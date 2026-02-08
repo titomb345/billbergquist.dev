@@ -64,7 +64,7 @@ export type Rarity = 'common' | 'uncommon' | 'rare' | 'epic';
 // Power-up identifiers
 export type PowerUpId =
   // Common
-  | 'edge-walker'
+  | 'cornerstone'
   | 'danger-sense'
   | 'false-start'
   | 'breathing-room'
