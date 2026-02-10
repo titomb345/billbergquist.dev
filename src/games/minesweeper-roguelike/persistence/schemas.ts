@@ -1,8 +1,8 @@
 import { z } from 'zod';
 import { ALL_POWER_UP_IDS } from '../constants';
 
-export const GAME_STATE_VERSION = 10;
-export const STATS_VERSION = 3;
+export const GAME_STATE_VERSION = 1;
+export const STATS_VERSION = 1;
 
 // Cell schema
 export const CellStateSchema = z.enum(['hidden', 'revealed', 'flagged']);

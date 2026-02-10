@@ -318,7 +318,6 @@ function Minesweeper({ resetRef, isPaused = false, onResume }: MinesweeperProps)
             canUseMineDetector={canUseMineDetector}
             onToggleMineDetector={handleToggleMineDetectorMode}
             mineDetectorScansRemaining={state.run.mineDetectorScansRemaining}
-            zeroCellCount={state.zeroCellCount}
             canUseProbabilityLens={canUseProbabilityLens}
             onUseProbabilityLens={handleUseProbabilityLens}
             probabilityLensActive={state.probabilityLensCells.size > 0}
@@ -371,6 +370,7 @@ function Minesweeper({ resetRef, isPaused = false, onResume }: MinesweeperProps)
                 fadedCells={state.fadedCells}
                 probabilityLensCells={state.probabilityLensCells}
                 oracleGiftCells={state.oracleGiftCells}
+                openingsMapCells={state.openingsMapCells}
               />
             </div>
           </div>

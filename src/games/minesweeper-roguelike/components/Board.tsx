@@ -35,6 +35,7 @@ interface BoardProps {
   fadedCells?: Set<string>; // A4: Cells with faded numbers
   probabilityLensCells?: Set<string>; // Probability Lens: safest cells highlighted
   oracleGiftCells?: Set<string>; // Oracle's Gift: 50/50 safe cells highlighted
+  openingsMapCells?: Set<string>; // Openings Map: cells near open regions
 }
 
 function Board({
@@ -70,6 +71,7 @@ function Board({
   fadedCells,
   probabilityLensCells,
   oracleGiftCells,
+  openingsMapCells,
 }: BoardProps) {
   // Track hovered row for Safe Path and Survey row highlighting
   const [hoveredRow, setHoveredRow] = useState<number | null>(null);
@@ -173,6 +175,7 @@ function Board({
               onRowHover={safePathMode || surveyMode ? setHoveredRow : undefined}
               hasProbabilityLens={probabilityLensCells?.has(`${cell.row},${cell.col}`)}
               hasOracleGift={oracleGiftCells?.has(`${cell.row},${cell.col}`)}
+              hasOpeningsMap={openingsMapCells?.has(`${cell.row},${cell.col}`)}
             />
           ))}
         </div>
