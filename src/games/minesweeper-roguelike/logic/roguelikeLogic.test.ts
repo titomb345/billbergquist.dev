@@ -5,7 +5,7 @@ import {
   countRevealedCells,
   checkFloorCleared,
   calculateMineCount4x4,
-  countZeroCells,
+  calculateOpeningsMapCells,
   calculatePatternMemoryCell,
 } from './roguelikeLogic';
 import { Cell, CellState } from '../types';
@@ -102,21 +102,62 @@ describe('calculateMineCount4x4', () => {
   });
 });
 
-describe('countZeroCells', () => {
-  it('counts non-mine cells with 0 adjacent mines', () => {
+describe('calculateOpeningsMapCells', () => {
+  it('returns empty set when no zero cells exist', () => {
     const board = createTestBoard(3, 3);
-    // Set all to have adjacent mines
     for (const row of board) {
       for (const cell of row) {
         cell.adjacentMines = 1;
       }
     }
+    expect(calculateOpeningsMapCells(board).size).toBe(0);
+  });
 
-    board[0][0].adjacentMines = 0;
-    board[1][1].adjacentMines = 0;
-    board[1][1].isMine = true; // Should not count
+  it('returns at most 3 cells', () => {
+    const board = createTestBoard(8, 8);
+    // Create a large open region in center
+    board[3][3].adjacentMines = 0;
+    board[3][4].adjacentMines = 0;
+    board[4][3].adjacentMines = 0;
+    board[4][4].adjacentMines = 0;
+    // Surrounding cells have adjacentMines = 1 (default from createTestBoard is 0, so set them)
+    for (let r = 0; r < 8; r++) {
+      for (let c = 0; c < 8; c++) {
+        if (!((r === 3 || r === 4) && (c === 3 || c === 4))) {
+          board[r][c].adjacentMines = 1;
+        }
+      }
+    }
+    const result = calculateOpeningsMapCells(board);
+    expect(result.size).toBeLessThanOrEqual(3);
+    expect(result.size).toBeGreaterThan(0);
+  });
 
-    expect(countZeroCells(board)).toBe(1);
+  it('excludes mine cells from candidates', () => {
+    const board = createTestBoard(5, 5);
+    board[2][2].adjacentMines = 0; // single zero cell
+    for (let r = 0; r < 5; r++) {
+      for (let c = 0; c < 5; c++) {
+        if (r !== 2 || c !== 2) board[r][c].adjacentMines = 1;
+      }
+    }
+    // Make all Manhattan-distance-2 cells mines
+    // distance-2 cells from (2,2): (0,2), (2,0), (4,2), (2,4), (0,4)...
+    board[0][2].isMine = true;
+    board[2][0].isMine = true;
+    board[4][2].isMine = true;
+    board[2][4].isMine = true;
+    board[0][4].isMine = true;
+    board[4][0].isMine = true;
+    board[4][4].isMine = true;
+    board[0][0].isMine = true;
+
+    const result = calculateOpeningsMapCells(board);
+    // All highlighted cells should be non-mines
+    for (const key of result) {
+      const [r, c] = key.split(',').map(Number);
+      expect(board[r][c].isMine).toBe(false);
+    }
   });
 });
 
