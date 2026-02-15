@@ -1,11 +1,14 @@
 import { Link } from 'react-router-dom';
 import GlowText from '../ui/GlowText';
 import Button from '../ui/Button';
+import useScrollReveal from '../../hooks/useScrollReveal';
 import styles from './AboutSection.module.css';
 
 function AboutSection() {
+  const sectionRef = useScrollReveal<HTMLElement>();
+
   return (
-    <section id="about" className={styles.section}>
+    <section id="about" className={`${styles.section} scroll-reveal`} ref={sectionRef}>
       <GlowText
         as="h2"
         size="medium"

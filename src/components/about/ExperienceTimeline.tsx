@@ -1,4 +1,5 @@
 import GlowText from '../ui/GlowText';
+import useScrollReveal from '../../hooks/useScrollReveal';
 import styles from './ExperienceTimeline.module.css';
 
 interface Role {
@@ -111,8 +112,10 @@ const experiences: Experience[] = [
 ];
 
 function ExperienceTimeline() {
+  const sectionRef = useScrollReveal<HTMLElement>();
+
   return (
-    <section className={styles.section}>
+    <section className={`${styles.section} scroll-reveal`} ref={sectionRef}>
       <GlowText
         as="h2"
         size="medium"

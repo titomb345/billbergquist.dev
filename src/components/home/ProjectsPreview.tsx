@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import GlowText from '../ui/GlowText';
 import Button from '../ui/Button';
 import ProjectCard from '../projects/ProjectCard';
+import useScrollReveal from '../../hooks/useScrollReveal';
 import styles from './ProjectsPreview.module.css';
 
 const projects = [
@@ -33,9 +34,10 @@ const projects = [
 
 function ProjectsPreview() {
   const navigate = useNavigate();
+  const sectionRef = useScrollReveal<HTMLElement>();
 
   return (
-    <section className={styles.section}>
+    <section className={`${styles.section} scroll-reveal`} ref={sectionRef}>
       <GlowText
         as="h2"
         size="medium"
@@ -50,7 +52,9 @@ function ProjectsPreview() {
       </p>
       <div className={styles.grid}>
         {projects.map((project) => (
-          <ProjectCard key={project.title} {...project} />
+          <div key={project.title} className="scroll-reveal-child">
+            <ProjectCard {...project} />
+          </div>
         ))}
       </div>
       <div className={styles.projectsLink}>
