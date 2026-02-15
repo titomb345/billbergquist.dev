@@ -78,6 +78,47 @@
   margin-top: 4px;
 }
 
+/* Dashboard wireframe: stat boxes in a row */
+.mockRow {
+  display: flex;
+  gap: 8px;
+}
+
+.mockBox {
+  flex: 1;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-elevated);
+  opacity: 0.35;
+}
+
+/* Form wireframe: input fields and submit button */
+.mockInput {
+  height: 12px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-elevated);
+  opacity: 0.3;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.mockButton {
+  width: 35%;
+  height: 14px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-elevated);
+  opacity: 0.5;
+  margin-top: 4px;
+}
+
+/* Landing wireframe: centered text + card pair */
+.mockCard {
+  flex: 1;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-elevated);
+  opacity: 0.3;
+}
+
 /* Color-themed gradient glow on the browser content */
 .frame_mint .browserContent {
   background: linear-gradient(

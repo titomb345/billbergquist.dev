@@ -13,6 +13,7 @@ const projects = [
     techStack: ['Next.js', 'React', 'TypeScript'],
     url: 'https://creaticalc.com',
     color: 'mint' as const,
+    wireframe: 'dashboard' as const,
   },
   {
     title: 'Sports Shortcuts',
@@ -21,6 +22,7 @@ const projects = [
     techStack: ['React', 'TypeScript', 'Material UI'],
     url: 'https://sportsshortcuts.com',
     color: 'magenta' as const,
+    wireframe: 'form' as const,
   },
   {
     title: 'Critter Care',
@@ -29,6 +31,7 @@ const projects = [
     techStack: ['Astro', 'Tailwind CSS', 'Decap CMS'],
     url: 'https://critter-care.com',
     color: 'purple' as const,
+    wireframe: 'landing' as const,
   },
 ];
 
