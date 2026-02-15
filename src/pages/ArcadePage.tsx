@@ -18,6 +18,27 @@ function ArcadePage() {
 
   return (
     <div className={styles.page}>
+      {/* CRT scanline overlay */}
+      <div className={styles.scanlines} />
+
+      {/* Marquee ticker */}
+      <div className={styles.marquee}>
+        <div className={styles.marqueeTrack}>
+          <span>INSERT COIN</span>
+          <span className={styles.marqueeDot} />
+          <span>PLAYER 1 READY</span>
+          <span className={styles.marqueeDot} />
+          <span>HIGH SCORE: ???</span>
+          <span className={styles.marqueeDot} />
+          <span>INSERT COIN</span>
+          <span className={styles.marqueeDot} />
+          <span>PLAYER 1 READY</span>
+          <span className={styles.marqueeDot} />
+          <span>HIGH SCORE: ???</span>
+          <span className={styles.marqueeDot} />
+        </div>
+      </div>
+
       <header className={styles.header}>
         <GlowText size="large" color="magenta" animated className={styles.title}>
           ARCADE
@@ -37,19 +58,21 @@ function ArcadePage() {
       </header>
 
       <main className={styles.grid}>
-        <GameCard
-          title="Minesweeper: Descent"
-          description="Roguelike minesweeper. Descend 10 floors of escalating danger. Collect power-ups to survive."
-          preview={<MinesweeperRoguelikePreview />}
-          action={
-            <Button
-              variant="primary"
-              onClick={() => navigate('/arcade/descent')}
-            >
-              Play Now
-            </Button>
-          }
-        />
+        <div className={styles.cabinetFrame}>
+          <GameCard
+            title="Minesweeper: Descent"
+            description="Roguelike minesweeper. Descend 10 floors of escalating danger. Collect power-ups to survive."
+            preview={<MinesweeperRoguelikePreview />}
+            action={
+              <Button
+                variant="primary"
+                onClick={() => navigate('/arcade/descent')}
+              >
+                Play Now
+              </Button>
+            }
+          />
+        </div>
       </main>
     </div>
   );
