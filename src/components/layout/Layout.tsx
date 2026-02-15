@@ -20,6 +20,24 @@ function Layout() {
     <div className={styles.layout}>
       <ScrollToTop />
       <ScrollProgress />
+
+      {/* SVG noise texture */}
+      <svg className={styles.noise} aria-hidden="true">
+        <filter id="noiseFilter">
+          <feTurbulence
+            type="fractalNoise"
+            baseFrequency="0.9"
+            numOctaves="4"
+            stitchTiles="stitch"
+          />
+        </filter>
+        <rect width="100%" height="100%" filter="url(#noiseFilter)" />
+      </svg>
+
+      {/* Atmospheric gradient orbs */}
+      <div className={`${styles.atmosphereOrb} ${styles.orbOrange}`} />
+      <div className={`${styles.atmosphereOrb} ${styles.orbMagenta}`} />
+
       <Navbar />
       <main className={styles.main}>
         <Outlet />
