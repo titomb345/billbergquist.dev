@@ -4,10 +4,15 @@ import Button from '../ui/Button';
 import styles from './Hero.module.css';
 
 function useTypewriter(text: string, delay: number, startAfter: number) {
-  const [displayed, setDisplayed] = useState('');
-  const [done, setDone] = useState(false);
+  const prefersReducedMotion = window.matchMedia(
+    '(prefers-reduced-motion: reduce)',
+  ).matches;
+  const [displayed, setDisplayed] = useState(prefersReducedMotion ? text : '');
+  const [done, setDone] = useState(prefersReducedMotion);
 
   useEffect(() => {
+    if (prefersReducedMotion) return;
+
     const startTimeout = setTimeout(() => {
       let i = 0;
       const interval = setInterval(() => {
@@ -21,7 +26,7 @@ function useTypewriter(text: string, delay: number, startAfter: number) {
       return () => clearInterval(interval);
     }, startAfter);
     return () => clearTimeout(startTimeout);
-  }, [text, delay, startAfter]);
+  }, [text, delay, startAfter, prefersReducedMotion]);
 
   return { displayed, done };
 }

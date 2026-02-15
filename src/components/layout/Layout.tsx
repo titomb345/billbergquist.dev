@@ -35,8 +35,8 @@ function Layout() {
       </svg>
 
       {/* Atmospheric gradient orbs */}
-      <div className={`${styles.atmosphereOrb} ${styles.orbOrange}`} />
-      <div className={`${styles.atmosphereOrb} ${styles.orbMagenta}`} />
+      <div className={`${styles.atmosphereOrb} ${styles.orbOrange}`} aria-hidden="true" />
+      <div className={`${styles.atmosphereOrb} ${styles.orbMagenta}`} aria-hidden="true" />
 
       <Navbar />
       <main className={styles.main}>

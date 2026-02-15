@@ -19,7 +19,7 @@ function ScrollProgress() {
   }, []);
 
   return (
-    <div className={styles.track}>
+    <div className={styles.track} aria-hidden="true">
       <div className={styles.bar} style={{ width: `${progress}%` }} />
     </div>
   );

@@ -21,10 +21,10 @@ function ArcadePage() {
   return (
     <div className={styles.page}>
       {/* CRT scanline overlay */}
-      <div className={styles.scanlines} />
+      <div className={styles.scanlines} aria-hidden="true" />
 
       {/* Marquee ticker */}
-      <div className={styles.marquee}>
+      <div className={styles.marquee} aria-hidden="true">
         <div className={styles.marqueeTrack}>
           <span>INSERT COIN</span>
           <span className={styles.marqueeDot} />
@@ -59,7 +59,7 @@ function ArcadePage() {
         <div className="accent-line-orange" />
       </header>
 
-      <main className={`${styles.grid} scroll-reveal`} ref={gridRef}>
+      <section className={`${styles.grid} scroll-reveal`} ref={gridRef}>
         <div className={`${styles.cabinetFrame} scroll-reveal-child`}>
           <GameCard
             title="Minesweeper: Descent"
@@ -76,7 +76,7 @@ function ArcadePage() {
           />
           <p className={styles.note}>* Game not entirely balanced</p>
         </div>
-      </main>
+      </section>
     </div>
   );
 }

@@ -7,7 +7,7 @@ function Navbar() {
       <Link to="/" className={styles.logo}>
         <img src="/favicon.svg" alt="Bill Bergquist" className={styles.logoIcon} />
       </Link>
-      <nav className={styles.nav}>
+      <nav className={styles.nav} aria-label="Primary navigation">
         <NavLink
           to="/"
           end

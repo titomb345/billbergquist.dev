@@ -23,34 +23,34 @@ function ArcadeCabinet({
   return (
     <div className={`${styles.cabinet} ${colorClass}`}>
       {/* Left edge highlight */}
-      <div className={styles.edgeLeft} />
+      <div className={styles.edgeLeft} aria-hidden="true" />
       {/* Right edge highlight */}
-      <div className={styles.edgeRight} />
+      <div className={styles.edgeRight} aria-hidden="true" />
 
       {/* Marquee Header */}
       <div className={styles.marquee}>
-        <span className={styles.marqueeBracket} />
+        <span className={styles.marqueeBracket} aria-hidden="true" />
         <div className={styles.marqueeInner}>
           <h1 className={styles.marqueeTitle}>{title}</h1>
-          <div className={styles.freePlay}>FREE PLAY</div>
+          <div className={styles.freePlay} aria-hidden="true">FREE PLAY</div>
         </div>
-        <span className={styles.marqueeBracket} />
+        <span className={styles.marqueeBracket} aria-hidden="true" />
       </div>
 
       {/* T-Molding Trim */}
-      <div className={styles.tMolding} />
+      <div className={styles.tMolding} aria-hidden="true" />
 
       {/* Screen Bezel */}
       <div className={styles.bezel}>
         {/* Corner bolts */}
-        <span className={`${styles.bolt} ${styles.boltTL}`} />
-        <span className={`${styles.bolt} ${styles.boltTR}`} />
-        <span className={`${styles.bolt} ${styles.boltBL}`} />
-        <span className={`${styles.bolt} ${styles.boltBR}`} />
+        <span className={`${styles.bolt} ${styles.boltTL}`} aria-hidden="true" />
+        <span className={`${styles.bolt} ${styles.boltTR}`} aria-hidden="true" />
+        <span className={`${styles.bolt} ${styles.boltBL}`} aria-hidden="true" />
+        <span className={`${styles.bolt} ${styles.boltBR}`} aria-hidden="true" />
 
         {/* Speaker grilles */}
-        <div className={`${styles.speaker} ${styles.speakerLeft}`} />
-        <div className={`${styles.speaker} ${styles.speakerRight}`} />
+        <div className={`${styles.speaker} ${styles.speakerLeft}`} aria-hidden="true" />
+        <div className={`${styles.speaker} ${styles.speakerRight}`} aria-hidden="true" />
 
         {/* CRT Screen */}
         <div className={styles.screen}>
@@ -65,7 +65,7 @@ function ArcadeCabinet({
       <div className={styles.controlPanel}>
         <div className={styles.controlSurface}>
           {/* Joystick */}
-          <div className={styles.joystick}>
+          <div className={styles.joystick} aria-hidden="true">
             <div className={styles.joystickBall} />
             <div className={styles.joystickShaft} />
             <div className={styles.joystickBase} />
@@ -104,7 +104,7 @@ function ArcadeCabinet({
       </div>
 
       {/* Coin Door */}
-      <div className={styles.coinDoor}>
+      <div className={styles.coinDoor} aria-hidden="true">
         <div className={styles.coinSlot}>
           <div className={styles.coinOpening} />
         </div>
@@ -112,7 +112,7 @@ function ArcadeCabinet({
       </div>
 
       {/* Kick Plate */}
-      <div className={styles.kickPlate} />
+      <div className={styles.kickPlate} aria-hidden="true" />
     </div>
   );
 }
