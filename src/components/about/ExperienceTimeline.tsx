@@ -18,7 +18,7 @@ interface Experience {
 const experiences: Experience[] = [
   {
     company: 'Kasa',
-    period: 'Jan 2020 - Present',
+    period: 'Nov 2020 - Present',
     isFeatured: true,
     roles: [
       {
@@ -42,7 +42,7 @@ const experiences: Experience[] = [
       },
       {
         title: 'Software Engineer III',
-        period: 'Jan 2020 - Mar 2022',
+        period: 'Nov 2020 - Mar 2022',
         description:
           'Built and maintained React applications for the hospitality management platform.',
       },
@@ -50,11 +50,11 @@ const experiences: Experience[] = [
   },
   {
     company: 'Evite',
-    period: '2019 - 2020',
+    period: '2019 - Nov 2020',
     roles: [
       {
-        title: 'Software Engineer III',
-        period: '2019 - 2020',
+        title: 'Senior Software Engineer',
+        period: '2019 - Nov 2020',
       },
     ],
   },
@@ -63,7 +63,7 @@ const experiences: Experience[] = [
     period: '2018 - 2019',
     roles: [
       {
-        title: 'Software Engineer',
+        title: 'Senior Software Engineer',
         period: '2018 - 2019',
       },
     ],
@@ -73,7 +73,7 @@ const experiences: Experience[] = [
     period: '2016 - 2018',
     roles: [
       {
-        title: 'Software Engineer',
+        title: 'Senior Software Engineer',
         period: '2016 - 2018',
       },
     ],
