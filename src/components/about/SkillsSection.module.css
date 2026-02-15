@@ -17,6 +17,11 @@
   border: 1px solid var(--bg-elevated);
   border-radius: var(--radius-md);
   padding: var(--space-md);
+  transition: border-color var(--transition-normal);
+}
+
+.category:hover {
+  border-color: rgba(0, 212, 170, 0.2);
 }
 
 .categoryName {
@@ -49,6 +54,8 @@
 .skill:hover {
   border-color: var(--neon-mint);
   box-shadow: 0 0 8px var(--neon-mint-glow);
+  color: var(--neon-mint);
+  transform: translateY(-2px);
 }
 
 @media (max-width: 640px) {

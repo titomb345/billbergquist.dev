@@ -9,9 +9,16 @@ interface ProjectCardProps {
   color: 'mint' | 'magenta' | 'purple' | 'orange';
 }
 
+const glowMap = {
+  mint: 'glowMint',
+  magenta: 'glowMagenta',
+  purple: 'glowPurple',
+  orange: 'glowOrange',
+} as const;
+
 function ProjectCard({ title, description, techStack, url, color }: ProjectCardProps) {
   return (
-    <Card className={styles.projectCard}>
+    <Card className={`${styles.projectCard} ${styles[glowMap[color]]}`}>
       <div className={`${styles.browserFrame} ${styles[`frame_${color}`]}`}>
         <div className={styles.browserBar}>
           <span className={styles.browserDot} />

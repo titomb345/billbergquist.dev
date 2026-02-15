@@ -4,6 +4,22 @@
   padding: var(--space-lg);
 }
 
+.projectCard.glowMint {
+  --card-glow: var(--neon-mint-glow);
+}
+
+.projectCard.glowMagenta {
+  --card-glow: var(--neon-magenta-glow);
+}
+
+.projectCard.glowPurple {
+  --card-glow: var(--neon-purple-glow);
+}
+
+.projectCard.glowOrange {
+  --card-glow: var(--neon-orange-glow);
+}
+
 /* Browser frame mockup */
 .browserFrame {
   border-radius: var(--radius-md);
@@ -144,8 +160,9 @@
 }
 
 .visitLink:hover {
-  text-shadow: 0 0 10px currentColor;
+  text-shadow: 0 0 12px currentColor;
   letter-spacing: 2px;
+  filter: brightness(1.2);
 }
 
 .mint {
