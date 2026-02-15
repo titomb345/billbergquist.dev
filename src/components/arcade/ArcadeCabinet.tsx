@@ -59,9 +59,6 @@ function ArcadeCabinet({
           <div className={styles.vignette} />
           <div className={styles.screenContent}>{children}</div>
         </div>
-
-        {/* Power LED */}
-        <div className={styles.powerLed} />
       </div>
 
       {/* Control Panel */}
@@ -69,9 +66,9 @@ function ArcadeCabinet({
         <div className={styles.controlSurface}>
           {/* Joystick */}
           <div className={styles.joystick}>
-            <div className={styles.joystickBase} />
-            <div className={styles.joystickShaft} />
             <div className={styles.joystickBall} />
+            <div className={styles.joystickShaft} />
+            <div className={styles.joystickBase} />
           </div>
 
           {/* Buttons */}
