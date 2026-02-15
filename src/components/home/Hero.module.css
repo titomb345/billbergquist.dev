@@ -160,22 +160,6 @@
   }
 }
 
-/* Orange accent line at bottom */
-.accentLine {
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 200px;
-  height: 2px;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    var(--neon-orange),
-    transparent
-  );
-  box-shadow: 0 0 20px var(--neon-orange-glow);
-}
 
 @media (max-width: 768px) {
   .hero {
@@ -221,10 +205,6 @@
 
   .tagline {
     font-size: 0.875rem;
-  }
-
-  .accentLine {
-    width: 120px;
   }
 }
 

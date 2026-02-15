@@ -67,7 +67,6 @@ function Hero() {
           </Button>
         </div>
       </div>
-      <div className="accent-line-orange" />
     </section>
   );
 }
