@@ -1,0 +1,52 @@
+.wrapper {
+  display: flex;
+  justify-content: center;
+  padding: var(--space-lg) 0;
+}
+
+.line {
+  width: 150px;
+  height: 2px;
+  border-radius: 1px;
+}
+
+.mint {
+  background: linear-gradient(90deg, transparent, var(--neon-mint), transparent);
+  box-shadow: 0 0 15px var(--neon-mint-glow);
+}
+
+.magenta {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--neon-magenta),
+    transparent
+  );
+  box-shadow: 0 0 15px var(--neon-magenta-glow);
+}
+
+.purple {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--neon-purple),
+    transparent
+  );
+  box-shadow: 0 0 15px var(--neon-purple-glow);
+}
+
+.orange {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--neon-orange),
+    transparent
+  );
+  box-shadow: 0 0 15px var(--neon-orange-glow);
+}
+
+@media (max-width: 640px) {
+  .line {
+    width: 100px;
+  }
+}

@@ -64,7 +64,8 @@
   font-size: 1.125rem;
   color: var(--text-muted);
   margin-bottom: var(--space-sm);
-  animation: heroFadeIn 0.5s ease forwards;
+  opacity: 0;
+  animation: heroFadeIn 0.6s ease forwards;
 }
 
 .hello {
@@ -80,8 +81,9 @@
   display: flex;
   flex-direction: column;
   gap: 0.1em;
+  opacity: 0;
   animation: heroFadeIn 0.6s ease forwards;
-  animation-delay: 0.1s;
+  animation-delay: 0.3s;
 }
 
 .firstName {
@@ -109,8 +111,15 @@
   display: inline-flex;
   align-items: center;
   gap: 2px;
+  min-height: 2.5em;
+  opacity: 0;
   animation: heroFadeIn 0.6s ease forwards;
-  animation-delay: 0.2s;
+  animation-delay: 0.6s;
+}
+
+.typingCursor {
+  animation: none;
+  opacity: 1;
 }
 
 .roleText {
@@ -128,13 +137,15 @@
   max-width: 500px;
   margin-left: auto;
   margin-right: auto;
+  opacity: 0;
   animation: heroFadeIn 0.6s ease forwards;
-  animation-delay: 0.3s;
+  animation-delay: 0.9s;
 }
 
 .cta {
+  opacity: 0;
   animation: heroFadeIn 0.6s ease forwards;
-  animation-delay: 0.4s;
+  animation-delay: 1.2s;
 }
 
 /* Local keyframes to ensure they work with CSS modules */
@@ -149,22 +160,6 @@
   }
 }
 
-/* Orange accent line at bottom */
-.accentLine {
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 200px;
-  height: 2px;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    var(--neon-orange),
-    transparent
-  );
-  box-shadow: 0 0 20px var(--neon-orange-glow);
-}
 
 @media (max-width: 768px) {
   .hero {
@@ -210,10 +205,6 @@
 
   .tagline {
     font-size: 0.875rem;
-  }
-
-  .accentLine {
-    width: 120px;
   }
 }
 

@@ -24,7 +24,7 @@
 }
 
 .logo:hover .logoIcon {
-  filter: brightness(1.3);
+  filter: brightness(1.3) drop-shadow(0 0 6px var(--neon-orange-glow));
   transform: scale(1.1);
 }
 
@@ -61,6 +61,14 @@
 }
 
 .navLink:hover::after {
+  width: 100%;
+}
+
+.active {
+  color: var(--neon-mint);
+}
+
+.active::after {
   width: 100%;
 }
 

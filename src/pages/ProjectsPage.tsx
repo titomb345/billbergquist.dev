@@ -1,6 +1,7 @@
 import usePageMeta from '../hooks/usePageMeta';
 import GlowText from '../components/ui/GlowText';
 import ProjectCard from '../components/projects/ProjectCard';
+import useScrollReveal from '../hooks/useScrollReveal';
 import styles from './ProjectsPage.module.css';
 
 const projects = [
@@ -11,6 +12,7 @@ const projects = [
     techStack: ['Next.js', 'React', 'TypeScript', 'Tailwind CSS'],
     url: 'https://creaticalc.com',
     color: 'mint' as const,
+    wireframe: 'dashboard' as const,
   },
   {
     title: 'Sports Shortcuts',
@@ -19,6 +21,7 @@ const projects = [
     techStack: ['React', 'TypeScript', 'Material UI', 'Vite'],
     url: 'https://sportsshortcuts.com',
     color: 'magenta' as const,
+    wireframe: 'form' as const,
   },
   {
     title: 'Critter Care',
@@ -27,6 +30,7 @@ const projects = [
     techStack: ['Astro', 'Tailwind CSS', 'Decap CMS'],
     url: 'https://critter-care.com',
     color: 'purple' as const,
+    wireframe: 'landing' as const,
   },
 ];
 
@@ -37,6 +41,8 @@ function ProjectsPage() {
       'Web projects by Bill Bergquist: CreatiCalc, Sports Shortcuts, and Critter Care. Built with React, Astro, TypeScript, and modern web technologies.',
     canonical: '/projects',
   });
+
+  const gridRef = useScrollReveal<HTMLElement>();
 
   return (
     <div className={styles.page}>
@@ -51,9 +57,11 @@ function ProjectsPage() {
         <div className="accent-line-orange" />
       </header>
 
-      <main className={styles.grid}>
+      <main className={`${styles.grid} scroll-reveal`} ref={gridRef}>
         {projects.map((project) => (
-          <ProjectCard key={project.title} {...project} />
+          <div key={project.title} className="scroll-reveal-child">
+            <ProjectCard {...project} />
+          </div>
         ))}
       </main>
     </div>

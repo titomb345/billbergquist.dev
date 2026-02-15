@@ -3,13 +3,15 @@ import { GameCard } from '../ui/Card';
 import GlowText from '../ui/GlowText';
 import Button from '../ui/Button';
 import { MinesweeperRoguelikePreview } from '../../games/minesweeper-roguelike';
+import useScrollReveal from '../../hooks/useScrollReveal';
 import styles from './GameGrid.module.css';
 
 function GameGrid() {
   const navigate = useNavigate();
+  const sectionRef = useScrollReveal<HTMLElement>();
 
   return (
-    <section id="games" className={styles.section}>
+    <section id="games" className={`${styles.section} scroll-reveal`} ref={sectionRef}>
       <GlowText
         as="h2"
         size="medium"

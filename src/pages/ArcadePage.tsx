@@ -4,10 +4,12 @@ import GlowText from '../components/ui/GlowText';
 import { GameCard } from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import { MinesweeperRoguelikePreview } from '../games/minesweeper-roguelike';
+import useScrollReveal from '../hooks/useScrollReveal';
 import styles from './ArcadePage.module.css';
 
 function ArcadePage() {
   const navigate = useNavigate();
+  const gridRef = useScrollReveal<HTMLElement>();
 
   usePageMeta({
     title: 'Arcade — Bill Bergquist',
@@ -18,6 +20,27 @@ function ArcadePage() {
 
   return (
     <div className={styles.page}>
+      {/* CRT scanline overlay */}
+      <div className={styles.scanlines} aria-hidden="true" />
+
+      {/* Marquee ticker */}
+      <div className={styles.marquee} aria-hidden="true">
+        <div className={styles.marqueeTrack}>
+          <span>INSERT COIN</span>
+          <span className={styles.marqueeDot} />
+          <span>PLAYER 1 READY</span>
+          <span className={styles.marqueeDot} />
+          <span>HIGH SCORE: ???</span>
+          <span className={styles.marqueeDot} />
+          <span>INSERT COIN</span>
+          <span className={styles.marqueeDot} />
+          <span>PLAYER 1 READY</span>
+          <span className={styles.marqueeDot} />
+          <span>HIGH SCORE: ???</span>
+          <span className={styles.marqueeDot} />
+        </div>
+      </div>
+
       <header className={styles.header}>
         <GlowText size="large" color="magenta" animated className={styles.title}>
           ARCADE
@@ -36,21 +59,24 @@ function ArcadePage() {
         <div className="accent-line-orange" />
       </header>
 
-      <main className={styles.grid}>
-        <GameCard
-          title="Minesweeper: Descent"
-          description="Roguelike minesweeper. Descend 10 floors of escalating danger. Collect power-ups to survive."
-          preview={<MinesweeperRoguelikePreview />}
-          action={
-            <Button
-              variant="primary"
-              onClick={() => navigate('/arcade/descent')}
-            >
-              Play Now
-            </Button>
-          }
-        />
-      </main>
+      <section className={`${styles.grid} scroll-reveal`} ref={gridRef}>
+        <div className={`${styles.cabinetFrame} scroll-reveal-child`}>
+          <GameCard
+            title="Minesweeper: Descent"
+            description="Roguelike minesweeper. Descend 10 floors of escalating danger. Collect power-ups to survive."
+            preview={<MinesweeperRoguelikePreview />}
+            action={
+              <Button
+                variant="primary"
+                onClick={() => navigate('/arcade/descent')}
+              >
+                Play Now
+              </Button>
+            }
+          />
+          <p className={styles.note}>* Game not entirely balanced</p>
+        </div>
+      </section>
     </div>
   );
 }
