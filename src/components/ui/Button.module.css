@@ -118,6 +118,11 @@
   font-size: 1rem;
 }
 
+/* Click feedback */
+.button:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
 /* Disabled state */
 .button:disabled {
   opacity: 0.5;

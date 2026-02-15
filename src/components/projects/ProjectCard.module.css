@@ -4,6 +4,154 @@
   padding: var(--space-lg);
 }
 
+.projectCard.glowMint {
+  --card-glow: var(--neon-mint-glow);
+}
+
+.projectCard.glowMagenta {
+  --card-glow: var(--neon-magenta-glow);
+}
+
+.projectCard.glowPurple {
+  --card-glow: var(--neon-purple-glow);
+}
+
+.projectCard.glowOrange {
+  --card-glow: var(--neon-orange-glow);
+}
+
+/* Browser frame mockup */
+.browserFrame {
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  margin-bottom: var(--space-md);
+  border: 1px solid var(--bg-elevated);
+}
+
+.browserBar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: var(--bg-void);
+  border-bottom: 1px solid var(--bg-elevated);
+}
+
+.browserDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--bg-elevated);
+}
+
+.browserUrl {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  color: var(--text-muted);
+  margin-left: 8px;
+  opacity: 0.6;
+}
+
+.browserContent {
+  padding: 16px;
+  background: var(--bg-surface);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 80px;
+  position: relative;
+  overflow: hidden;
+}
+
+.mockLine {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--bg-elevated);
+  opacity: 0.6;
+}
+
+.mockBlock {
+  height: 32px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-elevated);
+  opacity: 0.4;
+  margin-top: 4px;
+}
+
+/* Dashboard wireframe: stat boxes in a row */
+.mockRow {
+  display: flex;
+  gap: 8px;
+}
+
+.mockBox {
+  flex: 1;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-elevated);
+  opacity: 0.35;
+}
+
+/* Form wireframe: input fields and submit button */
+.mockInput {
+  height: 12px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-elevated);
+  opacity: 0.3;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.mockButton {
+  width: 35%;
+  height: 14px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-elevated);
+  opacity: 0.5;
+  margin-top: 4px;
+}
+
+/* Landing wireframe: centered text + card pair */
+.mockCard {
+  flex: 1;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-elevated);
+  opacity: 0.3;
+}
+
+/* Color-themed gradient glow on the browser content */
+.frame_mint .browserContent {
+  background: linear-gradient(
+    135deg,
+    var(--bg-surface) 60%,
+    rgba(0, 212, 170, 0.08)
+  );
+}
+
+.frame_magenta .browserContent {
+  background: linear-gradient(
+    135deg,
+    var(--bg-surface) 60%,
+    rgba(255, 0, 255, 0.08)
+  );
+}
+
+.frame_purple .browserContent {
+  background: linear-gradient(
+    135deg,
+    var(--bg-surface) 60%,
+    rgba(191, 0, 255, 0.08)
+  );
+}
+
+.frame_orange .browserContent {
+  background: linear-gradient(
+    135deg,
+    var(--bg-surface) 60%,
+    rgba(255, 106, 0, 0.08)
+  );
+}
+
 .title {
   font-family: var(--font-heading);
   font-size: 1.5rem;
@@ -42,13 +190,20 @@
   font-size: 0.875rem;
   font-weight: 600;
   text-decoration: none;
-  letter-spacing: 0.5px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
   transition: var(--transition-fast);
   align-self: flex-start;
+  padding: var(--space-xs) 0;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
 }
 
 .visitLink:hover {
-  text-decoration: underline;
+  text-shadow: 0 0 12px currentColor;
+  letter-spacing: 2px;
+  filter: brightness(1.2);
 }
 
 .mint {

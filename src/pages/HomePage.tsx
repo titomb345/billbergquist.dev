@@ -4,6 +4,7 @@ import Hero from '../components/home/Hero';
 import AboutSection from '../components/home/AboutSection';
 import ProjectsPreview from '../components/home/ProjectsPreview';
 import GameGrid from '../components/home/GameGrid';
+import SectionDivider from '../components/ui/SectionDivider';
 
 const JSONLD_PERSON = JSON.stringify({
   '@context': 'https://schema.org',
@@ -53,8 +54,11 @@ function HomePage() {
   return (
     <>
       <Hero />
+      <SectionDivider color="mint" />
       <AboutSection />
+      <SectionDivider color="orange" />
       <ProjectsPreview />
+      <SectionDivider color="magenta" />
       <GameGrid />
     </>
   );

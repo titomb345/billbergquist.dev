@@ -1,5 +1,6 @@
 import usePageMeta from '../hooks/usePageMeta';
 import GlowText from '../components/ui/GlowText';
+import SectionDivider from '../components/ui/SectionDivider';
 import ExperienceTimeline from '../components/about/ExperienceTimeline';
 import SkillsSection from '../components/about/SkillsSection';
 import styles from './AboutPage.module.css';
@@ -40,7 +41,9 @@ function AboutPage() {
 
       <main className={styles.content}>
         <ExperienceTimeline />
+        <SectionDivider color="mint" />
         <SkillsSection />
+        <SectionDivider color="purple" />
 
         <section className={styles.education}>
           <GlowText

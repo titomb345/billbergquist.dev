@@ -43,8 +43,8 @@
 .card:hover {
   transform: translateY(-4px);
   box-shadow:
-    0 10px 40px rgba(0, 245, 255, 0.15),
-    0 0 20px rgba(0, 245, 255, 0.1);
+    0 10px 40px var(--card-glow, rgba(0, 245, 255, 0.15)),
+    0 0 20px var(--card-glow, rgba(0, 245, 255, 0.1));
 }
 
 /* Game card specific styles */
@@ -57,7 +57,7 @@
 
 .gameCard .preview {
   width: 100%;
-  height: 80px;
+  height: 160px;
   background-color: var(--bg-elevated);
   border-radius: var(--radius-sm);
   margin-bottom: var(--space-sm);
