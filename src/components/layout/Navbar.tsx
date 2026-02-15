@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import styles from './Navbar.module.css';
 
 function Navbar() {
@@ -8,18 +8,39 @@ function Navbar() {
         <img src="/favicon.svg" alt="Bill Bergquist" className={styles.logoIcon} />
       </Link>
       <nav className={styles.nav}>
-        <Link to="/" className={styles.navLink}>
+        <NavLink
+          to="/"
+          end
+          className={({ isActive }) =>
+            `${styles.navLink} ${isActive ? styles.active : ''}`
+          }
+        >
           Home
-        </Link>
-        <Link to="/about" className={styles.navLink}>
+        </NavLink>
+        <NavLink
+          to="/about"
+          className={({ isActive }) =>
+            `${styles.navLink} ${isActive ? styles.active : ''}`
+          }
+        >
           About
-        </Link>
-        <Link to="/projects" className={styles.navLink}>
+        </NavLink>
+        <NavLink
+          to="/projects"
+          className={({ isActive }) =>
+            `${styles.navLink} ${isActive ? styles.active : ''}`
+          }
+        >
           Projects
-        </Link>
-        <Link to="/arcade" className={styles.navLink}>
+        </NavLink>
+        <NavLink
+          to="/arcade"
+          className={({ isActive }) =>
+            `${styles.navLink} ${isActive ? styles.active : ''}`
+          }
+        >
           Arcade
-        </Link>
+        </NavLink>
       </nav>
     </header>
   );

@@ -64,6 +64,14 @@
   width: 100%;
 }
 
+.active {
+  color: var(--neon-mint);
+}
+
+.active::after {
+  width: 100%;
+}
+
 @media (max-width: 640px) {
   .navbar {
     padding: var(--space-sm) var(--space-md);
