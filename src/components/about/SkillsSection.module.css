@@ -15,9 +15,26 @@
 .category {
   background: var(--bg-surface);
   border: 1px solid var(--bg-elevated);
+  border-top: 2px solid var(--bg-elevated);
   border-radius: var(--radius-md);
   padding: var(--space-md);
   transition: border-color var(--transition-normal);
+}
+
+.accent_mint {
+  border-top-color: var(--neon-mint);
+}
+
+.accent_magenta {
+  border-top-color: var(--neon-magenta);
+}
+
+.accent_purple {
+  border-top-color: var(--neon-purple);
+}
+
+.accent_orange {
+  border-top-color: var(--neon-orange);
 }
 
 .category:hover {
