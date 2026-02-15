@@ -1,9 +1,16 @@
+import usePageMeta from '../hooks/usePageMeta';
 import GlowText from '../components/ui/GlowText';
 import ExperienceTimeline from '../components/about/ExperienceTimeline';
 import SkillsSection from '../components/about/SkillsSection';
 import styles from './AboutPage.module.css';
 
 function AboutPage() {
+  usePageMeta({
+    title: 'About — Bill Bergquist',
+    description:
+      '14+ years of full-stack experience. Currently Staff Engineer at Kasa, building React applications and leading frontend architecture.',
+    canonical: '/about',
+  });
   return (
     <div className={styles.page}>
       <header className={styles.header}>

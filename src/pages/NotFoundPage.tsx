@@ -1,8 +1,15 @@
 import { Link } from 'react-router-dom';
+import usePageMeta from '../hooks/usePageMeta';
 import GlowText from '../components/ui/GlowText';
 import styles from './NotFoundPage.module.css';
 
 function NotFoundPage() {
+  usePageMeta({
+    title: '404 — Bill Bergquist',
+    description: 'Page not found.',
+    noindex: true,
+  });
+
   return (
     <div className={styles.page}>
       <div className={styles.content}>

@@ -17,8 +17,9 @@ function AboutSection() {
       <div className={styles.content}>
         <p className={styles.summary}>
           I'm a Staff Software Engineer with 14+ years of experience building
-          web applications. Currently at Kasa, I specialize in full stack
-          development, internal tooling, and leveraging{' '}
+          web applications. Currently at Kasa, I lead frontend architecture
+          while expanding into full stack development, internal tooling, and
+          leveraging{' '}
           <span className="neon-text-orange">AI-assisted workflows</span> to
           help teams ship faster.
         </p>
@@ -28,8 +29,8 @@ function AboutSection() {
             <span className={styles.highlightLabel}>Years Experience</span>
           </div>
           <div className={styles.highlight}>
-            <span className={styles.highlightValue}>React</span>
-            <span className={styles.highlightLabel}>Frontend Specialist</span>
+            <span className={styles.highlightValue}>Full Stack</span>
+            <span className={styles.highlightLabel}>React & Node.js</span>
           </div>
           <div className={styles.highlight}>
             <span className={styles.highlightValue}>Staff Engineer</span>
