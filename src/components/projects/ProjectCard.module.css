@@ -1,0 +1,68 @@
+.projectCard {
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-lg);
+}
+
+.title {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: var(--space-sm);
+}
+
+.description {
+  font-family: var(--font-body);
+  font-size: 0.9375rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  margin-bottom: var(--space-md);
+  flex: 1;
+}
+
+.techStack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-md);
+}
+
+.techTag {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  background-color: var(--bg-elevated);
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.visitLink {
+  font-family: var(--font-heading);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  letter-spacing: 0.5px;
+  transition: var(--transition-fast);
+  align-self: flex-start;
+}
+
+.visitLink:hover {
+  text-decoration: underline;
+}
+
+.mint {
+  color: var(--neon-mint);
+}
+
+.magenta {
+  color: var(--neon-magenta);
+}
+
+.purple {
+  color: var(--neon-purple);
+}
+
+.orange {
+  color: var(--neon-orange);
+}

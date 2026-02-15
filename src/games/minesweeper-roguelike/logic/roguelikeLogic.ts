@@ -78,7 +78,7 @@ export function createRoguelikeInitialState(
     patternMemoryCells: new Set(),
     explodedCell: null,
     closeCallCell: null,
-    zeroCellCount: null,
+    openingsMapCells: new Set(),
     peekCell: null,
     surveyedRows: new Map(),
     cellsRevealedThisFloor: 0,
@@ -120,7 +120,7 @@ export function setupFloor(state: RoguelikeGameState, floor: number): RoguelikeG
     patternMemoryCells: new Set(),
     explodedCell: null,
     closeCallCell: null,
-    zeroCellCount: null, // Will be set after first click if Floor Scout is active
+    openingsMapCells: new Set(),
     peekCell: null,
     surveyedRows: new Map(),
     cellsRevealedThisFloor: 0,
@@ -442,48 +442,113 @@ export function calculateChordHighlightCells(
   return cells;
 }
 
-// Apply Edge Walker: reveal/flag corner cells at floor start
-export function applyEdgeWalker(board: Cell[][]): Cell[][] {
-  const rows = board.length;
-  const cols = board[0]?.length || 0;
-  if (rows < 2 || cols < 2) return board;
-
+// Choose a random corner for Cornerstone power-up
+export function chooseCornerstoneCorner(
+  rows: number,
+  cols: number
+): { row: number; col: number } {
   const corners = [
     { row: 0, col: 0 },
     { row: 0, col: cols - 1 },
     { row: rows - 1, col: 0 },
     { row: rows - 1, col: cols - 1 },
   ];
-
-  let newBoard = board.map((r) => r.map((c) => ({ ...c })));
-
-  for (const { row, col } of corners) {
-    const cell = newBoard[row][col];
-    if (cell.state !== CellState.Hidden) continue;
-
-    if (cell.isMine) {
-      // Flag the mine
-      newBoard[row][col] = { ...cell, state: CellState.Flagged };
-    } else {
-      // Reveal the cell
-      newBoard = revealCell(newBoard, row, col);
-    }
-  }
-
-  return newBoard;
+  return corners[Math.floor(Math.random() * corners.length)];
 }
 
-// Count cells with 0 adjacent mines for Floor Scout
-export function countZeroCells(board: Cell[][]): number {
-  let count = 0;
-  for (const row of board) {
-    for (const cell of row) {
-      if (!cell.isMine && cell.adjacentMines === 0) {
-        count++;
+// Calculate Openings Map cells: up to 3 hidden, non-mine cells at Manhattan distance 2
+// from a 0-cell but NOT adjacent to any 0-cell. Points toward open regions without
+// directly revealing safe tiles.
+export function calculateOpeningsMapCells(board: Cell[][]): Set<string> {
+  const rows = board.length;
+  const cols = board[0]?.length || 0;
+
+  // 1. Collect all 0-cells
+  const zeroCells: Array<{ row: number; col: number }> = [];
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      if (!board[r][c].isMine && board[r][c].adjacentMines === 0) {
+        zeroCells.push({ row: r, col: c });
       }
     }
   }
-  return count;
+  if (zeroCells.length === 0) return new Set();
+
+  // 2. Build adjacentToZero: cells at Manhattan distance <= 1 from any 0-cell
+  const adjacentToZero = new Set<string>();
+  for (const zc of zeroCells) {
+    for (let dr = -1; dr <= 1; dr++) {
+      for (let dc = -1; dc <= 1; dc++) {
+        const r = zc.row + dr;
+        const c = zc.col + dc;
+        if (r >= 0 && r < rows && c >= 0 && c < cols) {
+          adjacentToZero.add(`${r},${c}`);
+        }
+      }
+    }
+  }
+
+  // 3. Candidates: hidden, non-mine cells NOT in adjacentToZero but at Manhattan distance 2
+  //    from some 0-cell
+  const candidates: Array<{ row: number; col: number }> = [];
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      const cell = board[r][c];
+      if (cell.state !== CellState.Hidden || cell.isMine) continue;
+      const key = `${r},${c}`;
+      if (adjacentToZero.has(key)) continue;
+
+      // Check Manhattan distance exactly 2 from any 0-cell
+      let nearZero = false;
+      for (const zc of zeroCells) {
+        if (Math.abs(r - zc.row) + Math.abs(c - zc.col) === 2) {
+          nearZero = true;
+          break;
+        }
+      }
+      if (nearZero) {
+        candidates.push({ row: r, col: c });
+      }
+    }
+  }
+
+  if (candidates.length === 0) return new Set();
+
+  // 4. Fisher-Yates shuffle
+  for (let i = candidates.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [candidates[i], candidates[j]] = [candidates[j], candidates[i]];
+  }
+
+  if (candidates.length <= 3) {
+    return new Set(candidates.map((c) => `${c.row},${c.col}`));
+  }
+
+  // 5. Greedy maximin dispersion: pick first, then maximize min distance to selected
+  const selected: Array<{ row: number; col: number }> = [candidates[0]];
+  const remaining = candidates.slice(1);
+
+  while (selected.length < 3 && remaining.length > 0) {
+    let bestIdx = 0;
+    let bestMinDist = -1;
+
+    for (let i = 0; i < remaining.length; i++) {
+      let minDist = Infinity;
+      for (const sel of selected) {
+        const d = Math.abs(remaining[i].row - sel.row) + Math.abs(remaining[i].col - sel.col);
+        minDist = Math.min(minDist, d);
+      }
+      if (minDist > bestMinDist) {
+        bestMinDist = minDist;
+        bestIdx = i;
+      }
+    }
+
+    selected.push(remaining[bestIdx]);
+    remaining.splice(bestIdx, 1);
+  }
+
+  return new Set(selected.map((c) => `${c.row},${c.col}`));
 }
 
 // Calculate Pattern Memory cell: one random safe neighbor after revealing a 3+ cell

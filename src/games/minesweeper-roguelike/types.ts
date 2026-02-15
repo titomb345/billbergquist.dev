@@ -64,11 +64,11 @@ export type Rarity = 'common' | 'uncommon' | 'rare' | 'epic';
 // Power-up identifiers
 export type PowerUpId =
   // Common
-  | 'edge-walker'
+  | 'cornerstone'
   | 'danger-sense'
   | 'false-start'
   | 'breathing-room'
-  | 'floor-scout'
+  | 'openings-map'
   // Uncommon
   | 'quick-recovery'
   | 'pattern-memory'
@@ -174,7 +174,7 @@ export interface RoguelikeGameState {
   patternMemoryCells: Set<string>; // Cell keys "row,col" for Pattern Memory safe diagonal glow
   explodedCell: { row: number; col: number } | null; // Cell that triggered explosion
   closeCallCell: { row: number; col: number } | null; // Cell where Iron Will saved player
-  zeroCellCount: number | null; // Floor Scout: count of cells with 0 adjacent mines
+  openingsMapCells: Set<string>; // Openings Map: highlighted cells near open regions
   peekCell: { row: number; col: number; value: number | 'mine' } | null; // Peek preview
   cellsRevealedThisFloor: number; // Count of safe cells revealed this floor
   surveyedRows: Map<number, number>; // Survey: rowIndex -> mineCount (persists for floor)

@@ -26,7 +26,7 @@ import {
   applyLuckyStart,
   applySixthSense,
   applyXRayVision,
-  applyEdgeWalker,
+  chooseCornerstoneCorner,
   applySafePath,
   applyDefusalKit,
   calculateLineMineCount,
@@ -37,7 +37,7 @@ import {
   isFinalFloor,
   countFlags,
   calculateChordHighlightCells,
-  countZeroCells,
+  calculateOpeningsMapCells,
   calculatePatternMemoryCell,
   calculateSafestCells,
   calculateOracleGiftCells,
@@ -198,7 +198,7 @@ function roguelikeReducer(state: RoguelikeGameState, action: RoguelikeAction): R
       let newPhase: GamePhase = state.phase;
       let newDraftOptions: PowerUp[] = [];
       let newDangerCells = state.dangerCells;
-      let newZeroCellCount: number | null = state.zeroCellCount;
+      let newOpeningsMapCells: Set<string> = state.openingsMapCells;
       let newCellsRevealedThisFloor = state.cellsRevealedThisFloor;
       let sixthSenseTriggered = false;
 
@@ -207,12 +207,17 @@ function roguelikeReducer(state: RoguelikeGameState, action: RoguelikeAction): R
         const config = state.floorConfig;
         const hasBreathingRoom = hasPowerUp(state.run, 'breathing-room');
         const modifiers = getAscensionModifiers(state.run.ascensionLevel);
+        const hasCornerstone = hasPowerUp(state.run, 'cornerstone');
+        const cornerstoneCorner = hasCornerstone
+          ? chooseCornerstoneCorner(config.rows, config.cols)
+          : null;
 
-        if (hasBreathingRoom || modifiers.toroidal || modifiers.coldStart) {
+        if (hasBreathingRoom || modifiers.toroidal || modifiers.coldStart || hasCornerstone) {
           newBoard = placeMinesWithConstraints(createEmptyBoard(config), config, row, col, {
             breathingRoom: hasBreathingRoom,
             toroidal: modifiers.toroidal,
             coldStart: modifiers.coldStart,
+            additionalExclusions: cornerstoneCorner ? [cornerstoneCorner] : [],
           });
         } else {
           newBoard = placeMines(createEmptyBoard(config), config, row, col);
@@ -226,9 +231,9 @@ function roguelikeReducer(state: RoguelikeGameState, action: RoguelikeAction): R
           newRun.luckyStartUsedThisFloor = true;
         }
 
-        // Apply Edge Walker after mines are placed
-        if (hasPowerUp(state.run, 'edge-walker')) {
-          newBoard = applyEdgeWalker(newBoard);
+        // Apply Cornerstone: reveal the guaranteed-safe corner
+        if (cornerstoneCorner) {
+          newBoard = revealCell(newBoard, cornerstoneCorner.row, cornerstoneCorner.col);
         }
 
         // Calculate danger cells if player has Danger Sense
@@ -236,9 +241,9 @@ function roguelikeReducer(state: RoguelikeGameState, action: RoguelikeAction): R
           newDangerCells = calculateDangerCells(newBoard);
         }
 
-        // Calculate zero-cell count for Floor Scout
-        if (hasPowerUp(state.run, 'floor-scout')) {
-          newZeroCellCount = countZeroCells(newBoard);
+        // Calculate Openings Map cells
+        if (hasPowerUp(state.run, 'openings-map')) {
+          newOpeningsMapCells = calculateOpeningsMapCells(newBoard);
         }
 
         // Calculate score for revealed cells
@@ -370,7 +375,7 @@ function roguelikeReducer(state: RoguelikeGameState, action: RoguelikeAction): R
         dangerCells: newDangerCells,
         minesRemaining: state.floorConfig.mines - countFlags(newBoard),
         closeCallCell,
-        zeroCellCount: newZeroCellCount,
+        openingsMapCells: newOpeningsMapCells,
         cellsRevealedThisFloor: newCellsRevealedThisFloor,
         cellRevealTimes: newCellRevealTimes,
         patternMemoryCells: newPatternMemoryCells,
@@ -615,7 +620,7 @@ function roguelikeReducer(state: RoguelikeGameState, action: RoguelikeAction): R
         draftOptions: [],
         dangerCells: new Set(),
         patternMemoryCells: new Set(),
-        zeroCellCount: null,
+        openingsMapCells: new Set(),
         peekCell: null,
         surveyedRows: new Map(),
         cellsRevealedThisFloor: 0,
@@ -819,7 +824,7 @@ function roguelikeReducer(state: RoguelikeGameState, action: RoguelikeAction): R
           explodedCell: null,
           dangerCells: new Set(),
           patternMemoryCells: new Set(),
-          zeroCellCount: null,
+          openingsMapCells: new Set(),
           cellsRevealedThisFloor: 0,
           probabilityLensCells: new Set(),
           oracleGiftCells: new Set(),

@@ -1,8 +1,14 @@
 import { useRouteError, isRouteErrorResponse, Link } from 'react-router-dom';
+import usePageMeta from '../hooks/usePageMeta';
 import GlowText from '../components/ui/GlowText';
 import styles from './ErrorPage.module.css';
 
 function ErrorPage() {
+  usePageMeta({
+    title: 'Error — Bill Bergquist',
+    description: 'An error occurred.',
+    noindex: true,
+  });
   const error = useRouteError();
 
   let title = 'Something went wrong';

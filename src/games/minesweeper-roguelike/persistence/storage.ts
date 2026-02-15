@@ -5,7 +5,8 @@ import {
   SerializedStatsSchema,
   isKnownPowerUpId,
 } from './schemas';
-import { applyMigrations, gameStateMigrations, statsMigrations } from './migrations';
+// MIGRATIONS DISABLED — uncomment this import to re-enable (see migrations.ts for full steps):
+// import { applyMigrations, gameStateMigrations, statsMigrations } from './migrations';
 import {
   RoguelikeGameState,
   RoguelikeStats,
@@ -148,17 +149,15 @@ export function loadGameState(): RoguelikeGameState | null {
       return null;
     }
 
-    // Handle legacy saves without version (treat as version 0)
+    // Version mismatch → wipe and start fresh (migrations disabled, see migrations.ts to re-enable)
     const version = parsed.version ?? 0;
-
-    // Apply migrations if needed
-    const migrated =
-      version < GAME_STATE_VERSION
-        ? applyMigrations(parsed, version, GAME_STATE_VERSION, gameStateMigrations)
-        : parsed;
+    if (version !== GAME_STATE_VERSION) {
+      clearGameState();
+      return null;
+    }
 
     // Validate with Zod (use safeParse for graceful failure)
-    const result = SerializedGameStateSchema.safeParse(migrated);
+    const result = SerializedGameStateSchema.safeParse(parsed);
     if (!result.success) {
       console.warn('Game state validation failed:', result.error.issues);
       clearGameState();
@@ -345,34 +344,19 @@ export function loadStats(): RoguelikeStats {
 
     const parsed = JSON.parse(saved);
 
-    // Handle legacy saves without version
+    // Version mismatch → wipe and start fresh (migrations disabled, see migrations.ts to re-enable)
     const version = parsed.version ?? 0;
-
-    // Apply migrations if needed
-    const migrated =
-      version < STATS_VERSION
-        ? applyMigrations(parsed, version, STATS_VERSION, statsMigrations)
-        : parsed;
+    if (version !== STATS_VERSION) {
+      clearStats();
+      return DEFAULT_STATS;
+    }
 
     // Validate with Zod
-    const result = SerializedStatsSchema.safeParse(migrated);
+    const result = SerializedStatsSchema.safeParse(parsed);
     if (!result.success) {
       console.warn('Stats validation failed:', result.error.issues);
-      // Don't clear stats - salvage only known-safe numeric fields
-      const salvaged: RoguelikeStats = { ...DEFAULT_STATS };
-      if (typeof parsed.totalRuns === 'number' && parsed.totalRuns >= 0) {
-        salvaged.totalRuns = Math.floor(parsed.totalRuns);
-      }
-      if (typeof parsed.bestFloor === 'number' && parsed.bestFloor >= 0 && parsed.bestFloor <= 10) {
-        salvaged.bestFloor = Math.floor(parsed.bestFloor);
-      }
-      if (typeof parsed.bestScore === 'number' && parsed.bestScore >= 0) {
-        salvaged.bestScore = Math.floor(parsed.bestScore);
-      }
-      if (typeof parsed.floorsCleared === 'number' && parsed.floorsCleared >= 0) {
-        salvaged.floorsCleared = Math.floor(parsed.floorsCleared);
-      }
-      return salvaged;
+      clearStats();
+      return DEFAULT_STATS;
     }
 
     const validated = result.data;

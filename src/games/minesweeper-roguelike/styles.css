@@ -1367,10 +1367,6 @@
 }
 
 /* Mine Detector Badge (on power-up icon) */
-.powerup-icon-wrapper.detector-active {
-  position: relative;
-}
-
 .mine-detector-badge {
   position: absolute;
   top: -6px;
@@ -1406,14 +1402,19 @@
   }
 }
 
-/* Floor Scout Badge - green tint for zero-cell count */
-.floor-scout-badge {
-  color: var(--neon-2);
-  border-color: var(--neon-2);
-  text-shadow:
-    0 0 5px var(--neon-2),
-    0 0 10px var(--neon-2);
-  box-shadow: 0 0 6px var(--neon-2);
+/* Openings Map - orange pulsing glow */
+.cell-openings-map {
+  animation: openings-map-pulse 2s ease-in-out infinite;
+}
+
+@keyframes openings-map-pulse {
+  0%,
+  100% {
+    box-shadow: inset 0 0 8px rgba(255, 136, 0, 0.3);
+  }
+  50% {
+    box-shadow: inset 0 0 12px rgba(255, 136, 0, 0.5);
+  }
 }
 
 /* Start Screen */

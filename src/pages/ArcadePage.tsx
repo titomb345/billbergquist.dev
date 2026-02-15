@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import usePageMeta from '../hooks/usePageMeta';
 import GlowText from '../components/ui/GlowText';
 import { GameCard } from '../components/ui/Card';
 import Button from '../components/ui/Button';
@@ -7,6 +8,13 @@ import styles from './ArcadePage.module.css';
 
 function ArcadePage() {
   const navigate = useNavigate();
+
+  usePageMeta({
+    title: 'Arcade — Bill Bergquist',
+    description:
+      'Browser-based games built through AI-assisted development. Play Minesweeper: Descent, a roguelike minesweeper with 10 floors and 19 power-ups.',
+    canonical: '/arcade',
+  });
 
   return (
     <div className={styles.page}>

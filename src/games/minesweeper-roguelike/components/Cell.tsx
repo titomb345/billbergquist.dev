@@ -37,6 +37,7 @@ interface CellProps {
   onRowHover?: (row: number | null) => void; // For Safe Path / Survey row highlighting
   hasProbabilityLens?: boolean; // Probability Lens: this cell is one of the safest
   hasOracleGift?: boolean; // Oracle's Gift: this cell is the safe choice in a 50/50
+  hasOpeningsMap?: boolean; // Openings Map: this cell is near an open region
 }
 
 function CellComponent({
@@ -74,6 +75,7 @@ function CellComponent({
   onRowHover,
   hasProbabilityLens = false,
   hasOracleGift = false,
+  hasOpeningsMap = false,
 }: CellProps) {
   const isTargeting =
     xRayMode || peekMode || safePathMode || defusalKitMode || surveyMode || mineDetectorMode;
@@ -153,6 +155,9 @@ function CellComponent({
       }
       if (hasOracleGift) {
         classes.push('cell-oracle-gift');
+      }
+      if (hasOpeningsMap) {
+        classes.push('cell-openings-map');
       }
       if (xRayMode) {
         classes.push('cell-xray-target');
@@ -352,7 +357,8 @@ const Cell = memo(CellComponent, (prev, next) => {
     prev.isFaded === next.isFaded &&
     prev.hoveredRow === next.hoveredRow &&
     prev.hasProbabilityLens === next.hasProbabilityLens &&
-    prev.hasOracleGift === next.hasOracleGift
+    prev.hasOracleGift === next.hasOracleGift &&
+    prev.hasOpeningsMap === next.hasOpeningsMap
   );
 });
 

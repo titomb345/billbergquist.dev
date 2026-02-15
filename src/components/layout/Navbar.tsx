@@ -5,7 +5,7 @@ function Navbar() {
   return (
     <header className={styles.navbar}>
       <Link to="/" className={styles.logo}>
-        BB
+        <img src="/favicon.svg" alt="Bill Bergquist" className={styles.logoIcon} />
       </Link>
       <nav className={styles.nav}>
         <Link to="/" className={styles.navLink}>
@@ -13,6 +13,9 @@ function Navbar() {
         </Link>
         <Link to="/about" className={styles.navLink}>
           About
+        </Link>
+        <Link to="/projects" className={styles.navLink}>
+          Projects
         </Link>
         <Link to="/arcade" className={styles.navLink}>
           Arcade
