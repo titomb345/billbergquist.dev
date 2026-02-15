@@ -4,10 +4,12 @@ import GlowText from '../components/ui/GlowText';
 import { GameCard } from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import { MinesweeperRoguelikePreview } from '../games/minesweeper-roguelike';
+import useScrollReveal from '../hooks/useScrollReveal';
 import styles from './ArcadePage.module.css';
 
 function ArcadePage() {
   const navigate = useNavigate();
+  const gridRef = useScrollReveal<HTMLElement>();
 
   usePageMeta({
     title: 'Arcade — Bill Bergquist',
@@ -57,8 +59,8 @@ function ArcadePage() {
         <div className="accent-line-orange" />
       </header>
 
-      <main className={styles.grid}>
-        <div className={styles.cabinetFrame}>
+      <main className={`${styles.grid} scroll-reveal`} ref={gridRef}>
+        <div className={`${styles.cabinetFrame} scroll-reveal-child`}>
           <GameCard
             title="Minesweeper: Descent"
             description="Roguelike minesweeper. Descend 10 floors of escalating danger. Collect power-ups to survive."
@@ -72,6 +74,7 @@ function ArcadePage() {
               </Button>
             }
           />
+          <p className={styles.note}>* Game not entirely balanced</p>
         </div>
       </main>
     </div>
