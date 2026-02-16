@@ -29,6 +29,58 @@
   gap: var(--space-lg);
 }
 
+/* ── Services CTA ── */
+
+.cta {
+  text-align: center;
+  margin-top: var(--space-xl);
+  padding: var(--space-lg);
+  background: var(--bg-surface);
+  border: 1px solid rgba(0, 212, 170, 0.15);
+  border-radius: var(--radius-md);
+  box-shadow: 0 0 20px rgba(0, 212, 170, 0.06);
+}
+
+.ctaText {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 var(--space-xs);
+}
+
+.ctaSubtext {
+  font-size: 0.9375rem;
+  color: var(--text-secondary);
+  margin: 0 0 var(--space-md);
+}
+
+.ctaLink {
+  display: inline-block;
+  font-family: var(--font-heading);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--neon-mint);
+  text-decoration: none;
+  border: 2px solid var(--neon-mint);
+  border-radius: var(--radius-sm);
+  padding: var(--space-sm) var(--space-lg);
+  transition: var(--transition-fast);
+  box-shadow:
+    0 0 5px var(--neon-mint-glow),
+    inset 0 0 5px var(--neon-mint-glow);
+}
+
+.ctaLink:hover {
+  background-color: var(--neon-mint);
+  color: var(--bg-void);
+  box-shadow:
+    0 0 10px var(--neon-mint),
+    0 0 20px var(--neon-mint-glow);
+}
+
 @media (max-width: 768px) {
   .page {
     padding: var(--space-lg) var(--space-md);
