@@ -7,7 +7,7 @@ interface PageMeta {
   noindex?: boolean;
 }
 
-const BASE_URL = 'https://billbergquist.com';
+const BASE_URL = 'https://billbergquist.dev';
 const SITE_NAME = 'Bill Bergquist';
 
 function setMetaTag(property: string, content: string, isProperty = false) {

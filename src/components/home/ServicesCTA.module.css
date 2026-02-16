@@ -1,0 +1,24 @@
+.section {
+  padding: var(--space-lg);
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.title {
+  margin-bottom: var(--space-md);
+}
+
+.description {
+  color: var(--text-secondary);
+  font-size: 1rem;
+  line-height: 1.6;
+  max-width: 450px;
+  margin: 0 auto var(--space-lg);
+}
+
+@media (max-width: 640px) {
+  .section {
+    padding: var(--space-lg) var(--space-md);
+  }
+}

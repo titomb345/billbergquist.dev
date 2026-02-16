@@ -4,6 +4,7 @@ import Hero from '../components/home/Hero';
 import AboutSection from '../components/home/AboutSection';
 import ProjectsPreview from '../components/home/ProjectsPreview';
 import GameGrid from '../components/home/GameGrid';
+import ServicesCTA from '../components/home/ServicesCTA';
 import SectionDivider from '../components/ui/SectionDivider';
 
 const JSONLD_PERSON = JSON.stringify({
@@ -11,7 +12,7 @@ const JSONLD_PERSON = JSON.stringify({
   '@type': 'Person',
   name: 'Bill Bergquist',
   jobTitle: 'Staff Software Engineer',
-  url: 'https://billbergquist.com',
+  url: 'https://billbergquist.dev',
   sameAs: [
     'https://github.com/titomb345',
     'https://www.linkedin.com/in/bill-bergquist/',
@@ -22,7 +23,7 @@ const JSONLD_WEBSITE = JSON.stringify({
   '@context': 'https://schema.org',
   '@type': 'WebSite',
   name: 'Bill Bergquist',
-  url: 'https://billbergquist.com',
+  url: 'https://billbergquist.dev',
 });
 
 function HomePage() {
@@ -60,6 +61,8 @@ function HomePage() {
       <ProjectsPreview />
       <SectionDivider color="magenta" />
       <GameGrid />
+      <SectionDivider color="mint" />
+      <ServicesCTA />
     </>
   );
 }
