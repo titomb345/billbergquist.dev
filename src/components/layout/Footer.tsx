@@ -24,6 +24,9 @@ function Footer() {
           <Link to="/arcade" className={styles.navLink}>
             Arcade
           </Link>
+          <Link to="/services" className={styles.navLink}>
+            Services
+          </Link>
         </nav>
 
         <div className={styles.social}>

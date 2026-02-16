@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import usePageMeta from '../hooks/usePageMeta';
 import GlowText from '../components/ui/GlowText';
 import ProjectCard from '../components/projects/ProjectCard';
@@ -64,6 +65,18 @@ function ProjectsPage() {
           </div>
         ))}
       </main>
+
+      <section className={styles.cta}>
+        <p className={styles.ctaText}>
+          Need a website for your business?
+        </p>
+        <p className={styles.ctaSubtext}>
+          I build sites for small businesses in the Denver &amp; Lakewood area.
+        </p>
+        <Link to="/services" className={styles.ctaLink}>
+          Learn More &rarr;
+        </Link>
+      </section>
     </div>
   );
 }
