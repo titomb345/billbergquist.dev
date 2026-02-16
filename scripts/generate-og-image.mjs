@@ -53,7 +53,7 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630">
   <!-- Role -->
   <text x="420" y="340" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="400" fill="#00f5ff" letter-spacing="1">Staff Software Engineer</text>
   <!-- URL -->
-  <text x="420" y="400" font-family="monospace" font-size="20" fill="#8888aa" letter-spacing="0.5">billbergquist.com</text>
+  <text x="420" y="400" font-family="monospace" font-size="20" fill="#8888aa" letter-spacing="0.5">billbergquist.dev</text>
   <!-- Bottom accent line -->
   <rect x="0" y="627" width="1200" height="3" fill="url(#neon)" opacity="0.8"/>
 </svg>`;

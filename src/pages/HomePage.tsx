@@ -11,7 +11,7 @@ const JSONLD_PERSON = JSON.stringify({
   '@type': 'Person',
   name: 'Bill Bergquist',
   jobTitle: 'Staff Software Engineer',
-  url: 'https://billbergquist.com',
+  url: 'https://billbergquist.dev',
   sameAs: [
     'https://github.com/titomb345',
     'https://www.linkedin.com/in/bill-bergquist/',
@@ -22,7 +22,7 @@ const JSONLD_WEBSITE = JSON.stringify({
   '@context': 'https://schema.org',
   '@type': 'WebSite',
   name: 'Bill Bergquist',
-  url: 'https://billbergquist.com',
+  url: 'https://billbergquist.dev',
 });
 
 function HomePage() {

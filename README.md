@@ -1,4 +1,4 @@
-# billbergquist.com
+# billbergquist.dev
 
 Bill Bergquist's personal website featuring a neon arcade aesthetic with interactive games and professional portfolio content.
 
@@ -6,7 +6,7 @@ Bill Bergquist's personal website featuring a neon arcade aesthetic with interac
 
 A personal portfolio site with a retro-futuristic arcade theme, showcasing professional experience, skills, and interactive browser-based games. Built as a modern single-page application with React 19 and TypeScript 5, with games developed through AI-assisted workflows using Claude Code.
 
-**Live Site:** [billbergquist.com](https://billbergquist.com)
+**Live Site:** [billbergquist.dev](https://billbergquist.dev)
 
 ## Technology Stack
 
