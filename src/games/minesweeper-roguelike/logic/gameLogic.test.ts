@@ -7,7 +7,7 @@ import {
   chordReveal,
   checkWin,
 } from './gameLogic';
-import { Cell, CellState } from '../types';
+import { CellState, type Cell } from '../types';
 
 // Helper to create a board with specific mine positions
 function createBoardWithMines(

@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@astrojs/react": "^4.4.2",
+    "@astrojs/rss": "^4.0.15",
     "@astrojs/sitemap": "^3.7.0",
     "@fontsource-variable/jetbrains-mono": "^5.2.8",
     "@fontsource-variable/orbitron": "^5.2.8",

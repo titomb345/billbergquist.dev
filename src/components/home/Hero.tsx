@@ -68,6 +68,9 @@ function Hero() {
           <a href="/projects" className={styles.ctaButton}>
             View My Work
           </a>
+          <a href="/services" className={styles.ctaButtonSecondary}>
+            Hire Me
+          </a>
         </div>
       </div>
     </section>

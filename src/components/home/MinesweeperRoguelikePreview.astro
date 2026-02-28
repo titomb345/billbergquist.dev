@@ -1,0 +1,27 @@
+---
+import styles from '../../games/minesweeper-roguelike/MinesweeperRoguelikePreview.module.css';
+
+const cells = [
+  '', '', '1', '', '',
+  '1', '1', '2', '1', '1',
+  '*', '1', '', '1', '*',
+  '1', '1', '', '1', '1',
+  '', '', '', '', '',
+];
+---
+
+<div class={styles.minesweeperPreview}>
+  <div class={styles.floorIndicator}>F1</div>
+  <div class={styles.gridArea}>
+    {
+      cells.map((cell) => (
+        <div
+          class={`${styles.mineCell} ${cell ? styles.revealed : ''} ${cell === '*' ? styles.mine : ''} ${cell && cell !== '*' ? styles.number : ''}`}
+        >
+          {cell === '*' ? '\u{1F4A3}' : cell}
+        </div>
+      ))
+    }
+  </div>
+  <div class={styles.powerUpIndicator}>{'\u{1F6E1}\u{FE0F}'}</div>
+</div>

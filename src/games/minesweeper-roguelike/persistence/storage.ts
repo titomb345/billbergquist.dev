@@ -8,15 +8,15 @@ import {
 // MIGRATIONS DISABLED — uncomment this import to re-enable (see migrations.ts for full steps):
 // import { applyMigrations, gameStateMigrations, statsMigrations } from './migrations';
 import {
-  RoguelikeGameState,
-  RoguelikeStats,
   GamePhase,
-  PowerUpId,
   CellState,
-  Cell,
-  PowerUp,
-  RunState,
-  FloorConfig,
+  type RoguelikeGameState,
+  type RoguelikeStats,
+  type PowerUpId,
+  type Cell,
+  type PowerUp,
+  type RunState,
+  type FloorConfig,
 } from '../types';
 import { createRoguelikeInitialState, createInitialRunState } from '../logic/roguelikeLogic';
 import { getPowerUpById } from '../constants';

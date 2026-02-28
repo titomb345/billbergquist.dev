@@ -1,4 +1,4 @@
-import { Cell, CellState, GamePhase, PowerUpId, RoguelikeGameState, RunState } from '../types';
+import { CellState, GamePhase, type Cell, type PowerUpId, type RoguelikeGameState, type RunState } from '../types';
 import {
   getFloorConfig,
   SCORING,
@@ -7,7 +7,7 @@ import {
   ORACLES_GIFT_MINE_DENSITY_BONUS,
 } from '../constants';
 import { createEmptyBoard, revealCell, revealCascade } from './gameLogic';
-import { AscensionLevel } from '../ascension';
+import type { AscensionLevel } from '../ascension';
 
 // Check for debug URL parameter to enable all powerups
 function hasAllPowerupsParam(): boolean {

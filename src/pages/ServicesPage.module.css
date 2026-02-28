@@ -452,6 +452,115 @@
   margin: 0;
 }
 
+/* ── Areas served ── */
+
+.areasServed {
+  padding: var(--space-lg) 0;
+  text-align: center;
+}
+
+.areasGrid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-sm);
+  max-width: 700px;
+  margin: 0 auto var(--space-md);
+}
+
+.areaLink {
+  font-family: var(--font-heading);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  padding: var(--space-xs) var(--space-md);
+  border: 1px solid var(--neon-purple);
+  border-radius: var(--radius-sm);
+  color: var(--neon-purple);
+  text-decoration: none;
+  transition: var(--transition-fast);
+}
+
+.areaLink:hover {
+  background-color: var(--neon-purple);
+  color: var(--bg-void);
+}
+
+.areaText {
+  font-family: var(--font-heading);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  padding: var(--space-xs) var(--space-md);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+}
+
+.areasNote {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  margin: 0;
+  font-style: italic;
+}
+
+/* ── Trust signals ── */
+
+.trustSignals {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-lg);
+  margin-bottom: var(--space-lg);
+  flex-wrap: wrap;
+}
+
+.trustItem {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  color: var(--neon-mint);
+  letter-spacing: 0.5px;
+  text-decoration: none;
+  transition: var(--transition-fast);
+}
+
+a.trustItem:hover {
+  text-decoration: underline;
+}
+
+/* ── Tech strip ── */
+
+.techStrip {
+  padding: var(--space-xl) 0 var(--space-lg);
+  text-align: center;
+}
+
+.techStripLabel {
+  font-family: var(--font-heading);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin: 0 0 var(--space-md);
+}
+
+.techStripList {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+}
+
+.techStripItem {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  padding: var(--space-xs) var(--space-md);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  letter-spacing: 0.5px;
+}
+
 /* ── Responsive ── */
 
 @media (max-width: 768px) {
@@ -469,6 +578,12 @@
 
   .whyGrid {
     grid-template-columns: 1fr;
+  }
+
+  .trustSignals {
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-sm);
   }
 }
 

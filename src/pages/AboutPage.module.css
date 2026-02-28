@@ -89,21 +89,63 @@
   margin: 0;
 }
 
-.contextLinks {
+.approach {
+  padding: var(--space-lg) 0;
   text-align: center;
-  color: var(--text-secondary);
-  font-size: 1rem;
-  line-height: 1.6;
-  margin-top: var(--space-lg);
 }
 
-.contextLinks a {
+.approachText {
+  font-size: 1rem;
+  line-height: 1.8;
+  color: var(--text-secondary);
+  max-width: 700px;
+  margin: 0 auto var(--space-md);
+}
+
+.approachText a {
   color: var(--neon-mint);
   text-decoration: none;
 }
 
-.contextLinks a:hover {
+.approachText a:hover {
   text-decoration: underline;
+}
+
+.servicesCta {
+  text-align: center;
+  margin-top: var(--space-lg);
+  padding: var(--space-lg);
+  background: var(--bg-surface);
+  border: 1px solid rgba(0, 212, 170, 0.15);
+  border-radius: var(--radius-md);
+}
+
+.servicesCtaText {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  max-width: 550px;
+  margin: 0 auto var(--space-md);
+}
+
+.servicesCtaLink {
+  display: inline-block;
+  font-family: var(--font-heading);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--neon-mint);
+  text-decoration: none;
+  border: 2px solid var(--neon-mint);
+  border-radius: var(--radius-sm);
+  padding: var(--space-sm) var(--space-lg);
+  transition: var(--transition-fast);
+}
+
+.servicesCtaLink:hover {
+  background-color: var(--neon-mint);
+  color: var(--bg-void);
 }
 
 @media (max-width: 768px) {

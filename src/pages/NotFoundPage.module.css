@@ -56,6 +56,25 @@
     0 0 20px var(--neon-cyan-glow);
 }
 
+.altLinks {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-md);
+  margin-top: var(--space-lg);
+}
+
+.altLinks a {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.altLinks a:hover {
+  color: var(--neon-mint);
+}
+
 @media (max-width: 640px) {
   .page {
     padding: var(--space-lg) var(--space-md);

@@ -8,7 +8,7 @@ import {
   calculateOpeningsMapCells,
   calculatePatternMemoryCell,
 } from './roguelikeLogic';
-import { Cell, CellState } from '../types';
+import { CellState, type Cell } from '../types';
 import { SCORING } from '../constants';
 
 // Helper to create a simple board

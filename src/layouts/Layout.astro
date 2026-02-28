@@ -24,6 +24,12 @@ const breadcrumbNames: Record<string, string> = {
   about: 'About',
   projects: 'Projects',
   services: 'Services',
+  denver: 'Denver',
+  lakewood: 'Lakewood',
+  boulder: 'Boulder',
+  blog: 'Blog',
+  tag: 'Tag',
+  privacy: 'Privacy Policy',
   arcade: 'Arcade',
   descent: 'Minesweeper: Descent',
 };
@@ -67,10 +73,14 @@ const allJsonLd = breadcrumbLd ? [...jsonLd, breadcrumbLd] : jsonLd;
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="dark" />
     <meta name="theme-color" content="#0d0d14" />
     <meta name="author" content="Bill Bergquist" />
     <meta name="description" content={description} />
     <title>{title}</title>
+
+    <!-- RSS feed -->
+    <link rel="alternate" type="application/rss+xml" title="Bill Bergquist — Blog" href="/rss.xml" />
 
     <!-- Open Graph -->
     <meta property="og:title" content={title} />
@@ -96,6 +106,15 @@ const allJsonLd = breadcrumbLd ? [...jsonLd, breadcrumbLd] : jsonLd;
         <script type="application/ld+json" set:html={ld} />
       ))
     }
+
+    <!-- Google Analytics 4 -->
+    <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-WSEDR1ZR2Y"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-WSEDR1ZR2Y');
+    </script>
 
     <slot name="head" />
   </head>

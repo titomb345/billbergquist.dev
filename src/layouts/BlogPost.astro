@@ -1,0 +1,98 @@
+---
+import Layout from './Layout.astro';
+import GlowText from '../components/ui/GlowText.astro';
+import styles from './BlogPost.module.css';
+
+interface Props {
+  title: string;
+  description: string;
+  publishDate: Date;
+  updatedDate?: Date;
+  tags: string[];
+  ogImage?: string;
+  slug: string;
+}
+
+const { title, description, publishDate, updatedDate, tags, ogImage, slug } = Astro.props;
+
+const formattedDate = publishDate.toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+
+const formattedUpdated = updatedDate?.toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+
+const jsonLdArticle = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: title,
+  description,
+  datePublished: publishDate.toISOString(),
+  ...(updatedDate && { dateModified: updatedDate.toISOString() }),
+  author: {
+    '@type': 'Person',
+    name: 'Bill Bergquist',
+    url: 'https://billbergquist.dev',
+    jobTitle: 'Staff Software Engineer',
+  },
+  publisher: {
+    '@type': 'Person',
+    name: 'Bill Bergquist',
+    url: 'https://billbergquist.dev',
+  },
+  mainEntityOfPage: `https://billbergquist.dev/blog/${slug}`,
+});
+---
+
+<Layout
+  title={`${title} — Bill Bergquist`}
+  description={description}
+  canonical={`/blog/${slug}`}
+  jsonLd={[jsonLdArticle]}
+  ogImage={ogImage || '/og-image.png'}
+>
+  <article class={styles.article}>
+    <header class={styles.header}>
+      <GlowText as="h1" size="large" color="orange" class={styles.title}>
+        {title}
+      </GlowText>
+      <div class={styles.meta}>
+        <time datetime={publishDate.toISOString()} class={styles.date}>{formattedDate}</time>
+        {formattedUpdated && (
+          <span class={styles.updated}>(Updated {formattedUpdated})</span>
+        )}
+      </div>
+      <div class={styles.tags}>
+        {tags.map((tag) => (
+          <a href={`/blog/tag/${tag.toLowerCase().replace(/\s+/g, '-')}`} class={styles.tag}>{tag}</a>
+        ))}
+      </div>
+    </header>
+
+    <div class={styles.content}>
+      <slot />
+    </div>
+
+    <aside class={styles.ctaBox}>
+      <p class={styles.ctaHeading}>Need a website for your business?</p>
+      <p class={styles.ctaText}>
+        I build fast, custom websites for small businesses in Denver and the Colorado Front Range.
+        Free consultation, no obligation.
+      </p>
+      <a href="/services" class={styles.ctaLink}>View Services &rarr;</a>
+    </aside>
+
+    <div class={styles.authorBox}>
+      <div class={styles.authorInfo}>
+        <p class={styles.authorName}>Bill Bergquist</p>
+        <p class={styles.authorRole}>Staff Software Engineer with 14+ years of experience building for the web.</p>
+        <a href="/about" class={styles.authorLink}>More about me &rarr;</a>
+      </div>
+    </div>
+  </article>
+</Layout>

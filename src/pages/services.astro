@@ -5,15 +5,21 @@ import GlowText from '../components/ui/GlowText.astro';
 import Card from '../components/ui/Card.astro';
 import SectionDivider from '../components/ui/SectionDivider.astro';
 import ContactForm from '../components/services/ContactForm';
+import CredibilitySection from '../components/services/CredibilitySection.astro';
+import RecentWork from '../components/services/RecentWork.astro';
 import headshot from '../assets/headshot.png';
 import styles from './ServicesPage.module.css';
+
+const bookingMonth = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleString('en-US', {
+  month: 'long',
+});
 
 const services = [
   {
     icon: '01',
     title: 'Business Websites',
     description:
-      'A professional site that gets your Denver or Lakewood business found online. Fast on every device, easy to navigate, and designed to turn visitors into customers.',
+      'A professional site that helps your Denver or Lakewood business get found online. Fast on every device, easy to navigate, and built to get you more calls and bookings.',
     color: 'mint',
   },
   {
@@ -43,7 +49,7 @@ const whyPoints = [
   {
     title: '14+ years of experience',
     description:
-      "I've been building websites since 2012, for startups and large companies alike. That experience shows up in the details of your site.",
+      "I've been building for the web since 2012, at startups and large companies. I've seen what works and what doesn't.",
   },
   {
     title: 'Local to Denver & Lakewood',
@@ -108,6 +114,31 @@ const faqs = [
     question: 'Can you help my business rank on Google?',
     answer:
       "I bake SEO basics into every site: clean heading structure, meta tags, fast load times, mobile optimization, and structured data. For local businesses, I also handle Google Business Profile integration and local schema markup so you can show up in map results.",
+  },
+  {
+    question: "What's the difference between a template website and a custom-built one?",
+    answer:
+      "Template sites (Wix, Squarespace, WordPress themes) give you a pre-made layout that you fill in. They work for some businesses, but they're limited in speed, SEO, and design flexibility. A custom-built site is coded specifically for your business, loads faster, ranks better, and can do exactly what you need without fighting a template's limitations.",
+  },
+  {
+    question: 'Do I need to provide content and photos for my website?',
+    answer:
+      "It helps if you have some photos of your business, team, or products, but I can work with what you've got. I'll write the website copy with you or for you based on our conversations. I know what works for web content and can help shape your message.",
+  },
+  {
+    question: 'What happens after my website launches? Do you offer maintenance?',
+    answer:
+      "Yes. I offer ongoing support plans for updates, changes, and maintenance. But even without a support plan, I don't disappear after launch. If something breaks or you have a quick question, I'm a text or email away.",
+  },
+  {
+    question: 'Can you help with Google Business Profile setup?',
+    answer:
+      "Absolutely. For local businesses, your Google Business Profile is as important as your website. I'll help you set it up or optimize your existing one, connect it to your site, and make sure your business info is consistent across the web.",
+  },
+  {
+    question: 'How do I know if my business needs a new website?',
+    answer:
+      "If your site is slow, doesn't look good on phones, hasn't been updated in a few years, or you're embarrassed to share the link, it's probably time. I offer a free consultation where I'll take a look at your current site and give you an honest assessment.",
   },
 ];
 
@@ -253,6 +284,10 @@ const jsonLdFaq = JSON.stringify({
 
     <SectionDivider color="mint" />
 
+    <RecentWork />
+
+    <SectionDivider color="purple" />
+
     <section class={`${styles.whySection} scroll-reveal`}>
       <GlowText as="h2" size="medium" color="purple" class={styles.sectionTitle}>
         WHY WORK WITH A LOCAL DEVELOPER
@@ -276,6 +311,8 @@ const jsonLdFaq = JSON.stringify({
         }
       </div>
     </section>
+
+    <CredibilitySection />
 
     <SectionDivider color="orange" />
 
@@ -319,6 +356,34 @@ const jsonLdFaq = JSON.stringify({
       </div>
     </section>
 
+    <SectionDivider color="purple" />
+
+    <section class={`${styles.areasServed} scroll-reveal`}>
+      <GlowText as="h2" size="medium" color="purple" class={styles.sectionTitle}>
+        AREAS I SERVE
+      </GlowText>
+      <div class={styles.areasGrid}>
+        <a href="/services/denver" class={styles.areaLink}>Denver</a>
+        <a href="/services/lakewood" class={styles.areaLink}>Lakewood</a>
+        <a href="/services/boulder" class={styles.areaLink}>Boulder</a>
+        <span class={styles.areaText}>Golden</span>
+        <span class={styles.areaText}>Arvada</span>
+        <span class={styles.areaText}>Wheat Ridge</span>
+        <span class={styles.areaText}>Littleton</span>
+        <span class={styles.areaText}>Englewood</span>
+        <span class={styles.areaText}>Aurora</span>
+        <span class={styles.areaText}>Centennial</span>
+        <span class={styles.areaText}>Highlands Ranch</span>
+        <span class={styles.areaText}>Westminster</span>
+        <span class={styles.areaText}>Broomfield</span>
+        <span class={styles.areaText}>Thornton</span>
+        <span class={styles.areaText}>Edgewater</span>
+      </div>
+      <p class={styles.areasNote}>
+        I also work with businesses anywhere in Colorado and beyond. Remote collaboration works great.
+      </p>
+    </section>
+
     <SectionDivider color="mint" />
 
     <section class={`${styles.contact} scroll-reveal`}>
@@ -330,6 +395,15 @@ const jsonLdFaq = JSON.stringify({
         restaurant in Arvada, or any other Front Range business, I'd love to hear about it.
       </p>
 
+      <div class={styles.trustSignals}>
+        <span class={styles.trustItem}>&#10003; Currently booking for {bookingMonth}</span>
+        <span class={styles.trustItem}>&#10003; Free consultation, no obligation</span>
+        <span class={styles.trustItem}>&#10003; Response within 1 business day</span>
+        <a href="https://share.google/AN9wq1GbXPqjeQwEf" target="_blank" rel="noopener noreferrer" class={styles.trustItem}>
+          &#10003; View my Google Business Profile
+        </a>
+      </div>
+
       <ContactForm client:visible />
 
       <div class={styles.emailAlt}>
@@ -339,6 +413,17 @@ const jsonLdFaq = JSON.stringify({
             services@billbergquist.dev
           </a>
         </p>
+      </div>
+    </section>
+
+    <section class={`${styles.techStrip} scroll-reveal`}>
+      <p class={styles.techStripLabel}>Built with modern tools</p>
+      <div class={styles.techStripList}>
+        <span class={styles.techStripItem}>Astro</span>
+        <span class={styles.techStripItem}>React</span>
+        <span class={styles.techStripItem}>TypeScript</span>
+        <span class={styles.techStripItem}>Netlify</span>
+        <span class={styles.techStripItem}>Tailwind CSS</span>
       </div>
     </section>
   </div>

@@ -2,14 +2,15 @@
 
 ## Project Overview
 
-This is Bill Bergquist's personal website built with React 19, TypeScript 5, and Vite.
+This is Bill Bergquist's personal website built with Astro, React 19, and TypeScript. It uses Astro's static site generation (SSG) with React Islands for interactive components.
 
 ## Tech Stack
 
-- **React 19** - UI framework
+- **Astro** - Static site generator with file-based routing
+- **React 19** - Interactive components (islands) hydrated client-side
 - **TypeScript 5.7** - Type safety
-- **Vite 6** - Build tool and dev server
 - **Prettier** - Code formatting
+- **Netlify** - Hosting and form processing
 
 ## Commands
 
@@ -17,7 +18,7 @@ This is Bill Bergquist's personal website built with React 19, TypeScript 5, and
 # Install dependencies
 npm install
 
-# Start development server (http://localhost:5173)
+# Start development server (http://localhost:4321)
 npm run dev
 
 # Build for production
@@ -30,23 +31,61 @@ npm run preview
 ## Project Structure
 
 ```
-├── index.html      # HTML entry point
-├── vite.config.ts  # Vite configuration
-├── tsconfig.json   # TypeScript configuration
-├── public/
-│   └── favicon.ico # Static assets
+├── astro.config.mjs        # Astro configuration
+├── tsconfig.json            # TypeScript configuration (extends astro/tsconfigs/strict)
+├── vitest.config.ts         # Test configuration
+├── public/                  # Static assets (favicons, robots.txt, sitemap.xml)
 └── src/
-    ├── main.tsx    # App entry point
-    ├── App.tsx     # Main app component
-    └── index.css   # Global styles
+    ├── layouts/
+    │   └── Layout.astro     # Main layout (head, meta, navbar, footer)
+    ├── pages/               # File-based routing (.astro files)
+    │   ├── index.astro      # Home page
+    │   ├── about.astro
+    │   ├── projects.astro
+    │   ├── services.astro
+    │   ├── 404.astro
+    │   └── arcade/
+    │       ├── index.astro
+    │       └── descent.astro
+    ├── components/
+    │   ├── layout/          # Navbar.astro, Footer.astro, ScrollProgress.tsx (island)
+    │   ├── home/            # Hero.tsx (island), section components (.astro)
+    │   ├── about/           # ExperienceTimeline.astro, SkillsSection.astro
+    │   ├── projects/        # ProjectCard.astro
+    │   ├── services/        # ContactForm.tsx (island)
+    │   └── ui/              # GlowText, Button, Card, SectionDivider (.astro + .tsx)
+    ├── games/               # Minesweeper roguelike (full React app)
+    ├── scripts/
+    │   └── scroll-reveal.ts # Vanilla JS IntersectionObserver
+    └── styles/
+        ├── global.css       # Global styles and CSS variables
+        └── reset.css        # CSS reset
 ```
+
+## Architecture Notes
+
+- **Astro pages** render as static HTML at build time — all content is in the HTML source
+- **React Islands** are used only for interactive components:
+  - `Hero.tsx` — typewriter animation (`client:load`)
+  - `ScrollProgress.tsx` — scroll progress bar (`client:load`)
+  - `ContactForm.tsx` — form with submit handling (`client:visible`)
+  - `MinesweeperRoguelikePage.tsx` — full game (`client:only="react"`, no SSR)
+- **CSS Modules** are shared between Astro and React components
+- **JSON-LD** structured data is rendered in `<script>` tags in the HTML head
+- **Netlify Forms** detection works because the form HTML is pre-rendered at build time
+
+## Writing Style
+
+- **Never use emdashes** in content copy. They are a dead giveaway for AI-generated text. Use periods, commas, colons, or restructure the sentence instead. Emdashes in HTML title attributes (like "Bill Bergquist — Engineer") are acceptable since those are metadata separators.
+- Keep writing natural and conversational. Avoid overly polished, formulaic patterns.
 
 ## Development Notes
 
 - **NEVER start the dev server** - it is always running during sessions and HMR handles updates automatically
-- Development server runs on http://localhost:5173
+- Development server runs on http://localhost:4321
 - Code formatting follows Prettier config in `.prettierrc.json`
 - Production build outputs to `dist/` folder
+- Each page generates its own HTML file (no SPA fallback needed)
 
 ## Git Workflow
 

@@ -89,10 +89,37 @@ const jsonLdPerson = JSON.stringify({
         </div>
       </section>
 
-      <p class={styles.contextLinks}>
-        Check out my <a href="/projects">recent projects</a>, or if you're a small business looking for a website,
-        take a look at my <a href="/services">web design services</a>.
-      </p>
+      <SectionDivider color="orange" />
+
+      <section class={styles.approach}>
+        <GlowText as="h2" size="medium" color="orange" class={styles.sectionTitle}>
+          MY APPROACH
+        </GlowText>
+        <p class={styles.approachText}>
+          I believe good software comes from understanding the problem before writing a single line of code.
+          Whether I'm building internal tooling for a product team or a website for a local business, I start
+          by listening. What does the user actually need? What does success look like? Then I choose the
+          simplest technology that gets the job done well.
+        </p>
+        <p class={styles.approachText}>
+          I'm opinionated about code quality: clean abstractions, meaningful tests, and documentation that
+          actually helps. But I'm not precious about tools. React, Vue, Astro, vanilla JavaScript... the right
+          choice depends on the project, not personal preference. I care about shipping things that work,
+          load fast, and are maintainable by whoever comes next.
+        </p>
+        <p class={styles.approachText}>
+          I also build <a href="/arcade">browser games</a> in my spare time as a way to explore new
+          technologies and keep building things that are just fun.
+        </p>
+      </section>
+
+      <section class={styles.servicesCta}>
+        <p class={styles.servicesCtaText}>
+          If you're a small business in Denver or the Colorado Front Range looking for a website, I'd love to help.
+          I bring the same engineering standards from my enterprise work to every client project.
+        </p>
+        <a href="/services" class={styles.servicesCtaLink}>View My Services &rarr;</a>
+      </section>
     </main>
   </div>
 </Layout>

@@ -4,15 +4,23 @@
 Bill Bergquist is a Staff Software Engineer with 14+ years of experience building web applications. Based in the Denver/Lakewood, Colorado area. Currently at Kasa, leading frontend architecture with React, TypeScript, and Node.js.
 
 ## Services
-Web design and development for small businesses in Denver, Lakewood, and the Colorado Front Range. Services include business websites, landing pages, website redesigns, and ongoing support.
+Web design and development for small businesses in Denver, Lakewood, Boulder, and the Colorado Front Range. Services include business websites, landing pages, website redesigns, and ongoing support. Pricing typically ranges from $2,000 to $8,000 for small business sites.
 
-- Website: https://billbergquist.dev/services
+- Main services page: https://billbergquist.dev/services
+- Denver: https://billbergquist.dev/services/denver
+- Lakewood: https://billbergquist.dev/services/lakewood
+- Boulder: https://billbergquist.dev/services/boulder
 - Email: services@billbergquist.dev
 
 ## Projects
-- CreatiCalc (https://creaticalc.com) — Free calculator suite for content creators
+- CreatiCalc (https://creaticalc.com) — Free calculator suite for content creators covering YouTube, Instagram, TikTok, Facebook, and X
 - Sports Shortcuts (https://sportsshortcuts.com) — Injury alert generator for sports reporters
 - Critter Care (https://critter-care.com) — Pet sitting business website
+
+## Blog
+- How Much Does a Website Cost for a Small Business in Denver?: https://billbergquist.dev/blog/how-much-does-a-website-cost-denver
+- 5 Signs Your Small Business Website Needs a Redesign: https://billbergquist.dev/blog/signs-your-business-website-needs-redesign
+- Why Your Denver Business Needs More Than a Wix Template: https://billbergquist.dev/blog/template-vs-custom-website
 
 ## Games
 - Minesweeper: Descent (https://billbergquist.dev/arcade/descent) — Roguelike minesweeper browser game
@@ -20,6 +28,7 @@ Web design and development for small businesses in Denver, Lakewood, and the Col
 ## Links
 - Website: https://billbergquist.dev
 - About: https://billbergquist.dev/about
-- Projects: https://billbergquist.dev/projects
 - Services: https://billbergquist.dev/services
+- Projects: https://billbergquist.dev/projects
+- Blog: https://billbergquist.dev/blog
 - Arcade: https://billbergquist.dev/arcade
