@@ -1,0 +1,96 @@
+---
+import Layout from '../layouts/Layout.astro';
+import GlowText from '../components/ui/GlowText.astro';
+import ProjectCard from '../components/projects/ProjectCard.astro';
+import styles from './ProjectsPage.module.css';
+
+const projects = [
+  {
+    title: 'CreatiCalc',
+    description:
+      'Free calculator suite for content creators. Estimate YouTube ad revenue, calculate engagement rates, and find sponsorship pricing across YouTube, Instagram, TikTok, Facebook, and X.',
+    techStack: ['Next.js', 'React', 'TypeScript', 'Tailwind CSS'],
+    url: 'https://creaticalc.com',
+    color: 'mint' as const,
+    wireframe: 'dashboard' as const,
+  },
+  {
+    title: 'Sports Shortcuts',
+    description:
+      'Injury and status alert generator for sports reporters and social media managers. Quickly create standardized NFL and NBA game-day messages with autocomplete player search.',
+    techStack: ['React', 'TypeScript', 'Material UI', 'Vite'],
+    url: 'https://sportsshortcuts.com',
+    color: 'magenta' as const,
+    wireframe: 'form' as const,
+  },
+  {
+    title: 'Critter Care',
+    description:
+      'Professional pet sitting and dog walking business website for the South Bay area. Features service listings, testimonials, photo gallery, and CMS-powered content management.',
+    techStack: ['Astro', 'Tailwind CSS', 'Decap CMS'],
+    url: 'https://critter-care.com',
+    color: 'purple' as const,
+    wireframe: 'landing' as const,
+  },
+];
+
+const jsonLdProjects = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: 'Projects by Bill Bergquist',
+  url: 'https://billbergquist.dev/projects',
+  mainEntity: {
+    '@type': 'ItemList',
+    itemListElement: projects.map((project, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      item: {
+        '@type': 'WebApplication',
+        name: project.title,
+        description: project.description,
+        url: project.url,
+        applicationCategory: 'WebApplication',
+        author: {
+          '@type': 'Person',
+          name: 'Bill Bergquist',
+          url: 'https://billbergquist.dev',
+        },
+      },
+    })),
+  },
+});
+---
+
+<Layout
+  title="Projects — Bill Bergquist"
+  description="Web projects by Bill Bergquist: CreatiCalc, Sports Shortcuts, and Critter Care. Built with React, Astro, TypeScript, and modern web technologies."
+  canonical="/projects"
+  jsonLd={[jsonLdProjects]}
+>
+  <div class={styles.page}>
+    <header class={styles.header}>
+      <GlowText size="large" color="orange" animated class={styles.title}>PROJECTS</GlowText>
+      <p class={styles.intro}>
+        A collection of web applications I've designed, built, and shipped. Each project solves a
+        real problem using modern web technologies.
+      </p>
+      <div class="accent-line-orange"></div>
+    </header>
+
+    <main class={`${styles.grid} scroll-reveal`}>
+      {projects.map((project) => (
+        <div class="scroll-reveal-child">
+          <ProjectCard {...project} />
+        </div>
+      ))}
+    </main>
+
+    <section class={styles.cta}>
+      <p class={styles.ctaText}>Need a website for your business?</p>
+      <p class={styles.ctaSubtext}>
+        I build sites for small businesses in the Denver &amp; Lakewood area.
+      </p>
+      <a href="/services" class={styles.ctaLink}>Learn More &rarr;</a>
+    </section>
+  </div>
+</Layout>
