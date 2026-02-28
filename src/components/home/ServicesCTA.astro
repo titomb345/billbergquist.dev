@@ -1,0 +1,17 @@
+---
+import GlowText from '../ui/GlowText.astro';
+import Button from '../ui/Button.astro';
+import styles from './ServicesCTA.module.css';
+---
+
+<section class={`${styles.section} scroll-reveal`}>
+  <GlowText as="h2" size="medium" color="mint" class={styles.title}>
+    NEED A WEBSITE?
+  </GlowText>
+  <p class={styles.description}>
+    I build fast, modern websites for small businesses in Denver, Lakewood, and across the Colorado
+    Front Range. From custom business sites to landing pages and redesigns — built with the same
+    engineering standards I bring to enterprise software.
+  </p>
+  <Button variant="primary" href="/services">View Services &rarr;</Button>
+</section>

@@ -1,0 +1,30 @@
+---
+import GlowText from '../ui/GlowText.astro';
+import Button from '../ui/Button.astro';
+import GameCard from '../ui/GameCard.astro';
+import MinesweeperRoguelikePreview from './MinesweeperRoguelikePreview.astro';
+import styles from './GameGrid.module.css';
+---
+
+<section id="games" class={`${styles.section} scroll-reveal`}>
+  <GlowText as="h2" size="medium" color="magenta" class={styles.sectionTitle}>
+    FEATURED GAME
+  </GlowText>
+  <p class={styles.blurb}>
+    A playground for rapid AI-assisted development, combining my love of gaming with experiments in
+    agentic workflows. Built entirely with AI pair programming using Claude Code, these browser games
+    explore what's possible when you combine modern React with AI-powered development.
+  </p>
+  <div class={styles.grid}>
+    <GameCard
+      title="Minesweeper: Descent"
+      description="Roguelike minesweeper. Descend 10 floors of escalating danger. Collect power-ups to survive."
+    >
+      <MinesweeperRoguelikePreview slot="preview" />
+      <Button variant="primary" href="/arcade/descent" slot="action">Play Now</Button>
+    </GameCard>
+  </div>
+  <div class={styles.arcadeLink}>
+    <Button variant="secondary" href="/arcade">View My Arcade &rarr;</Button>
+  </div>
+</section>
