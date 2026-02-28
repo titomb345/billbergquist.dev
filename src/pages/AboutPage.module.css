@@ -89,6 +89,23 @@
   margin: 0;
 }
 
+.contextLinks {
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-top: var(--space-lg);
+}
+
+.contextLinks a {
+  color: var(--neon-mint);
+  text-decoration: none;
+}
+
+.contextLinks a:hover {
+  text-decoration: underline;
+}
+
 @media (max-width: 768px) {
   .page {
     padding: var(--space-lg) var(--space-md);
