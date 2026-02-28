@@ -2,6 +2,9 @@
 import GlowText from '../ui/GlowText.astro';
 import Button from '../ui/Button.astro';
 import ProjectCard from '../projects/ProjectCard.astro';
+import creaticalcImg from '../../assets/screenshots/creaticalc.png';
+import sportsshortcutsImg from '../../assets/screenshots/sportsshortcuts.png';
+import crittercareImg from '../../assets/screenshots/crittercare.png';
 import styles from './ProjectsPreview.module.css';
 
 const projects = [
@@ -12,7 +15,7 @@ const projects = [
     techStack: ['Next.js', 'React', 'TypeScript'],
     url: 'https://creaticalc.com',
     color: 'mint' as const,
-    screenshot: '/screenshots/creaticalc.png',
+    screenshot: creaticalcImg,
   },
   {
     title: 'Sports Shortcuts',
@@ -21,7 +24,7 @@ const projects = [
     techStack: ['React', 'TypeScript', 'Material UI'],
     url: 'https://sportsshortcuts.com',
     color: 'magenta' as const,
-    screenshot: '/screenshots/sportsshortcuts.png',
+    screenshot: sportsshortcutsImg,
   },
   {
     title: 'Critter Care',
@@ -30,7 +33,7 @@ const projects = [
     techStack: ['Astro', 'Tailwind CSS', 'Decap CMS'],
     url: 'https://critter-care.com',
     color: 'purple' as const,
-    screenshot: '/screenshots/crittercare.png',
+    screenshot: crittercareImg,
   },
 ];
 ---

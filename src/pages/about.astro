@@ -1,9 +1,11 @@
 ---
+import { Image } from 'astro:assets';
 import Layout from '../layouts/Layout.astro';
 import GlowText from '../components/ui/GlowText.astro';
 import SectionDivider from '../components/ui/SectionDivider.astro';
 import ExperienceTimeline from '../components/about/ExperienceTimeline.astro';
 import SkillsSection from '../components/about/SkillsSection.astro';
+import headshot from '../assets/headshot.png';
 import styles from './AboutPage.module.css';
 
 const jsonLdPerson = JSON.stringify({
@@ -43,14 +45,14 @@ const jsonLdPerson = JSON.stringify({
 >
   <div class={styles.page}>
     <header class={styles.header}>
-      <img
-        src="/headshot.png"
+      <Image
+        src={headshot}
         alt="Bill Bergquist — Staff Software Engineer"
-        width="200"
-        height="200"
+        width={200}
+        height={200}
         class={styles.headshot}
       />
-      <GlowText size="large" color="mint" animated class={styles.title}>ABOUT ME</GlowText>
+      <GlowText size="large" color="mint" class={styles.title}>ABOUT ME</GlowText>
       <p class={styles.summary}>
         I'm a Staff Software Engineer with over 14 years of experience building web applications.
         While my roots are in frontend technologies, I've been diving deeper into full stack

@@ -1,9 +1,11 @@
 ---
+import { Image } from 'astro:assets';
 import Layout from '../layouts/Layout.astro';
 import GlowText from '../components/ui/GlowText.astro';
 import Card from '../components/ui/Card.astro';
 import SectionDivider from '../components/ui/SectionDivider.astro';
 import ContactForm from '../components/services/ContactForm';
+import headshot from '../assets/headshot.png';
 import styles from './ServicesPage.module.css';
 
 const services = [
@@ -213,7 +215,7 @@ const jsonLdFaq = JSON.stringify({
 >
   <div class={styles.page}>
     <header class={styles.header}>
-      <GlowText as="h1" size="large" color="mint" animated class={styles.title}>
+      <GlowText as="h1" size="large" color="mint" class={styles.title}>
         WEB DESIGN & DEVELOPMENT IN DENVER
       </GlowText>
       <p class={styles.subtitle}>Denver &middot; Lakewood &middot; Front Range &middot; Colorado</p>
@@ -234,10 +236,10 @@ const jsonLdFaq = JSON.stringify({
           services.map((service) => (
             <div class="scroll-reveal-child">
               <Card class={styles.serviceCard}>
-                <span class={`${styles.serviceIcon} neon-text-${service.color}`}>
+                <span class={`${styles.serviceIcon} ${styles[`color_${service.color}`]}`}>
                   {service.icon}
                 </span>
-                <h3 class={`${styles.serviceTitle} neon-text-${service.color}`}>
+                <h3 class={`${styles.serviceTitle} ${styles[`color_${service.color}`]}`}>
                   {service.title}
                 </h3>
                 <p class={styles.serviceDescription}>{service.description}</p>
@@ -254,11 +256,11 @@ const jsonLdFaq = JSON.stringify({
       <GlowText as="h2" size="medium" color="purple" class={styles.sectionTitle}>
         WHY WORK WITH A LOCAL DEVELOPER
       </GlowText>
-      <img
-        src="/headshot.png"
+      <Image
+        src={headshot}
         alt="Bill Bergquist — web developer in Denver, CO"
-        width="150"
-        height="150"
+        width={150}
+        height={150}
         class={styles.headshot}
         loading="lazy"
       />

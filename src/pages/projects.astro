@@ -2,6 +2,9 @@
 import Layout from '../layouts/Layout.astro';
 import GlowText from '../components/ui/GlowText.astro';
 import ProjectCard from '../components/projects/ProjectCard.astro';
+import creaticalcImg from '../assets/screenshots/creaticalc.png';
+import sportsshortcutsImg from '../assets/screenshots/sportsshortcuts.png';
+import crittercareImg from '../assets/screenshots/crittercare.png';
 import styles from './ProjectsPage.module.css';
 
 const projects = [
@@ -12,7 +15,7 @@ const projects = [
     techStack: ['Next.js', 'React', 'TypeScript', 'Tailwind CSS'],
     url: 'https://creaticalc.com',
     color: 'mint' as const,
-    screenshot: '/screenshots/creaticalc.png',
+    screenshot: creaticalcImg,
   },
   {
     title: 'Sports Shortcuts',
@@ -21,7 +24,7 @@ const projects = [
     techStack: ['React', 'TypeScript', 'Material UI', 'Vite'],
     url: 'https://sportsshortcuts.com',
     color: 'magenta' as const,
-    screenshot: '/screenshots/sportsshortcuts.png',
+    screenshot: sportsshortcutsImg,
   },
   {
     title: 'Critter Care',
@@ -30,7 +33,7 @@ const projects = [
     techStack: ['Astro', 'Tailwind CSS', 'Decap CMS'],
     url: 'https://critter-care.com',
     color: 'purple' as const,
-    screenshot: '/screenshots/crittercare.png',
+    screenshot: crittercareImg,
   },
 ];
 
@@ -69,7 +72,7 @@ const jsonLdProjects = JSON.stringify({
 >
   <div class={styles.page}>
     <header class={styles.header}>
-      <GlowText size="large" color="orange" animated class={styles.title}>PROJECTS</GlowText>
+      <GlowText size="large" color="orange" class={styles.title}>PROJECTS</GlowText>
       <p class={styles.intro}>
         A collection of web applications I've designed, built, and shipped. Each project started with
         a real problem — from content creators needing better analytics tools to sports reporters

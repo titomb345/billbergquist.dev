@@ -1,4 +1,6 @@
 ---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
 import Card from '../ui/Card.astro';
 import styles from './ProjectCard.module.css';
 
@@ -9,7 +11,7 @@ interface Props {
   url: string;
   color: 'mint' | 'magenta' | 'purple' | 'orange';
   wireframe?: 'dashboard' | 'form' | 'landing';
-  screenshot?: string;
+  screenshot?: ImageMetadata;
 }
 
 const { title, description, techStack, url, color, wireframe = 'dashboard', screenshot } = Astro.props;
@@ -34,11 +36,11 @@ const hostname = new URL(url).hostname;
     </div>
     {
       screenshot ? (
-        <img
+        <Image
           src={screenshot}
           alt={`${title} homepage screenshot`}
-          width="800"
-          height="500"
+          width={800}
+          height={500}
           class={styles.screenshot}
           loading="lazy"
         />
