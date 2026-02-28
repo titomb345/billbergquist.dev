@@ -71,19 +71,26 @@ const jsonLdProjects = JSON.stringify({
     <header class={styles.header}>
       <GlowText size="large" color="orange" animated class={styles.title}>PROJECTS</GlowText>
       <p class={styles.intro}>
-        A collection of web applications I've designed, built, and shipped. Each project solves a
-        real problem using modern web technologies.
+        A collection of web applications I've designed, built, and shipped. Each project started with
+        a real problem — from content creators needing better analytics tools to sports reporters
+        needing faster workflows to local businesses needing a web presence. Built with React,
+        Next.js, Astro, TypeScript, and other modern technologies.
       </p>
       <div class="accent-line-orange"></div>
     </header>
 
-    <main class={`${styles.grid} scroll-reveal`}>
-      {projects.map((project) => (
-        <div class="scroll-reveal-child">
-          <ProjectCard {...project} />
-        </div>
-      ))}
-    </main>
+    <section>
+      <GlowText as="h2" size="small" color="mint" class={styles.sectionTitle}>
+        WEB APPLICATIONS
+      </GlowText>
+      <div class={`${styles.grid} scroll-reveal`}>
+        {projects.map((project) => (
+          <div class="scroll-reveal-child">
+            <ProjectCard {...project} />
+          </div>
+        ))}
+      </div>
+    </section>
 
     <section class={styles.cta}>
       <p class={styles.ctaText}>Need a website for your business?</p>
