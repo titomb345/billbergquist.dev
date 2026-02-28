@@ -1,0 +1,335 @@
+---
+import Layout from '../layouts/Layout.astro';
+import GlowText from '../components/ui/GlowText.astro';
+import Card from '../components/ui/Card.astro';
+import SectionDivider from '../components/ui/SectionDivider.astro';
+import ContactForm from '../components/services/ContactForm';
+import styles from './ServicesPage.module.css';
+
+const services = [
+  {
+    icon: '01',
+    title: 'Business Websites',
+    description:
+      'A professional website that puts your Denver, Lakewood, or Front Range business on the map. Fast, mobile-friendly, and built to convert visitors into customers.',
+    color: 'mint',
+  },
+  {
+    icon: '02',
+    title: 'Landing Pages',
+    description:
+      "Focused, single-page sites designed to drive a specific action — whether it's bookings, signups, or sales for your Colorado business.",
+    color: 'orange',
+  },
+  {
+    icon: '03',
+    title: 'Website Redesign',
+    description:
+      "Already have a site that feels outdated? I'll modernize it with a fresh design, faster performance, and a better experience for your customers — whether you're in Golden, Arvada, or anywhere along the Front Range.",
+    color: 'magenta',
+  },
+  {
+    icon: '04',
+    title: 'Ongoing Support',
+    description:
+      'Updates, tweaks, and maintenance so your site stays current. A local developer you can reach out to whenever something comes up.',
+    color: 'purple',
+  },
+];
+
+const whyPoints = [
+  {
+    title: '14+ years of experience',
+    description:
+      'Building for the web since 2012 — from startups to enterprise. Your site benefits from battle-tested engineering practices.',
+  },
+  {
+    title: 'Local to Denver & Lakewood',
+    description:
+      'Available for in-person meetings across the Front Range. I understand the local market and what Colorado businesses need.',
+  },
+  {
+    title: 'One developer, no middlemen',
+    description:
+      "You work directly with the person writing your code. No account managers, no handoffs — just clear communication and fast turnaround.",
+  },
+  {
+    title: 'Modern tech, fast sites',
+    description:
+      'Built with the latest tools for speed, security, and search engine visibility. Your site loads fast and ranks well.',
+  },
+];
+
+const steps = [
+  {
+    number: '01',
+    title: 'Chat',
+    description:
+      "We'll meet — in person or over a call — to talk about your business, what you need, and what success looks like.",
+  },
+  {
+    number: '02',
+    title: 'Build',
+    description:
+      "I'll design and develop your site, checking in along the way so the result is exactly what you envisioned.",
+  },
+  {
+    number: '03',
+    title: 'Launch',
+    description:
+      "Your new site goes live. I'll make sure everything runs smoothly and you know how to manage it going forward.",
+  },
+];
+
+const faqs = [
+  {
+    question: 'How much does a website cost for a small business in Denver?',
+    answer:
+      "Every project is different, but most small business websites I build fall in the $2,000–$8,000 range depending on scope and complexity. Landing pages start lower, and larger sites with custom features cost more. I'll give you a clear estimate after our initial conversation — no surprises.",
+  },
+  {
+    question: 'How long does it take to build a website?',
+    answer:
+      'Most projects take 3–6 weeks from kickoff to launch. A simple landing page can be done in 1–2 weeks. More complex sites with custom features may take longer. I keep you updated throughout the process.',
+  },
+  {
+    question: 'Do you work with businesses outside Denver and Lakewood?',
+    answer:
+      "Absolutely. While I'm based in the Denver–Lakewood area and love meeting local clients in person, I work with businesses across the entire Front Range — Golden, Arvada, Wheat Ridge, Englewood, Aurora, Centennial, Highlands Ranch, Westminster, Broomfield, Thornton, Boulder, and beyond. Remote projects work great too.",
+  },
+  {
+    question: 'Will my website work well on mobile?',
+    answer:
+      'Yes — every site I build is mobile-first. Over 60% of web traffic comes from phones, so your site will look great and load fast on every screen size. I test on real devices, not just desktop previews.',
+  },
+  {
+    question: 'Can you help my business rank on Google?',
+    answer:
+      "SEO fundamentals are built into every site I create — proper heading structure, meta tags, fast load times, mobile optimization, and structured data. For local businesses, I also set up Google Business Profile integration and local schema markup to help you appear in local search results and map packs.",
+  },
+];
+
+const jsonLdService = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'ProfessionalService',
+  name: 'Bill Bergquist — Web Development Services',
+  description:
+    'Professional web design and development services for small businesses in Denver, Lakewood, and the Colorado Front Range.',
+  url: 'https://billbergquist.dev/services',
+  telephone: '',
+  email: 'services@billbergquist.dev',
+  areaServed: [
+    { '@type': 'City', name: 'Denver', containedInPlace: { '@type': 'State', name: 'Colorado' } },
+    { '@type': 'City', name: 'Lakewood', containedInPlace: { '@type': 'State', name: 'Colorado' } },
+    { '@type': 'City', name: 'Golden', containedInPlace: { '@type': 'State', name: 'Colorado' } },
+    { '@type': 'City', name: 'Arvada', containedInPlace: { '@type': 'State', name: 'Colorado' } },
+    { '@type': 'City', name: 'Wheat Ridge', containedInPlace: { '@type': 'State', name: 'Colorado' } },
+    { '@type': 'City', name: 'Littleton', containedInPlace: { '@type': 'State', name: 'Colorado' } },
+    { '@type': 'City', name: 'Englewood', containedInPlace: { '@type': 'State', name: 'Colorado' } },
+    { '@type': 'City', name: 'Aurora', containedInPlace: { '@type': 'State', name: 'Colorado' } },
+    { '@type': 'City', name: 'Centennial', containedInPlace: { '@type': 'State', name: 'Colorado' } },
+    { '@type': 'City', name: 'Highlands Ranch', containedInPlace: { '@type': 'State', name: 'Colorado' } },
+    { '@type': 'City', name: 'Westminster', containedInPlace: { '@type': 'State', name: 'Colorado' } },
+    { '@type': 'City', name: 'Broomfield', containedInPlace: { '@type': 'State', name: 'Colorado' } },
+    { '@type': 'City', name: 'Thornton', containedInPlace: { '@type': 'State', name: 'Colorado' } },
+    { '@type': 'City', name: 'Boulder', containedInPlace: { '@type': 'State', name: 'Colorado' } },
+    { '@type': 'City', name: 'Parker', containedInPlace: { '@type': 'State', name: 'Colorado' } },
+    { '@type': 'City', name: 'Castle Rock', containedInPlace: { '@type': 'State', name: 'Colorado' } },
+    { '@type': 'City', name: 'Edgewater', containedInPlace: { '@type': 'State', name: 'Colorado' } },
+    { '@type': 'City', name: 'Commerce City', containedInPlace: { '@type': 'State', name: 'Colorado' } },
+  ],
+  provider: {
+    '@type': 'Person',
+    name: 'Bill Bergquist',
+    jobTitle: 'Staff Software Engineer',
+    url: 'https://billbergquist.dev',
+  },
+  serviceType: ['Web Design', 'Web Development', 'Website Redesign', 'Landing Page Design'],
+  priceRange: '$$',
+  hasOfferCatalog: {
+    '@type': 'OfferCatalog',
+    name: 'Web Development Services',
+    itemListElement: [
+      {
+        '@type': 'Offer',
+        itemOffered: {
+          '@type': 'Service',
+          name: 'Business Websites',
+          description:
+            'Professional websites for small businesses in Denver and the Colorado Front Range. Fast, mobile-friendly, and built to convert.',
+        },
+      },
+      {
+        '@type': 'Offer',
+        itemOffered: {
+          '@type': 'Service',
+          name: 'Landing Pages',
+          description:
+            'Focused, single-page sites designed to drive bookings, signups, or sales for Colorado businesses.',
+        },
+      },
+      {
+        '@type': 'Offer',
+        itemOffered: {
+          '@type': 'Service',
+          name: 'Website Redesign',
+          description:
+            'Modernize your outdated website with a fresh design, faster performance, and better user experience.',
+        },
+      },
+      {
+        '@type': 'Offer',
+        itemOffered: {
+          '@type': 'Service',
+          name: 'Ongoing Support & Maintenance',
+          description:
+            'Website updates, tweaks, and maintenance from a local developer you can reach out to anytime.',
+        },
+      },
+    ],
+  },
+});
+
+const jsonLdFaq = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: faq.answer,
+    },
+  })),
+});
+---
+
+<Layout
+  title="Web Design Services in Denver & Lakewood, CO — Bill Bergquist"
+  description="Web design and development for small businesses in Denver, Lakewood, and the Colorado Front Range. Built by a local staff engineer with 14+ years of experience."
+  canonical="/services"
+  jsonLd={[jsonLdService, jsonLdFaq]}
+  geoRegion="US-CO"
+  geoPlacename="Denver, CO"
+>
+  <div class={styles.page}>
+    <header class={styles.header}>
+      <GlowText as="h1" size="large" color="mint" animated class={styles.title}>
+        WEB DESIGN & DEVELOPMENT IN DENVER
+      </GlowText>
+      <p class={styles.subtitle}>Denver &middot; Lakewood &middot; Front Range &middot; Colorado</p>
+      <p class={styles.intro}>
+        I'm a staff software engineer with over 14 years of experience building for the web. I help
+        small businesses across Denver, Lakewood, and the Colorado Front Range get online with fast,
+        modern websites that look great and actually work.
+      </p>
+      <div class="accent-line-orange"></div>
+    </header>
+
+    <section class={`${styles.services} scroll-reveal`}>
+      <GlowText as="h2" size="medium" color="orange" class={styles.sectionTitle}>
+        WHAT I OFFER
+      </GlowText>
+      <div class={styles.serviceGrid}>
+        {
+          services.map((service) => (
+            <div class="scroll-reveal-child">
+              <Card class={styles.serviceCard}>
+                <span class={`${styles.serviceIcon} neon-text-${service.color}`}>
+                  {service.icon}
+                </span>
+                <h3 class={`${styles.serviceTitle} neon-text-${service.color}`}>
+                  {service.title}
+                </h3>
+                <p class={styles.serviceDescription}>{service.description}</p>
+              </Card>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <SectionDivider color="mint" />
+
+    <section class={`${styles.whySection} scroll-reveal`}>
+      <GlowText as="h2" size="medium" color="purple" class={styles.sectionTitle}>
+        WHY WORK WITH A LOCAL DEVELOPER
+      </GlowText>
+      <div class={styles.whyGrid}>
+        {
+          whyPoints.map((point) => (
+            <div class={`${styles.whyItem} scroll-reveal-child`}>
+              <h3 class={styles.whyTitle}>{point.title}</h3>
+              <p class={styles.whyDescription}>{point.description}</p>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <SectionDivider color="orange" />
+
+    <section class={`${styles.process} scroll-reveal`}>
+      <GlowText as="h2" size="medium" color="magenta" class={styles.sectionTitle}>
+        HOW IT WORKS
+      </GlowText>
+      <div class={styles.steps}>
+        {
+          steps.map((step, i) => (
+            <div class={`${styles.step} scroll-reveal-child`}>
+              <div class={styles.stepConnector}>
+                <span class={styles.stepNumber}>{step.number}</span>
+                {i < steps.length - 1 && <div class={styles.stepLine} />}
+              </div>
+              <div class={styles.stepContent}>
+                <h3 class={styles.stepTitle}>{step.title}</h3>
+                <p class={styles.stepDescription}>{step.description}</p>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <SectionDivider color="purple" />
+
+    <section class={`${styles.faq} scroll-reveal`}>
+      <GlowText as="h2" size="medium" color="orange" class={styles.sectionTitle}>
+        FREQUENTLY ASKED QUESTIONS
+      </GlowText>
+      <div class={styles.faqList}>
+        {
+          faqs.map((faq) => (
+            <div class={`${styles.faqItem} scroll-reveal-child`}>
+              <h3 class={styles.faqQuestion}>{faq.question}</h3>
+              <p class={styles.faqAnswer}>{faq.answer}</p>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <SectionDivider color="mint" />
+
+    <section class={`${styles.contact} scroll-reveal`}>
+      <GlowText as="h2" size="medium" color="mint" class={styles.sectionTitle}>
+        GET IN TOUCH
+      </GlowText>
+      <p class={styles.contactIntro}>
+        Have a project in mind? Whether you're a Denver coffee shop, a Lakewood boutique, an Arvada
+        restaurant, or any Front Range business looking for a website — I'd love to hear about it.
+      </p>
+
+      <ContactForm client:visible />
+
+      <div class={styles.emailAlt}>
+        <p>
+          Prefer email?{' '}
+          <a href="mailto:services@billbergquist.dev" class={styles.emailLink}>
+            services@billbergquist.dev
+          </a>
+        </p>
+      </div>
+    </section>
+  </div>
+</Layout>
