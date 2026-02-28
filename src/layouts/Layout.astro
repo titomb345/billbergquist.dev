@@ -12,11 +12,12 @@ interface Props {
   jsonLd?: string[];
   geoRegion?: string;
   geoPlacename?: string;
+  ogImage?: string;
 }
 
-const { title, description, canonical, noindex = false, jsonLd = [], geoRegion, geoPlacename } = Astro.props;
+const { title, description, canonical, noindex = false, jsonLd = [], geoRegion, geoPlacename, ogImage } = Astro.props;
 const BASE_URL = 'https://billbergquist.dev';
-const OG_IMAGE = `${BASE_URL}/og-image.png`;
+const OG_IMAGE = ogImage ? `${BASE_URL}${ogImage}` : `${BASE_URL}/og-image.png`;
 const url = canonical ? `${BASE_URL}${canonical}` : BASE_URL;
 
 const breadcrumbNames: Record<string, string> = {
