@@ -9,6 +9,17 @@
   margin-bottom: var(--space-xl);
 }
 
+.headshot {
+  display: block;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--neon-mint);
+  box-shadow: 0 0 20px var(--neon-mint-glow), 0 0 40px rgba(0, 212, 170, 0.15);
+  margin: 0 auto var(--space-lg);
+}
+
 .title {
   margin-bottom: var(--space-lg);
 }

@@ -11,28 +11,28 @@ const services = [
     icon: '01',
     title: 'Business Websites',
     description:
-      'A professional website that puts your Denver, Lakewood, or Front Range business on the map. Fast, mobile-friendly, and built to convert visitors into customers.',
+      'A professional site that gets your Denver or Lakewood business found online. Fast on every device, easy to navigate, and designed to turn visitors into customers.',
     color: 'mint',
   },
   {
     icon: '02',
     title: 'Landing Pages',
     description:
-      "Focused, single-page sites designed to drive a specific action — whether it's bookings, signups, or sales for your Colorado business.",
+      'Single-page sites built around one goal: getting people to book, sign up, or buy. Great for promotions, new services, or testing an idea.',
     color: 'orange',
   },
   {
     icon: '03',
     title: 'Website Redesign',
     description:
-      "Already have a site that feels outdated? I'll modernize it with a fresh design, faster performance, and a better experience for your customers — whether you're in Golden, Arvada, or anywhere along the Front Range.",
+      "If your current site looks like it's from 2015, I can help. I'll rebuild it with a modern design, better performance, and a layout that actually works for your customers.",
     color: 'magenta',
   },
   {
     icon: '04',
     title: 'Ongoing Support',
     description:
-      'Updates, tweaks, and maintenance so your site stays current. A local developer you can reach out to whenever something comes up.',
+      'Need something updated? Have a question about your site? I stick around after launch. You get a real person to call, not a support ticket.',
     color: 'purple',
   },
 ];
@@ -41,22 +41,22 @@ const whyPoints = [
   {
     title: '14+ years of experience',
     description:
-      'Building for the web since 2012 — from startups to enterprise. Your site benefits from battle-tested engineering practices.',
+      "I've been building websites since 2012, for startups and large companies alike. That experience shows up in the details of your site.",
   },
   {
     title: 'Local to Denver & Lakewood',
     description:
-      'Available for in-person meetings across the Front Range. I understand the local market and what Colorado businesses need.',
+      "I live in the area and I'm happy to meet in person. I know the Front Range market and what local businesses are looking for.",
   },
   {
     title: 'One developer, no middlemen',
     description:
-      "You work directly with the person writing your code. No account managers, no handoffs — just clear communication and fast turnaround.",
+      "You talk directly to the person building your site. No project managers, no game of telephone. Just straightforward communication.",
   },
   {
     title: 'Modern tech, fast sites',
     description:
-      'Built with the latest tools for speed, security, and search engine visibility. Your site loads fast and ranks well.',
+      'I use current tools and frameworks so your site loads quickly, works on every device, and shows up in search results.',
   },
 ];
 
@@ -65,19 +65,19 @@ const steps = [
     number: '01',
     title: 'Chat',
     description:
-      "We'll meet — in person or over a call — to talk about your business, what you need, and what success looks like.",
+      "We grab coffee or hop on a call. I'll ask about your business, what you need, and what a good outcome looks like for you.",
   },
   {
     number: '02',
     title: 'Build',
     description:
-      "I'll design and develop your site, checking in along the way so the result is exactly what you envisioned.",
+      "I design and build your site, and check in with you along the way. No big reveal at the end where it's nothing like what you wanted.",
   },
   {
     number: '03',
     title: 'Launch',
     description:
-      "Your new site goes live. I'll make sure everything runs smoothly and you know how to manage it going forward.",
+      "Your site goes live. I make sure everything's working and walk you through how to keep it updated.",
   },
 ];
 
@@ -85,27 +85,27 @@ const faqs = [
   {
     question: 'How much does a website cost for a small business in Denver?',
     answer:
-      "Every project is different, but most small business websites I build fall in the $2,000–$8,000 range depending on scope and complexity. Landing pages start lower, and larger sites with custom features cost more. I'll give you a clear estimate after our initial conversation — no surprises.",
+      "It depends on the project, but most small business sites I build land between $2,000 and $8,000. Landing pages are on the lower end, and bigger sites with custom features cost more. I'll give you a straightforward estimate after we talk. No hidden fees.",
   },
   {
     question: 'How long does it take to build a website?',
     answer:
-      'Most projects take 3–6 weeks from kickoff to launch. A simple landing page can be done in 1–2 weeks. More complex sites with custom features may take longer. I keep you updated throughout the process.',
+      'Usually 3 to 6 weeks from start to launch. A simple landing page might only take a week or two. Larger projects can take longer, but I keep you in the loop the whole time.',
   },
   {
     question: 'Do you work with businesses outside Denver and Lakewood?',
     answer:
-      "Absolutely. While I'm based in the Denver–Lakewood area and love meeting local clients in person, I work with businesses across the entire Front Range — Golden, Arvada, Wheat Ridge, Englewood, Aurora, Centennial, Highlands Ranch, Westminster, Broomfield, Thornton, Boulder, and beyond. Remote projects work great too.",
+      "For sure. I'm based in the Denver/Lakewood area, but I work with businesses all over the Front Range: Golden, Arvada, Wheat Ridge, Englewood, Aurora, Centennial, Highlands Ranch, Westminster, Broomfield, Thornton, Boulder, and beyond. Remote works great too.",
   },
   {
     question: 'Will my website work well on mobile?',
     answer:
-      'Yes — every site I build is mobile-first. Over 60% of web traffic comes from phones, so your site will look great and load fast on every screen size. I test on real devices, not just desktop previews.',
+      "Yes. I build mobile-first, meaning the phone experience comes first, not as an afterthought. Over 60% of web traffic comes from phones, so your site needs to look good and load fast on smaller screens. I test on real devices.",
   },
   {
     question: 'Can you help my business rank on Google?',
     answer:
-      "SEO fundamentals are built into every site I create — proper heading structure, meta tags, fast load times, mobile optimization, and structured data. For local businesses, I also set up Google Business Profile integration and local schema markup to help you appear in local search results and map packs.",
+      "I bake SEO basics into every site: clean heading structure, meta tags, fast load times, mobile optimization, and structured data. For local businesses, I also handle Google Business Profile integration and local schema markup so you can show up in map results.",
   },
 ];
 
@@ -255,6 +255,14 @@ const jsonLdFaq = JSON.stringify({
       <GlowText as="h2" size="medium" color="purple" class={styles.sectionTitle}>
         WHY WORK WITH A LOCAL DEVELOPER
       </GlowText>
+      <img
+        src="/headshot.png"
+        alt="Bill Bergquist — web developer in Denver, CO"
+        width="150"
+        height="150"
+        class={styles.headshot}
+        loading="lazy"
+      />
       <div class={styles.whyGrid}>
         {
           whyPoints.map((point) => (
@@ -316,8 +324,8 @@ const jsonLdFaq = JSON.stringify({
         GET IN TOUCH
       </GlowText>
       <p class={styles.contactIntro}>
-        Have a project in mind? Whether you're a Denver coffee shop, a Lakewood boutique, an Arvada
-        restaurant, or any Front Range business looking for a website — I'd love to hear about it.
+        Have a project in mind? Whether you run a coffee shop in Denver, a boutique in Lakewood, a
+        restaurant in Arvada, or any other Front Range business, I'd love to hear about it.
       </p>
 
       <ContactForm client:visible />

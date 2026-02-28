@@ -374,6 +374,99 @@
   text-shadow: 0 0 8px var(--neon-mint-glow);
 }
 
+/* ── Headshot ── */
+
+.headshot {
+  display: block;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--neon-purple);
+  box-shadow: 0 0 20px var(--neon-purple-glow), 0 0 40px rgba(191, 0, 255, 0.15);
+  margin: 0 auto var(--space-lg);
+}
+
+/* ── Why section ── */
+
+.whySection {
+  padding: var(--space-lg) 0;
+  text-align: center;
+}
+
+.whyGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-lg);
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.whyItem {
+  position: relative;
+  padding-left: var(--space-md);
+  border-left: 2px solid var(--neon-purple);
+}
+
+.whyTitle {
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--neon-purple);
+  margin: 0 0 var(--space-xs);
+  letter-spacing: 0.5px;
+}
+
+.whyDescription {
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/* ── FAQ section ── */
+
+.faq {
+  padding: var(--space-lg) 0;
+}
+
+.faqList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.faqItem {
+  padding: var(--space-md) var(--space-lg);
+  background: var(--bg-surface);
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255, 149, 0, 0.15);
+  transition: var(--transition-normal);
+}
+
+.faqItem:hover {
+  border-color: rgba(255, 149, 0, 0.35);
+  box-shadow: 0 0 15px rgba(255, 149, 0, 0.08);
+}
+
+.faqQuestion {
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--neon-orange);
+  margin: 0 0 var(--space-sm);
+  line-height: 1.4;
+}
+
+.faqAnswer {
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
 /* ── Responsive ── */
 
 @media (max-width: 768px) {
@@ -386,6 +479,10 @@
   }
 
   .serviceGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .whyGrid {
     grid-template-columns: 1fr;
   }
 }
