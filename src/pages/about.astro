@@ -1,0 +1,83 @@
+---
+import Layout from '../layouts/Layout.astro';
+import GlowText from '../components/ui/GlowText.astro';
+import SectionDivider from '../components/ui/SectionDivider.astro';
+import ExperienceTimeline from '../components/about/ExperienceTimeline.astro';
+import SkillsSection from '../components/about/SkillsSection.astro';
+import styles from './AboutPage.module.css';
+
+const jsonLdPerson = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Bill Bergquist',
+  jobTitle: 'Staff Software Engineer',
+  url: 'https://billbergquist.dev',
+  sameAs: [
+    'https://github.com/titomb345',
+    'https://www.linkedin.com/in/bill-bergquist/',
+  ],
+  worksFor: {
+    '@type': 'Organization',
+    name: 'Kasa',
+  },
+  alumniOf: {
+    '@type': 'CollegeOrUniversity',
+    name: 'Purdue University',
+  },
+  knowsAbout: [
+    'React',
+    'TypeScript',
+    'Node.js',
+    'Frontend Architecture',
+    'Web Development',
+    'Astro',
+  ],
+});
+---
+
+<Layout
+  title="About — Bill Bergquist"
+  description="14+ years of full-stack experience. Currently Staff Engineer at Kasa, building React applications and leading frontend architecture."
+  canonical="/about"
+  jsonLd={[jsonLdPerson]}
+>
+  <div class={styles.page}>
+    <header class={styles.header}>
+      <GlowText size="large" color="mint" animated class={styles.title}>ABOUT ME</GlowText>
+      <p class={styles.summary}>
+        I'm a Staff Software Engineer with over 14 years of experience building web applications.
+        While my roots are in frontend technologies, I've been diving deeper into full stack
+        development, working across the entire stack to build internal tooling and developer
+        experiences that help teams ship faster and more confidently.
+      </p>
+      <p class={styles.summary}>
+        Currently at Kasa, I lead frontend architecture initiatives and build tools that accelerate
+        development across the organization. I'm passionate about clean code, great user experiences,
+        and helping other engineers grow.
+      </p>
+      <p class={styles.aiHighlight}>
+        I embrace AI as a force multiplier in my workflow. Using Claude Code, I leverage agentic
+        workflows and prompt engineering to accelerate development, automate repetitive tasks, and
+        explore solutions faster than ever before.
+      </p>
+    </header>
+
+    <main class={styles.content}>
+      <ExperienceTimeline />
+      <SectionDivider color="mint" />
+      <SkillsSection />
+      <SectionDivider color="purple" />
+
+      <section class={styles.education}>
+        <GlowText as="h2" size="medium" color="purple" class={styles.sectionTitle}>
+          EDUCATION
+        </GlowText>
+        <div class={styles.educationCard}>
+          <h3 class={styles.school}>Purdue University</h3>
+          <p class={styles.degree}>BS Computer Engineering</p>
+          <p class={styles.years}>2006 - 2010</p>
+        </div>
+      </section>
+    </main>
+  </div>
+</Layout>
