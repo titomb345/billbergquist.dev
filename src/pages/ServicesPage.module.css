@@ -4,11 +4,6 @@
   padding: var(--space-xl) var(--space-lg);
 }
 
-/* Soften GlowText headings on services page */
-.page :global([class*="glowText"]) {
-  text-shadow: 0 0 10px currentColor;
-}
-
 /* Soften card hover glow on services page */
 .page :global(.card):hover {
   box-shadow:
