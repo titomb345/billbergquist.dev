@@ -52,6 +52,12 @@
   opacity: 0.6;
 }
 
+.screenshot {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
 .browserContent {
   padding: 16px;
   background: var(--bg-surface);
