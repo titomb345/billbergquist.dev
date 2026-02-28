@@ -1,0 +1,25 @@
+# Bill Bergquist — Software Engineer & Web Developer
+
+## About
+Bill Bergquist is a Staff Software Engineer with 14+ years of experience building web applications. Based in the Denver/Lakewood, Colorado area. Currently at Kasa, leading frontend architecture with React, TypeScript, and Node.js.
+
+## Services
+Web design and development for small businesses in Denver, Lakewood, and the Colorado Front Range. Services include business websites, landing pages, website redesigns, and ongoing support.
+
+- Website: https://billbergquist.dev/services
+- Email: services@billbergquist.dev
+
+## Projects
+- CreatiCalc (https://creaticalc.com) — Free calculator suite for content creators
+- Sports Shortcuts (https://sportsshortcuts.com) — Injury alert generator for sports reporters
+- Critter Care (https://critter-care.com) — Pet sitting business website
+
+## Games
+- Minesweeper: Descent (https://billbergquist.dev/arcade/descent) — Roguelike minesweeper browser game
+
+## Links
+- Website: https://billbergquist.dev
+- About: https://billbergquist.dev/about
+- Projects: https://billbergquist.dev/projects
+- Services: https://billbergquist.dev/services
+- Arcade: https://billbergquist.dev/arcade
