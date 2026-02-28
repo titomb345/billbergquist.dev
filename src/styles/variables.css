@@ -44,9 +44,9 @@
   --text-muted: #6a6a7a;
 
   /* Typography */
-  --font-heading: 'Orbitron', 'Orbitron Fallback', sans-serif;
-  --font-body: 'Space Grotesk', 'Space Grotesk Fallback', sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
+  --font-heading: 'Orbitron Variable', sans-serif;
+  --font-body: 'Space Grotesk Variable', sans-serif;
+  --font-mono: 'JetBrains Mono Variable', monospace;
 
   /* Spacing */
   --space-xs: 0.25rem;

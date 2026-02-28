@@ -1,5 +1,5 @@
-import { FloorConfig, PowerUp, PowerUpId, Rarity } from './types';
-import { AscensionLevel, getAscensionModifiers } from './ascension';
+import type { FloorConfig, PowerUp, PowerUpId, Rarity } from './types';
+import { getAscensionModifiers, type AscensionLevel } from './ascension';
 
 // Floor configurations - monotonic density ramp from ~14% to ~26%
 // F1:13.9% F2:16.3% F3:17.2% F4:18.8% F5:19.8% F6:22.2% F7:23.0% F8:25.0% F9:25.6% F10:26.4%

@@ -1,4 +1,4 @@
-import { useRef, useState, useCallback, useEffect, MutableRefObject } from 'react';
+import { useRef, useState, useCallback, useEffect, type MutableRefObject } from 'react';
 import { useRoguelikeState } from './hooks/useRoguelikeState';
 import { useContainerWidth } from './hooks/useContainerWidth';
 import { useRoguelikeStats } from './hooks/useRoguelikeStats';
@@ -14,7 +14,7 @@ import PauseOverlay from './components/PauseOverlay';
 import GameToast from './components/GameToast';
 import { isFinalFloor, hasPowerUp } from './logic/roguelikeLogic';
 import { GamePhase } from './types';
-import { AscensionLevel } from './ascension';
+import type { AscensionLevel } from './ascension';
 import { computeMineDensityForFloor } from './constants';
 import './styles.css';
 

@@ -1,5 +1,5 @@
 import { useEffect, useCallback, useState, useRef } from 'react';
-import { PowerUp } from '../types';
+import type { PowerUp } from '../types';
 
 interface RelicsPopoverProps {
   relics: PowerUp[];

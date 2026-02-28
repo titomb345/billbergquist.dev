@@ -1,4 +1,4 @@
-import { Cell, CellState, DifficultyConfig, FloorConfig } from '../types';
+import { CellState, type Cell, type DifficultyConfig, type FloorConfig } from '../types';
 
 export function createEmptyBoard(config: DifficultyConfig): Cell[][] {
   const board: Cell[][] = [];

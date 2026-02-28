@@ -27,5 +27,7 @@ yarn-error.log*
 # PHPStorm IDE folder
 .idea/
 
-.claude/settings.local.json
-nul
+.claude/
+
+# Astro
+.astro/

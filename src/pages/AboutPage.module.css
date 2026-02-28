@@ -9,6 +9,17 @@
   margin-bottom: var(--space-xl);
 }
 
+.headshot {
+  display: block;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--neon-mint);
+  box-shadow: 0 0 20px var(--neon-mint-glow), 0 0 40px rgba(0, 212, 170, 0.15);
+  margin: 0 auto var(--space-lg);
+}
+
 .title {
   margin-bottom: var(--space-lg);
 }
@@ -76,6 +87,65 @@
   font-size: 0.875rem;
   color: var(--text-muted);
   margin: 0;
+}
+
+.approach {
+  padding: var(--space-lg) 0;
+  text-align: center;
+}
+
+.approachText {
+  font-size: 1rem;
+  line-height: 1.8;
+  color: var(--text-secondary);
+  max-width: 700px;
+  margin: 0 auto var(--space-md);
+}
+
+.approachText a {
+  color: var(--neon-mint);
+  text-decoration: none;
+}
+
+.approachText a:hover {
+  text-decoration: underline;
+}
+
+.servicesCta {
+  text-align: center;
+  margin-top: var(--space-lg);
+  padding: var(--space-lg);
+  background: var(--bg-surface);
+  border: 1px solid rgba(0, 212, 170, 0.15);
+  border-radius: var(--radius-md);
+}
+
+.servicesCtaText {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  max-width: 550px;
+  margin: 0 auto var(--space-md);
+}
+
+.servicesCtaLink {
+  display: inline-block;
+  font-family: var(--font-heading);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--neon-mint);
+  text-decoration: none;
+  border: 2px solid var(--neon-mint);
+  border-radius: var(--radius-sm);
+  padding: var(--space-sm) var(--space-lg);
+  transition: var(--transition-fast);
+}
+
+.servicesCtaLink:hover {
+  background-color: var(--neon-mint);
+  color: var(--bg-void);
 }
 
 @media (max-width: 768px) {

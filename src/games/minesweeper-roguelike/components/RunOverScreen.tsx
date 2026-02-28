@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { PowerUp, RoguelikeStats } from '../types';
+import type { PowerUp, RoguelikeStats } from '../types';
 import { MAX_FLOOR } from '../constants';
 import RelicsPopover from './RelicsPopover';
-import { AscensionLevel, ASCENSION_INFO, MAX_ASCENSION } from '../ascension';
+import { ASCENSION_INFO, MAX_ASCENSION, type AscensionLevel } from '../ascension';
 
 interface RunOverScreenProps {
   isVictory: boolean;

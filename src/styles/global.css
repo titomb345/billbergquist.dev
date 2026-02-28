@@ -1,3 +1,6 @@
+@import '@fontsource-variable/orbitron';
+@import '@fontsource-variable/space-grotesk';
+@import '@fontsource-variable/jetbrains-mono';
 @import './variables.css';
 @import './reset.css';
 @import './animations.css';

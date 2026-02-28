@@ -1,4 +1,4 @@
-import { GameStatus } from '../../types';
+import type { GameStatus } from '../../types';
 
 interface SmileyIconProps {
   status: GameStatus;

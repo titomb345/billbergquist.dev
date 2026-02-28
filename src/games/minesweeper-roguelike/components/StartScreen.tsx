@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { RoguelikeStats } from '../types';
+import type { RoguelikeStats } from '../types';
 import { MAX_FLOOR } from '../constants';
-import { AscensionLevel, ASCENSION_INFO, MAX_ASCENSION } from '../ascension';
+import { ASCENSION_INFO, MAX_ASCENSION, type AscensionLevel } from '../ascension';
 
 interface StartScreenProps {
   stats: RoguelikeStats;

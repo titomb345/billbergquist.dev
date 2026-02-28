@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
-import { RunState, PowerUp } from '../types';
-import { MAX_FLOOR, MineDensityInfo } from '../constants';
+import type { RunState, PowerUp } from '../types';
+import { MAX_FLOOR, type MineDensityInfo } from '../constants';
 
 interface RoguelikeHeaderProps {
   floor: number;

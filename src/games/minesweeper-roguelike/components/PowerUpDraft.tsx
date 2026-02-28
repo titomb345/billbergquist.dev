@@ -1,4 +1,4 @@
-import { PowerUp } from '../types';
+import type { PowerUp } from '../types';
 import { RARITY_COLORS } from '../constants';
 
 interface PowerUpDraftProps {

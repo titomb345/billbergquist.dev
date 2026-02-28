@@ -23,10 +23,34 @@
   margin: 0 auto;
 }
 
+.sectionTitle {
+  text-align: center;
+  margin-bottom: var(--space-lg);
+}
+
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: var(--space-lg);
+}
+
+.grid :global(.scroll-reveal-child) {
+  height: 100%;
+}
+
+/* ── Approach section ── */
+
+.approach {
+  max-width: 700px;
+  margin: var(--space-xl) auto 0;
+  text-align: center;
+}
+
+.approachText {
+  font-size: 0.9375rem;
+  line-height: 1.8;
+  color: var(--text-secondary);
+  margin: 0 0 var(--space-md);
 }
 
 /* ── Services CTA ── */
@@ -51,8 +75,10 @@
 
 .ctaSubtext {
   font-size: 0.9375rem;
+  line-height: 1.7;
   color: var(--text-secondary);
-  margin: 0 0 var(--space-md);
+  max-width: 550px;
+  margin: 0 auto var(--space-md);
 }
 
 .ctaLink {
