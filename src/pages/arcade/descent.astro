@@ -1,0 +1,44 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import MinesweeperRoguelikePage from '../../games/minesweeper-roguelike/MinesweeperRoguelikePage';
+
+const jsonLdGame = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'VideoGame',
+  name: 'Minesweeper: Descent',
+  description: 'A roguelike twist on classic minesweeper. Descend 10 floors of escalating danger, collect power-ups, and try to survive.',
+  genre: ['Puzzle', 'Roguelike'],
+  gamePlatform: 'Web Browser',
+  applicationCategory: 'Game',
+  author: {
+    '@type': 'Person',
+    name: 'Bill Bergquist',
+    url: 'https://billbergquist.dev',
+  },
+  url: 'https://billbergquist.dev/arcade/descent',
+  offers: {
+    '@type': 'Offer',
+    price: '0',
+    priceCurrency: 'USD',
+  },
+});
+---
+
+<Layout
+  title="Minesweeper: Descent — Bill Bergquist"
+  description="Roguelike minesweeper game. Descend 10 floors of escalating danger, collect power-ups, and survive. Free to play in your browser."
+  canonical="/arcade/descent"
+  jsonLd={[jsonLdGame]}
+>
+  <div style="text-align: center; padding: 2rem 1rem;">
+    <h1 style="font-family: var(--font-heading); font-size: 2rem; color: var(--neon-magenta); margin-bottom: 1rem;">
+      Minesweeper: Descent
+    </h1>
+    <p style="color: var(--text-secondary); max-width: 500px; margin: 0 auto 1.5rem; line-height: 1.6;">
+      A roguelike twist on classic minesweeper. Descend 10 floors of escalating danger, draft
+      power-ups between levels, and try to survive. 19 unique power-ups, persistent stats, and
+      a new board every run. Free to play in your browser.
+    </p>
+  </div>
+  <MinesweeperRoguelikePage client:only="react" />
+</Layout>
