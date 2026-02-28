@@ -1,0 +1,243 @@
+---
+import ScrollProgress from '../components/layout/ScrollProgress';
+import Navbar from '../components/layout/Navbar.astro';
+import Footer from '../components/layout/Footer.astro';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+  canonical?: string;
+  noindex?: boolean;
+  jsonLd?: string[];
+  geoRegion?: string;
+  geoPlacename?: string;
+}
+
+const { title, description, canonical, noindex = false, jsonLd = [], geoRegion, geoPlacename } = Astro.props;
+const BASE_URL = 'https://billbergquist.dev';
+const OG_IMAGE = `${BASE_URL}/og-image.png`;
+const url = canonical ? `${BASE_URL}${canonical}` : BASE_URL;
+
+const breadcrumbNames: Record<string, string> = {
+  about: 'About',
+  projects: 'Projects',
+  services: 'Services',
+  arcade: 'Arcade',
+  descent: 'Minesweeper: Descent',
+};
+
+function buildBreadcrumbs(path?: string) {
+  const items: { name: string; url: string }[] = [{ name: 'Home', url: BASE_URL }];
+  if (path && path !== '/') {
+    const segments = path.replace(/^\//, '').split('/');
+    let accumulated = '';
+    for (const seg of segments) {
+      accumulated += `/${seg}`;
+      items.push({ name: breadcrumbNames[seg] || seg, url: `${BASE_URL}${accumulated}` });
+    }
+  }
+  return items;
+}
+
+const breadcrumbs = buildBreadcrumbs(canonical);
+const breadcrumbLd = breadcrumbs.length > 1 ? JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: breadcrumbs.map((item, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: item.name,
+    item: item.url,
+  })),
+}) : null;
+
+const allJsonLd = breadcrumbLd ? [...jsonLd, breadcrumbLd] : jsonLd;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0d0d14" />
+    <meta name="author" content="Bill Bergquist" />
+    <meta name="description" content={description} />
+    <title>{title}</title>
+
+    <!-- Open Graph -->
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Bill Bergquist" />
+    <meta property="og:image" content={OG_IMAGE} />
+    <meta property="og:url" content={url} />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={OG_IMAGE} />
+
+    <link rel="canonical" href={url} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    {geoRegion && <meta name="geo.region" content={geoRegion} />}
+    {geoPlacename && <meta name="geo.placename" content={geoPlacename} />}
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Orbitron:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=fallback"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Orbitron:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=fallback"
+      rel="stylesheet"
+    />
+
+    {
+      allJsonLd.map((ld) => (
+        <script type="application/ld+json" set:html={ld} />
+      ))
+    }
+
+    <slot name="head" />
+  </head>
+  <body>
+    <div class="layout">
+      <ScrollProgress client:load />
+
+      <!-- SVG noise texture -->
+      <svg class="noise" aria-hidden="true">
+        <filter id="noiseFilter">
+          <feTurbulence
+            type="fractalNoise"
+            baseFrequency="0.9"
+            numOctaves="4"
+            stitchTiles="stitch"></feTurbulence>
+        </filter>
+        <rect width="100%" height="100%" filter="url(#noiseFilter)"></rect>
+      </svg>
+
+      <!-- Atmospheric gradient orbs -->
+      <div class="atmosphereOrb orbOrange" aria-hidden="true"></div>
+      <div class="atmosphereOrb orbMagenta" aria-hidden="true"></div>
+
+      <Navbar />
+      <main class="main">
+        <slot />
+      </main>
+      <Footer />
+    </div>
+
+    <script src="../scripts/scroll-reveal.ts"></script>
+
+    <style>
+      .layout {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        background-color: var(--bg-primary);
+        position: relative;
+        overflow-x: hidden;
+      }
+
+      /* Grid background */
+      .layout::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background:
+          linear-gradient(90deg, transparent 49%, rgba(0, 245, 255, 0.03) 50%, transparent 51%),
+          linear-gradient(0deg, transparent 49%, rgba(0, 245, 255, 0.03) 50%, transparent 51%);
+        background-size: 50px 50px;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      /* Vignette overlay */
+      .layout::after {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: radial-gradient(ellipse at center, transparent 50%, rgba(10, 10, 15, 0.4) 100%);
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      .main {
+        flex: 1;
+        position: relative;
+        z-index: 1;
+      }
+
+      /* Noise texture overlay */
+      .noise {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        pointer-events: none;
+        z-index: 0;
+        opacity: 0.03;
+      }
+
+      /* Gradient mesh orbs */
+      .atmosphereOrb {
+        position: fixed;
+        border-radius: 50%;
+        filter: blur(100px);
+        pointer-events: none;
+        z-index: 0;
+        opacity: 0.06;
+      }
+
+      .orbOrange {
+        width: 500px;
+        height: 500px;
+        top: 10%;
+        right: -10%;
+        background: radial-gradient(circle, var(--neon-orange), transparent 70%);
+      }
+
+      .orbMagenta {
+        width: 400px;
+        height: 400px;
+        bottom: 20%;
+        left: -8%;
+        background: radial-gradient(circle, var(--neon-magenta), transparent 70%);
+      }
+
+      @media (max-width: 768px) {
+        .atmosphereOrb {
+          opacity: 0.04;
+        }
+
+        .orbOrange {
+          width: 300px;
+          height: 300px;
+        }
+
+        .orbMagenta {
+          width: 250px;
+          height: 250px;
+        }
+      }
+    </style>
+  </body>
+</html>
