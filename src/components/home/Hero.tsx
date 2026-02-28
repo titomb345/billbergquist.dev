@@ -1,17 +1,20 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Button from '../ui/Button';
 import styles from './Hero.module.css';
 
 function useTypewriter(text: string, delay: number, startAfter: number) {
-  const prefersReducedMotion = window.matchMedia(
-    '(prefers-reduced-motion: reduce)',
-  ).matches;
-  const [displayed, setDisplayed] = useState(prefersReducedMotion ? text : '');
-  const [done, setDone] = useState(prefersReducedMotion);
+  const [displayed, setDisplayed] = useState('');
+  const [done, setDone] = useState(false);
 
   useEffect(() => {
-    if (prefersReducedMotion) return;
+    const prefersReducedMotion = window.matchMedia(
+      '(prefers-reduced-motion: reduce)',
+    ).matches;
+
+    if (prefersReducedMotion) {
+      setDisplayed(text);
+      setDone(true);
+      return;
+    }
 
     const startTimeout = setTimeout(() => {
       let i = 0;
@@ -26,13 +29,12 @@ function useTypewriter(text: string, delay: number, startAfter: number) {
       return () => clearInterval(interval);
     }, startAfter);
     return () => clearTimeout(startTimeout);
-  }, [text, delay, startAfter, prefersReducedMotion]);
+  }, [text, delay, startAfter]);
 
   return { displayed, done };
 }
 
 function Hero() {
-  const navigate = useNavigate();
   const { displayed: roleText, done: typingDone } = useTypewriter(
     'Staff Software Engineer',
     60,
@@ -46,7 +48,7 @@ function Hero() {
           <span className={styles.hello}>Hello</span>, I'm
         </p>
         <h1 className={styles.name}>
-          <span className={styles.firstName}>Bill</span>
+          <span className={styles.firstName}>Bill</span>{' '}
           <span className={styles.lastName}>Bergquist</span>
         </h1>
         <div className={styles.role}>
@@ -63,13 +65,9 @@ function Hero() {
           Building elegant solutions with modern web technologies
         </p>
         <div className={styles.cta}>
-          <Button
-            variant="accent"
-            size="large"
-            onClick={() => navigate('/projects')}
-          >
+          <a href="/projects" className={styles.ctaButton}>
             View My Work
-          </Button>
+          </a>
         </div>
       </div>
     </section>
