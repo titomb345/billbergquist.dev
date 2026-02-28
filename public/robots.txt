@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://billbergquist.dev/sitemap.xml
+Sitemap: https://billbergquist.dev/sitemap-index.xml
