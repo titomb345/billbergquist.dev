@@ -1,0 +1,128 @@
+---
+import Layout from '../layouts/Layout.astro';
+import GlowText from '../components/ui/GlowText.astro';
+import ProjectCard from '../components/projects/ProjectCard.astro';
+import creaticalcImg from '../assets/screenshots/creaticalc.png';
+import sportsshortcutsImg from '../assets/screenshots/sportsshortcuts.png';
+import crittercareImg from '../assets/screenshots/crittercare.png';
+import styles from './ProjectsPage.module.css';
+
+const projects = [
+  {
+    title: 'CreatiCalc',
+    description:
+      'Free calculator suite built for content creators who need real numbers before pitching brands or planning content. Estimate YouTube ad revenue based on niche and view count, calculate engagement rates across platforms, and find sponsorship pricing for YouTube, Instagram, TikTok, Facebook, and X. Designed for speed with real-time calculations and a mobile-first layout.',
+    techStack: ['Next.js', 'React', 'TypeScript', 'Tailwind CSS'],
+    url: 'https://creaticalc.com',
+    color: 'mint' as const,
+    screenshot: creaticalcImg,
+  },
+  {
+    title: 'Sports Shortcuts',
+    description:
+      'A workflow tool for sports reporters and social media managers who need to publish injury updates fast. Generates standardized NFL and NBA game-day messages with autocomplete player search, team-specific formatting, and one-click copy. Built to save minutes on every alert during live games.',
+    techStack: ['React', 'TypeScript', 'Material UI', 'Vite'],
+    url: 'https://sportsshortcuts.com',
+    color: 'magenta' as const,
+    screenshot: sportsshortcutsImg,
+  },
+  {
+    title: 'Critter Care',
+    description:
+      'A client website for a pet sitting and dog walking business in the South Bay area. Built from scratch with a focus on converting visitors into bookings: service listings with clear pricing, a photo gallery, customer testimonials, and a CMS so the owner can update content without a developer.',
+    techStack: ['Astro', 'Tailwind CSS', 'Decap CMS'],
+    url: 'https://critter-care.com',
+    color: 'purple' as const,
+    screenshot: crittercareImg,
+  },
+];
+
+const jsonLdProjects = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: 'Projects by Bill Bergquist',
+  url: 'https://billbergquist.dev/projects',
+  mainEntity: {
+    '@type': 'ItemList',
+    itemListElement: projects.map((project, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      item: {
+        '@type': 'WebApplication',
+        name: project.title,
+        description: project.description,
+        url: project.url,
+        applicationCategory: 'WebApplication',
+        author: {
+          '@type': 'Person',
+          name: 'Bill Bergquist',
+          url: 'https://billbergquist.dev',
+        },
+      },
+    })),
+  },
+});
+---
+
+<Layout
+  title="Projects — Web Apps by Bill Bergquist"
+  description="Web projects by Bill Bergquist: CreatiCalc, Sports Shortcuts, and Critter Care. Built with React, Astro, TypeScript, and modern web technologies."
+  canonical="/projects"
+  jsonLd={[jsonLdProjects]}
+  ogImage="/og/projects.png"
+>
+  <div class={styles.page}>
+    <header class={styles.header}>
+      <GlowText size="large" color="orange" class={styles.title}>PROJECTS</GlowText>
+      <p class={styles.intro}>
+        A collection of web applications I've designed, built, and shipped. Each project started with
+        a real problem, from content creators needing better analytics tools to sports reporters
+        needing faster workflows to local businesses needing a web presence. Built with React,
+        Next.js, Astro, TypeScript, and other modern technologies.
+      </p>
+      <div class="accent-line-orange"></div>
+    </header>
+
+    <section>
+      <GlowText as="h2" size="small" color="mint" class={styles.sectionTitle}>
+        WEB APPLICATIONS
+      </GlowText>
+      <div class={`${styles.grid} scroll-reveal`}>
+        {projects.map((project) => (
+          <div class="scroll-reveal-child">
+            <ProjectCard {...project} />
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <section class={`${styles.approach} scroll-reveal`}>
+      <GlowText as="h2" size="small" color="purple" class={styles.sectionTitle}>
+        HOW I BUILD
+      </GlowText>
+      <p class={styles.approachText}>
+        Every project starts with a conversation about the actual problem, not a feature list. I focus on
+        understanding who will use the product, what they need to accomplish, and what success looks like.
+        From there, I choose the right tools for the job. Sometimes that's a full React application with
+        server-side rendering. Sometimes it's a lightweight Astro site with a CMS. The common thread is
+        clean code, fast load times, mobile-first design, and a deployment pipeline that makes updates painless.
+      </p>
+      <p class={styles.approachText}>
+        I bring the same engineering standards from my enterprise work at Kasa to every client project.
+        That means structured data for search engines, accessibility best practices, performance budgets,
+        and code that's maintainable long after launch. I write about the thinking behind these decisions
+        on <a href="/blog">my blog</a>.
+      </p>
+    </section>
+
+    <section class={styles.cta}>
+      <p class={styles.ctaText}>Need a website for your business?</p>
+      <p class={styles.ctaSubtext}>
+        I build custom websites for small businesses in Denver, Lakewood, and the Colorado Front Range.
+        From restaurants and retail shops to professional services and local startups, every site is
+        built from scratch, optimized for search, and designed to convert visitors into customers.
+      </p>
+      <a href="/services" class={styles.ctaLink}>View Services &rarr;</a>
+    </section>
+  </div>
+</Layout>

@@ -1,12 +1,12 @@
 import { useReducer, useEffect, useCallback } from 'react';
 import {
-  RoguelikeGameState,
-  RoguelikeAction,
-  PowerUp,
   GamePhase,
-  RunState,
-  Cell,
   CellState,
+  type RoguelikeGameState,
+  type RoguelikeAction,
+  type PowerUp,
+  type RunState,
+  type Cell,
 } from '../types';
 import {
   createEmptyBoard,
@@ -51,7 +51,7 @@ import {
   ORACLES_GIFT_MINE_DENSITY_BONUS,
 } from '../constants';
 import { saveGameState, loadGameState, clearGameState } from '../persistence';
-import { AscensionLevel, getAscensionModifiers } from '../ascension';
+import { getAscensionModifiers, type AscensionLevel } from '../ascension';
 
 // Helper: Handle floor clear transition and calculate draft options
 function handleFloorClearTransition(

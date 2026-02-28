@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { Cell as CellType, CellState } from '../types';
+import { CellState, type Cell as CellType } from '../types';
 import { MineIcon, FlagIcon } from './icons';
 
 interface CellProps {

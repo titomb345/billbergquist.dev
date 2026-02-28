@@ -2,6 +2,8 @@
   display: flex;
   flex-direction: column;
   padding: var(--space-lg);
+  height: 100%;
+  box-sizing: border-box;
 }
 
 .projectCard.glowMint {
@@ -50,6 +52,12 @@
   color: var(--text-muted);
   margin-left: 8px;
   opacity: 0.6;
+}
+
+.screenshot {
+  width: 100%;
+  height: auto;
+  display: block;
 }
 
 .browserContent {

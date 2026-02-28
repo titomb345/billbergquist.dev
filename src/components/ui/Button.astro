@@ -1,0 +1,28 @@
+---
+import styles from './Button.module.css';
+
+interface Props {
+  variant?: 'primary' | 'secondary' | 'accent' | 'ghost';
+  size?: 'small' | 'medium' | 'large';
+  href?: string;
+  class?: string;
+  [key: string]: unknown;
+}
+
+const { variant = 'primary', size = 'medium', href, class: className = '', ...rest } = Astro.props;
+const classes = [styles.button, styles[variant], size !== 'medium' ? styles[size] : '', className]
+  .filter(Boolean)
+  .join(' ');
+---
+
+{
+  href ? (
+    <a class={classes} href={href} {...rest}>
+      <slot />
+    </a>
+  ) : (
+    <button class={classes} {...rest}>
+      <slot />
+    </button>
+  )
+}

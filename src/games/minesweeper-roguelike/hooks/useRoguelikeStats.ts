@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
-import { RoguelikeStats } from '../types';
+import type { RoguelikeStats } from '../types';
 import { saveStats, loadStats } from '../persistence';
-import { AscensionLevel, MAX_ASCENSION } from '../ascension';
+import { MAX_ASCENSION, type AscensionLevel } from '../ascension';
 
 export function useRoguelikeStats() {
   // Use lazy initialization - loadStats is called once during initial render

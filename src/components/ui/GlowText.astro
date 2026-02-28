@@ -1,0 +1,28 @@
+---
+import styles from './GlowText.module.css';
+
+type GlowColor = 'mint' | 'magenta' | 'purple' | 'orange' | 'gradient';
+type GlowSize = 'small' | 'medium' | 'large' | 'xlarge';
+
+interface Props {
+  color?: GlowColor;
+  size?: GlowSize;
+  as?: 'h1' | 'h2' | 'h3' | 'h4' | 'span' | 'p';
+  animated?: boolean;
+  class?: string;
+}
+
+const {
+  color = 'mint',
+  size = 'medium',
+  as: Tag = 'h1',
+  animated = false,
+  class: className = '',
+} = Astro.props;
+
+const classes = [styles.glowText, styles[color], styles[size], animated ? styles.animated : '', className]
+  .filter(Boolean)
+  .join(' ');
+---
+
+<Tag class={classes}><slot /></Tag>

@@ -1,0 +1,34 @@
+---
+import styles from './Navbar.module.css';
+
+const currentPath = Astro.url.pathname;
+
+const navLinks = [
+  { href: '/', label: 'Home', exact: true },
+  { href: '/about', label: 'About', exact: false },
+  { href: '/services', label: 'Services', exact: false },
+  { href: '/projects', label: 'Projects', exact: false },
+  { href: '/blog', label: 'Blog', exact: false },
+  { href: '/arcade', label: 'Arcade', exact: false },
+];
+---
+
+<header class={styles.navbar}>
+  <a href="/" class={styles.logo}>
+    <img src="/favicon.svg" alt="Bill Bergquist" class={styles.logoIcon} width="32" height="32" />
+  </a>
+  <nav class={styles.nav} aria-label="Primary navigation">
+    {
+      navLinks.map(({ href, label, exact }) => {
+        const isActive = exact
+          ? currentPath === href || currentPath === `${href}/` || currentPath === ''
+          : currentPath.startsWith(href);
+        return (
+          <a href={href} class={`${styles.navLink} ${isActive ? styles.active : ''}`}>
+            {label}
+          </a>
+        );
+      })
+    }
+  </nav>
+</header>

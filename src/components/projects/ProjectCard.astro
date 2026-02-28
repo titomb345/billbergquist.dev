@@ -1,0 +1,68 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import Card from '../ui/Card.astro';
+import styles from './ProjectCard.module.css';
+
+interface Props {
+  title: string;
+  description: string;
+  techStack: string[];
+  url: string;
+  color: 'mint' | 'magenta' | 'purple' | 'orange';
+  wireframe?: 'dashboard' | 'form' | 'landing';
+  screenshot?: ImageMetadata;
+}
+
+const { title, description, techStack, url, color, wireframe = 'dashboard', screenshot } = Astro.props;
+
+const glowMap = {
+  mint: 'glowMint',
+  magenta: 'glowMagenta',
+  purple: 'glowPurple',
+  orange: 'glowOrange',
+} as const;
+
+const hostname = new URL(url).hostname;
+---
+
+<Card class={`${styles.projectCard} ${styles[glowMap[color]]}`}>
+  <div class={`${styles.browserFrame} ${styles[`frame_${color}`]}`}>
+    <div class={styles.browserBar}>
+      <span class={styles.browserDot}></span>
+      <span class={styles.browserDot}></span>
+      <span class={styles.browserDot}></span>
+      <span class={styles.browserUrl}>{hostname}</span>
+    </div>
+    {
+      screenshot ? (
+        <Image
+          src={screenshot}
+          alt={`${title} homepage screenshot`}
+          width={800}
+          height={500}
+          class={styles.screenshot}
+          loading="lazy"
+        />
+      ) : (
+        <div class={styles.browserContent}>
+          <div class={styles.mockLine} style="width: 40%"></div>
+          <div class={styles.mockRow}>
+            <div class={styles.mockBox}></div>
+            <div class={styles.mockBox}></div>
+            <div class={styles.mockBox}></div>
+          </div>
+          <div class={styles.mockBlock}></div>
+        </div>
+      )
+    }
+  </div>
+  <h3 class={`${styles.title} neon-text-${color}`}>{title}</h3>
+  <p class={styles.description}>{description}</p>
+  <div class={styles.techStack}>
+    {techStack.map((tech) => <span class={styles.techTag}>{tech}</span>)}
+  </div>
+  <a href={url} target="_blank" rel="noopener noreferrer" class={`${styles.visitLink} ${styles[color]}`}>
+    Visit Site &rarr;
+  </a>
+</Card>

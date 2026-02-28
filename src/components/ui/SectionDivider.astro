@@ -1,0 +1,13 @@
+---
+import styles from './SectionDivider.module.css';
+
+interface Props {
+  color?: 'mint' | 'magenta' | 'purple' | 'orange';
+}
+
+const { color = 'mint' } = Astro.props;
+---
+
+<div class={styles.wrapper}>
+  <div class={`${styles.line} ${styles[color]}`}></div>
+</div>

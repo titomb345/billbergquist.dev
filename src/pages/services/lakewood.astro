@@ -1,0 +1,168 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import GlowText from '../../components/ui/GlowText.astro';
+import SectionDivider from '../../components/ui/SectionDivider.astro';
+import ContactForm from '../../components/services/ContactForm';
+import styles from '../ServicesPage.module.css';
+
+const faqs = [
+  {
+    question: 'How much does a website cost for a Lakewood business?',
+    answer:
+      "Most sites I build for Lakewood businesses cost between $2,000 and $8,000. It depends on the scope. A simple landing page runs less, while a multi-page site with custom features costs more. I'll give you a straight answer after we talk.",
+  },
+  {
+    question: 'Are you actually local to Lakewood?',
+    answer:
+      "Yes. I live in the Lakewood area and know the local business landscape well. I'm happy to meet in person, whether that's at your business, a coffee shop on Wadsworth, or over at Belmar.",
+  },
+  {
+    question: 'Will my website help me compete with Denver businesses?',
+    answer:
+      "Absolutely. With the right SEO setup, your Lakewood business can rank for both Lakewood-specific searches and broader Denver metro searches. I build local schema markup, Google Business Profile integration, and geo-targeted content into every project.",
+  },
+];
+
+const jsonLdService = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'ProfessionalService',
+  name: 'Bill Bergquist — Web Design in Lakewood, CO',
+  description:
+    'Custom web design and development for small businesses in Lakewood, Colorado. Fast, modern websites built by a local developer.',
+  url: 'https://billbergquist.dev/services/lakewood',
+  email: 'services@billbergquist.dev',
+  areaServed: {
+    '@type': 'City',
+    name: 'Lakewood',
+    containedInPlace: { '@type': 'State', name: 'Colorado' },
+  },
+  provider: {
+    '@type': 'Person',
+    name: 'Bill Bergquist',
+    jobTitle: 'Staff Software Engineer',
+    url: 'https://billbergquist.dev',
+  },
+  serviceType: ['Web Design', 'Web Development', 'Website Redesign', 'Landing Page Design'],
+  priceRange: '$$',
+});
+
+const jsonLdFaq = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+});
+---
+
+<Layout
+  title="Web Design in Lakewood, CO — Bill Bergquist"
+  description="Custom web design for Lakewood small businesses. Fast, mobile-friendly websites built by a local developer who lives in the Lakewood area."
+  canonical="/services/lakewood"
+  jsonLd={[jsonLdService, jsonLdFaq]}
+  ogImage="/og/services.png"
+  geoRegion="US-CO"
+  geoPlacename="Lakewood, CO"
+>
+  <div class={styles.page}>
+    <header class={styles.header}>
+      <GlowText as="h1" size="large" color="mint" class={styles.title}>
+        WEB DESIGN IN LAKEWOOD, CO
+      </GlowText>
+      <p class={styles.subtitle}>Custom Websites for Lakewood Small Businesses</p>
+      <p class={styles.intro}>
+        Lakewood has its own identity. It's not just a Denver suburb. From the shops and restaurants
+        along Wadsworth Boulevard to the boutiques at Belmar, the breweries in the Green Mountain area,
+        and the home services businesses that serve the whole west side, Lakewood businesses need websites
+        that reflect who they are and reach the customers searching for them.
+      </p>
+      <div class="accent-line-orange"></div>
+    </header>
+
+    <section class={`${styles.whySection} scroll-reveal`}>
+      <GlowText as="h2" size="medium" color="orange" class={styles.sectionTitle}>
+        WHY LAKEWOOD BUSINESSES NEED A STRONG WEB PRESENCE
+      </GlowText>
+      <div class={styles.whyGrid}>
+        <div class={`${styles.whyItem} scroll-reveal-child`}>
+          <h3 class={styles.whyTitle}>Lakewood isn't just "west Denver"</h3>
+          <p class={styles.whyDescription}>
+            People search for "restaurants in Lakewood" and "plumber near Belmar," not just "Denver."
+            A website optimized for Lakewood-specific searches helps you capture customers who are
+            specifically looking for local businesses, not results 20 miles away in Aurora or Thornton.
+          </p>
+        </div>
+        <div class={`${styles.whyItem} scroll-reveal-child`}>
+          <h3 class={styles.whyTitle}>West side customers search differently</h3>
+          <p class={styles.whyDescription}>
+            Lakewood residents tend to stay on the west side. They search for services near Green Mountain,
+            near Belmar, along Colfax, or on Wadsworth. A well-built website with local SEO captures these
+            neighborhood-level searches that a generic site misses.
+          </p>
+        </div>
+        <div class={`${styles.whyItem} scroll-reveal-child`}>
+          <h3 class={styles.whyTitle}>Compete with Denver agencies for less</h3>
+          <p class={styles.whyDescription}>
+            Denver agencies charge $10,000-$25,000+ for a small business site. As a local independent
+            developer, I deliver the same quality at a fraction of the cost, and you work directly with
+            the person building your site, not an account manager.
+          </p>
+        </div>
+        <div class={`${styles.whyItem} scroll-reveal-child`}>
+          <h3 class={styles.whyTitle}>I live here</h3>
+          <p class={styles.whyDescription}>
+            I'm based in the Lakewood area. I shop at the same stores and eat at the same restaurants.
+            I get what makes a Lakewood business different from one downtown, and I can build a site
+            that reflects that.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <SectionDivider color="orange" />
+
+    <section class={`${styles.faq} scroll-reveal`}>
+      <GlowText as="h2" size="medium" color="orange" class={styles.sectionTitle}>
+        FREQUENTLY ASKED QUESTIONS
+      </GlowText>
+      <div class={styles.faqList}>
+        {
+          faqs.map((faq) => (
+            <div class={`${styles.faqItem} scroll-reveal-child`}>
+              <h3 class={styles.faqQuestion}>{faq.question}</h3>
+              <p class={styles.faqAnswer}>{faq.answer}</p>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <SectionDivider color="mint" />
+
+    <section class={`${styles.contact} scroll-reveal`}>
+      <GlowText as="h2" size="medium" color="mint" class={styles.sectionTitle}>
+        LET'S BUILD YOUR LAKEWOOD WEBSITE
+      </GlowText>
+      <p class={styles.contactIntro}>
+        Whether you run a boutique in Belmar, a restaurant on Wadsworth, a home services company
+        serving the west side, or any other Lakewood business, I'd love to hear about your project.
+      </p>
+
+      <ContactForm client:visible />
+
+      <div class={styles.emailAlt}>
+        <p>
+          Prefer email?{' '}
+          <a href="mailto:services@billbergquist.dev" class={styles.emailLink}>
+            services@billbergquist.dev
+          </a>
+        </p>
+        <p style="margin-top: var(--space-md);">
+          <a href="/services" class={styles.emailLink}>&larr; Back to all services</a>
+        </p>
+      </div>
+    </section>
+  </div>
+</Layout>

@@ -1,0 +1,168 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import GlowText from '../../components/ui/GlowText.astro';
+import SectionDivider from '../../components/ui/SectionDivider.astro';
+import ContactForm from '../../components/services/ContactForm';
+import styles from '../ServicesPage.module.css';
+
+const faqs = [
+  {
+    question: 'How much does a website cost for a Boulder business?',
+    answer:
+      "Most small business sites run between $2,000 and $8,000. Boulder businesses often need strong visual design to match the quality of their products and services, and I build that into every project. I'll give you a clear estimate after our first conversation.",
+  },
+  {
+    question: 'Do you work with Boulder businesses remotely or in person?',
+    answer:
+      "Both. I'm based in the Denver/Lakewood area, about 30-40 minutes from Boulder. I'm happy to meet in person for initial discussions, and we can handle the rest over video calls. I've worked with Boulder clients this way and it works well.",
+  },
+  {
+    question: 'Can you build e-commerce or booking features for my Boulder business?',
+    answer:
+      "Yes. Whether you need an online store for a Pearl Street boutique, a booking system for a yoga studio, or a reservation system for a restaurant, I can build custom functionality that fits your specific workflow.",
+  },
+];
+
+const jsonLdService = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'ProfessionalService',
+  name: 'Bill Bergquist — Web Design in Boulder, CO',
+  description:
+    'Custom web design and development for small businesses in Boulder, Colorado. Fast, modern websites built by an experienced Front Range developer.',
+  url: 'https://billbergquist.dev/services/boulder',
+  email: 'services@billbergquist.dev',
+  areaServed: {
+    '@type': 'City',
+    name: 'Boulder',
+    containedInPlace: { '@type': 'State', name: 'Colorado' },
+  },
+  provider: {
+    '@type': 'Person',
+    name: 'Bill Bergquist',
+    jobTitle: 'Staff Software Engineer',
+    url: 'https://billbergquist.dev',
+  },
+  serviceType: ['Web Design', 'Web Development', 'Website Redesign', 'Landing Page Design'],
+  priceRange: '$$',
+});
+
+const jsonLdFaq = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+});
+---
+
+<Layout
+  title="Web Design in Boulder, CO — Bill Bergquist"
+  description="Custom web design for Boulder small businesses. Fast, beautiful websites built by an experienced Front Range developer. From Pearl Street to Flatirons."
+  canonical="/services/boulder"
+  jsonLd={[jsonLdService, jsonLdFaq]}
+  ogImage="/og/services.png"
+  geoRegion="US-CO"
+  geoPlacename="Boulder, CO"
+>
+  <div class={styles.page}>
+    <header class={styles.header}>
+      <GlowText as="h1" size="large" color="mint" class={styles.title}>
+        WEB DESIGN IN BOULDER, CO
+      </GlowText>
+      <p class={styles.subtitle}>Custom Websites for Boulder Small Businesses</p>
+      <p class={styles.intro}>
+        Boulder businesses operate at a different level. The customers here expect quality in your
+        products, your services, and your online presence. A slow, generic template website doesn't
+        match the standards of a town known for innovation, outdoor culture, and independent business.
+        I build custom websites that match the quality Boulder customers expect.
+      </p>
+      <div class="accent-line-orange"></div>
+    </header>
+
+    <section class={`${styles.whySection} scroll-reveal`}>
+      <GlowText as="h2" size="medium" color="orange" class={styles.sectionTitle}>
+        WHY BOULDER BUSINESSES INVEST IN CUSTOM WEBSITES
+      </GlowText>
+      <div class={styles.whyGrid}>
+        <div class={`${styles.whyItem} scroll-reveal-child`}>
+          <h3 class={styles.whyTitle}>Boulder customers have high standards</h3>
+          <p class={styles.whyDescription}>
+            Boulder folks notice quality. They can tell when a website was thrown together from a template.
+            A site that's fast, well-designed, and clearly communicates what you do goes a long way,
+            especially if you're in health, wellness, outdoor, or food.
+          </p>
+        </div>
+        <div class={`${styles.whyItem} scroll-reveal-child`}>
+          <h3 class={styles.whyTitle}>Tourism drives online discovery</h3>
+          <p class={styles.whyDescription}>
+            Millions of visitors come to Boulder every year. They're searching on their phones for
+            "best restaurants on Pearl Street" or "bike shops in Boulder." If your website isn't fast,
+            mobile-friendly, and optimized for local search, you're invisible to visitors with money to spend.
+          </p>
+        </div>
+        <div class={`${styles.whyItem} scroll-reveal-child`}>
+          <h3 class={styles.whyTitle}>Independent businesses deserve independent websites</h3>
+          <p class={styles.whyDescription}>
+            Boulder's identity is built on independent businesses, not chains. Your website should
+            feel like yours, not like every other Squarespace site on the internet.
+            A custom site gives you that.
+          </p>
+        </div>
+        <div class={`${styles.whyItem} scroll-reveal-child`}>
+          <h3 class={styles.whyTitle}>Front Range developer, not a distant agency</h3>
+          <p class={styles.whyDescription}>
+            I'm based in the Denver metro area, 30 minutes from Boulder. I know the Front Range market
+            and I'm available for in-person meetings. You get senior-level engineering (14+ years) without
+            the overhead of a downtown agency charging $20,000+ for the same work.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <SectionDivider color="orange" />
+
+    <section class={`${styles.faq} scroll-reveal`}>
+      <GlowText as="h2" size="medium" color="orange" class={styles.sectionTitle}>
+        FREQUENTLY ASKED QUESTIONS
+      </GlowText>
+      <div class={styles.faqList}>
+        {
+          faqs.map((faq) => (
+            <div class={`${styles.faqItem} scroll-reveal-child`}>
+              <h3 class={styles.faqQuestion}>{faq.question}</h3>
+              <p class={styles.faqAnswer}>{faq.answer}</p>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <SectionDivider color="mint" />
+
+    <section class={`${styles.contact} scroll-reveal`}>
+      <GlowText as="h2" size="medium" color="mint" class={styles.sectionTitle}>
+        LET'S BUILD YOUR BOULDER WEBSITE
+      </GlowText>
+      <p class={styles.contactIntro}>
+        Whether you run a Pearl Street boutique, a yoga studio on Arapahoe, a restaurant in
+        North Boulder, or any other local business, I'd love to hear about your project.
+      </p>
+
+      <ContactForm client:visible />
+
+      <div class={styles.emailAlt}>
+        <p>
+          Prefer email?{' '}
+          <a href="mailto:services@billbergquist.dev" class={styles.emailLink}>
+            services@billbergquist.dev
+          </a>
+        </p>
+        <p style="margin-top: var(--space-md);">
+          <a href="/services" class={styles.emailLink}>&larr; Back to all services</a>
+        </p>
+      </div>
+    </section>
+  </div>
+</Layout>

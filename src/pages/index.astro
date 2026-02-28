@@ -1,0 +1,46 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Hero from '../components/home/Hero';
+import SectionDivider from '../components/ui/SectionDivider.astro';
+import AboutSection from '../components/home/AboutSection.astro';
+import ProjectsPreview from '../components/home/ProjectsPreview.astro';
+import GameGrid from '../components/home/GameGrid.astro';
+import ServicesCTA from '../components/home/ServicesCTA.astro';
+
+const jsonLdPerson = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Bill Bergquist',
+  jobTitle: 'Staff Software Engineer',
+  url: 'https://billbergquist.dev',
+  sameAs: [
+    'https://github.com/titomb345',
+    'https://www.linkedin.com/in/bill-bergquist/',
+  ],
+});
+
+const jsonLdWebsite = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'Bill Bergquist',
+  url: 'https://billbergquist.dev',
+});
+---
+
+<Layout
+  title="Bill Bergquist — Staff Software Engineer"
+  description="Staff software engineer with 14+ years of experience building web applications with React, TypeScript, and Node.js."
+  canonical="/"
+  jsonLd={[jsonLdPerson, jsonLdWebsite]}
+  ogImage="/og/home.png"
+>
+  <Hero client:load />
+  <SectionDivider color="mint" />
+  <AboutSection />
+  <SectionDivider color="orange" />
+  <ProjectsPreview />
+  <SectionDivider color="mint" />
+  <ServicesCTA />
+  <SectionDivider color="magenta" />
+  <GameGrid />
+</Layout>

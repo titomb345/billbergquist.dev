@@ -1,0 +1,63 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import GlowText from '../../components/ui/GlowText.astro';
+import Button from '../../components/ui/Button.astro';
+import GameCard from '../../components/ui/GameCard.astro';
+import MinesweeperRoguelikePreview from '../../components/home/MinesweeperRoguelikePreview.astro';
+import styles from '../ArcadePage.module.css';
+---
+
+<Layout
+  title="Arcade — Browser Games by Bill Bergquist"
+  description="Browser-based games built through AI-assisted development. Play Minesweeper: Descent, a roguelike minesweeper with 10 floors and 19 power-ups."
+  canonical="/arcade"
+  ogImage="/og/arcade.png"
+>
+  <div class={styles.page}>
+    <!-- CRT scanline overlay -->
+    <div class={styles.scanlines} aria-hidden="true"></div>
+
+    <!-- Marquee ticker -->
+    <div class={styles.marquee} aria-hidden="true">
+      <div class={styles.marqueeTrack}>
+        <span>INSERT COIN</span>
+        <span class={styles.marqueeDot}></span>
+        <span>PLAYER 1 READY</span>
+        <span class={styles.marqueeDot}></span>
+        <span>HIGH SCORE: ???</span>
+        <span class={styles.marqueeDot}></span>
+        <span>INSERT COIN</span>
+        <span class={styles.marqueeDot}></span>
+        <span>PLAYER 1 READY</span>
+        <span class={styles.marqueeDot}></span>
+        <span>HIGH SCORE: ???</span>
+        <span class={styles.marqueeDot}></span>
+      </div>
+    </div>
+
+    <header class={styles.header}>
+      <GlowText size="large" color="magenta" animated class={styles.title}>ARCADE</GlowText>
+      <p class={styles.subtitle}>
+        Welcome to my arcade—a collection of browser-based games built entirely through{' '}
+        <span class="neon-text-orange">AI-assisted development</span>. These projects are my
+        playground for exploring agentic workflows, pushing the boundaries of what's possible when
+        combining rapid prototyping with tools like{' '}
+        <span class="neon-text-orange">Claude Code</span>. Gaming has always been a passion of
+        mine, and this is where that passion meets cutting-edge development techniques.
+      </p>
+      <div class="accent-line-orange"></div>
+    </header>
+
+    <section class={`${styles.grid} scroll-reveal`}>
+      <div class={`${styles.cabinetFrame} scroll-reveal-child`}>
+        <GameCard
+          title="Minesweeper: Descent"
+          description="Roguelike minesweeper. Descend 10 floors of escalating danger. Collect power-ups to survive."
+        >
+          <MinesweeperRoguelikePreview slot="preview" />
+          <Button variant="primary" href="/arcade/descent" slot="action">Play Now</Button>
+        </GameCard>
+      </div>
+    </section>
+  </div>
+</Layout>

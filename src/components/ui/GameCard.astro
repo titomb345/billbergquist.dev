@@ -1,0 +1,23 @@
+---
+import Card from './Card.astro';
+import styles from './Card.module.css';
+
+interface Props {
+  title: string;
+  description: string;
+  locked?: boolean;
+}
+
+const { title, description, locked = false } = Astro.props;
+---
+
+<Card class={`${styles.gameCard} ${locked ? styles.locked : ''}`}>
+  <div class={styles.preview}>
+    <slot name="preview"><span class={styles.previewImage}>?</span></slot>
+  </div>
+  <h3 class={styles.title}>{title}</h3>
+  <p class={styles.description}>{description}</p>
+  <div class={styles.action}>
+    {locked ? <span class={styles.lockedBadge}>Coming Soon</span> : <slot name="action" />}
+  </div>
+</Card>

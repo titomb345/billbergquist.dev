@@ -1,0 +1,68 @@
+---
+import Layout from '../layouts/Layout.astro';
+import GlowText from '../components/ui/GlowText.astro';
+import styles from './PrivacyPage.module.css';
+---
+
+<Layout
+  title="Privacy Policy — Bill Bergquist"
+  description="Privacy policy for billbergquist.dev. How your data is collected, used, and protected."
+  canonical="/privacy"
+  noindex={true}
+>
+  <div class={styles.page}>
+    <header class={styles.header}>
+      <GlowText as="h1" size="large" color="mint" class={styles.title}>
+        PRIVACY POLICY
+      </GlowText>
+      <p class={styles.updated}>Last updated: February 28, 2026</p>
+    </header>
+
+    <div class={styles.content}>
+      <section>
+        <h2 class={styles.sectionTitle}>What This Site Collects</h2>
+        <p>
+          This website uses Google Analytics to understand how visitors find and use the site.
+          Google Analytics collects anonymous data like which pages are visited, how long people
+          stay, and what device they're using. It does not collect your name, email, or any
+          personal information unless you provide it through the contact form.
+        </p>
+      </section>
+
+      <section>
+        <h2 class={styles.sectionTitle}>Contact Form</h2>
+        <p>
+          If you fill out the contact form on the services page, your name, email, and message
+          are sent to me through Netlify Forms. I use this information only to respond to your
+          inquiry. I don't add you to any mailing list or share your information with anyone.
+        </p>
+      </section>
+
+      <section>
+        <h2 class={styles.sectionTitle}>Cookies</h2>
+        <p>
+          Google Analytics uses cookies to distinguish unique visitors. These are small text files
+          stored in your browser. You can disable cookies in your browser settings or use an ad
+          blocker to prevent analytics tracking entirely.
+        </p>
+      </section>
+
+      <section>
+        <h2 class={styles.sectionTitle}>Your Data Is Not Sold</h2>
+        <p>
+          I don't sell, trade, or share your personal information with third parties. Period.
+        </p>
+      </section>
+
+      <section>
+        <h2 class={styles.sectionTitle}>Questions</h2>
+        <p>
+          If you have any questions about this privacy policy, you can reach me at{' '}
+          <a href="mailto:services@billbergquist.dev" class={styles.link}>
+            services@billbergquist.dev
+          </a>.
+        </p>
+      </section>
+    </div>
+  </div>
+</Layout>

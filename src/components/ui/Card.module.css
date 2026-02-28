@@ -5,6 +5,8 @@
   position: relative;
   overflow: hidden;
   transition: var(--transition-normal);
+  height: 100%;
+  box-sizing: border-box;
 }
 
 /* Gradient border effect */
