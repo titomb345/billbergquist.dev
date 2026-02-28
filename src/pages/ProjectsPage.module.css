@@ -34,6 +34,10 @@
   gap: var(--space-lg);
 }
 
+.grid :global(.scroll-reveal-child) {
+  height: 100%;
+}
+
 /* ── Services CTA ── */
 
 .cta {
