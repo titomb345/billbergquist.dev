@@ -160,6 +160,13 @@
   animation: ringPulse 2.5s ease-in-out infinite;
 }
 
+.lobbyAvatarImg {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
 .lobbyAvatarName {
   font-family: var(--font-body);
   font-size: 0.7rem;

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useClerk } from '@clerk/clerk-react';
 import type { ClientMessage } from '../types';
 import styles from './Lobby.module.css';
 
@@ -7,40 +8,43 @@ interface LobbyProps {
   initialRoomCode: string | null;
   connectionStatus: string;
   errorMessage: string | null;
+  userName: string;
+  userImageUrl?: string;
 }
 
-export function Lobby({ onSend, initialRoomCode, connectionStatus, errorMessage }: LobbyProps) {
-  const [name, setName] = useState(() => {
-    try { return localStorage.getItem('retro-name') ?? ''; } catch { return ''; }
-  });
+export function Lobby({
+  onSend,
+  initialRoomCode,
+  connectionStatus,
+  errorMessage,
+  userName,
+  userImageUrl,
+}: LobbyProps) {
+  const { signOut } = useClerk();
   const [roomCode, setRoomCode] = useState(initialRoomCode ?? '');
   const [mode, setMode] = useState<'create' | 'join'>(initialRoomCode ? 'join' : 'create');
 
   const isConnecting = connectionStatus === 'connecting';
-  const canSubmit = name.trim().length > 0 && !isConnecting;
-
-  const saveName = (n: string) => {
-    try { localStorage.setItem('retro-name', n); } catch { /* noop */ }
-  };
+  const canSubmit = !isConnecting;
 
   const handleCreate = () => {
     if (!canSubmit) return;
-    saveName(name.trim());
-    onSend({ type: 'create', name: name.trim() });
+    onSend({ type: 'create', name: userName });
   };
 
   const handleJoin = () => {
     if (!canSubmit || roomCode.trim().length !== 4) return;
-    saveName(name.trim());
-    onSend({ type: 'join', name: name.trim(), roomCode: roomCode.trim().toUpperCase() });
+    onSend({ type: 'join', name: userName, roomCode: roomCode.trim().toUpperCase() });
   };
 
   return (
     <div className={styles.lobby}>
-      <span className={styles.brand}>Retro<span className={styles.brandAccent}>Retro</span></span>
+      <span className={styles.brand}>
+        Retro<span className={styles.brandAccent}>Retro</span>
+      </span>
       <p className={styles.subtitle}>
-        Run team retrospectives in real time. Create a room, invite your team,
-        and collaborate with sticky notes, voting, and action items.
+        Run team retrospectives in real time. Create a room, invite your team, and collaborate with
+        sticky notes, voting, and action items.
       </p>
       <div className={styles.features}>
         <span className={styles.featurePill}>Writing</span>
@@ -50,23 +54,16 @@ export function Lobby({ onSend, initialRoomCode, connectionStatus, errorMessage 
       </div>
 
       <div className={styles.card}>
-        <div className={styles.fieldGroup}>
-          <label className={styles.label} htmlFor="retro-name">Your name</label>
-          <input
-            id="retro-name"
-            className={styles.input}
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Enter your name"
-            maxLength={30}
-            autoFocus
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                mode === 'create' ? handleCreate() : handleJoin();
-              }
-            }}
-          />
+        <div className={styles.userInfo}>
+          {userImageUrl && (
+            <img src={userImageUrl} alt="" className={styles.avatar} width={36} height={36} />
+          )}
+          <div className={styles.userDetails}>
+            <span className={styles.userName}>{userName}</span>
+            <button className={styles.signOutBtn} onClick={() => signOut({ redirectUrl: '/retro' })}>
+              Sign out
+            </button>
+          </div>
         </div>
 
         {mode === 'create' ? (
@@ -82,7 +79,9 @@ export function Lobby({ onSend, initialRoomCode, connectionStatus, errorMessage 
         ) : (
           <>
             <div className={styles.fieldGroup}>
-              <label className={styles.label} htmlFor="retro-room-code">Room code</label>
+              <label className={styles.label} htmlFor="retro-room-code">
+                Room code
+              </label>
               <input
                 id="retro-room-code"
                 className={styles.codeInput}
@@ -91,6 +90,7 @@ export function Lobby({ onSend, initialRoomCode, connectionStatus, errorMessage 
                 onChange={(e) => setRoomCode(e.target.value.toUpperCase().slice(0, 4))}
                 placeholder="ABCD"
                 maxLength={4}
+                autoFocus
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') handleJoin();
                 }}

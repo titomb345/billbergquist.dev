@@ -1,4 +1,5 @@
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { ClerkProvider, SignedIn, SignedOut, useClerk, useUser } from '@clerk/clerk-react';
 import { ErrorBoundary } from '../components/ui/ErrorBoundary';
 import { useWebSocket } from './hooks/useWebSocket';
 import { useRetroState } from './hooks/useRetroState';
@@ -6,6 +7,9 @@ import type { ClientMessage, ServerMessage } from './types';
 import { WORKER_URL } from './constants';
 import { Lobby } from './components/Lobby';
 import { Board } from './components/Board';
+import { AuthGate } from './components/AuthGate';
+
+const CLERK_KEY = import.meta.env.PUBLIC_CLERK_PUBLISHABLE_KEY;
 
 function getInitialRoomCode(): string | null {
   // Clean URL: /retro/ABCD
@@ -25,17 +29,60 @@ function generateRoomCode(): string {
   return code;
 }
 
+const ALLOWED_DOMAIN = 'kasa.com';
+
 export default function RetroApp() {
   return (
-    <ErrorBoundary>
-      <RetroAppInner />
-    </ErrorBoundary>
+    <ClerkProvider publishableKey={CLERK_KEY}>
+      <ErrorBoundary>
+        <SignedIn>
+          <DomainGuard>
+            <RetroAppInner />
+          </DomainGuard>
+        </SignedIn>
+        <SignedOut>
+          <AuthGate />
+        </SignedOut>
+      </ErrorBoundary>
+    </ClerkProvider>
   );
 }
 
+function DomainGuard({ children }: { children: React.ReactNode }) {
+  const { user, isLoaded } = useUser();
+  const { signOut } = useClerk();
+  const [denied, setDenied] = useState(false);
+
+  useEffect(() => {
+    if (!isLoaded || !user) return;
+    const email = user.primaryEmailAddress?.emailAddress ?? '';
+    if (!email.endsWith(`@${ALLOWED_DOMAIN}`)) {
+      setDenied(true);
+    }
+  }, [isLoaded, user]);
+
+  if (!isLoaded) return null;
+
+  if (denied) {
+    return (
+      <AuthGate
+        error={`Access is restricted to @${ALLOWED_DOMAIN} accounts.`}
+        onBack={() => {
+          setDenied(false);
+          signOut({ redirectUrl: '/retro' });
+        }}
+      />
+    );
+  }
+
+  return <>{children}</>;
+}
+
 function RetroAppInner() {
+  const { user } = useUser();
   const [state, dispatch] = useRetroState();
   const initialRoomCode = useMemo(getInitialRoomCode, []);
+  const userName = user?.firstName || 'Anonymous';
 
   // Room code drives WebSocket connection. null = not connected.
   const [activeRoomCode, setActiveRoomCode] = useState<string | null>(initialRoomCode);
@@ -172,6 +219,8 @@ function RetroAppInner() {
         initialRoomCode={initialRoomCode}
         connectionStatus={state.connectionStatus}
         errorMessage={state.errorMessage}
+        userName={userName}
+        userImageUrl={user?.imageUrl}
       />
     );
   }
@@ -184,6 +233,7 @@ function RetroAppInner() {
       room={state.room}
       isHost={isHost}
       myParticipantId={state.myParticipantId!}
+      myAvatarUrl={user?.imageUrl}
       connectionStatus={state.connectionStatus}
       onSend={send}
     />

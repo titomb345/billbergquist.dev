@@ -51,6 +51,13 @@
   flex-shrink: 0;
 }
 
+.circleImg {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
 .presenceDot {
   position: absolute;
   bottom: -1px;

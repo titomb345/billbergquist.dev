@@ -34,11 +34,12 @@ interface BoardProps {
   room: RoomState;
   isHost: boolean;
   myParticipantId: string;
+  myAvatarUrl?: string;
   connectionStatus: string;
   onSend: (msg: ClientMessage) => void;
 }
 
-export function Board({ room, isHost, myParticipantId, connectionStatus, onSend }: BoardProps) {
+export function Board({ room, isHost, myParticipantId, myAvatarUrl, connectionStatus, onSend }: BoardProps) {
   const me = room.participants.find((p) => p.id === myParticipantId);
   const canVote = (me?.votesRemaining ?? 0) > 0;
   const [copied, setCopied] = useState(false);
@@ -79,6 +80,7 @@ export function Board({ room, isHost, myParticipantId, connectionStatus, onSend 
           participants={room.participants}
           phase={room.phase}
           myParticipantId={myParticipantId}
+          myAvatarUrl={myAvatarUrl}
           isHost={isHost}
           votesPerPerson={room.settings.votesPerPerson}
           onSend={onSend}
@@ -116,17 +118,24 @@ export function Board({ room, isHost, myParticipantId, connectionStatus, onSend 
           </button>
 
           <div className={styles.lobbyParticipants}>
-            {room.participants.map((p) => (
-              <div
-                key={p.id}
-                className={styles.lobbyAvatar}
-                style={{ background: getAvatarColor(p.id) }}
-                title={p.name}
-              >
-                {getInitials(p.name)}
-                <span className={styles.lobbyAvatarName}>{p.name}</span>
-              </div>
-            ))}
+            {room.participants.map((p) => {
+              const isMe = p.id === myParticipantId;
+              return (
+                <div
+                  key={p.id}
+                  className={styles.lobbyAvatar}
+                  style={isMe && myAvatarUrl ? undefined : { background: getAvatarColor(p.id) }}
+                  title={p.name}
+                >
+                  {isMe && myAvatarUrl ? (
+                    <img src={myAvatarUrl} alt="" className={styles.lobbyAvatarImg} width={36} height={36} />
+                  ) : (
+                    getInitials(p.name)
+                  )}
+                  <span className={styles.lobbyAvatarName}>{p.name}</span>
+                </div>
+              );
+            })}
           </div>
 
           {isHost && (

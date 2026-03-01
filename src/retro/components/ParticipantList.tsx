@@ -24,14 +24,20 @@ interface ParticipantListProps {
   participants: Participant[];
   phase: RetroPhase;
   myParticipantId: string;
+  myAvatarUrl?: string;
   isHost: boolean;
   votesPerPerson: number;
   onSend: (msg: ClientMessage) => void;
 }
 
-function ParticipantChip({ p, isMe, isWritePhase, showVotes, votesUsed, votesPerPerson, onSend }: {
+function getFirstName(name: string): string {
+  return name.trim().split(/\s+/)[0];
+}
+
+function ParticipantChip({ p, isMe, avatarUrl, isWritePhase, showVotes, votesUsed, votesPerPerson, onSend }: {
   p: Participant;
   isMe: boolean;
+  avatarUrl?: string;
   isWritePhase: boolean;
   showVotes: boolean;
   votesUsed: number;
@@ -43,12 +49,19 @@ function ParticipantChip({ p, isMe, isWritePhase, showVotes, votesUsed, votesPer
       className={`${styles.avatar} ${isWritePhase && isMe ? styles.avatarClickable : ''}`}
       onClick={isWritePhase && isMe ? () => onSend({ type: 'toggleReady' }) : undefined}
     >
-      <div className={styles.circle} style={{ background: getAvatarColor(p.id) }}>
-        {getInitials(p.name)}
-        <span className={`${styles.presenceDot} ${p.connected ? styles.online : styles.offline}`} />
-      </div>
+      {avatarUrl ? (
+        <div className={styles.circle}>
+          <img src={avatarUrl} alt="" className={styles.circleImg} width={26} height={26} />
+          <span className={`${styles.presenceDot} ${p.connected ? styles.online : styles.offline}`} />
+        </div>
+      ) : (
+        <div className={styles.circle} style={{ background: getAvatarColor(p.id) }}>
+          {getInitials(p.name)}
+          <span className={`${styles.presenceDot} ${p.connected ? styles.online : styles.offline}`} />
+        </div>
+      )}
       <span className={styles.name}>
-        {p.name}
+        {getFirstName(p.name)}
         {isMe && <span className={styles.you}> (you)</span>}
       </span>
       {p.isHost && <span className={styles.hostTag}>host</span>}
@@ -64,7 +77,7 @@ function ParticipantChip({ p, isMe, isWritePhase, showVotes, votesUsed, votesPer
   );
 }
 
-export function ParticipantList({ participants, phase, myParticipantId, isHost, votesPerPerson, onSend }: ParticipantListProps) {
+export function ParticipantList({ participants, phase, myParticipantId, myAvatarUrl, isHost, votesPerPerson, onSend }: ParticipantListProps) {
   const isWritePhase = phase === 'write';
   const allReady = isWritePhase && participants.every((p) => p.ready);
 
@@ -74,6 +87,7 @@ export function ParticipantList({ participants, phase, myParticipantId, isHost, 
   const chipProps = (p: Participant) => ({
     p,
     isMe: p.id === myParticipantId,
+    avatarUrl: p.id === myParticipantId ? myAvatarUrl : undefined,
     isWritePhase,
     showVotes: phase === 'vote' && (p.id === myParticipantId || isHost),
     votesUsed: votesPerPerson - p.votesRemaining,

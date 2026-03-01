@@ -13,6 +13,7 @@ import styles from './Footer.module.css';
       <a href="/projects" class={styles.navLink}>Projects</a>
       <a href="/blog" class={styles.navLink}>Blog</a>
       <a href="/arcade" class={styles.navLink}>Arcade</a>
+      <a href="/retro" id="footer-retro" class={styles.navLink} style="display:none">Retro</a>
     </nav>
 
     <div class={styles.serviceLinks}>
@@ -100,4 +101,11 @@ import styles from './Footer.module.css';
   document.getElementById('back-to-top')?.addEventListener('click', () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   });
+
+  // Show Retro link if user has a Clerk session
+  const uat = document.cookie.split('; ').find((c) => c.startsWith('__client_uat='));
+  const uatVal = uat?.split('=')[1];
+  if (uatVal && uatVal !== '0') {
+    document.getElementById('footer-retro')?.style.setProperty('display', '');
+  }
 </script>
