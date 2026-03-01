@@ -1,0 +1,192 @@
+.card {
+  composes: scanline-sweep scanline-sweep-hover from global;
+  background: var(--bg-surface);
+  border-left: 3px solid var(--border-color, var(--neon-mint));
+  border-radius: var(--radius-sm);
+  padding: 0.65rem 0.85rem;
+  position: relative;
+  z-index: 0;
+  overflow: hidden;
+  --sweep-color: var(--border-color, var(--neon-mint));
+  animation: cardSlideIn 0.25s ease-out backwards;
+  transition: transform var(--transition-fast);
+}
+
+.card:hover {
+  transform: translateX(3px);
+}
+
+@keyframes cardSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.text {
+  font-family: var(--font-body);
+  font-size: 0.84rem;
+  line-height: 1.55;
+  color: var(--text-primary);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.textEditable {
+  composes: text;
+  cursor: text;
+  border-radius: 2px;
+  transition: background var(--transition-fast);
+}
+
+.textEditable:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.textPrivate {
+  composes: text;
+  color: var(--text-muted);
+  filter: blur(4px);
+  user-select: none;
+  transition: filter var(--transition-normal);
+}
+
+.editTextarea {
+  font-family: var(--font-body);
+  font-size: 0.84rem;
+  line-height: 1.55;
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(191, 0, 255, 0.25);
+  border-radius: 2px;
+  padding: 2px 4px;
+  width: 100%;
+  resize: vertical;
+  outline: none;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 6px;
+}
+
+.author {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--text-muted);
+}
+
+.authorDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.voteBadge {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  color: var(--neon-purple);
+  background: rgba(191, 0, 255, 0.08);
+  padding: 1px 8px;
+  border-radius: 100px;
+  white-space: nowrap;
+  margin-left: auto;
+}
+
+.myVotesInline {
+  color: var(--text-muted);
+}
+
+.deleteBtn {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.7rem;
+  cursor: pointer;
+  opacity: 0;
+  transition: all var(--transition-fast);
+  padding: 2px 5px;
+  border-radius: var(--radius-sm);
+}
+
+.card:hover .deleteBtn {
+  opacity: 0.5;
+}
+
+.deleteBtn:hover {
+  opacity: 1 !important;
+  color: var(--neon-magenta);
+  background: rgba(255, 0, 255, 0.08);
+}
+
+/* Unvote button (mobile alternative to right-click) */
+.unvoteBtn {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: var(--neon-magenta);
+  background: rgba(255, 0, 255, 0.08);
+  border: 1px solid rgba(255, 0, 255, 0.2);
+  padding: 1px 8px;
+  border-radius: 100px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  margin-left: auto;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.card:hover .unvoteBtn {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.unvoteBtn:hover {
+  background: rgba(255, 0, 255, 0.15);
+  border-color: var(--neon-magenta);
+}
+
+/* Touch devices: always show unvote button and delete button with 44px touch targets */
+@media (hover: none) {
+  .unvoteBtn {
+    opacity: 1;
+    pointer-events: auto;
+    min-width: 44px;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .deleteBtn {
+    opacity: 0.5;
+    min-width: 44px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    animation: none;
+  }
+
+  .card:hover {
+    transform: none;
+  }
+}

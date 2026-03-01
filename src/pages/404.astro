@@ -1,13 +1,12 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import GlowText from '../components/ui/GlowText.astro';
 import styles from './NotFoundPage.module.css';
 ---
 
 <Layout title="404 — Bill Bergquist" description="Page not found." noindex={true}>
   <div class={styles.page}>
     <div class={styles.content}>
-      <GlowText size="large" color="magenta" animated class={styles.code}>404</GlowText>
+      <div class={`glitch-text ${styles.code}`} data-text="404">404</div>
       <h1 class={styles.title}>Page Not Found</h1>
       <p class={styles.message}>The page you're looking for doesn't exist or has been moved.</p>
       <a href="/" class={styles.homeLink}>Return Home</a>

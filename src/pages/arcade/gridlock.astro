@@ -1,0 +1,46 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import GridlockPage from '../../games/gridlock/GridlockPage';
+
+const jsonLdGame = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'VideoGame',
+  name: 'Gridlock: Showdown',
+  description: 'Classic falling-blocks puzzle game with a global leaderboard. Stack blocks, clear lines, and compete for the top score.',
+  genre: ['Puzzle', 'Arcade'],
+  gamePlatform: 'Web Browser',
+  applicationCategory: 'Game',
+  author: {
+    '@type': 'Person',
+    name: 'Bill Bergquist',
+    url: 'https://billbergquist.dev',
+  },
+  url: 'https://billbergquist.dev/arcade/gridlock',
+  offers: {
+    '@type': 'Offer',
+    price: '0',
+    priceCurrency: 'USD',
+  },
+});
+---
+
+<Layout
+  title="Gridlock: Showdown — Bill Bergquist"
+  description="Classic falling-blocks puzzle game with a global leaderboard. Stack blocks, clear lines, and compete for the highest score. Free to play in your browser."
+  canonical="/arcade/gridlock"
+  jsonLd={[jsonLdGame]}
+>
+  <div class="mobile-game-warning">
+    This game is not optimized for mobile play. For the best experience, use a desktop or laptop.
+  </div>
+  <div style="text-align: center; padding: 2rem 1rem;">
+    <h1 style="font-family: var(--font-heading); font-size: 2rem; color: var(--neon-purple); margin-bottom: 1rem;">
+      Gridlock: Showdown
+    </h1>
+    <p style="color: var(--text-secondary); max-width: 500px; margin: 0 auto 1.5rem; line-height: 1.6;">
+      A classic falling-blocks puzzle game with a competitive twist. Stack blocks, clear lines,
+      and submit your score to the global leaderboard. How high can you climb?
+    </p>
+  </div>
+  <GridlockPage client:only="react" />
+</Layout>

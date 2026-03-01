@@ -123,7 +123,7 @@
 
 @media (max-width: 640px) {
   .page {
-    padding: var(--space-md) var(--space-sm);
+    padding: var(--space-md) var(--space-md-lg);
   }
 
   .header {
@@ -132,5 +132,17 @@
 
   .intro {
     font-size: 0.9375rem;
+  }
+
+  .cta {
+    padding: var(--space-md);
+  }
+
+  .ctaText {
+    font-size: 1.125rem;
+  }
+
+  .ctaSubtext {
+    font-size: 0.875rem;
   }
 }

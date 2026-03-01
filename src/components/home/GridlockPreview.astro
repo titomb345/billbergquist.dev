@@ -1,0 +1,32 @@
+---
+import styles from '../../games/gridlock/GridlockPreview.module.css';
+
+// Mini Tetris board: a frozen mid-game snapshot
+// 8 rows x 6 cols showing an active T-piece falling toward a stack
+const grid: (string | null)[][] = [
+  [null, null, null, null, null, null],
+  [null, null, null, 'T',  null, null],
+  [null, null, 'T',  'T',  'T',  null],
+  [null, null, null, null, null, null],
+  [null, null, null, null, null, null],
+  ['L',  null, null, null, null, 'J'],
+  ['L',  'S',  'S',  'Z',  'Z',  'J'],
+  ['L',  'L',  'S',  'S',  'Z',  'J'],
+];
+
+const cells = grid.flat();
+---
+
+<div class={styles.gridlockPreview}>
+  <div class={styles.levelIndicator}>LV1</div>
+  <div class={styles.gridArea}>
+    {
+      cells.map((cell) => (
+        <div
+          class={`${styles.cell} ${cell ? styles[`cell${cell}`] : ''}`}
+        />
+      ))
+    }
+  </div>
+  <div class={styles.scoreIndicator}>4,200</div>
+</div>
