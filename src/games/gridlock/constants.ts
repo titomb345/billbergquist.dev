@@ -105,15 +105,26 @@ export function getWallKicks(
   return JLSTZ_KICKS[key] ?? [];
 }
 
-/** Neon colors for each piece type */
+/** Neon accent colors for each piece type (borders & glows) */
 export const PIECE_COLORS: Record<PieceType, string> = {
   I: '#00d4aa', // mint
-  O: '#f59e0b', // yellow
+  O: '#f59e0b', // amber
   T: '#bf00ff', // purple
-  S: '#22c55e', // green
-  Z: '#ff0066', // red/magenta
+  S: '#00f5ff', // cyan
+  Z: '#ff0066', // neon pink
   J: '#3b82f6', // blue
   L: '#ff6a00', // orange
+};
+
+/** Darkened cell fills for cyberpunk "neon in the dark" look */
+export const PIECE_DARK_COLORS: Record<PieceType, string> = {
+  I: '#0a2e25',
+  O: '#2e2008',
+  T: '#1f0033',
+  S: '#002a33',
+  Z: '#2e0015',
+  J: '#0c1a33',
+  L: '#2e1500',
 };
 
 /** Glow colors (lower opacity) for each piece type */
@@ -121,7 +132,7 @@ export const PIECE_GLOW_COLORS: Record<PieceType, string> = {
   I: 'rgba(0, 212, 170, 0.4)',
   O: 'rgba(245, 158, 11, 0.4)',
   T: 'rgba(191, 0, 255, 0.4)',
-  S: 'rgba(34, 197, 94, 0.4)',
+  S: 'rgba(0, 245, 255, 0.4)',
   Z: 'rgba(255, 0, 102, 0.4)',
   J: 'rgba(59, 130, 246, 0.4)',
   L: 'rgba(255, 106, 0, 0.4)',

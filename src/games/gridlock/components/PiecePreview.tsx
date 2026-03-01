@@ -1,5 +1,5 @@
 import type { PieceType } from '../types';
-import { PIECE_SHAPES, PIECE_COLORS, PIECE_GLOW_COLORS } from '../constants';
+import { PIECE_SHAPES, PIECE_COLORS, PIECE_DARK_COLORS, PIECE_GLOW_COLORS } from '../constants';
 import '../styles.css';
 
 interface PiecePreviewProps {
@@ -23,7 +23,8 @@ function PiecePreview({ type, label }: PiecePreviewProps) {
     }
   }
 
-  const color = type ? PIECE_COLORS[type] : undefined;
+  const dark = type ? PIECE_DARK_COLORS[type] : undefined;
+  const neon = type ? PIECE_COLORS[type] : undefined;
   const glow = type ? PIECE_GLOW_COLORS[type] : undefined;
 
   return (
@@ -37,8 +38,9 @@ function PiecePreview({ type, label }: PiecePreviewProps) {
             style={
               filled
                 ? {
-                    backgroundColor: color,
-                    boxShadow: `0 0 4px ${glow}`,
+                    backgroundColor: dark,
+                    borderColor: neon,
+                    boxShadow: `0 0 4px ${glow}, inset 0 0 3px ${glow}`,
                   }
                 : undefined
             }

@@ -5,6 +5,8 @@ import ProjectCard from '../components/projects/ProjectCard.astro';
 import creaticalcImg from '../assets/screenshots/creaticalc.png';
 import sportsshortcutsImg from '../assets/screenshots/sportsshortcuts.png';
 import crittercareImg from '../assets/screenshots/crittercare.png';
+import dartforgeImg from '../assets/screenshots/dartforge.png';
+import retroretroImg from '../assets/screenshots/retroretro.png';
 import styles from './ProjectsPage.module.css';
 
 const projects = [
@@ -23,7 +25,7 @@ const projects = [
       'A workflow tool for sports reporters and social media managers who need to publish injury updates fast. Generates standardized NFL and NBA game-day messages with autocomplete player search, team-specific formatting, and one-click copy. Built to save minutes on every alert during live games.',
     techStack: ['React', 'TypeScript', 'Material UI', 'Vite'],
     url: 'https://sportsshortcuts.com',
-    color: 'magenta' as const,
+    color: 'orange' as const,
     screenshot: sportsshortcutsImg,
   },
   {
@@ -35,6 +37,28 @@ const projects = [
     color: 'purple' as const,
     screenshot: crittercareImg,
   },
+  {
+    title: 'RetroRetro',
+    description:
+      'A real-time retrospective board I built for my team at Kasa. Create a room, add sticky notes across categorized columns, group related items, vote on priorities, and discuss as a team. Features phased workflows, a built-in timer, drag-and-drop grouping, and CSV export. Auth-gated to Kasa employees via Clerk.',
+    techStack: ['React', 'TypeScript', 'Cloudflare Workers', 'WebSocket', 'Clerk'],
+    url: 'https://billbergquist.dev/retro',
+    color: 'magenta' as const,
+    screenshot: retroretroImg,
+  },
+];
+
+const allProjects = [
+  ...projects,
+  {
+    title: 'DartForge',
+    description:
+      'A passion project born from years of playing DartMUD, a text-based multiplayer game that has been running since 1993. DartForge is a dedicated MUD client with an ANSI-capable terminal, real-time skill tracking, command aliases, and cloud sync for settings. Built as a Tauri desktop app with a web companion at dartforge.billbergquist.dev.',
+    techStack: ['React', 'TypeScript', 'Tauri', 'Rust', 'xterm.js'],
+    url: 'https://dartforge.billbergquist.dev',
+    color: 'mint' as const,
+    screenshot: dartforgeImg,
+  },
 ];
 
 const jsonLdProjects = JSON.stringify({
@@ -44,7 +68,7 @@ const jsonLdProjects = JSON.stringify({
   url: 'https://billbergquist.dev/projects',
   mainEntity: {
     '@type': 'ItemList',
-    itemListElement: projects.map((project, i) => ({
+    itemListElement: allProjects.map((project, i) => ({
       '@type': 'ListItem',
       position: i + 1,
       item: {
@@ -66,7 +90,7 @@ const jsonLdProjects = JSON.stringify({
 
 <Layout
   title="Projects — Web Apps by Bill Bergquist"
-  description="Web projects by Bill Bergquist: CreatiCalc, Sports Shortcuts, and Critter Care. Built with React, Astro, TypeScript, and modern web technologies."
+  description="Web projects by Bill Bergquist: CreatiCalc, Sports Shortcuts, Critter Care, RetroRetro, and DartForge. Built with React, Astro, TypeScript, Tauri, and modern web technologies."
   canonical="/projects"
   jsonLd={[jsonLdProjects]}
   ogImage="/og/projects.png"
@@ -88,7 +112,7 @@ const jsonLdProjects = JSON.stringify({
         WEB APPLICATIONS
       </GlowText>
       <div class={`${styles.grid} scroll-reveal`}>
-        {projects.map((project) => (
+        {allProjects.map((project) => (
           <div class="scroll-reveal-child">
             <ProjectCard {...project} />
           </div>
