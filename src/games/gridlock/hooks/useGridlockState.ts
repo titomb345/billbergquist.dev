@@ -8,7 +8,6 @@ import {
   getGravitySpeed,
   LOCK_DELAY,
   MAX_LOCK_RESETS,
-  LINE_CLEAR_DURATION,
 } from '../constants';
 import { createEmptyBoard, lockPiece, findCompletedLines, clearLines } from '../logic/boardLogic';
 import {
