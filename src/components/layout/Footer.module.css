@@ -27,6 +27,8 @@
 .nav {
   display: flex;
   gap: var(--space-xl);
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .navLink {
@@ -120,6 +122,8 @@
   display: flex;
   align-items: center;
   gap: var(--space-lg);
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .copyright {
@@ -144,22 +148,52 @@
   opacity: 1;
 }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   .content {
     padding: var(--space-lg) var(--space-md);
     gap: var(--space-md);
   }
 
   .nav {
-    gap: var(--space-lg);
+    gap: var(--space-md) var(--space-lg);
+  }
+}
+
+@media (max-width: 640px) {
+  .content {
+    padding: var(--space-lg) var(--space-md-lg);
+    gap: var(--space-md);
+  }
+
+  .nav {
+    display: grid;
+    grid-template-columns: repeat(3, auto);
+    gap: var(--space-sm) var(--space-lg);
+    justify-content: center;
+    text-align: center;
   }
 
   .social {
     gap: var(--space-md);
   }
 
-  .copyright {
-    font-size: 0.625rem;
+  .serviceLinks {
+    flex-direction: column;
+    gap: var(--space-xs);
+  }
+
+  .serviceDivider {
+    display: none;
+  }
+
+  .bottomRow {
+    flex-direction: column;
+    gap: var(--space-xs);
     text-align: center;
+  }
+
+  .copyright {
+    font-size: 0.5625rem;
+    letter-spacing: 1px;
   }
 }

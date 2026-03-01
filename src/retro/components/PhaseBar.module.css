@@ -1,0 +1,349 @@
+.bar {
+  padding: 0.75rem var(--space-lg);
+  background: linear-gradient(180deg, var(--bg-surface) 0%, transparent 100%);
+  border-bottom: 1px solid rgba(191, 0, 255, 0.08);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.topRow {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+}
+
+.left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  justify-self: start;
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+}
+
+.right {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Room badge */
+.roomBadge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0.3rem 0.65rem;
+  background: rgba(191, 0, 255, 0.06);
+  border: 1px solid rgba(191, 0, 255, 0.15);
+  border-radius: 100px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.roomBadge:hover {
+  background: rgba(191, 0, 255, 0.12);
+  border-color: rgba(191, 0, 255, 0.3);
+}
+
+.roomBadgeCode {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--neon-purple);
+  letter-spacing: 0.12em;
+}
+
+.roomBadgeIcon {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  transition: color var(--transition-fast);
+}
+
+.roomBadge:hover .roomBadgeIcon {
+  color: var(--neon-purple);
+}
+
+.copied {
+  color: var(--neon-mint) !important;
+}
+
+/* Connection indicator */
+.connDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.connOnline {
+  background: var(--neon-mint);
+  box-shadow: 0 0 6px var(--neon-mint-glow);
+}
+
+.connOffline {
+  background: var(--neon-magenta);
+  box-shadow: 0 0 6px var(--neon-magenta-glow);
+  animation: blink 1.5s ease-in-out infinite;
+}
+
+/* Stepper */
+.stepper {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+.step {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+.stepDot {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-heading);
+  font-size: 0.55rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border: 1.5px solid var(--bg-elevated);
+  color: var(--text-muted);
+  background: var(--bg-primary);
+  transition: all var(--transition-normal);
+  position: relative;
+  cursor: default;
+}
+
+.stepDotActive {
+  composes: stepDot;
+  border-color: var(--neon-purple);
+  color: var(--neon-purple);
+  background: rgba(191, 0, 255, 0.1);
+  box-shadow: 0 0 12px rgba(191, 0, 255, 0.25);
+}
+
+.stepDotDone {
+  composes: stepDot;
+  border-color: var(--neon-mint);
+  color: var(--neon-mint);
+  background: rgba(0, 212, 170, 0.08);
+}
+
+.stepDotFuture {
+  composes: stepDot;
+}
+
+.stepLine {
+  width: 32px;
+  height: 1.5px;
+  background: var(--bg-elevated);
+  transition: background var(--transition-normal);
+}
+
+.stepLineDone {
+  composes: stepLine;
+  background: var(--neon-mint);
+  box-shadow: 0 0 4px var(--neon-mint-glow);
+}
+
+.stepLineActive {
+  composes: stepLine;
+  background: linear-gradient(90deg, var(--neon-mint), var(--neon-purple));
+}
+
+/* Mobile controls row (hidden on desktop) */
+.mobileControls {
+  display: none;
+}
+
+/* Controls */
+.controls {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.ctrlBtn {
+  padding: 0.35rem 0.75rem;
+  font-family: var(--font-heading);
+  font-size: 0.6rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--bg-elevated);
+  border-radius: 100px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.ctrlBtn:hover {
+  border-color: var(--neon-purple);
+  color: var(--neon-purple);
+  background: rgba(191, 0, 255, 0.06);
+}
+
+.ctrlBtnPrimary {
+  composes: ctrlBtn;
+  border-color: rgba(191, 0, 255, 0.3);
+  color: var(--neon-purple);
+}
+
+.ctrlBtnPrimary:hover:not(:disabled) {
+  background: var(--neon-purple);
+  color: var(--bg-void);
+  box-shadow: 0 0 16px var(--neon-purple-glow);
+}
+
+.ctrlBtnPrimary:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+/* Vote settings */
+.voteSetting {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0.2rem 0.4rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--bg-elevated);
+  border-radius: 100px;
+}
+
+.voteSettingLabel {
+  font-family: var(--font-heading);
+  font-size: 0.55rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding-right: 2px;
+}
+
+.voteSettingBtn {
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.voteSettingBtn:hover {
+  border-color: var(--neon-purple);
+  color: var(--neon-purple);
+  background: rgba(191, 0, 255, 0.08);
+}
+
+.voteSettingValue {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--neon-purple);
+  min-width: 1.2em;
+  text-align: center;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+@media (max-width: 640px) {
+  .bar {
+    padding: 0.5rem var(--space-md-lg);
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .topRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-sm);
+    width: 100%;
+  }
+
+  .left {
+    gap: 6px;
+  }
+
+  .center {
+    flex: 1;
+    justify-content: center;
+    min-width: 0;
+  }
+
+  .right {
+    display: none;
+  }
+
+  .mobileControls {
+    display: flex;
+    justify-content: center;
+    padding-top: 2px;
+    border-top: 1px solid rgba(191, 0, 255, 0.06);
+  }
+
+  .mobileControls .controls {
+    justify-content: center;
+  }
+
+  .stepLine {
+    display: none;
+  }
+
+  .stepDot {
+    width: 20px;
+    height: 20px;
+    font-size: 0.45rem;
+  }
+
+  .stepper {
+    gap: 4px;
+  }
+
+  .step {
+    gap: 0;
+  }
+
+  .ctrlBtn {
+    padding: 0.5rem 0.85rem;
+    font-size: 0.6rem;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .voteSettingBtn {
+    width: 36px;
+    height: 36px;
+  }
+
+  .roomBadge {
+    min-height: 44px;
+    padding: 0.3rem 0.75rem;
+  }
+
+  .roomBadgeCode {
+    font-size: 0.68rem;
+  }
+}

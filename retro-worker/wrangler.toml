@@ -1,0 +1,12 @@
+name = "retro-worker"
+main = "src/index.ts"
+compatibility_date = "2024-12-01"
+
+[durable_objects]
+bindings = [
+  { name = "RETRO_ROOM", class_name = "RetroRoom" }
+]
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["RetroRoom"]

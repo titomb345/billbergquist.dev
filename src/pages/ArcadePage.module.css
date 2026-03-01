@@ -106,9 +106,9 @@
 
 .grid {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: repeat(2, 1fr);
   gap: var(--space-lg);
-  max-width: 480px;
+  max-width: 860px;
   margin: 0 auto;
 }
 
@@ -133,12 +133,13 @@
 
   .grid {
     grid-template-columns: 1fr;
+    max-width: 480px;
   }
 }
 
 @media (max-width: 640px) {
   .page {
-    padding: var(--space-md) var(--space-sm);
+    padding: var(--space-md) var(--space-md-lg);
   }
 
   .header {
@@ -151,6 +152,12 @@
 
   .cabinetFrame {
     padding: var(--space-sm);
+    border-width: 2px;
+    box-shadow: 0 0 10px var(--neon-magenta-glow);
+  }
+
+  .marquee {
+    margin-bottom: var(--space-lg);
   }
 }
 
@@ -166,4 +173,5 @@
   .scanlines {
     display: none;
   }
+
 }

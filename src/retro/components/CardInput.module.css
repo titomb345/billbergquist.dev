@@ -1,0 +1,96 @@
+.wrapper {
+  padding: 4px 0 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.inputRow {
+  position: relative;
+}
+
+.textarea {
+  width: 100%;
+  min-height: 52px;
+  padding: 0.55rem 0.7rem;
+  padding-right: 3.5rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px dashed rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 0.84rem;
+  line-height: 1.5;
+  resize: vertical;
+  outline: none;
+  transition: border-color var(--transition-fast), background var(--transition-fast);
+  box-sizing: border-box;
+}
+
+.textarea:focus {
+  border-color: rgba(191, 0, 255, 0.3);
+  border-style: solid;
+  background: rgba(191, 0, 255, 0.03);
+}
+
+.textarea::placeholder {
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* Character count */
+.charCount {
+  position: absolute;
+  bottom: 6px;
+  right: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  color: var(--text-muted);
+  opacity: 0.5;
+  pointer-events: none;
+  transition: all var(--transition-fast);
+}
+
+.charCountHidden {
+  composes: charCount;
+  opacity: 0;
+}
+
+.charCountWarn {
+  composes: charCount;
+  color: #f59e0b;
+  opacity: 0.8;
+}
+
+.charCountDanger {
+  composes: charCount;
+  color: var(--neon-magenta);
+  opacity: 1;
+}
+
+/* Button row */
+.btnRow {
+  display: flex;
+  justify-content: center;
+  margin-top: 4px;
+}
+
+.addBtn {
+  padding: 0.35rem 0.75rem;
+  background: none;
+  border: none;
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.addBtn:hover:not(:disabled) {
+  color: var(--neon-purple);
+  background: rgba(191, 0, 255, 0.04);
+}
+
+.addBtn:disabled {
+  opacity: 0.3;
+  cursor: default;
+}

@@ -2,6 +2,12 @@
   command = "npm run build"
   publish = "dist"
 
+# Serve the retro page for /retro/<roomcode> paths (clean URLs)
+[[redirects]]
+  from = "/retro/:code"
+  to = "/retro/index.html"
+  status = 200
+
 [[headers]]
   for = "/*"
   [headers.values]

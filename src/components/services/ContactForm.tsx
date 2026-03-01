@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from 'react';
+import { ErrorBoundary } from '../ui/ErrorBoundary';
 import styles from '../../pages/ServicesPage.module.css';
 
 function ContactForm() {
@@ -101,4 +102,12 @@ function ContactForm() {
   );
 }
 
-export default ContactForm;
+function ContactFormWithBoundary() {
+  return (
+    <ErrorBoundary>
+      <ContactForm />
+    </ErrorBoundary>
+  );
+}
+
+export default ContactFormWithBoundary;

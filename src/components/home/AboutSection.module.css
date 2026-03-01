@@ -80,6 +80,16 @@
   }
 }
 
+@media (max-width: 640px) {
+  .section {
+    padding: var(--space-lg) var(--space-md-lg);
+  }
+
+  .content {
+    padding: var(--space-md);
+  }
+}
+
 @media (max-width: 480px) {
   .highlights {
     flex-direction: column;

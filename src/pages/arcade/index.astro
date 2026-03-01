@@ -1,15 +1,15 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import GlowText from '../../components/ui/GlowText.astro';
 import Button from '../../components/ui/Button.astro';
 import GameCard from '../../components/ui/GameCard.astro';
 import MinesweeperRoguelikePreview from '../../components/home/MinesweeperRoguelikePreview.astro';
+import GridlockPreview from '../../components/home/GridlockPreview.astro';
 import styles from '../ArcadePage.module.css';
 ---
 
 <Layout
   title="Arcade — Browser Games by Bill Bergquist"
-  description="Browser-based games built through AI-assisted development. Play Minesweeper: Descent, a roguelike minesweeper with 10 floors and 19 power-ups."
+  description="Browser-based games built through AI-assisted development. Play Minesweeper: Descent and Gridlock: Showdown, free in your browser."
   canonical="/arcade"
   ogImage="/og/arcade.png"
 >
@@ -36,7 +36,7 @@ import styles from '../ArcadePage.module.css';
     </div>
 
     <header class={styles.header}>
-      <GlowText size="large" color="magenta" animated class={styles.title}>ARCADE</GlowText>
+      <h1 class="glitch-text" data-text="ARCADE">ARCADE</h1>
       <p class={styles.subtitle}>
         Welcome to my arcade—a collection of browser-based games built entirely through{' '}
         <span class="neon-text-orange">AI-assisted development</span>. These projects are my
@@ -56,6 +56,15 @@ import styles from '../ArcadePage.module.css';
         >
           <MinesweeperRoguelikePreview slot="preview" />
           <Button variant="primary" href="/arcade/descent" slot="action">Play Now</Button>
+        </GameCard>
+      </div>
+      <div class={`${styles.cabinetFrame} scroll-reveal-child`}>
+        <GameCard
+          title="Gridlock: Showdown"
+          description="Classic falling-blocks puzzle. Stack blocks, clear lines, and compete on the global leaderboard."
+        >
+          <GridlockPreview slot="preview" />
+          <Button variant="primary" href="/arcade/gridlock" slot="action">Play Now</Button>
         </GameCard>
       </div>
     </section>

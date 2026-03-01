@@ -298,9 +298,24 @@
 }
 
 @media (max-width: 640px) {
+  .hero {
+    padding: var(--space-lg) var(--space-md-lg);
+  }
+
   .cta {
     flex-direction: column;
-    align-items: center;
+    align-items: stretch;
+    width: 100%;
+    max-width: 320px;
+    margin: 0 auto;
+  }
+
+  .ctaButton,
+  .ctaButtonSecondary {
+    padding: var(--space-sm) var(--space-lg);
+    font-size: 0.875rem;
+    letter-spacing: 1px;
+    text-align: center;
   }
 }
 

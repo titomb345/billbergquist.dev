@@ -4,10 +4,25 @@ import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
   site: 'https://billbergquist.dev',
+  vite: {
+    plugins: [
+      {
+        name: 'retro-room-rewrite',
+        configureServer(server) {
+          server.middlewares.use((req, _res, next) => {
+            if (req.url && /^\/retro\/[A-Z0-9]{4}$/i.test(req.url)) {
+              req.url = '/retro/';
+            }
+            next();
+          });
+        },
+      },
+    ],
+  },
   integrations: [
     react(),
     sitemap({
-      filter: (page) => !page.includes('/404'),
+      filter: (page) => !page.includes('/404') && !page.includes('/retro'),
       customPages: [],
       serialize(item) {
         const priorities = {

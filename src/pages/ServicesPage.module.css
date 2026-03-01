@@ -589,14 +589,67 @@ a.trustItem:hover {
 
 @media (max-width: 640px) {
   .page {
-    padding: var(--space-md) var(--space-sm);
+    padding: var(--space-md) var(--space-md-lg);
   }
 
   .intro {
     font-size: 0.9375rem;
   }
 
+  .subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+  }
+
   .stepContent {
     padding-bottom: var(--space-md);
+  }
+
+  .step {
+    gap: var(--space-md);
+  }
+
+  .faqItem {
+    padding: var(--space-md);
+  }
+
+  .faqQuestion {
+    font-size: 0.9375rem;
+  }
+
+  .faqAnswer {
+    font-size: 0.875rem;
+  }
+
+  .serviceCard {
+    padding: var(--space-md);
+  }
+
+  .contactIntro {
+    font-size: 0.9375rem;
+  }
+
+  .headshot {
+    width: 120px;
+    height: 120px;
+  }
+
+  .whyItem {
+    padding-left: var(--space-sm);
+  }
+
+  .whyDescription {
+    font-size: 0.875rem;
+  }
+
+  .areaLink,
+  .areaText {
+    font-size: 0.75rem;
+    padding: var(--space-xs) var(--space-sm);
+  }
+
+  .techStripItem {
+    font-size: 0.75rem;
+    padding: var(--space-xs) var(--space-sm);
   }
 }

@@ -1,0 +1,81 @@
+import { SignIn } from '@clerk/clerk-react';
+import styles from './AuthGate.module.css';
+
+interface AuthGateProps {
+  error?: string;
+  onBack?: () => void;
+}
+
+export function AuthGate({ error, onBack }: AuthGateProps) {
+  return (
+    <div className={styles.container}>
+      <span className={styles.brand}>
+        Retro<span className={styles.brandAccent}>Retro</span>
+      </span>
+      {error ? (
+        <div className={styles.errorCard}>
+          <p className={styles.errorText}>{error}</p>
+          {onBack && (
+            <button className={styles.backBtn} onClick={onBack}>
+              Sign out and try again
+            </button>
+          )}
+        </div>
+      ) : (
+        <>
+          <p className={styles.subtitle}>Sign in with your Kasa Google account to continue.</p>
+          <SignIn
+            forceRedirectUrl="/retro"
+            signUpForceRedirectUrl="/retro"
+            appearance={{
+              variables: {
+                colorPrimary: '#bf00ff',
+                colorBackground: '#14141f',
+                colorText: '#ffffff',
+                colorTextSecondary: '#b0b0c0',
+                colorTextOnPrimaryBackground: '#ffffff',
+                colorInputBackground: 'rgba(255, 255, 255, 0.06)',
+                colorInputText: '#ffffff',
+                colorNeutral: '#ffffff',
+                borderRadius: '8px',
+                fontFamily: "'Space Grotesk Variable', sans-serif",
+              },
+              elements: {
+                rootBox: { width: '100%', maxWidth: '380px' },
+                card: {
+                  background: '#14141f',
+                  border: '1px solid rgba(255, 255, 255, 0.08)',
+                  backdropFilter: 'blur(8px)',
+                  boxShadow: 'none',
+                },
+                socialButtonsBlockButton: {
+                  background: 'rgba(255, 255, 255, 0.08)',
+                  border: '1px solid rgba(255, 255, 255, 0.15)',
+                  color: '#ffffff',
+                },
+                socialButtonsBlockButtonText: {
+                  color: '#ffffff',
+                },
+                headerTitle: {
+                  color: '#ffffff',
+                },
+                headerSubtitle: {
+                  color: '#b0b0c0',
+                },
+                footerActionLink: {
+                  color: '#bf00ff',
+                },
+                dividerLine: {
+                  borderColor: 'rgba(255, 255, 255, 0.08)',
+                },
+                dividerText: {
+                  color: '#6a6a7a',
+                },
+              },
+            }}
+          />
+        </>
+      )}
+    </div>
+  );
+}

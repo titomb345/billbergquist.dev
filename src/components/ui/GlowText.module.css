@@ -104,12 +104,22 @@
   }
 }
 
+@media (max-width: 640px) {
+  .medium {
+    font-size: 1.625rem;
+  }
+}
+
 @media (max-width: 480px) {
+  .medium {
+    font-size: 1.375rem;
+  }
+
   .large {
-    font-size: 2rem;
+    font-size: 1.75rem;
   }
 
   .xlarge {
-    font-size: 2.5rem;
+    font-size: 2.25rem;
   }
 }

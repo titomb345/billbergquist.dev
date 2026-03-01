@@ -255,11 +255,39 @@
 
 @media (max-width: 640px) {
   .article {
-    padding: var(--space-md) var(--space-sm);
+    padding: var(--space-md) var(--space-md-lg);
   }
 
   .meta {
     flex-direction: column;
     gap: var(--space-xs);
+  }
+
+  .content :global(blockquote) {
+    padding: var(--space-sm) var(--space-md);
+    margin: var(--space-md) 0;
+  }
+
+  .content :global(pre) {
+    padding: var(--space-sm);
+    margin: var(--space-md) 0;
+    font-size: 0.8125rem;
+  }
+
+  .content :global(h2) {
+    font-size: 1.25rem;
+    margin-top: var(--space-lg);
+  }
+
+  .content :global(h3) {
+    font-size: 1rem;
+  }
+
+  .ctaBox {
+    padding: var(--space-md);
+  }
+
+  .authorBox {
+    padding: var(--space-md);
   }
 }

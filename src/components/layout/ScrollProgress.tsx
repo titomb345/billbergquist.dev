@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { ErrorBoundary } from '../ui/ErrorBoundary';
 import styles from './ScrollProgress.module.css';
 
 function ScrollProgress() {
@@ -25,4 +26,12 @@ function ScrollProgress() {
   );
 }
 
-export default ScrollProgress;
+function ScrollProgressWithBoundary() {
+  return (
+    <ErrorBoundary>
+      <ScrollProgress />
+    </ErrorBoundary>
+  );
+}
+
+export default ScrollProgressWithBoundary;

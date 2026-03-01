@@ -1,0 +1,13 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import RetroApp from '../../retro/RetroApp';
+---
+
+<Layout
+  title="RetroRetro — Bill Bergquist"
+  description="Real-time retrospective board for team retros. Create a room, add sticky notes, vote, and discuss."
+  canonical="/retro"
+  noindex={true}
+>
+  <RetroApp client:only="react" />
+</Layout>

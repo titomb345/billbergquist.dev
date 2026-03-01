@@ -1,0 +1,156 @@
+.timer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  padding: 0.4rem var(--space-lg);
+  flex-wrap: wrap;
+}
+
+.display {
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  font-weight: 700;
+  min-width: 4em;
+  text-align: center;
+  transition: color var(--transition-normal);
+  letter-spacing: 0.05em;
+}
+
+.safe {
+  color: var(--neon-mint);
+  text-shadow: 0 0 8px var(--neon-mint-glow);
+}
+
+.warning {
+  color: var(--neon-orange);
+  text-shadow: 0 0 8px var(--neon-orange-glow);
+}
+
+.danger {
+  color: var(--neon-magenta);
+  text-shadow: 0 0 8px var(--neon-magenta-glow);
+  animation: timerPulse 1s ease-in-out infinite;
+}
+
+.expired {
+  color: var(--text-muted);
+}
+
+.timerControls {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.timerBtn {
+  padding: 0.3rem 0.7rem;
+  font-family: var(--font-heading);
+  font-size: 0.58rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--bg-elevated);
+  border-radius: 100px 0 0 100px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.timerBtn:hover {
+  border-color: var(--neon-purple);
+  color: var(--neon-purple);
+  background: rgba(191, 0, 255, 0.06);
+}
+
+.timerPickerToggle {
+  padding: 0.3rem 0.45rem;
+  font-size: 0.55rem;
+  color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--bg-elevated);
+  border-left: none;
+  border-radius: 0 100px 100px 0;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.timerPickerToggle:hover {
+  border-color: var(--neon-purple);
+  color: var(--neon-purple);
+  background: rgba(191, 0, 255, 0.06);
+}
+
+.durationPicker {
+  display: flex;
+  gap: 4px;
+}
+
+.durationOption {
+  padding: 0.25rem 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 100px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.durationOption:hover {
+  border-color: var(--neon-purple);
+  color: var(--neon-purple);
+  background: rgba(191, 0, 255, 0.06);
+}
+
+.durationOptionActive {
+  composes: durationOption;
+  border-color: rgba(191, 0, 255, 0.3);
+  color: var(--neon-purple);
+  background: rgba(191, 0, 255, 0.08);
+}
+
+@keyframes timerPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+@media (max-width: 640px) {
+  .timer {
+    padding: 0.4rem var(--space-md-lg);
+  }
+
+  .timerBtn {
+    min-height: 44px;
+    padding: 0.4rem 0.85rem;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .timerPickerToggle {
+    min-height: 44px;
+    min-width: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .durationPicker {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .durationOption {
+    min-height: 44px;
+    padding: 0.4rem 0.7rem;
+    display: inline-flex;
+    align-items: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .danger {
+    animation: none;
+  }
+}

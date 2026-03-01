@@ -13,6 +13,7 @@ import styles from './Footer.module.css';
       <a href="/projects" class={styles.navLink}>Projects</a>
       <a href="/blog" class={styles.navLink}>Blog</a>
       <a href="/arcade" class={styles.navLink}>Arcade</a>
+      <a href="/retro" id="footer-retro" class={styles.navLink} style="display:none">Retro</a>
     </nav>
 
     <div class={styles.serviceLinks}>
@@ -100,4 +101,11 @@ import styles from './Footer.module.css';
   document.getElementById('back-to-top')?.addEventListener('click', () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   });
+
+  // Show Retro link only for authorized @kasa.com users
+  try {
+    if (localStorage.getItem('retro-authorized') === '1') {
+      document.getElementById('footer-retro')?.style.setProperty('display', '');
+    }
+  } catch { /* noop */ }
 </script>
