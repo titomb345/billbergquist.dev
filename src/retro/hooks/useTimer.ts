@@ -1,21 +1,25 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+
+function calcRemaining(timerEnd: number | null): number {
+  if (timerEnd === null) return 0;
+  return Math.max(0, Math.ceil((timerEnd - Date.now()) / 1000));
+}
 
 export function useTimer(timerEnd: number | null) {
-  const [secondsRemaining, setSecondsRemaining] = useState(0);
+  const initialValue = useMemo(() => calcRemaining(timerEnd), [timerEnd]);
+  const [secondsRemaining, setSecondsRemaining] = useState(initialValue);
+
+  // Reset state when timerEnd changes
+  if (secondsRemaining !== initialValue && calcRemaining(timerEnd) === initialValue) {
+    setSecondsRemaining(initialValue);
+  }
 
   useEffect(() => {
-    if (timerEnd === null) {
-      setSecondsRemaining(0);
-      return;
-    }
+    if (timerEnd === null) return;
 
-    const update = () => {
-      const remaining = Math.max(0, Math.ceil((timerEnd - Date.now()) / 1000));
-      setSecondsRemaining(remaining);
-    };
-
-    update();
-    const interval = setInterval(update, 1000);
+    const interval = setInterval(() => {
+      setSecondsRemaining(calcRemaining(timerEnd));
+    }, 1000);
     return () => clearInterval(interval);
   }, [timerEnd]);
 

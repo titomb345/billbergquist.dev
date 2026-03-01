@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ClerkProvider, SignedIn, SignedOut, useClerk, useUser } from '@clerk/clerk-react';
 import { ErrorBoundary } from '../components/ui/ErrorBoundary';
 import { useWebSocket } from './hooks/useWebSocket';
@@ -42,27 +42,28 @@ export default function RetroApp() {
 function DomainGuard({ children }: { children: React.ReactNode }) {
   const { user, isLoaded } = useUser();
   const { signOut } = useClerk();
-  const [denied, setDenied] = useState(false);
+
+  const email = user?.primaryEmailAddress?.emailAddress ?? '';
+  const isAllowed = !isLoaded || !user || email.endsWith(`@${ALLOWED_DOMAIN}`);
 
   useEffect(() => {
     if (!isLoaded || !user) return;
-    const email = user.primaryEmailAddress?.emailAddress ?? '';
-    if (email.endsWith(`@${ALLOWED_DOMAIN}`)) {
-      try { localStorage.setItem('retro-authorized', '1'); } catch { /* noop */ }
-    } else {
-      try { localStorage.removeItem('retro-authorized'); } catch { /* noop */ }
-      setDenied(true);
-    }
-  }, [isLoaded, user]);
+    try {
+      if (isAllowed) {
+        localStorage.setItem('retro-authorized', '1');
+      } else {
+        localStorage.removeItem('retro-authorized');
+      }
+    } catch { /* noop */ }
+  }, [isLoaded, user, isAllowed]);
 
   if (!isLoaded) return null;
 
-  if (denied) {
+  if (!isAllowed) {
     return (
       <AuthGate
         error={`Access is restricted to @${ALLOWED_DOMAIN} accounts.`}
         onBack={() => {
-          setDenied(false);
           try { localStorage.removeItem('retro-authorized'); } catch { /* noop */ }
           signOut({ redirectUrl: '/retro' });
         }}
@@ -76,14 +77,14 @@ function DomainGuard({ children }: { children: React.ReactNode }) {
 function RetroAppInner() {
   const { user } = useUser();
   const [state, dispatch] = useRetroState();
-  const initialRoomCode = useMemo(getInitialRoomCode, []);
+  const initialRoomCode = useMemo(() => getInitialRoomCode(), []);
   const userName = user?.firstName || 'Anonymous';
 
   // Room code drives WebSocket connection. null = not connected.
   const [activeRoomCode, setActiveRoomCode] = useState<string | null>(initialRoomCode);
 
   // Queue a message to send once connected
-  const pendingMessageRef = useRef<ClientMessage | null>(null);
+  const [pendingMessage, setPendingMessage] = useState<ClientMessage | null>(null);
 
   const wsUrl = useMemo(() => {
     if (!activeRoomCode) return null;
@@ -165,38 +166,33 @@ function RetroAppInner() {
   const handleStatusChange = useCallback(
     (status: 'connecting' | 'connected' | 'disconnected' | 'error') => {
       dispatch({ type: 'CONNECTION_STATUS', status });
-
-      // Send pending message once connected
-      if (status === 'connected' && pendingMessageRef.current) {
-        const msg = pendingMessageRef.current;
-        pendingMessageRef.current = null;
-        sendRef.current(msg);
-      }
     },
     [dispatch],
   );
 
+  const handlePendingMessageSent = useCallback(() => {
+    setPendingMessage(null);
+  }, []);
+
   const { send, isConnected } = useWebSocket({
     url: wsUrl,
+    pendingMessage,
+    onPendingMessageSent: handlePendingMessageSent,
     onMessage: handleMessage,
     onStatusChange: handleStatusChange,
   });
-
-  const sendRef = useRef(send);
-  sendRef.current = send;
 
   const handleLobbyAction = useCallback(
     (msg: ClientMessage) => {
       if (msg.type === 'create') {
         const code = generateRoomCode();
-        pendingMessageRef.current = msg;
+        setPendingMessage(msg);
         setActiveRoomCode(code);
       } else if (msg.type === 'join') {
         if (activeRoomCode === msg.roomCode && isConnected()) {
-          // Already connected to this room, send directly
           send(msg);
         } else {
-          pendingMessageRef.current = msg;
+          setPendingMessage(msg);
           setActiveRoomCode(msg.roomCode);
         }
       } else {
