@@ -23,7 +23,12 @@ const DEFAULT_SETTINGS: RoomSettings = {
   timerDuration: 300,
 };
 
-const ROOM_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
+const ROOM_TTL_MS = 3 * 60 * 60 * 1000; // 3 hours
+const EMPTY_ROOM_CLEANUP_MS = 15 * 60 * 1000; // 15 min after all disconnect
+
+// Per-connection message rate limit: 30 messages per 5 seconds
+const MSG_RATE_WINDOW_MS = 5_000;
+const MSG_RATE_MAX = 30;
 
 interface WebSocketAttachment {
   participantId: string;
@@ -33,6 +38,7 @@ interface WebSocketAttachment {
 export class RetroRoom implements DurableObject {
   private state: DurableObjectState;
   private roomCode: string = '';
+  private msgRates = new Map<WebSocket, { count: number; resetAt: number }>();
 
   constructor(state: DurableObjectState, _env: unknown) {
     this.state = state;
@@ -61,6 +67,19 @@ export class RetroRoom implements DurableObject {
     return new Response('Not Found', { status: 404 });
   }
 
+  private isMessageRateLimited(ws: WebSocket): boolean {
+    const now = Date.now();
+    const entry = this.msgRates.get(ws);
+
+    if (!entry || now > entry.resetAt) {
+      this.msgRates.set(ws, { count: 1, resetAt: now + MSG_RATE_WINDOW_MS });
+      return false;
+    }
+
+    entry.count++;
+    return entry.count > MSG_RATE_MAX;
+  }
+
   async webSocketMessage(ws: WebSocket, rawMessage: string | ArrayBuffer): Promise<void> {
     const msgStr = typeof rawMessage === 'string' ? rawMessage : new TextDecoder().decode(rawMessage);
 
@@ -74,6 +93,11 @@ export class RetroRoom implements DurableObject {
 
     if (msg.type === 'ping') {
       this.send(ws, { type: 'pong' });
+      return;
+    }
+
+    if (this.isMessageRateLimited(ws)) {
+      this.send(ws, { type: 'error', message: 'Too many messages, slow down' });
       return;
     }
 
@@ -167,10 +191,12 @@ export class RetroRoom implements DurableObject {
   }
 
   async webSocketClose(ws: WebSocket, _code: number, _reason: string, _wasClean: boolean): Promise<void> {
+    this.msgRates.delete(ws);
     await this.handleDisconnect(ws);
   }
 
   async webSocketError(ws: WebSocket, _error: unknown): Promise<void> {
+    this.msgRates.delete(ws);
     await this.handleDisconnect(ws);
   }
 
@@ -178,10 +204,28 @@ export class RetroRoom implements DurableObject {
     const room = await this.getRoom();
     if (!room) return;
 
+    const age = Date.now() - room.createdAt;
     const connected = room.participants.some((p) => p.connected);
+
+    // Hard TTL: always clean up after max lifetime, even if connected
+    if (age >= ROOM_TTL_MS) {
+      // Close any remaining WebSocket connections
+      for (const ws of this.state.getWebSockets()) {
+        try { ws.close(1000, 'Room expired'); } catch { /* noop */ }
+      }
+      await this.state.storage.deleteAll();
+      return;
+    }
+
+    // Soft cleanup: no one connected, clean up
     if (!connected) {
       await this.state.storage.deleteAll();
+      return;
     }
+
+    // People still connected but room hasn't expired: reschedule
+    const remaining = ROOM_TTL_MS - age;
+    await this.state.storage.setAlarm(Date.now() + remaining);
   }
 
   // ── Room Lifecycle ──
@@ -262,6 +306,12 @@ export class RetroRoom implements DurableObject {
     ws.serializeAttachment({ participantId, roomCode } satisfies WebSocketAttachment);
     await this.saveRoom(room);
 
+    // Reset alarm to hard TTL (cancels any fast-cleanup alarm from disconnect)
+    const remaining = ROOM_TTL_MS - (Date.now() - room.createdAt);
+    if (remaining > 0) {
+      await this.state.storage.setAlarm(Date.now() + remaining);
+    }
+
     // Send full state to the joining participant
     this.send(ws, { type: 'sync', state: room, participantId });
 
@@ -281,6 +331,12 @@ export class RetroRoom implements DurableObject {
       participant.connected = false;
       await this.saveRoom(room);
       this.broadcast({ type: 'participantUpdate', participants: room.participants });
+
+      // If no one is connected, schedule fast cleanup (with reconnect grace period)
+      const anyConnected = room.participants.some((p) => p.connected);
+      if (!anyConnected) {
+        await this.state.storage.setAlarm(Date.now() + EMPTY_ROOM_CLEANUP_MS);
+      }
     }
   }
 

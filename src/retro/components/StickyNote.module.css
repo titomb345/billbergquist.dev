@@ -159,17 +159,22 @@
   border-color: var(--neon-magenta);
 }
 
-/* Touch devices: always show unvote button and delete button */
+/* Touch devices: always show unvote button and delete button with 44px touch targets */
 @media (hover: none) {
   .unvoteBtn {
     opacity: 1;
     pointer-events: auto;
+    min-width: 44px;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .deleteBtn {
     opacity: 0.5;
-    min-width: 32px;
-    min-height: 32px;
+    min-width: 44px;
+    min-height: 44px;
     display: flex;
     align-items: center;
     justify-content: center;

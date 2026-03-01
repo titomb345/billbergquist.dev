@@ -96,3 +96,21 @@
   70% { opacity: 1; }
   100% { opacity: 0; }
 }
+
+@media (max-width: 640px) {
+  .trigger {
+    min-height: 44px;
+    min-width: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .option {
+    min-height: 44px;
+    padding: 0.55rem 0.75rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+}

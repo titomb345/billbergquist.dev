@@ -43,7 +43,7 @@ export function Timer({ timerEnd, isHost, defaultDuration, onSend }: TimerProps)
   return (
     <div className={styles.timer}>
       {(isRunning || isExpired) && (
-        <span className={`${styles.display} ${colorClass}`}>
+        <span className={`${styles.display} ${colorClass}`} role="timer" aria-live="off" aria-label={isExpired ? "Time's up" : `${minutes} minutes ${seconds} seconds remaining`}>
           {isExpired ? "Time's up" : display}
         </span>
       )}

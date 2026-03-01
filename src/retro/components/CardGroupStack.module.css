@@ -104,5 +104,10 @@
   .unvoteBtn {
     opacity: 1;
     pointer-events: auto;
+    min-width: 44px;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
 }

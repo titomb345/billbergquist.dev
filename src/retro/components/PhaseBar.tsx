@@ -51,7 +51,7 @@ export function PhaseBar({ currentPhase, roomCode, isHost, connectionStatus, pri
   const hostControls = isHost && (
     <div className={styles.controls}>
       {currentPhase === 'write' && (
-        <button className={styles.ctrlBtn} onClick={() => onSend({ type: 'togglePrivacy' })}>
+        <button className={styles.ctrlBtn} onClick={() => onSend({ type: 'togglePrivacy' })} aria-label={privacyMode ? 'Reveal cards to everyone' : 'Hide cards from others'}>
           {privacyMode ? 'Reveal' : 'Hide'}
         </button>
       )}
@@ -66,10 +66,11 @@ export function PhaseBar({ currentPhase, roomCode, isHost, connectionStatus, pri
                 settings: { votesPerPerson: Math.max(1, room.settings.votesPerPerson - 1) },
               })
             }
+            aria-label="Decrease votes per person"
           >
             -
           </button>
-          <span className={styles.voteSettingValue}>{room.settings.votesPerPerson}</span>
+          <span className={styles.voteSettingValue} aria-label={`${room.settings.votesPerPerson} votes per person`}>{room.settings.votesPerPerson}</span>
           <button
             className={styles.voteSettingBtn}
             onClick={() =>
@@ -78,13 +79,14 @@ export function PhaseBar({ currentPhase, roomCode, isHost, connectionStatus, pri
                 settings: { votesPerPerson: Math.min(20, room.settings.votesPerPerson + 1) },
               })
             }
+            aria-label="Increase votes per person"
           >
             +
           </button>
         </div>
       )}
       {currentIndex > 0 && (
-        <button className={styles.ctrlBtn} onClick={handlePrevPhase}>
+        <button className={styles.ctrlBtn} onClick={handlePrevPhase} aria-label={`Go back to ${PHASE_LABELS[PHASE_ORDER[currentIndex - 1]]} phase`}>
           Back
         </button>
       )}
@@ -93,6 +95,7 @@ export function PhaseBar({ currentPhase, roomCode, isHost, connectionStatus, pri
           className={styles.ctrlBtnPrimary}
           onClick={handleNextPhase}
           disabled={currentPhase === 'write' && room.cards.length === 0}
+          aria-label={`Advance to ${PHASE_LABELS[PHASE_ORDER[currentIndex + 1]]} phase`}
         >
           Next
         </button>
@@ -106,9 +109,11 @@ export function PhaseBar({ currentPhase, roomCode, isHost, connectionStatus, pri
         <div className={styles.left}>
           <span
             className={`${styles.connDot} ${connectionStatus === 'connected' ? styles.connOnline : styles.connOffline}`}
+            role="status"
+            aria-label={connectionStatus === 'connected' ? 'Connected' : 'Disconnected'}
           />
 
-          <div className={styles.roomBadge} onClick={copyRoomLink} title="Copy room link">
+          <div className={styles.roomBadge} onClick={copyRoomLink} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); copyRoomLink(); } }} title="Copy room link" role="button" tabIndex={0} aria-label={`Room ${roomCode}. Click to copy invite link`}>
             <span className={styles.roomBadgeCode}>{roomCode}</span>
             <span className={`${styles.roomBadgeIcon} ${copied ? styles.copied : ''}`}>
               {copied ? '\u2713' : '\u2398'}
@@ -119,11 +124,12 @@ export function PhaseBar({ currentPhase, roomCode, isHost, connectionStatus, pri
         </div>
 
         <div className={styles.center}>
-          <div className={styles.stepper}>
+          <nav className={styles.stepper} aria-label="Retro phases">
             {PHASE_ORDER.map((phase, i) => {
               let dotClass = styles.stepDotFuture;
-              if (phase === currentPhase) dotClass = styles.stepDotActive;
-              else if (i < currentIndex) dotClass = styles.stepDotDone;
+              let status = 'upcoming';
+              if (phase === currentPhase) { dotClass = styles.stepDotActive; status = 'current'; }
+              else if (i < currentIndex) { dotClass = styles.stepDotDone; status = 'completed'; }
 
               let lineClass = styles.stepLine;
               if (i < currentIndex) lineClass = styles.stepLineDone;
@@ -131,14 +137,14 @@ export function PhaseBar({ currentPhase, roomCode, isHost, connectionStatus, pri
 
               return (
                 <div key={phase} className={styles.step}>
-                  {i > 0 && <div className={lineClass} />}
-                  <div className={dotClass} title={PHASE_LABELS[phase]}>
+                  {i > 0 && <div className={lineClass} aria-hidden="true" />}
+                  <div className={dotClass} title={PHASE_LABELS[phase]} aria-label={`${PHASE_LABELS[phase]} phase (${status})`} aria-current={phase === currentPhase ? 'step' : undefined}>
                     {i < currentIndex ? '\u2713' : STEP_ICONS[phase]}
                   </div>
                 </div>
               );
             })}
-          </div>
+          </nav>
         </div>
 
         {/* Desktop: controls inline in top row */}

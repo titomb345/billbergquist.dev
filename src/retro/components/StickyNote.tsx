@@ -1,20 +1,14 @@
 import { useState, useRef, useEffect } from 'react';
 import type { Card, ClientMessage, RetroPhase } from '../types';
 import { COLUMN_CSS_MAP } from '../constants';
+import { getAvatarColor } from '../utils/avatar';
 import styles from './StickyNote.module.css';
 
-const AVATAR_COLORS = [
-  '#bf00ff', '#00d4aa', '#ff6a00', '#ff00ff',
-  '#f59e0b', '#3b82f6', '#ef4444', '#8b5cf6',
-];
-
-function getAuthorColor(authorId: string): string {
-  let hash = 0;
-  for (let i = 0; i < authorId.length; i++) {
-    hash = authorId.charCodeAt(i) + ((hash << 5) - hash);
-  }
-  return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length];
-}
+const COLUMN_GLOW_MAP: Record<string, string> = {
+  mint: 'var(--neon-mint-glow)',
+  magenta: 'var(--neon-magenta-glow)',
+  orange: 'var(--neon-orange-glow)',
+};
 
 interface StickyNoteProps {
   card: Card;
@@ -31,12 +25,7 @@ interface StickyNoteProps {
 
 export function StickyNote({ card, columnColor, phase, canVote, canDelete, canEdit = false, isPrivate, onSend, myVoteCount = 0, hideVotes = false }: StickyNoteProps) {
   const cssColor = COLUMN_CSS_MAP[columnColor] ?? 'var(--neon-mint)';
-  const glowMap: Record<string, string> = {
-    mint: 'var(--neon-mint-glow)',
-    magenta: 'var(--neon-magenta-glow)',
-    orange: 'var(--neon-orange-glow)',
-  };
-  const glowColor = glowMap[columnColor] ?? 'var(--neon-mint-glow)';
+  const glowColor = COLUMN_GLOW_MAP[columnColor] ?? 'var(--neon-mint-glow)';
 
   const isVotable = phase === 'vote' && !hideVotes;
   const showVoteInfo = (phase === 'vote' || phase === 'discuss') && !hideVotes;
@@ -94,9 +83,26 @@ export function StickyNote({ card, columnColor, phase, canVote, canDelete, canEd
       }
       onClick={handleClick}
       onContextMenu={handleContextMenu}
+      onKeyDown={(e) => {
+        if (isVotable && e.key === 'Enter') {
+          e.preventDefault();
+          if (canVote) onSend({ type: 'vote', cardId: card.id });
+        }
+        if (isVotable && (e.key === 'Backspace' || e.key === 'Delete') && myVoteCount > 0) {
+          e.preventDefault();
+          onSend({ type: 'unvote', cardId: card.id });
+        }
+      }}
+      tabIndex={isVotable ? 0 : undefined}
+      role={isVotable ? 'button' : undefined}
+      aria-label={isVotable ? `${card.text}. ${card.votes} votes. Press Enter to vote, Backspace to unvote.` : undefined}
     >
       {canDelete && (
-        <button className={styles.deleteBtn} onClick={(e) => { e.stopPropagation(); onSend({ type: 'deleteCard', cardId: card.id }); }}>
+        <button
+          className={styles.deleteBtn}
+          onClick={(e) => { e.stopPropagation(); onSend({ type: 'deleteCard', cardId: card.id }); }}
+          aria-label="Delete card"
+        >
           x
         </button>
       )}
@@ -127,7 +133,7 @@ export function StickyNote({ card, columnColor, phase, canVote, canDelete, canEd
       <div className={styles.footer}>
         {card.authorName && (
           <span className={styles.author}>
-            <span className={styles.authorDot} style={{ background: getAuthorColor(card.authorId) }} />
+            <span className={styles.authorDot} style={{ background: getAvatarColor(card.authorId) }} />
             {card.authorName}
           </span>
         )}
@@ -148,6 +154,7 @@ export function StickyNote({ card, columnColor, phase, canVote, canDelete, canEd
               e.stopPropagation();
               onSend({ type: 'unvote', cardId: card.id });
             }}
+            aria-label={`Remove vote (${myVoteCount} of your votes on this card)`}
           >
             -1
           </button>

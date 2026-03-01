@@ -121,9 +121,31 @@
     padding: 0.4rem var(--space-md-lg);
   }
 
+  .timerBtn {
+    min-height: 44px;
+    padding: 0.4rem 0.85rem;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .timerPickerToggle {
+    min-height: 44px;
+    min-width: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   .durationPicker {
     flex-wrap: wrap;
     justify-content: center;
+  }
+
+  .durationOption {
+    min-height: 44px;
+    padding: 0.4rem 0.7rem;
+    display: inline-flex;
+    align-items: center;
   }
 }
 

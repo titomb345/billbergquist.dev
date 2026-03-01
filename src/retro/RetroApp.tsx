@@ -4,7 +4,7 @@ import { ErrorBoundary } from '../components/ui/ErrorBoundary';
 import { useWebSocket } from './hooks/useWebSocket';
 import { useRetroState } from './hooks/useRetroState';
 import type { ClientMessage, ServerMessage } from './types';
-import { WORKER_URL } from './constants';
+import { WORKER_URL, generateRoomCode } from './constants';
 import { Lobby } from './components/Lobby';
 import { Board } from './components/Board';
 import { AuthGate } from './components/AuthGate';
@@ -18,15 +18,6 @@ function getInitialRoomCode(): string | null {
   // Legacy fallback: /retro?room=ABCD
   const params = new URLSearchParams(window.location.search);
   return params.get('room')?.toUpperCase() ?? null;
-}
-
-const CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-function generateRoomCode(): string {
-  let code = '';
-  for (let i = 0; i < 4; i++) {
-    code += CHARS[Math.floor(Math.random() * CHARS.length)];
-  }
-  return code;
 }
 
 const ALLOWED_DOMAIN = 'kasa.com';

@@ -326,13 +326,21 @@
   }
 
   .ctrlBtn {
-    padding: 0.35rem 0.65rem;
-    font-size: 0.55rem;
+    padding: 0.5rem 0.85rem;
+    font-size: 0.6rem;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
   }
 
   .voteSettingBtn {
-    width: 28px;
-    height: 28px;
+    width: 36px;
+    height: 36px;
+  }
+
+  .roomBadge {
+    min-height: 44px;
+    padding: 0.3rem 0.75rem;
   }
 
   .roomBadgeCode {

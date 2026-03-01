@@ -9,26 +9,8 @@ import { GroupPhase } from './GroupPhase';
 import { CardGroupStack } from './CardGroupStack';
 import { StickyNote } from './StickyNote';
 import { computeVotableUnits, sortVotableUnits } from '../utils/votableUnits';
+import { getAvatarColor, getInitials } from '../utils/avatar';
 import styles from './Board.module.css';
-
-const AVATAR_COLORS = [
-  '#bf00ff', '#00d4aa', '#ff6a00', '#ff00ff',
-  '#f59e0b', '#3b82f6', '#ef4444', '#8b5cf6',
-];
-
-function getAvatarColor(id: string): string {
-  let hash = 0;
-  for (let i = 0; i < id.length; i++) {
-    hash = id.charCodeAt(i) + ((hash << 5) - hash);
-  }
-  return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length];
-}
-
-function getInitials(name: string): string {
-  const parts = name.trim().split(/\s+/);
-  if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
-  return name.slice(0, 2).toUpperCase();
-}
 
 interface BoardProps {
   room: RoomState;
@@ -193,7 +175,7 @@ export function Board({ room, isHost, myParticipantId, myAvatarUrl, connectionSt
       )}
 
       {room.phase === 'vote' && (
-        <p className={styles.mobileVoteHint}>Tap a card to vote. Use the -1 button to unvote.</p>
+        <p className={styles.mobileVoteHint}>Tap a card to vote. Use the -1 button to unvote. On keyboard: Enter to vote, Backspace to unvote.</p>
       )}
 
       {(room.phase === 'vote' || room.phase === 'discuss') && (
@@ -266,26 +248,28 @@ function VoteDiscussList({ room, myParticipantId, canVote, isHost, onSend }: Vot
   return (
     <>
       {isDiscuss && isHost && (
-        <div className={styles.focusControls}>
+        <div className={styles.focusControls} role="toolbar" aria-label="Discussion navigation">
           <button
             className={styles.focusBtn}
             onClick={handlePrev}
             disabled={!hasFocus || focusIndex <= 0}
+            aria-label="Previous item"
           >
             {'\u25C0'} Prev
           </button>
-          <span className={styles.focusCounter}>
+          <span className={styles.focusCounter} aria-live="polite">
             {hasFocus ? `${focusIndex + 1} / ${units.length}` : `${units.length} items`}
           </span>
           <button
             className={styles.focusBtnPrimary}
             onClick={handleNext}
             disabled={hasFocus && focusIndex >= units.length - 1}
+            aria-label={hasFocus ? 'Next item' : 'Start discussion'}
           >
             {hasFocus ? 'Next' : 'Start'} {'\u25B6'}
           </button>
           {hasFocus && (
-            <button className={styles.focusBtn} onClick={handleClearFocus}>
+            <button className={styles.focusBtn} onClick={handleClearFocus} aria-label="Show all items">
               Show All
             </button>
           )}

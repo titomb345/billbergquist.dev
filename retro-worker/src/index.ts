@@ -1,5 +1,4 @@
 import { RetroRoom } from './RetroRoom';
-import { generateRoomCode } from './utils';
 
 export { RetroRoom };
 
@@ -18,7 +17,7 @@ function corsHeaders(request: Request): Record<string, string> {
   const allowed = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
   return {
     'Access-Control-Allow-Origin': allowed,
-    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+    'Access-Control-Allow-Methods': 'GET, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type',
   };
 }
@@ -31,14 +30,6 @@ export default {
     // Handle CORS preflight
     if (request.method === 'OPTIONS') {
       return new Response(null, { status: 204, headers: cors });
-    }
-
-    // POST /api/rooms - Create a room, return the code
-    if (url.pathname === '/api/rooms' && request.method === 'POST') {
-      const roomCode = generateRoomCode();
-      return new Response(JSON.stringify({ roomCode }), {
-        headers: { 'Content-Type': 'application/json', ...cors },
-      });
     }
 
     // GET /api/rooms/:code/ws - WebSocket connection

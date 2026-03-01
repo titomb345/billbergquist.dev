@@ -37,6 +37,7 @@ export function ActionItems({ items, participants, onSend }: ActionItemsProps) {
               className={styles.checkbox}
               checked={item.completed}
               onChange={() => onSend({ type: 'toggleAction', actionId: item.id })}
+              aria-label={`Mark "${item.text}" as ${item.completed ? 'incomplete' : 'complete'}`}
             />
             <span className={styles.itemText}>{item.text}</span>
             <span className={styles.assignee}>{item.assignee}</span>
@@ -80,7 +81,7 @@ export function ActionItems({ items, participants, onSend }: ActionItemsProps) {
             }}
           />
         )}
-        <button className={styles.addBtn} onClick={handleAdd} disabled={!text.trim()}>
+        <button className={styles.addBtn} onClick={handleAdd} disabled={!text.trim()} aria-label="Add action item">
           Add
         </button>
       </div>

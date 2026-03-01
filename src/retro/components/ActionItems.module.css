@@ -234,4 +234,29 @@
     margin-left: auto;
     margin-top: 4px;
   }
+
+  .checkbox {
+    width: 28px;
+    height: 28px;
+  }
+
+  .checkbox:checked::after {
+    top: 4px;
+    left: 8px;
+    width: 7px;
+    height: 12px;
+  }
+
+  .addBtn {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .addInput,
+  .assigneeSelect,
+  .assigneeInput {
+    min-height: 44px;
+  }
 }

@@ -32,12 +32,12 @@ export function useWebSocket({ url, onMessage, onStatusChange }: UseWebSocketOpt
       reconnectAttemptRef.current = 0;
       onStatusRef.current('connected');
 
-      // Start keepalive ping
+      // Start keepalive ping (50s keeps connection alive under Cloudflare's 60s idle timeout)
       pingIntervalRef.current = setInterval(() => {
         if (ws.readyState === WebSocket.OPEN) {
           ws.send(JSON.stringify({ type: 'ping' }));
         }
-      }, 30000);
+      }, 50000);
     };
 
     ws.onmessage = (event) => {

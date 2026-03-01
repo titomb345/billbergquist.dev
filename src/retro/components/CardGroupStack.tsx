@@ -61,6 +61,22 @@ export function CardGroupStack({
       style={{ cursor: isVotable ? 'pointer' : undefined }}
       onClick={handleClick}
       onContextMenu={handleContextMenu}
+      onKeyDown={(e) => {
+        if (isVotable && e.key === 'Enter') {
+          e.preventDefault();
+          if (canVote) onSend({ type: 'vote', cardId: group.cardIds[0] });
+        }
+        if (isVotable && (e.key === 'Backspace' || e.key === 'Delete') && myVoteCount > 0) {
+          e.preventDefault();
+          const myVote = votes.find(
+            (v) => v.participantId === myParticipantId && group.cardIds.includes(v.cardId),
+          );
+          if (myVote) onSend({ type: 'unvote', cardId: myVote.cardId });
+        }
+      }}
+      tabIndex={isVotable ? 0 : undefined}
+      role={isVotable ? 'button' : 'group'}
+      aria-label={isVotable ? `${displayLabel} group. ${totalVotes} votes. ${cards.length} cards. Press Enter to vote, Backspace to unvote.` : `${displayLabel} group. ${cards.length} cards.`}
     >
       <div className={styles.stackHeader}>
         <span className={group.label?.trim() ? styles.stackLabel : styles.stackLabelEmpty}>
@@ -85,6 +101,7 @@ export function CardGroupStack({
                 );
                 if (myVote) onSend({ type: 'unvote', cardId: myVote.cardId });
               }}
+              aria-label={`Remove vote from ${displayLabel} group`}
             >
               -1
             </button>
