@@ -1,0 +1,108 @@
+.stack {
+  background: rgba(191, 0, 255, 0.03);
+  border: 1px dashed rgba(191, 0, 255, 0.18);
+  border-radius: var(--radius-lg);
+  padding: var(--space-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+}
+
+.stack:hover {
+  background: rgba(191, 0, 255, 0.06);
+  border-color: rgba(191, 0, 255, 0.3);
+}
+
+.stackHeader {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 2px 4px;
+}
+
+.stackMeta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.stackLabel {
+  font-family: var(--font-heading);
+  font-size: 0.88rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: var(--neon-purple);
+  text-shadow: 0 0 8px var(--neon-purple-glow);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.stackLabelEmpty {
+  composes: stackLabel;
+  color: var(--text-muted);
+  text-shadow: none;
+  font-style: italic;
+  font-weight: 400;
+  opacity: 0.6;
+}
+
+.stackCount {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.04);
+  padding: 1px 6px;
+  border-radius: 100px;
+  white-space: nowrap;
+}
+
+.voteBadge {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  color: var(--neon-purple);
+  background: rgba(191, 0, 255, 0.08);
+  padding: 1px 8px;
+  border-radius: 100px;
+  white-space: nowrap;
+}
+
+.myVotesInline {
+  color: var(--text-muted);
+}
+
+.unvoteBtn {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: var(--neon-magenta);
+  background: rgba(255, 0, 255, 0.08);
+  border: 1px solid rgba(255, 0, 255, 0.2);
+  padding: 1px 8px;
+  border-radius: 100px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.stack:hover .unvoteBtn {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.unvoteBtn:hover {
+  background: rgba(255, 0, 255, 0.15);
+  border-color: var(--neon-magenta);
+}
+
+@media (hover: none) {
+  .unvoteBtn {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}

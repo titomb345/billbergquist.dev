@@ -1,5 +1,6 @@
 import { useRef, useCallback, useState } from 'react';
 import { ArcadeCabinet } from '../../components/arcade';
+import { ErrorBoundary } from '../../components/ui/ErrorBoundary';
 import MinesweeperRoguelike from './MinesweeperRoguelike';
 
 function MinesweeperRoguelikePage() {
@@ -29,4 +30,12 @@ function MinesweeperRoguelikePage() {
   );
 }
 
-export default MinesweeperRoguelikePage;
+function MinesweeperRoguelikePageWithBoundary() {
+  return (
+    <ErrorBoundary>
+      <MinesweeperRoguelikePage />
+    </ErrorBoundary>
+  );
+}
+
+export default MinesweeperRoguelikePageWithBoundary;

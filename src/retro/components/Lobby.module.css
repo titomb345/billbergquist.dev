@@ -1,0 +1,209 @@
+.lobby {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 200px);
+  padding: var(--space-xl) var(--space-lg);
+}
+
+.brand {
+  font-family: var(--font-heading);
+  font-size: 1.8rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--neon-purple);
+  margin-bottom: var(--space-sm);
+  text-shadow: 0 0 30px var(--neon-purple-glow);
+}
+
+.brandAccent {
+  color: var(--neon-mint);
+  text-shadow: 0 0 30px var(--neon-mint-glow);
+}
+
+.subtitle {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-md);
+  text-align: center;
+  max-width: 420px;
+}
+
+.features {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: var(--space-xl);
+}
+
+.featurePill {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  padding: 3px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 100px;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.card {
+  width: 100%;
+  max-width: 380px;
+  background: rgba(255, 255, 255, 0.015);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.fieldGroup {
+  margin-bottom: var(--space-md);
+}
+
+.label {
+  display: block;
+  font-family: var(--font-heading);
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+
+.input {
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  box-sizing: border-box;
+}
+
+.input:focus {
+  border-color: rgba(191, 0, 255, 0.4);
+  box-shadow: 0 0 0 3px rgba(191, 0, 255, 0.06);
+}
+
+.input::placeholder {
+  color: var(--text-muted);
+}
+
+.codeInput {
+  composes: input;
+  font-family: var(--font-heading);
+  font-size: 1.3rem;
+  letter-spacing: 0.3em;
+  text-align: center;
+  text-transform: uppercase;
+  padding: 0.7rem;
+}
+
+.primaryBtn {
+  width: 100%;
+  padding: 0.7rem 1rem;
+  background: var(--neon-purple);
+  border: none;
+  border-radius: var(--radius-md);
+  color: var(--bg-void);
+  font-family: var(--font-heading);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  margin-top: var(--space-md);
+  position: relative;
+  overflow: hidden;
+}
+
+.primaryBtn:hover {
+  box-shadow: 0 0 24px var(--neon-purple-glow);
+  transform: translateY(-1px);
+}
+
+.primaryBtn:active {
+  transform: translateY(0);
+}
+
+.primaryBtn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.divider {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-family: var(--font-body);
+  margin: var(--space-md) 0;
+  position: relative;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 38%;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.divider::before {
+  left: 0;
+}
+
+.divider::after {
+  right: 0;
+}
+
+.ghostBtn {
+  width: 100%;
+  padding: 0.6rem 1rem;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-md);
+  color: var(--text-muted);
+  font-family: var(--font-heading);
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.ghostBtn:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.error {
+  color: var(--neon-magenta);
+  font-size: 0.8rem;
+  margin-top: var(--space-sm);
+  text-align: center;
+  font-family: var(--font-body);
+}
+
+@media (max-width: 640px) {
+  .lobby {
+    padding: var(--space-lg) var(--space-md);
+  }
+
+  .card {
+    padding: var(--space-md);
+  }
+}

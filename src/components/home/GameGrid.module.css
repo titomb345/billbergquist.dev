@@ -32,7 +32,7 @@
 
 @media (max-width: 640px) {
   .section {
-    padding: var(--space-lg) var(--space-md);
+    padding: var(--space-lg) var(--space-md-lg);
   }
 
   .grid {

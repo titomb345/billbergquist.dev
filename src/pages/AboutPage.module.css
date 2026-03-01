@@ -160,10 +160,28 @@
 
 @media (max-width: 640px) {
   .page {
-    padding: var(--space-md) var(--space-sm);
+    padding: var(--space-md) var(--space-md-lg);
+  }
+
+  .headshot {
+    width: 150px;
+    height: 150px;
   }
 
   .summary {
+    font-size: 0.9375rem;
+  }
+
+  .aiHighlight {
+    font-size: 0.9375rem;
+    padding: var(--space-sm) var(--space-md);
+  }
+
+  .servicesCta {
+    padding: var(--space-md);
+  }
+
+  .servicesCtaText {
     font-size: 0.9375rem;
   }
 }

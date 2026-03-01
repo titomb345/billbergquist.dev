@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { ErrorBoundary } from '../ui/ErrorBoundary';
 import styles from './Hero.module.css';
 
 function useTypewriter(text: string, delay: number, startAfter: number) {
@@ -77,4 +78,12 @@ function Hero() {
   );
 }
 
-export default Hero;
+function HeroWithBoundary() {
+  return (
+    <ErrorBoundary>
+      <Hero />
+    </ErrorBoundary>
+  );
+}
+
+export default HeroWithBoundary;

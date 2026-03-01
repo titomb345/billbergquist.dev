@@ -1,0 +1,108 @@
+.column {
+  background: rgba(255, 255, 255, 0.015);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  min-height: 300px;
+  max-height: calc(100vh - 260px);
+  overflow: hidden;
+  transition: border-color var(--transition-normal);
+}
+
+.column:hover {
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.header {
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  background: rgba(255, 255, 255, 0.01);
+  flex-shrink: 0;
+}
+
+.title {
+  font-family: var(--font-heading);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.countArea {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.count {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.04);
+  padding: 1px 8px;
+  border-radius: 100px;
+  min-width: 1.6em;
+  text-align: center;
+}
+
+
+/* Scrollable cards area */
+.cards {
+  flex: 1;
+  padding: var(--space-sm);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 0;
+}
+
+/* Custom scrollbar for card area */
+.cards::-webkit-scrollbar {
+  width: 4px;
+}
+
+.cards::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.cards::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 2px;
+}
+
+.cards::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* Fixed footer for input */
+.footer {
+  flex-shrink: 0;
+  padding: var(--space-sm);
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+  background: rgba(255, 255, 255, 0.008);
+  position: relative;
+}
+
+/* Empty state */
+.emptyState {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  opacity: 0.4;
+  text-align: center;
+  padding: var(--space-lg) var(--space-sm);
+  font-style: italic;
+}
+
+@media (max-width: 640px) {
+  .column {
+    min-height: 200px;
+    max-height: none;
+  }
+}
+
+
