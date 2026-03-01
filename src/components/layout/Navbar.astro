@@ -122,14 +122,11 @@ const navLinks = [
     if (e.key === 'Escape') closeMenu();
   });
 
-  // Show Retro link if user has a Clerk session
-  function showRetroIfAuthed() {
-    const uat = document.cookie.split('; ').find((c) => c.startsWith('__client_uat='));
-    const value = uat?.split('=')[1];
-    if (value && value !== '0') {
+  // Show Retro link only for authorized @kasa.com users
+  try {
+    if (localStorage.getItem('retro-authorized') === '1') {
       document.getElementById('nav-retro')?.style.setProperty('display', '');
       document.getElementById('nav-retro-mobile')?.style.setProperty('display', '');
     }
-  }
-  showRetroIfAuthed();
+  } catch { /* noop */ }
 </script>

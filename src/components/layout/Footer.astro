@@ -102,10 +102,10 @@ import styles from './Footer.module.css';
     window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 
-  // Show Retro link if user has a Clerk session
-  const uat = document.cookie.split('; ').find((c) => c.startsWith('__client_uat='));
-  const uatVal = uat?.split('=')[1];
-  if (uatVal && uatVal !== '0') {
-    document.getElementById('footer-retro')?.style.setProperty('display', '');
-  }
+  // Show Retro link only for authorized @kasa.com users
+  try {
+    if (localStorage.getItem('retro-authorized') === '1') {
+      document.getElementById('footer-retro')?.style.setProperty('display', '');
+    }
+  } catch { /* noop */ }
 </script>

@@ -60,7 +60,10 @@ export function Lobby({
           )}
           <div className={styles.userDetails}>
             <span className={styles.userName}>{userName}</span>
-            <button className={styles.signOutBtn} onClick={() => signOut({ redirectUrl: '/retro' })}>
+            <button className={styles.signOutBtn} onClick={() => {
+              try { localStorage.removeItem('retro-authorized'); } catch { /* noop */ }
+              signOut({ redirectUrl: '/retro' });
+            }}>
               Sign out
             </button>
           </div>

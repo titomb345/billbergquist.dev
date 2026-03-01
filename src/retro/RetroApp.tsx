@@ -56,7 +56,10 @@ function DomainGuard({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (!isLoaded || !user) return;
     const email = user.primaryEmailAddress?.emailAddress ?? '';
-    if (!email.endsWith(`@${ALLOWED_DOMAIN}`)) {
+    if (email.endsWith(`@${ALLOWED_DOMAIN}`)) {
+      try { localStorage.setItem('retro-authorized', '1'); } catch { /* noop */ }
+    } else {
+      try { localStorage.removeItem('retro-authorized'); } catch { /* noop */ }
       setDenied(true);
     }
   }, [isLoaded, user]);
@@ -69,6 +72,7 @@ function DomainGuard({ children }: { children: React.ReactNode }) {
         error={`Access is restricted to @${ALLOWED_DOMAIN} accounts.`}
         onBack={() => {
           setDenied(false);
+          try { localStorage.removeItem('retro-authorized'); } catch { /* noop */ }
           signOut({ redirectUrl: '/retro' });
         }}
       />
