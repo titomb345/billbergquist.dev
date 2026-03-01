@@ -1,4 +1,4 @@
-import { PIECE_COLORS } from './constants';
+import { PIECE_COLORS, PIECE_DARK_COLORS } from './constants';
 import type { PieceType } from './types';
 
 /**
@@ -35,9 +35,10 @@ function GridlockPreview() {
           style={{
             aspectRatio: '1',
             borderRadius: '2px',
-            backgroundColor: cell ? PIECE_COLORS[cell] : 'rgba(255,255,255,0.03)',
+            backgroundColor: cell ? PIECE_DARK_COLORS[cell] : 'rgba(255,255,255,0.02)',
+            border: cell ? `1px solid ${PIECE_COLORS[cell]}66` : undefined,
             boxShadow: cell
-              ? `0 0 4px ${PIECE_COLORS[cell]}40`
+              ? `0 0 3px ${PIECE_COLORS[cell]}30, inset 0 0 2px ${PIECE_COLORS[cell]}20`
               : undefined,
           }}
         />
