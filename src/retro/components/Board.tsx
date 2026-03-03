@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useCallback } from 'react';
 import type { RoomState, ClientMessage } from '../types';
 import { PhaseBar } from './PhaseBar';
 import { ParticipantList } from './ParticipantList';
@@ -9,6 +9,9 @@ import { ActionItems } from './ActionItems';
 import { GroupPhase } from './GroupPhase';
 import { CardGroupStack } from './CardGroupStack';
 import { StickyNote } from './StickyNote';
+import { RetroSummary } from './RetroSummary';
+import { ColumnTemplateSelector } from './ColumnTemplateSelector';
+import { COLUMN_CSS_MAP } from '../constants';
 import { computeVotableUnits, sortVotableUnits } from '../utils/votableUnits';
 import { getAvatarColor, getInitials } from '../utils/avatar';
 import styles from './Board.module.css';
@@ -17,15 +20,27 @@ interface BoardProps {
   room: RoomState;
   isHost: boolean;
   myParticipantId: string;
-  myAvatarUrl?: string;
   connectionStatus: string;
   onSend: (msg: ClientMessage) => void;
 }
 
-export function Board({ room, isHost, myParticipantId, myAvatarUrl, connectionStatus, onSend }: BoardProps) {
+export function Board({ room, isHost, myParticipantId, connectionStatus, onSend }: BoardProps) {
   const me = room.participants.find((p) => p.id === myParticipantId);
   const canVote = (me?.votesRemaining ?? 0) > 0;
   const [copied, setCopied] = useState(false);
+  const [soundMuted, setSoundMuted] = useState(() => {
+    try { return localStorage.getItem('retro-sound-muted') === '1'; } catch { return false; }
+  });
+
+  const toggleMute = useCallback(() => {
+    setSoundMuted((prev) => {
+      const next = !prev;
+      try { localStorage.setItem('retro-sound-muted', next ? '1' : '0'); } catch { /* noop */ }
+      return next;
+    });
+  }, []);
+
+  const allReady = room.phase === 'write' && room.participants.length > 1 && room.participants.every((p) => p.ready);
 
   // Hide site navbar and footer when retro board is active
   useEffect(() => {
@@ -55,30 +70,33 @@ export function Board({ room, isHost, myParticipantId, myAvatarUrl, connectionSt
         connectionStatus={connectionStatus}
         privacyMode={room.privacyMode}
         room={room}
+        allReady={allReady}
         onSend={onSend}
       />
 
-      {room.phase !== 'lobby' && (
+      {room.phase !== 'lobby' && room.phase !== 'summary' && (
         <ParticipantList
           participants={room.participants}
           phase={room.phase}
           myParticipantId={myParticipantId}
-          myAvatarUrl={myAvatarUrl}
           isHost={isHost}
           votesPerPerson={room.settings.votesPerPerson}
           onSend={onSend}
         />
       )}
 
-      {room.phase !== 'lobby' && room.phase !== 'actions' && (
+      {room.phase !== 'lobby' && room.phase !== 'actions' && room.phase !== 'summary' && (
         <Timer
           timerEnd={room.timerEnd}
           isHost={isHost}
           defaultDuration={room.settings.timerDuration}
+          muted={soundMuted}
+          onToggleMute={toggleMute}
           onSend={onSend}
         />
       )}
 
+      <div key={room.phase} className={styles.phaseContent}>
       {room.phase === 'lobby' && (
         <div className={styles.lobby}>
           <span className={styles.lobbyLabel}>
@@ -107,11 +125,11 @@ export function Board({ room, isHost, myParticipantId, myAvatarUrl, connectionSt
                 <div
                   key={p.id}
                   className={styles.lobbyAvatar}
-                  style={isMe && myAvatarUrl ? undefined : { background: getAvatarColor(p.id) }}
+                  style={p.avatarUrl ? undefined : { background: getAvatarColor(p.id) }}
                   title={p.name}
                 >
-                  {isMe && myAvatarUrl ? (
-                    <img src={myAvatarUrl} alt="" className={styles.lobbyAvatarImg} width={36} height={36} />
+                  {p.avatarUrl ? (
+                    <img src={p.avatarUrl} alt="" className={styles.lobbyAvatarImg} width={36} height={36} />
                   ) : (
                     getInitials(p.name)
                   )}
@@ -123,6 +141,30 @@ export function Board({ room, isHost, myParticipantId, myAvatarUrl, connectionSt
                 </div>
               );
             })}
+          </div>
+
+          <div className={styles.lobbyColumns}>
+            {isHost ? (
+              <ColumnTemplateSelector
+                selectedColumns={room.columns}
+                onChange={(cols) => onSend({ type: 'updateColumns', columns: cols })}
+              />
+            ) : (
+              <>
+                <span className={styles.lobbyColumnsLabel}>Columns</span>
+                <div className={styles.lobbyColumnPreview}>
+                  {room.columns.map((col) => (
+                    <span key={col.id} className={styles.lobbyColumnPill}>
+                      <span
+                        className={styles.lobbyColumnDot}
+                        style={{ background: COLUMN_CSS_MAP[col.color] ?? 'var(--text-muted)' }}
+                      />
+                      {col.label}
+                    </span>
+                  ))}
+                </div>
+              </>
+            )}
           </div>
 
           {isHost && (
@@ -147,7 +189,7 @@ export function Board({ room, isHost, myParticipantId, myAvatarUrl, connectionSt
 
       {room.phase === 'write' && (
         <>
-          <div className={styles.columns}>
+          <div className={styles.columns} style={{ '--col-count': room.columns.length } as React.CSSProperties}>
             {room.columns.map((col) => (
               <Column
                 key={col.id}
@@ -166,40 +208,59 @@ export function Board({ room, isHost, myParticipantId, myAvatarUrl, connectionSt
             participants={room.participants}
             myParticipantId={myParticipantId}
             privacyMode={room.privacyMode}
+            allReady={allReady}
             onSend={onSend}
           />
         </>
       )}
 
       {room.phase === 'group' && (
-        <GroupPhase
-          cards={room.cards}
-          groups={room.groups ?? []}
-          columns={room.columns}
-          onSend={onSend}
-        />
+        <>
+          <p className={styles.phaseHint}>Drag cards onto each other to group related topics.</p>
+          <GroupPhase
+            cards={room.cards}
+            groups={room.groups ?? []}
+            columns={room.columns}
+            onSend={onSend}
+          />
+        </>
       )}
 
       {room.phase === 'vote' && (
-        <p className={styles.mobileVoteHint}>Tap a card to vote. Use the -1 button to unvote. On keyboard: Enter to vote, Backspace to unvote.</p>
+        <p className={styles.phaseHint}>
+          <span className={styles.phaseHintDesktop}>Click to vote. Right-click to unvote.</span>
+          <span className={styles.phaseHintMobile}>Tap to vote. Use the -1 button to unvote.</span>
+        </p>
       )}
 
       {(room.phase === 'vote' || room.phase === 'discuss') && (
-        <div className={styles.votePhase}>
-          <VoteDiscussList
-            room={{ ...room, groups: room.groups ?? [] }}
-            myParticipantId={myParticipantId}
-            canVote={canVote}
-            isHost={isHost}
-            onSend={onSend}
-          />
-        </div>
+        <>
+          {room.phase === 'discuss' && (
+            <p className={styles.phaseHint}>Review items by vote count. {isHost ? 'Use the controls to focus on each item.' : 'Host controls which item is in focus.'}</p>
+          )}
+          <div className={styles.votePhase}>
+            <VoteDiscussList
+              room={{ ...room, groups: room.groups ?? [] }}
+              myParticipantId={myParticipantId}
+              canVote={canVote}
+              isHost={isHost}
+              onSend={onSend}
+            />
+          </div>
+        </>
       )}
 
       {room.phase === 'actions' && (
-        <ActionItems items={room.actionItems} participants={room.participants} onSend={onSend} />
+        <>
+          <p className={styles.phaseHint}>Add action items and assign owners. Drag to reorder.</p>
+          <ActionItems items={room.actionItems} participants={room.participants} onSend={onSend} />
+        </>
       )}
 
+      {room.phase === 'summary' && (
+        <RetroSummary room={room} />
+      )}
+      </div>
     </div>
   );
 }

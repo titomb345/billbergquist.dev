@@ -110,6 +110,16 @@
   box-shadow: 0 0 20px var(--neon-mint-glow);
 }
 
+.barAllReady {
+  border-color: rgba(0, 212, 170, 0.3);
+  animation: barSlideUp 0.3s ease-out, barGlowPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes barGlowPulse {
+  0%, 100% { box-shadow: 0 0 8px var(--neon-mint-glow); }
+  50% { box-shadow: 0 0 20px var(--neon-mint-glow); }
+}
+
 @media (max-width: 640px) {
   .bar {
     bottom: var(--space-sm);
@@ -128,5 +138,10 @@
 @media (prefers-reduced-motion: reduce) {
   .bar {
     animation: none;
+  }
+
+  .barAllReady {
+    animation: none;
+    box-shadow: 0 0 12px var(--neon-mint-glow);
   }
 }

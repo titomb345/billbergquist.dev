@@ -123,6 +123,40 @@
   opacity: 0.6;
 }
 
+.makeHostBtn {
+  font-family: var(--font-mono);
+  font-size: 0.5rem;
+  color: var(--text-muted);
+  background: none;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 100px;
+  padding: 1px 6px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  opacity: 0;
+  white-space: nowrap;
+}
+
+.avatar:hover .makeHostBtn {
+  opacity: 1;
+}
+
+.makeHostBtn:hover {
+  color: var(--neon-purple);
+  border-color: rgba(191, 0, 255, 0.3);
+  background: rgba(191, 0, 255, 0.08);
+}
+
+@media (hover: none) {
+  .makeHostBtn {
+    opacity: 1;
+    min-height: 28px;
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+  }
+}
+
 @media (max-width: 640px) {
   .list {
     padding: 0.4rem var(--space-md-lg);

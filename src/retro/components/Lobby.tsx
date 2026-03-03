@@ -31,12 +31,12 @@ export function Lobby({
 
   const handleCreate = () => {
     if (!canSubmit) return;
-    onSend({ type: 'create', name: userName, userId });
+    onSend({ type: 'create', name: userName, userId, avatarUrl: userImageUrl });
   };
 
   const handleJoin = () => {
     if (!canSubmit || roomCode.trim().length !== 4) return;
-    onSend({ type: 'join', name: userName, userId, roomCode: roomCode.trim().toUpperCase() });
+    onSend({ type: 'join', name: userName, userId, avatarUrl: userImageUrl, roomCode: roomCode.trim().toUpperCase() });
   };
 
   return (

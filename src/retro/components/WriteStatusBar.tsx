@@ -5,17 +5,18 @@ interface WriteStatusBarProps {
   participants: Participant[];
   myParticipantId: string;
   privacyMode: boolean;
+  allReady?: boolean;
   onSend: (msg: ClientMessage) => void;
 }
 
-export function WriteStatusBar({ participants, myParticipantId, privacyMode, onSend }: WriteStatusBarProps) {
+export function WriteStatusBar({ participants, myParticipantId, privacyMode, allReady: allReadyProp, onSend }: WriteStatusBarProps) {
   const me = participants.find((p) => p.id === myParticipantId);
   const isReady = me?.ready ?? false;
   const readyCount = participants.filter((p) => p.ready).length;
-  const allReady = participants.every((p) => p.ready);
+  const allReady = allReadyProp ?? participants.every((p) => p.ready);
 
   return (
-    <div className={styles.bar}>
+    <div className={`${styles.bar}${allReady ? ` ${styles.barAllReady}` : ''}`}>
       <span className={privacyMode ? styles.privacyHidden : styles.privacyVisible}>
         {privacyMode ? 'Cards hidden from others' : 'Cards visible to everyone'}
       </span>

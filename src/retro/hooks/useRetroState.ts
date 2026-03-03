@@ -14,7 +14,7 @@ export type RetroAction =
   | { type: 'CARD_DELETED'; cardId: string }
   | { type: 'CARD_EDITED'; cardId: string; text: string }
   | { type: 'VOTE_UPDATED'; cardId: string; votes: number; participantId: string; action: 'vote' | 'unvote'; primary: boolean; votesRemaining: number }
-  | { type: 'PHASE_CHANGED'; phase: RetroPhase }
+  | { type: 'PHASE_CHANGED'; phase: RetroPhase; startedAt?: number; endedAt?: number }
   | { type: 'TIMER_UPDATE'; timerEnd: number | null }
   | { type: 'PARTICIPANTS_UPDATE'; participants: Participant[] }
   | { type: 'ACTION_ADDED'; action: ActionItem }
@@ -26,6 +26,10 @@ export type RetroAction =
   | { type: 'GROUPS_UPDATED'; groups: CardGroup[]; cards: Card[]; votes?: Vote[]; participants?: Participant[] }
   | { type: 'SETTINGS_UPDATED'; settings: RoomSettings }
   | { type: 'FOCUS_UPDATED'; focusedItemId: string | null }
+  | { type: 'ACTION_DELETED'; actionId: string }
+  | { type: 'ACTION_EDITED'; actionId: string; text: string }
+  | { type: 'HOST_TRANSFERRED'; newHostId: string; participants: Participant[] }
+  | { type: 'ACTIONS_REORDERED'; actionItems: ActionItem[] }
   | { type: 'CONNECTION_STATUS'; status: RetroClientState['connectionStatus'] }
   | { type: 'ERROR'; message: string }
   | { type: 'RESET' };
@@ -107,7 +111,13 @@ function retroReducer(state: RetroClientState, action: RetroAction): RetroClient
       if (!state.room) return state;
       return {
         ...state,
-        room: { ...state.room, phase: action.phase, timerEnd: null },
+        room: {
+          ...state.room,
+          phase: action.phase,
+          timerEnd: null,
+          ...(action.startedAt !== undefined && { startedAt: action.startedAt }),
+          ...(action.endedAt !== undefined && { endedAt: action.endedAt }),
+        },
       };
 
     case 'TIMER_UPDATE':
@@ -187,6 +197,49 @@ function retroReducer(state: RetroClientState, action: RetroAction): RetroClient
       return {
         ...state,
         room: { ...state.room, focusedItemId: action.focusedItemId },
+      };
+
+    case 'ACTION_DELETED':
+      if (!state.room) return state;
+      return {
+        ...state,
+        room: {
+          ...state.room,
+          actionItems: state.room.actionItems.filter((a) => a.id !== action.actionId),
+        },
+      };
+
+    case 'ACTION_EDITED':
+      if (!state.room) return state;
+      return {
+        ...state,
+        room: {
+          ...state.room,
+          actionItems: state.room.actionItems.map((a) =>
+            a.id === action.actionId ? { ...a, text: action.text } : a,
+          ),
+        },
+      };
+
+    case 'HOST_TRANSFERRED':
+      if (!state.room) return state;
+      return {
+        ...state,
+        room: {
+          ...state.room,
+          hostId: action.newHostId,
+          participants: action.participants,
+        },
+      };
+
+    case 'ACTIONS_REORDERED':
+      if (!state.room) return state;
+      return {
+        ...state,
+        room: {
+          ...state.room,
+          actionItems: action.actionItems,
+        },
       };
 
     case 'CONNECTION_STATUS':

@@ -122,7 +122,7 @@ function RetroAppInner() {
           });
           break;
         case 'phaseChanged':
-          dispatch({ type: 'PHASE_CHANGED', phase: msg.phase });
+          dispatch({ type: 'PHASE_CHANGED', phase: msg.phase, startedAt: msg.startedAt, endedAt: msg.endedAt });
           break;
         case 'timerUpdate':
           dispatch({ type: 'TIMER_UPDATE', timerEnd: msg.timerEnd });
@@ -155,6 +155,18 @@ function RetroAppInner() {
         case 'focusUpdated':
           dispatch({ type: 'FOCUS_UPDATED', focusedItemId: msg.focusedItemId });
           break;
+        case 'actionDeleted':
+          dispatch({ type: 'ACTION_DELETED', actionId: msg.actionId });
+          break;
+        case 'actionEdited':
+          dispatch({ type: 'ACTION_EDITED', actionId: msg.actionId, text: msg.text });
+          break;
+        case 'hostTransferred':
+          dispatch({ type: 'HOST_TRANSFERRED', newHostId: msg.newHostId, participants: msg.participants });
+          break;
+        case 'actionsReordered':
+          dispatch({ type: 'ACTIONS_REORDERED', actionItems: msg.actionItems });
+          break;
         case 'error':
           dispatch({ type: 'ERROR', message: msg.message });
           break;
@@ -183,9 +195,20 @@ function RetroAppInner() {
     window.history.replaceState({}, '', '/retro');
   }, [dispatch]);
 
+  // Auto-rejoin on reconnect or page reload with room code in URL
+  const userImageUrl = user?.imageUrl;
+  const getJoinMessage = useCallback((): ClientMessage | null => {
+    const roomCode = state.room?.roomCode ?? initialRoomCode;
+    if (roomCode) {
+      return { type: 'join', name: userName, userId, avatarUrl: userImageUrl, roomCode };
+    }
+    return null;
+  }, [state.room?.roomCode, initialRoomCode, userName, userId, userImageUrl]);
+
   const { send, isConnected } = useWebSocket({
     url: wsUrl,
     pendingMessage,
+    getJoinMessage,
     onPendingMessageSent: handlePendingMessageSent,
     onMessage: handleMessage,
     onStatusChange: handleStatusChange,
@@ -214,6 +237,10 @@ function RetroAppInner() {
 
   // Show lobby if no room synced yet
   if (!state.room) {
+    // Auto-joining an existing room — show nothing while waiting for sync
+    if (initialRoomCode && !state.errorMessage) {
+      return null;
+    }
     return (
       <Lobby
         onSend={handleLobbyAction}
@@ -235,7 +262,6 @@ function RetroAppInner() {
       room={state.room}
       isHost={isHost}
       myParticipantId={state.myParticipantId!}
-      myAvatarUrl={user?.imageUrl}
       connectionStatus={state.connectionStatus}
       onSend={send}
     />

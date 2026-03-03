@@ -43,12 +43,74 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
+.dragHandle {
+  cursor: grab;
+  color: var(--text-muted);
+  font-size: 0.7rem;
+  opacity: 0.3;
+  transition: opacity var(--transition-fast);
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.dragHandle:active {
+  cursor: grabbing;
+}
+
+.item:hover .dragHandle {
+  opacity: 0.7;
+}
+
 .itemText {
   font-family: var(--font-body);
   font-size: 0.84rem;
   color: var(--text-primary);
   flex: 1;
   line-height: 1.5;
+  cursor: text;
+  border-radius: 2px;
+  transition: background var(--transition-fast);
+}
+
+.itemText:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.editInput {
+  flex: 1;
+  padding: 2px 4px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(191, 0, 255, 0.25);
+  border-radius: 2px;
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 0.84rem;
+  line-height: 1.5;
+  outline: none;
+}
+
+.deleteActionBtn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  cursor: pointer;
+  opacity: 0.4;
+  transition: all var(--transition-fast);
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+}
+
+.item:hover .deleteActionBtn {
+  opacity: 0.7;
+}
+
+.deleteActionBtn:hover {
+  opacity: 1 !important;
+  color: var(--neon-magenta);
+  background: rgba(255, 0, 255, 0.08);
 }
 
 .assignee {
@@ -206,5 +268,23 @@
   .assigneeSelect,
   .assigneeInput {
     min-height: 44px;
+  }
+
+  .deleteActionBtn {
+    opacity: 0.5;
+    min-width: 44px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .dragHandle {
+    opacity: 0.5;
+    min-width: 32px;
+    min-height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 }

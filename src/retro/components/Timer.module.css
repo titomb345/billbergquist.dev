@@ -138,6 +138,22 @@
   background: rgba(191, 0, 255, 0.08);
 }
 
+.muteBtn {
+  background: none;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 100px;
+  padding: 0.2rem 0.4rem;
+  font-size: 0.7rem;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  line-height: 1;
+}
+
+.muteBtn:hover {
+  border-color: rgba(191, 0, 255, 0.2);
+  background: rgba(191, 0, 255, 0.06);
+}
+
 @keyframes timerPulse {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.4; }

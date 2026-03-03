@@ -261,6 +261,15 @@
   text-align: center;
 }
 
+.ctrlBtnPulse {
+  animation: ctrlPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes ctrlPulse {
+  0%, 100% { box-shadow: 0 0 8px var(--neon-purple-glow); }
+  50% { box-shadow: 0 0 24px var(--neon-purple-glow); }
+}
+
 @keyframes blink {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.3; }

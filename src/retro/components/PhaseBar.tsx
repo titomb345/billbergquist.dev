@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import type { RetroPhase, ClientMessage, RoomState } from '../types';
-import { PHASE_ORDER, PHASE_LABELS } from '../constants';
+import { PHASE_ORDER, PHASE_LABELS, WORKFLOW_PHASES } from '../constants';
 import { ExportMenu } from './ExportMenu';
+import { ConfirmDialog } from './ConfirmDialog';
 import styles from './PhaseBar.module.css';
 
 interface PhaseBarProps {
@@ -11,12 +12,14 @@ interface PhaseBarProps {
   connectionStatus: string;
   privacyMode: boolean;
   room: RoomState;
+  allReady?: boolean;
   onSend: (msg: ClientMessage) => void;
 }
 
-export function PhaseBar({ currentPhase, roomCode, isHost, connectionStatus, privacyMode, room, onSend }: PhaseBarProps) {
+export function PhaseBar({ currentPhase, roomCode, isHost, connectionStatus, privacyMode, room, allReady, onSend }: PhaseBarProps) {
   const currentIndex = PHASE_ORDER.indexOf(currentPhase);
   const [copied, setCopied] = useState(false);
+  const [confirmAction, setConfirmAction] = useState<'resetVotes' | 'back' | 'endRetro' | null>(null);
 
   const handleNextPhase = () => {
     const nextIndex = currentIndex + 1;
@@ -30,6 +33,18 @@ export function PhaseBar({ currentPhase, roomCode, isHost, connectionStatus, pri
     if (prevIndex >= 0) {
       onSend({ type: 'movePhase', phase: PHASE_ORDER[prevIndex] });
     }
+  };
+
+  const handleBackClick = () => {
+    if (currentPhase === 'vote' || currentPhase === 'discuss') {
+      setConfirmAction('back');
+    } else {
+      handlePrevPhase();
+    }
+  };
+
+  const handleResetClick = () => {
+    setConfirmAction('resetVotes');
   };
 
   const copyRoomLink = () => {
@@ -48,7 +63,9 @@ export function PhaseBar({ currentPhase, roomCode, isHost, connectionStatus, pri
     actions: 'A',
   };
 
-  const hostControls = isHost && (
+  const workflowIndex = WORKFLOW_PHASES.indexOf(currentPhase as typeof WORKFLOW_PHASES[number]);
+
+  const hostControls = isHost && currentPhase !== 'summary' && (
     <div className={styles.controls}>
       {currentPhase === 'write' && (
         <button className={styles.ctrlBtn} onClick={() => onSend({ type: 'togglePrivacy' })} aria-label={privacyMode ? 'Reveal cards to everyone' : 'Hide cards from others'}>
@@ -87,7 +104,7 @@ export function PhaseBar({ currentPhase, roomCode, isHost, connectionStatus, pri
           </div>
           <button
             className={styles.ctrlBtn}
-            onClick={() => onSend({ type: 'resetVotes' })}
+            onClick={handleResetClick}
             disabled={room.votes.length === 0}
             aria-label="Reset all votes"
           >
@@ -95,14 +112,22 @@ export function PhaseBar({ currentPhase, roomCode, isHost, connectionStatus, pri
           </button>
         </>
       )}
-      {currentIndex > 0 && (
-        <button className={styles.ctrlBtn} onClick={handlePrevPhase} aria-label={`Go back to ${PHASE_LABELS[PHASE_ORDER[currentIndex - 1]]} phase`}>
+      {currentIndex > 1 && (
+        <button className={styles.ctrlBtn} onClick={handleBackClick} aria-label={`Go back to ${PHASE_LABELS[PHASE_ORDER[currentIndex - 1]]} phase`}>
           Back
         </button>
       )}
-      {currentIndex < PHASE_ORDER.length - 1 && (
+      {currentPhase === 'actions' ? (
         <button
           className={styles.ctrlBtnPrimary}
+          onClick={() => setConfirmAction('endRetro')}
+          aria-label="End retro and show summary"
+        >
+          End Retro
+        </button>
+      ) : currentIndex < WORKFLOW_PHASES.length - 1 && (
+        <button
+          className={`${styles.ctrlBtnPrimary}${allReady ? ` ${styles.ctrlBtnPulse}` : ''}`}
           onClick={handleNextPhase}
           disabled={currentPhase === 'write' && room.cards.length === 0}
           aria-label={`Advance to ${PHASE_LABELS[PHASE_ORDER[currentIndex + 1]]} phase`}
@@ -135,21 +160,22 @@ export function PhaseBar({ currentPhase, roomCode, isHost, connectionStatus, pri
 
         <div className={styles.center}>
           <nav className={styles.stepper} aria-label="Retro phases">
-            {PHASE_ORDER.map((phase, i) => {
+            {WORKFLOW_PHASES.map((phase, i) => {
+              const stepperIndex = workflowIndex === -1 ? WORKFLOW_PHASES.length : workflowIndex;
               let dotClass = styles.stepDotFuture;
               let status = 'upcoming';
-              if (phase === currentPhase) { dotClass = styles.stepDotActive; status = 'current'; }
-              else if (i < currentIndex) { dotClass = styles.stepDotDone; status = 'completed'; }
+              if (i === stepperIndex) { dotClass = styles.stepDotActive; status = 'current'; }
+              else if (i < stepperIndex) { dotClass = styles.stepDotDone; status = 'completed'; }
 
               let lineClass = styles.stepLine;
-              if (i < currentIndex) lineClass = styles.stepLineDone;
-              else if (i === currentIndex) lineClass = styles.stepLineActive;
+              if (i < stepperIndex) lineClass = styles.stepLineDone;
+              else if (i === stepperIndex) lineClass = styles.stepLineActive;
 
               return (
                 <div key={phase} className={styles.step}>
                   {i > 0 && <div className={lineClass} aria-hidden="true" />}
-                  <div className={dotClass} title={PHASE_LABELS[phase]} aria-label={`${PHASE_LABELS[phase]} phase (${status})`} aria-current={phase === currentPhase ? 'step' : undefined}>
-                    {i < currentIndex ? '\u2713' : STEP_ICONS[phase]}
+                  <div className={dotClass} title={PHASE_LABELS[phase]} aria-label={`${PHASE_LABELS[phase]} phase (${status})`} aria-current={i === stepperIndex ? 'step' : undefined}>
+                    {i < stepperIndex ? '\u2713' : STEP_ICONS[phase]}
                   </div>
                 </div>
               );
@@ -162,7 +188,38 @@ export function PhaseBar({ currentPhase, roomCode, isHost, connectionStatus, pri
       </div>
 
       {/* Mobile: controls on their own row */}
-      {isHost && <div className={styles.mobileControls}>{hostControls}</div>}
+      {isHost && currentPhase !== 'summary' && <div className={styles.mobileControls}>{hostControls}</div>}
+
+      {confirmAction === 'resetVotes' && (
+        <ConfirmDialog
+          title="Reset all votes?"
+          message="This will clear every participant's votes. This action cannot be undone."
+          confirmLabel="Reset"
+          variant="danger"
+          onConfirm={() => { onSend({ type: 'resetVotes' }); setConfirmAction(null); }}
+          onCancel={() => setConfirmAction(null)}
+        />
+      )}
+      {confirmAction === 'back' && (
+        <ConfirmDialog
+          title="Go back?"
+          message={`Going back to the ${PHASE_LABELS[PHASE_ORDER[currentIndex - 1]]} phase will reset progress in this phase.`}
+          confirmLabel="Go back"
+          variant="warning"
+          onConfirm={() => { handlePrevPhase(); setConfirmAction(null); }}
+          onCancel={() => setConfirmAction(null)}
+        />
+      )}
+      {confirmAction === 'endRetro' && (
+        <ConfirmDialog
+          title="End this retro?"
+          message="This will show the summary screen to all participants. This action cannot be undone."
+          confirmLabel="End Retro"
+          variant="warning"
+          onConfirm={() => { onSend({ type: 'movePhase', phase: 'summary' }); setConfirmAction(null); }}
+          onCancel={() => setConfirmAction(null)}
+        />
+      )}
     </div>
   );
 }

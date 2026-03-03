@@ -54,10 +54,12 @@ interface TimerProps {
   timerEnd: number | null;
   isHost: boolean;
   defaultDuration: number;
+  muted?: boolean;
+  onToggleMute?: () => void;
   onSend: (msg: ClientMessage) => void;
 }
 
-export function Timer({ timerEnd, isHost, defaultDuration, onSend }: TimerProps) {
+export function Timer({ timerEnd, isHost, defaultDuration, muted = false, onToggleMute, onSend }: TimerProps) {
   const { secondsRemaining, isExpired, isRunning } = useTimer(timerEnd);
   const [showPicker, setShowPicker] = useState(false);
   const [flash, setFlash] = useState(false);
@@ -67,6 +69,7 @@ export function Timer({ timerEnd, isHost, defaultDuration, onSend }: TimerProps)
   // Countdown ticks for the last 5 seconds
   useEffect(() => {
     if (
+      !muted &&
       isRunning &&
       secondsRemaining >= 1 &&
       secondsRemaining <= 5 &&
@@ -75,12 +78,12 @@ export function Timer({ timerEnd, isHost, defaultDuration, onSend }: TimerProps)
       playTick(600);
     }
     prevSecondsRef.current = secondsRemaining;
-  }, [secondsRemaining, isRunning]);
+  }, [secondsRemaining, isRunning, muted]);
 
   // Fire alert exactly once when timer transitions to expired
   useEffect(() => {
     if (isExpired && !prevExpiredRef.current) {
-      playChime();
+      if (!muted) playChime();
       setFlash(true);
       const timeout = setTimeout(() => setFlash(false), 1200);
       return () => clearTimeout(timeout);
@@ -109,6 +112,16 @@ export function Timer({ timerEnd, isHost, defaultDuration, onSend }: TimerProps)
   return (
     <div className={styles.timer}>
       {flash && <div className={styles.flash} aria-hidden="true" />}
+      {onToggleMute && (
+        <button
+          className={styles.muteBtn}
+          onClick={onToggleMute}
+          aria-label={muted ? 'Unmute timer sounds' : 'Mute timer sounds'}
+          title={muted ? 'Unmute' : 'Mute'}
+        >
+          {muted ? '\uD83D\uDD07' : '\uD83D\uDD0A'}
+        </button>
+      )}
       <span
         className={`${styles.display} ${isRunning || isExpired ? colorClass : styles.idle}`}
         role="timer"
