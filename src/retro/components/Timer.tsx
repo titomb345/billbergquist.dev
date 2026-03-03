@@ -84,12 +84,18 @@ export function Timer({ timerEnd, isHost, defaultDuration, muted = false, onTogg
   useEffect(() => {
     if (isExpired && !prevExpiredRef.current) {
       if (!muted) playChime();
-      setFlash(true);
+      const raf = requestAnimationFrame(() => {
+        setFlash(true);
+      });
       const timeout = setTimeout(() => setFlash(false), 1200);
-      return () => clearTimeout(timeout);
+      prevExpiredRef.current = isExpired;
+      return () => {
+        cancelAnimationFrame(raf);
+        clearTimeout(timeout);
+      };
     }
     prevExpiredRef.current = isExpired;
-  }, [isExpired]);
+  }, [isExpired, muted]);
 
   const minutes = Math.floor(secondsRemaining / 60);
   const seconds = secondsRemaining % 60;

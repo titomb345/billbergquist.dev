@@ -14,10 +14,7 @@ function useAnimatedCounter(target: number, duration = 1200, delay = 0): number 
   const rafRef = useRef<number | undefined>(undefined);
 
   useEffect(() => {
-    if (target === 0) {
-      setValue(0);
-      return;
-    }
+    if (target === 0) return;
 
     const timeout = setTimeout(() => {
       const start = performance.now();

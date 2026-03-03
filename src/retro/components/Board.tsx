@@ -120,7 +120,6 @@ export function Board({ room, isHost, myParticipantId, connectionStatus, onSend 
 
           <div className={styles.lobbyParticipants}>
             {room.participants.map((p) => {
-              const isMe = p.id === myParticipantId;
               return (
                 <div
                   key={p.id}

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { Column } from '../types';
-import { COLUMN_TEMPLATES, COLUMN_CSS_MAP, DEFAULT_COLUMNS } from '../constants';
+import { COLUMN_TEMPLATES, COLUMN_CSS_MAP } from '../constants';
 import styles from './ColumnTemplateSelector.module.css';
 
 interface ColumnTemplateSelectorProps {
@@ -10,7 +10,7 @@ interface ColumnTemplateSelectorProps {
 
 const COLORS: Array<Column['color']> = ['mint', 'magenta', 'orange', 'purple', 'yellow'];
 
-export function ColumnTemplateSelector({ selectedColumns, onChange }: ColumnTemplateSelectorProps) {
+export function ColumnTemplateSelector({ selectedColumns: _selectedColumns, onChange }: ColumnTemplateSelectorProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [customColumns, setCustomColumns] = useState<Column[]>([
     { id: 'col-1', label: '', color: 'mint' },
