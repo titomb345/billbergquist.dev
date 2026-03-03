@@ -16,7 +16,7 @@ function getFirstName(name: string): string {
   return name.trim().split(/\s+/)[0];
 }
 
-function ParticipantChip({ p, isMe, avatarUrl, isWritePhase, showVotes, votesUsed, votesPerPerson, onSend }: {
+function ParticipantChip({ p, isMe, avatarUrl, isWritePhase, showVotes, votesUsed, votesPerPerson }: {
   p: Participant;
   isMe: boolean;
   avatarUrl?: string;
@@ -24,13 +24,9 @@ function ParticipantChip({ p, isMe, avatarUrl, isWritePhase, showVotes, votesUse
   showVotes: boolean;
   votesUsed: number;
   votesPerPerson: number;
-  onSend: (msg: ClientMessage) => void;
 }) {
   return (
-    <div
-      className={`${styles.avatar} ${isWritePhase && isMe ? styles.avatarClickable : ''}`}
-      onClick={isWritePhase && isMe ? () => onSend({ type: 'toggleReady' }) : undefined}
-    >
+    <div className={styles.avatar}>
       {avatarUrl ? (
         <div className={styles.circle}>
           <img src={avatarUrl} alt="" className={styles.circleImg} width={26} height={26} />
@@ -61,8 +57,6 @@ function ParticipantChip({ p, isMe, avatarUrl, isWritePhase, showVotes, votesUse
 
 export function ParticipantList({ participants, phase, myParticipantId, myAvatarUrl, isHost, votesPerPerson, onSend }: ParticipantListProps) {
   const isWritePhase = phase === 'write';
-  const allReady = isWritePhase && participants.every((p) => p.ready);
-
   const me = participants.find((p) => p.id === myParticipantId);
   const others = participants.filter((p) => p.id !== myParticipantId);
 
@@ -71,26 +65,20 @@ export function ParticipantList({ participants, phase, myParticipantId, myAvatar
     isMe: p.id === myParticipantId,
     avatarUrl: p.id === myParticipantId ? myAvatarUrl : undefined,
     isWritePhase,
-    showVotes: phase === 'vote' && (p.id === myParticipantId || isHost),
+    showVotes: phase === 'vote',
     votesUsed: votesPerPerson - p.votesRemaining,
     votesPerPerson,
-    onSend,
   });
 
   return (
     <div className={styles.list}>
-      {me && (
-        <div className={styles.left}>
-          <ParticipantChip key={me.id} {...chipProps(me)} />
-        </div>
-      )}
+      <div className={styles.left}>
+        {me && <ParticipantChip key={me.id} {...chipProps(me)} />}
+      </div>
       <div className={styles.right}>
         {others.map((p) => (
           <ParticipantChip key={p.id} {...chipProps(p)} />
         ))}
-        {isWritePhase && allReady && (
-          <span className={styles.allReadyTag}>All ready!</span>
-        )}
       </div>
     </div>
   );

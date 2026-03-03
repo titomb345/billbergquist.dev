@@ -56,34 +56,44 @@ export function PhaseBar({ currentPhase, roomCode, isHost, connectionStatus, pri
         </button>
       )}
       {currentPhase === 'vote' && (
-        <div className={styles.voteSetting}>
-          <span className={styles.voteSettingLabel}>Votes</span>
+        <>
+          <div className={styles.voteSetting}>
+            <span className={styles.voteSettingLabel}>Votes</span>
+            <button
+              className={styles.voteSettingBtn}
+              onClick={() =>
+                onSend({
+                  type: 'updateSettings',
+                  settings: { votesPerPerson: Math.max(1, room.settings.votesPerPerson - 1) },
+                })
+              }
+              aria-label="Decrease votes per person"
+            >
+              -
+            </button>
+            <span className={styles.voteSettingValue} aria-label={`${room.settings.votesPerPerson} votes per person`}>{room.settings.votesPerPerson}</span>
+            <button
+              className={styles.voteSettingBtn}
+              onClick={() =>
+                onSend({
+                  type: 'updateSettings',
+                  settings: { votesPerPerson: Math.min(20, room.settings.votesPerPerson + 1) },
+                })
+              }
+              aria-label="Increase votes per person"
+            >
+              +
+            </button>
+          </div>
           <button
-            className={styles.voteSettingBtn}
-            onClick={() =>
-              onSend({
-                type: 'updateSettings',
-                settings: { votesPerPerson: Math.max(1, room.settings.votesPerPerson - 1) },
-              })
-            }
-            aria-label="Decrease votes per person"
+            className={styles.ctrlBtn}
+            onClick={() => onSend({ type: 'resetVotes' })}
+            disabled={room.votes.length === 0}
+            aria-label="Reset all votes"
           >
-            -
+            Reset
           </button>
-          <span className={styles.voteSettingValue} aria-label={`${room.settings.votesPerPerson} votes per person`}>{room.settings.votesPerPerson}</span>
-          <button
-            className={styles.voteSettingBtn}
-            onClick={() =>
-              onSend({
-                type: 'updateSettings',
-                settings: { votesPerPerson: Math.min(20, room.settings.votesPerPerson + 1) },
-              })
-            }
-            aria-label="Increase votes per person"
-          >
-            +
-          </button>
-        </div>
+        </>
       )}
       {currentIndex > 0 && (
         <button className={styles.ctrlBtn} onClick={handlePrevPhase} aria-label={`Go back to ${PHASE_LABELS[PHASE_ORDER[currentIndex - 1]]} phase`}>

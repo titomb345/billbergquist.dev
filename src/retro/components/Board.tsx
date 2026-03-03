@@ -2,6 +2,7 @@ import { useState, useMemo, useEffect } from 'react';
 import type { RoomState, ClientMessage } from '../types';
 import { PhaseBar } from './PhaseBar';
 import { ParticipantList } from './ParticipantList';
+import { WriteStatusBar } from './WriteStatusBar';
 import { Column } from './Column';
 import { Timer } from './Timer';
 import { ActionItems } from './ActionItems';
@@ -114,7 +115,11 @@ export function Board({ room, isHost, myParticipantId, myAvatarUrl, connectionSt
                   ) : (
                     getInitials(p.name)
                   )}
-                  <span className={styles.lobbyAvatarName}>{p.name}</span>
+                  <span className={`${styles.lobbyPresenceDot} ${p.connected ? styles.lobbyOnline : styles.lobbyOffline}`} />
+                  <span className={styles.lobbyAvatarName}>
+                    {p.name}
+                    {p.isHost && <span className={styles.lobbyHostTag}>host</span>}
+                  </span>
                 </div>
               );
             })}
@@ -157,11 +162,12 @@ export function Board({ room, isHost, myParticipantId, myAvatarUrl, connectionSt
               />
             ))}
           </div>
-          <div className={styles.privacyIndicator}>
-            <span className={room.privacyMode ? styles.privacyPillHidden : styles.privacyPillVisible}>
-              {room.privacyMode ? 'Cards hidden from others' : 'Cards visible to everyone'}
-            </span>
-          </div>
+          <WriteStatusBar
+            participants={room.participants}
+            myParticipantId={myParticipantId}
+            privacyMode={room.privacyMode}
+            onSend={onSend}
+          />
         </>
       )}
 

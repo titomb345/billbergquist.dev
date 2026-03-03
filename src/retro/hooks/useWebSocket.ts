@@ -7,9 +7,10 @@ interface UseWebSocketOptions {
   onPendingMessageSent: () => void;
   onMessage: (msg: ServerMessage) => void;
   onStatusChange: (status: 'connecting' | 'connected' | 'disconnected' | 'error') => void;
+  onReplaced?: () => void;
 }
 
-export function useWebSocket({ url, pendingMessage, onPendingMessageSent, onMessage, onStatusChange }: UseWebSocketOptions) {
+export function useWebSocket({ url, pendingMessage, onPendingMessageSent, onMessage, onStatusChange, onReplaced }: UseWebSocketOptions) {
   const wsRef = useRef<WebSocket | null>(null);
   const reconnectTimerRef = useRef<ReturnType<typeof setTimeout>>();
   const reconnectAttemptRef = useRef(0);
@@ -18,11 +19,13 @@ export function useWebSocket({ url, pendingMessage, onPendingMessageSent, onMess
   const onStatusRef = useRef(onStatusChange);
   const pendingRef = useRef(pendingMessage);
   const onPendingSentRef = useRef(onPendingMessageSent);
+  const onReplacedRef = useRef(onReplaced);
 
   useEffect(() => { onMessageRef.current = onMessage; }, [onMessage]);
   useEffect(() => { onStatusRef.current = onStatusChange; }, [onStatusChange]);
   useEffect(() => { pendingRef.current = pendingMessage; }, [pendingMessage]);
   useEffect(() => { onPendingSentRef.current = onPendingMessageSent; }, [onPendingMessageSent]);
+  useEffect(() => { onReplacedRef.current = onReplaced; }, [onReplaced]);
 
   useEffect(() => {
     if (!url) return;
@@ -68,8 +71,15 @@ export function useWebSocket({ url, pendingMessage, onPendingMessageSent, onMess
         }
       };
 
-      ws.onclose = () => {
+      ws.onclose = (event) => {
         clearPing();
+
+        // Session replaced by another connection — don't reconnect
+        if (event.code === 4001) {
+          onReplacedRef.current?.();
+          return;
+        }
+
         onStatusRef.current('disconnected');
 
         // Auto-reconnect with exponential backoff

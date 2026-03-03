@@ -160,6 +160,25 @@
   animation: ringPulse 2.5s ease-in-out infinite;
 }
 
+.lobbyPresenceDot {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid var(--bg-surface);
+  z-index: 1;
+}
+
+.lobbyOnline {
+  background: var(--neon-mint);
+}
+
+.lobbyOffline {
+  background: var(--text-muted);
+}
+
 .lobbyAvatarImg {
   width: 36px;
   height: 36px;
@@ -176,6 +195,18 @@
   left: 50%;
   transform: translateX(-50%);
   white-space: nowrap;
+}
+
+.lobbyHostTag {
+  font-family: var(--font-mono);
+  font-size: 0.5rem;
+  color: var(--neon-purple);
+  background: rgba(191, 0, 255, 0.12);
+  padding: 1px 5px;
+  border-radius: 100px;
+  letter-spacing: 0.04em;
+  margin-left: 4px;
+  vertical-align: middle;
 }
 
 .waitingDots {
@@ -257,35 +288,6 @@
 
 
 /* ── Privacy Indicator ── */
-.privacyIndicator {
-  display: flex;
-  justify-content: center;
-  padding: 0.5rem var(--space-lg);
-}
-
-.privacyPillHidden {
-  font-family: var(--font-heading);
-  font-size: 0.6rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--neon-orange);
-  background: rgba(255, 106, 0, 0.1);
-  border: 1px solid rgba(255, 106, 0, 0.2);
-  padding: 0.25rem 0.8rem;
-  border-radius: 100px;
-}
-
-.privacyPillVisible {
-  font-family: var(--font-heading);
-  font-size: 0.6rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--neon-mint);
-  background: rgba(0, 212, 170, 0.1);
-  border: 1px solid rgba(0, 212, 170, 0.2);
-  padding: 0.25rem 0.8rem;
-  border-radius: 100px;
-}
 
 /* ── Unified Vote / Discuss List ── */
 .votePhase {

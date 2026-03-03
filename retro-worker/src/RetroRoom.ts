@@ -102,12 +102,12 @@ export class RetroRoom implements DurableObject {
     }
 
     if (msg.type === 'create') {
-      await this.handleCreate(ws, msg.name, msg.settings);
+      await this.handleCreate(ws, msg.name, msg.userId, msg.settings);
       return;
     }
 
     if (msg.type === 'join') {
-      await this.handleJoin(ws, msg.name, msg.roomCode);
+      await this.handleJoin(ws, msg.name, msg.userId, msg.roomCode);
       return;
     }
 
@@ -154,9 +154,6 @@ export class RetroRoom implements DurableObject {
       case 'addAction':
         await this.handleAddAction(room, msg.text, msg.assignee);
         break;
-      case 'toggleAction':
-        await this.handleToggleAction(room, msg.actionId);
-        break;
       case 'updateColumns':
         await this.handleUpdateColumns(room, participantId, msg.columns);
         break;
@@ -178,6 +175,9 @@ export class RetroRoom implements DurableObject {
       case 'setGroupLabel':
         await this.handleSetGroupLabel(room, msg.groupId, msg.label);
         break;
+      case 'resetVotes':
+        await this.handleResetVotes(room, participantId);
+        break;
       case 'updateSettings':
         await this.handleUpdateSettings(room, participantId, msg.settings);
         break;
@@ -190,8 +190,10 @@ export class RetroRoom implements DurableObject {
     }
   }
 
-  async webSocketClose(ws: WebSocket, _code: number, _reason: string, _wasClean: boolean): Promise<void> {
+  async webSocketClose(ws: WebSocket, code: number, _reason: string, _wasClean: boolean): Promise<void> {
     this.msgRates.delete(ws);
+    // Skip disconnect handling if this socket was replaced by a new connection
+    if (code === 4001) return;
     await this.handleDisconnect(ws);
   }
 
@@ -230,7 +232,7 @@ export class RetroRoom implements DurableObject {
 
   // ── Room Lifecycle ──
 
-  private async handleCreate(ws: WebSocket, name: string, settingsOverride?: Partial<RoomSettings>): Promise<void> {
+  private async handleCreate(ws: WebSocket, name: string, userId: string, settingsOverride?: Partial<RoomSettings>): Promise<void> {
     const participantId = generateId();
     const roomCode = this.roomCode;
 
@@ -246,6 +248,7 @@ export class RetroRoom implements DurableObject {
         {
           id: participantId,
           name,
+          userId,
           isHost: true,
           connected: true,
           votesRemaining: settingsOverride?.votesPerPerson ?? DEFAULT_SETTINGS.votesPerPerson,
@@ -269,7 +272,7 @@ export class RetroRoom implements DurableObject {
     this.send(ws, { type: 'sync', state: room, participantId });
   }
 
-  private async handleJoin(ws: WebSocket, name: string, roomCode: string): Promise<void> {
+  private async handleJoin(ws: WebSocket, name: string, userId: string, roomCode: string): Promise<void> {
     const room = await this.getRoom();
     if (!room) {
       this.send(ws, { type: 'error', message: 'Room not found' });
@@ -281,21 +284,41 @@ export class RetroRoom implements DurableObject {
       return;
     }
 
-    // Check if reconnecting
+    // Check if reconnecting or taking over an existing session
     const attachment = ws.deserializeAttachment() as WebSocketAttachment | null;
     let participantId: string;
 
-    const existingByName = room.participants.find((p) => p.name === name && !p.connected);
-    if (existingByName) {
-      // Reconnecting participant
-      participantId = existingByName.id;
-      existingByName.connected = true;
+    const existing = room.participants.find((p) => p.userId === userId);
+    if (existing) {
+      // Reuse existing participant (reconnect or takeover)
+      participantId = existing.id;
+      existing.name = name; // Update display name in case it changed
+
+      if (existing.connected) {
+        // Kick the old connection — find its WebSocket and close it
+        const allSockets = this.state.getWebSockets();
+        for (const sock of allSockets) {
+          if (sock === ws) continue;
+          const sockAttachment = sock.deserializeAttachment() as WebSocketAttachment | null;
+          if (sockAttachment?.participantId === participantId) {
+            try {
+              sock.close(4001, 'Session replaced by new connection');
+            } catch {
+              // Already closed
+            }
+            break;
+          }
+        }
+      }
+
+      existing.connected = true;
     } else {
       // New participant
       participantId = generateId();
       room.participants.push({
         id: participantId,
         name,
+        userId,
         isHost: false,
         connected: true,
         votesRemaining: room.settings.votesPerPerson - room.votes.filter((v) => v.participantId === participantId).length,
@@ -555,21 +578,11 @@ export class RetroRoom implements DurableObject {
       id: generateId(),
       text: trimmed,
       assignee: assignee.trim(),
-      completed: false,
     };
 
     room.actionItems.push(action);
     await this.saveRoom(room);
     this.broadcast({ type: 'actionAdded', action });
-  }
-
-  private async handleToggleAction(room: RoomState, actionId: string): Promise<void> {
-    const action = room.actionItems.find((a) => a.id === actionId);
-    if (!action) return;
-
-    action.completed = !action.completed;
-    await this.saveRoom(room);
-    this.broadcast({ type: 'actionToggled', actionId, completed: action.completed });
   }
 
   // ── Column Management ──
@@ -608,6 +621,19 @@ export class RetroRoom implements DurableObject {
   }
 
   // ── Card Grouping ──
+
+  private clearAllVotes(room: RoomState): boolean {
+    if (room.votes.length === 0) return false;
+
+    room.votes = [];
+    for (const card of room.cards) {
+      card.votes = 0;
+    }
+    for (const p of room.participants) {
+      p.votesRemaining = room.settings.votesPerPerson;
+    }
+    return true;
+  }
 
   private async handleGroupCards(room: RoomState, cardIds: string[]): Promise<void> {
     if (room.phase !== 'group') return;
@@ -660,8 +686,14 @@ export class RetroRoom implements DurableObject {
       }
     }
 
+    const votesCleared = this.clearAllVotes(room);
     await this.saveRoom(room);
-    this.broadcast({ type: 'groupsUpdated', groups: room.groups, cards: room.cards });
+    this.broadcast({
+      type: 'groupsUpdated',
+      groups: room.groups,
+      cards: room.cards,
+      ...(votesCleared && { votes: room.votes, participants: room.participants }),
+    });
   }
 
   private async handleUngroupCard(room: RoomState, cardId: string): Promise<void> {
@@ -685,8 +717,14 @@ export class RetroRoom implements DurableObject {
       room.groups = room.groups.filter((g) => g.id !== group.id);
     }
 
+    const votesCleared = this.clearAllVotes(room);
     await this.saveRoom(room);
-    this.broadcast({ type: 'groupsUpdated', groups: room.groups, cards: room.cards });
+    this.broadcast({
+      type: 'groupsUpdated',
+      groups: room.groups,
+      cards: room.cards,
+      ...(votesCleared && { votes: room.votes, participants: room.participants }),
+    });
   }
 
   private async handleDissolveGroup(room: RoomState, groupId: string): Promise<void> {
@@ -701,8 +739,14 @@ export class RetroRoom implements DurableObject {
 
     room.groups = room.groups.filter((g) => g.id !== groupId);
 
+    const votesCleared = this.clearAllVotes(room);
     await this.saveRoom(room);
-    this.broadcast({ type: 'groupsUpdated', groups: room.groups, cards: room.cards });
+    this.broadcast({
+      type: 'groupsUpdated',
+      groups: room.groups,
+      cards: room.cards,
+      ...(votesCleared && { votes: room.votes, participants: room.participants }),
+    });
   }
 
   private async handleSetGroupLabel(room: RoomState, groupId: string, label: string): Promise<void> {
@@ -713,6 +757,18 @@ export class RetroRoom implements DurableObject {
 
     await this.saveRoom(room);
     this.broadcast({ type: 'groupsUpdated', groups: room.groups, cards: room.cards });
+  }
+
+  // ── Vote Reset ──
+
+  private async handleResetVotes(room: RoomState, participantId: string): Promise<void> {
+    if (room.hostId !== participantId) return;
+    if (room.phase !== 'vote') return;
+
+    if (!this.clearAllVotes(room)) return;
+
+    await this.saveRoom(room);
+    this.broadcast({ type: 'votesReset', cards: room.cards, votes: room.votes, participants: room.participants });
   }
 
   // ── Settings ──

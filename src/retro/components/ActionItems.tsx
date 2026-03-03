@@ -31,14 +31,7 @@ export function ActionItems({ items, participants, onSend }: ActionItemsProps) {
 
       <div className={styles.list}>
         {items.map((item) => (
-          <div key={item.id} className={item.completed ? styles.itemCompleted : styles.item}>
-            <input
-              type="checkbox"
-              className={styles.checkbox}
-              checked={item.completed}
-              onChange={() => onSend({ type: 'toggleAction', actionId: item.id })}
-              aria-label={`Mark "${item.text}" as ${item.completed ? 'incomplete' : 'complete'}`}
-            />
+          <div key={item.id} className={styles.item}>
             <span className={styles.itemText}>{item.text}</span>
             <span className={styles.assignee}>{item.assignee}</span>
           </div>

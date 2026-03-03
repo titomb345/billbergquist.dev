@@ -56,9 +56,8 @@ export function exportAsMarkdown(room: RoomState): string {
   if (room.actionItems.length > 0) {
     lines.push('## Action Items');
     for (const item of room.actionItems) {
-      const check = item.completed ? 'x' : ' ';
       const assignee = item.assignee ? ` (@${item.assignee})` : '';
-      lines.push(`- [${check}] ${item.text}${assignee}`);
+      lines.push(`- ${item.text}${assignee}`);
     }
     lines.push('');
   }
@@ -99,7 +98,6 @@ export function exportAsJson(room: RoomState): string {
     actionItems: room.actionItems.map((a) => ({
       text: a.text,
       assignee: a.assignee,
-      completed: a.completed,
     })),
   };
 

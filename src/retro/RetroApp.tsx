@@ -79,6 +79,7 @@ function RetroAppInner() {
   const [state, dispatch] = useRetroState();
   const initialRoomCode = useMemo(() => getInitialRoomCode(), []);
   const userName = user?.firstName || 'Anonymous';
+  const userId = user?.id || '';
 
   // Room code drives WebSocket connection. null = not connected.
   const [activeRoomCode, setActiveRoomCode] = useState<string | null>(initialRoomCode);
@@ -132,9 +133,7 @@ function RetroAppInner() {
         case 'actionAdded':
           dispatch({ type: 'ACTION_ADDED', action: msg.action });
           break;
-        case 'actionToggled':
-          dispatch({ type: 'ACTION_TOGGLED', actionId: msg.actionId, completed: msg.completed });
-          break;
+
         case 'columnsUpdated':
           dispatch({ type: 'COLUMNS_UPDATED', columns: msg.columns });
           break;
@@ -144,8 +143,11 @@ function RetroAppInner() {
         case 'privacyChanged':
           dispatch({ type: 'PRIVACY_CHANGED', privacyMode: msg.privacyMode });
           break;
+        case 'votesReset':
+          dispatch({ type: 'VOTES_RESET', cards: msg.cards, votes: msg.votes, participants: msg.participants });
+          break;
         case 'groupsUpdated':
-          dispatch({ type: 'GROUPS_UPDATED', groups: msg.groups, cards: msg.cards });
+          dispatch({ type: 'GROUPS_UPDATED', groups: msg.groups, cards: msg.cards, votes: msg.votes, participants: msg.participants });
           break;
         case 'settingsUpdated':
           dispatch({ type: 'SETTINGS_UPDATED', settings: msg.settings });
@@ -174,12 +176,20 @@ function RetroAppInner() {
     setPendingMessage(null);
   }, []);
 
+  const handleSessionReplaced = useCallback(() => {
+    setActiveRoomCode(null);
+    dispatch({ type: 'RESET' });
+    dispatch({ type: 'ERROR', message: 'This session was opened in another window.' });
+    window.history.replaceState({}, '', '/retro');
+  }, [dispatch]);
+
   const { send, isConnected } = useWebSocket({
     url: wsUrl,
     pendingMessage,
     onPendingMessageSent: handlePendingMessageSent,
     onMessage: handleMessage,
     onStatusChange: handleStatusChange,
+    onReplaced: handleSessionReplaced,
   });
 
   const handleLobbyAction = useCallback(
@@ -211,6 +221,7 @@ function RetroAppInner() {
         connectionStatus={state.connectionStatus}
         errorMessage={state.errorMessage}
         userName={userName}
+        userId={userId}
         userImageUrl={user?.imageUrl}
       />
     );

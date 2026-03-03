@@ -36,12 +36,12 @@ export interface ActionItem {
   id: string;
   text: string;
   assignee: string;
-  completed: boolean;
 }
 
 export interface Participant {
   id: string;
   name: string;
+  userId: string;
   isHost: boolean;
   connected: boolean;
   votesRemaining: number;
@@ -73,8 +73,8 @@ export interface RoomState {
 // ── Client → Server Messages ──
 
 export type ClientMessage =
-  | { type: 'create'; name: string; settings?: Partial<RoomSettings> }
-  | { type: 'join'; name: string; roomCode: string }
+  | { type: 'create'; name: string; userId: string; settings?: Partial<RoomSettings> }
+  | { type: 'join'; name: string; userId: string; roomCode: string }
   | { type: 'addCard'; columnId: string; text: string }
   | { type: 'deleteCard'; cardId: string }
   | { type: 'editCard'; cardId: string; text: string }
@@ -84,7 +84,7 @@ export type ClientMessage =
   | { type: 'startTimer'; duration?: number }
   | { type: 'stopTimer' }
   | { type: 'addAction'; text: string; assignee: string }
-  | { type: 'toggleAction'; actionId: string }
+
   | { type: 'updateColumns'; columns: Column[] }
   | { type: 'revealAuthors' }
   | { type: 'togglePrivacy' }
@@ -93,6 +93,7 @@ export type ClientMessage =
   | { type: 'dissolveGroup'; groupId: string }
   | { type: 'setGroupLabel'; groupId: string; label: string }
   | { type: 'updateSettings'; settings: Partial<RoomSettings> }
+  | { type: 'resetVotes' }
   | { type: 'toggleReady' }
   | { type: 'focusItem'; itemId: string | null }
   | { type: 'ping' };
@@ -109,12 +110,13 @@ export type ServerMessage =
   | { type: 'timerUpdate'; timerEnd: number | null }
   | { type: 'participantUpdate'; participants: Participant[] }
   | { type: 'actionAdded'; action: ActionItem }
-  | { type: 'actionToggled'; actionId: string; completed: boolean }
+
   | { type: 'columnsUpdated'; columns: Column[] }
   | { type: 'authorsRevealed'; cards: Card[] }
   | { type: 'privacyChanged'; privacyMode: boolean }
-  | { type: 'groupsUpdated'; groups: CardGroup[]; cards: Card[] }
+  | { type: 'groupsUpdated'; groups: CardGroup[]; cards: Card[]; votes?: Vote[]; participants?: Participant[] }
   | { type: 'settingsUpdated'; settings: RoomSettings }
   | { type: 'focusUpdated'; focusedItemId: string | null }
+  | { type: 'votesReset'; cards: Card[]; votes: Vote[]; participants: Participant[] }
   | { type: 'error'; message: string }
   | { type: 'pong' };
