@@ -1,4 +1,5 @@
 .wrapper {
+  width: 100%;
   max-width: 640px;
   margin: 0 auto;
   padding: var(--space-lg);
@@ -37,50 +38,27 @@
   background: rgba(255, 255, 255, 0.03);
 }
 
-.itemCompleted {
-  composes: item;
-  opacity: 0.45;
-  border-left-color: var(--neon-mint);
-}
-
 @keyframes cardSlideIn {
   from { opacity: 0; transform: translateY(6px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-.checkbox {
-  appearance: none;
-  width: 18px;
-  height: 18px;
-  border: 1.5px solid rgba(255, 255, 255, 0.15);
-  border-radius: 4px;
-  cursor: pointer;
+.dragHandle {
+  cursor: grab;
+  color: var(--text-muted);
+  font-size: 0.7rem;
+  opacity: 0.3;
+  transition: opacity var(--transition-fast);
   flex-shrink: 0;
-  margin-top: 1px;
-  position: relative;
-  background: transparent;
-  transition: all var(--transition-fast);
+  user-select: none;
 }
 
-.checkbox:hover {
-  border-color: var(--neon-purple);
+.dragHandle:active {
+  cursor: grabbing;
 }
 
-.checkbox:checked {
-  border-color: var(--neon-mint);
-  background: var(--neon-mint);
-}
-
-.checkbox:checked::after {
-  content: '';
-  position: absolute;
-  top: 2px;
-  left: 5px;
-  width: 5px;
-  height: 9px;
-  border: solid var(--bg-void);
-  border-width: 0 2px 2px 0;
-  transform: rotate(45deg);
+.item:hover .dragHandle {
+  opacity: 0.7;
 }
 
 .itemText {
@@ -89,6 +67,50 @@
   color: var(--text-primary);
   flex: 1;
   line-height: 1.5;
+  cursor: text;
+  border-radius: 2px;
+  transition: background var(--transition-fast);
+}
+
+.itemText:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.editInput {
+  flex: 1;
+  padding: 2px 4px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(191, 0, 255, 0.25);
+  border-radius: 2px;
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 0.84rem;
+  line-height: 1.5;
+  outline: none;
+}
+
+.deleteActionBtn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  cursor: pointer;
+  opacity: 0.4;
+  transition: all var(--transition-fast);
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+}
+
+.item:hover .deleteActionBtn {
+  opacity: 0.7;
+}
+
+.deleteActionBtn:hover {
+  opacity: 1 !important;
+  color: var(--neon-magenta);
+  background: rgba(255, 0, 255, 0.08);
 }
 
 .assignee {
@@ -235,18 +257,6 @@
     margin-top: 4px;
   }
 
-  .checkbox {
-    width: 28px;
-    height: 28px;
-  }
-
-  .checkbox:checked::after {
-    top: 4px;
-    left: 8px;
-    width: 7px;
-    height: 12px;
-  }
-
   .addBtn {
     min-height: 44px;
     display: inline-flex;
@@ -258,5 +268,23 @@
   .assigneeSelect,
   .assigneeInput {
     min-height: 44px;
+  }
+
+  .deleteActionBtn {
+    opacity: 0.5;
+    min-width: 44px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .dragHandle {
+    opacity: 0.5;
+    min-width: 32px;
+    min-height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 }

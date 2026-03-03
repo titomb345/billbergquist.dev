@@ -6,7 +6,6 @@ interface ParticipantListProps {
   participants: Participant[];
   phase: RetroPhase;
   myParticipantId: string;
-  myAvatarUrl?: string;
   isHost: boolean;
   votesPerPerson: number;
   onSend: (msg: ClientMessage) => void;
@@ -16,7 +15,7 @@ function getFirstName(name: string): string {
   return name.trim().split(/\s+/)[0];
 }
 
-function ParticipantChip({ p, isMe, avatarUrl, isWritePhase, showVotes, votesUsed, votesPerPerson, onSend }: {
+function ParticipantChip({ p, isMe, avatarUrl, isWritePhase, showVotes, votesUsed, votesPerPerson, canTransferHost, onTransferHost }: {
   p: Participant;
   isMe: boolean;
   avatarUrl?: string;
@@ -24,13 +23,11 @@ function ParticipantChip({ p, isMe, avatarUrl, isWritePhase, showVotes, votesUse
   showVotes: boolean;
   votesUsed: number;
   votesPerPerson: number;
-  onSend: (msg: ClientMessage) => void;
+  canTransferHost: boolean;
+  onTransferHost?: () => void;
 }) {
   return (
-    <div
-      className={`${styles.avatar} ${isWritePhase && isMe ? styles.avatarClickable : ''}`}
-      onClick={isWritePhase && isMe ? () => onSend({ type: 'toggleReady' }) : undefined}
-    >
+    <div className={styles.avatar}>
       {avatarUrl ? (
         <div className={styles.circle}>
           <img src={avatarUrl} alt="" className={styles.circleImg} width={26} height={26} />
@@ -51,46 +48,49 @@ function ParticipantChip({ p, isMe, avatarUrl, isWritePhase, showVotes, votesUse
         <span className={styles.readyBadge}>{'\u2713'}</span>
       )}
       {showVotes && (
-        <span className={p.votesRemaining === 0 ? styles.voteBadgeDone : styles.voteBadge}>
+        <span className={p.votesRemaining <= 0 ? styles.voteBadgeDone : styles.voteBadge}>
           {votesUsed}/{votesPerPerson}
         </span>
+      )}
+      {canTransferHost && p.connected && (
+        <button
+          className={styles.makeHostBtn}
+          onClick={onTransferHost}
+          aria-label={`Make ${getFirstName(p.name)} the host`}
+        >
+          Make host
+        </button>
       )}
     </div>
   );
 }
 
-export function ParticipantList({ participants, phase, myParticipantId, myAvatarUrl, isHost, votesPerPerson, onSend }: ParticipantListProps) {
+export function ParticipantList({ participants, phase, myParticipantId, isHost, votesPerPerson, onSend }: ParticipantListProps) {
   const isWritePhase = phase === 'write';
-  const allReady = isWritePhase && participants.every((p) => p.ready);
-
   const me = participants.find((p) => p.id === myParticipantId);
   const others = participants.filter((p) => p.id !== myParticipantId);
 
   const chipProps = (p: Participant) => ({
     p,
     isMe: p.id === myParticipantId,
-    avatarUrl: p.id === myParticipantId ? myAvatarUrl : undefined,
+    avatarUrl: p.avatarUrl ?? undefined,
     isWritePhase,
-    showVotes: phase === 'vote' && (p.id === myParticipantId || isHost),
+    showVotes: phase === 'vote',
     votesUsed: votesPerPerson - p.votesRemaining,
     votesPerPerson,
-    onSend,
+    canTransferHost: isHost && !p.isHost && p.id !== myParticipantId,
+    onTransferHost: () => onSend({ type: 'transferHost', targetParticipantId: p.id }),
   });
 
   return (
     <div className={styles.list}>
-      {me && (
-        <div className={styles.left}>
-          <ParticipantChip key={me.id} {...chipProps(me)} />
-        </div>
-      )}
+      <div className={styles.left}>
+        {me && <ParticipantChip key={me.id} {...chipProps(me)} />}
+      </div>
       <div className={styles.right}>
         {others.map((p) => (
           <ParticipantChip key={p.id} {...chipProps(p)} />
         ))}
-        {isWritePhase && allReady && (
-          <span className={styles.allReadyTag}>All ready!</span>
-        )}
       </div>
     </div>
   );

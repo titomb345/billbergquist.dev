@@ -9,6 +9,7 @@ interface LobbyProps {
   connectionStatus: string;
   errorMessage: string | null;
   userName: string;
+  userId: string;
   userImageUrl?: string;
 }
 
@@ -18,6 +19,7 @@ export function Lobby({
   connectionStatus,
   errorMessage,
   userName,
+  userId,
   userImageUrl,
 }: LobbyProps) {
   const { signOut } = useClerk();
@@ -29,12 +31,12 @@ export function Lobby({
 
   const handleCreate = () => {
     if (!canSubmit) return;
-    onSend({ type: 'create', name: userName });
+    onSend({ type: 'create', name: userName, userId, avatarUrl: userImageUrl });
   };
 
   const handleJoin = () => {
     if (!canSubmit || roomCode.trim().length !== 4) return;
-    onSend({ type: 'join', name: userName, roomCode: roomCode.trim().toUpperCase() });
+    onSend({ type: 'join', name: userName, userId, avatarUrl: userImageUrl, roomCode: roomCode.trim().toUpperCase() });
   };
 
   return (

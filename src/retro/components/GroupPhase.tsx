@@ -14,6 +14,7 @@ import {
 import { useDraggable, useDroppable } from '@dnd-kit/core';
 import type { Card, CardGroup, Column, ClientMessage } from '../types';
 import { StickyNote } from './StickyNote';
+import { ConfirmDialog } from './ConfirmDialog';
 import styles from './GroupPhase.module.css';
 
 interface GroupPhaseProps {
@@ -98,6 +99,7 @@ function CardCluster({ group, cards, columns, onSend }: CardClusterProps) {
   const { setNodeRef, isOver } = useDroppable({ id: `group-${group.id}` });
   const [editing, setEditing] = useState(false);
   const [editText, setEditText] = useState(group.label ?? '');
+  const [confirmDissolve, setConfirmDissolve] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -155,11 +157,21 @@ function CardCluster({ group, cards, columns, onSend }: CardClusterProps) {
         <span className={styles.clusterCount}>{cards.length} cards</span>
         <button
           className={styles.dissolveBtn}
-          onClick={() => onSend({ type: 'dissolveGroup', groupId: group.id })}
+          onClick={() => setConfirmDissolve(true)}
         >
           Ungroup all
         </button>
       </div>
+      {confirmDissolve && (
+        <ConfirmDialog
+          title="Ungroup all cards?"
+          message="This will dissolve the group and return all cards to the ungrouped list."
+          confirmLabel="Ungroup"
+          variant="warning"
+          onConfirm={() => { onSend({ type: 'dissolveGroup', groupId: group.id }); setConfirmDissolve(false); }}
+          onCancel={() => setConfirmDissolve(false)}
+        />
+      )}
       {cards.map((card) => (
         <DraggableCard
           key={card.id}
@@ -248,10 +260,6 @@ export function GroupPhase({ cards, groups, columns, onSend }: GroupPhaseProps) 
 
   return (
     <div className={styles.groupPhase}>
-      <p className={styles.instructions}>
-        Drag cards onto each other to group related topics across categories.
-      </p>
-
       <DndContext
         sensors={sensors}
         collisionDetection={closestCenter}

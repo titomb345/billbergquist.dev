@@ -79,6 +79,7 @@ function RetroAppInner() {
   const [state, dispatch] = useRetroState();
   const initialRoomCode = useMemo(() => getInitialRoomCode(), []);
   const userName = user?.firstName || 'Anonymous';
+  const userId = user?.id || '';
 
   // Room code drives WebSocket connection. null = not connected.
   const [activeRoomCode, setActiveRoomCode] = useState<string | null>(initialRoomCode);
@@ -121,7 +122,7 @@ function RetroAppInner() {
           });
           break;
         case 'phaseChanged':
-          dispatch({ type: 'PHASE_CHANGED', phase: msg.phase });
+          dispatch({ type: 'PHASE_CHANGED', phase: msg.phase, startedAt: msg.startedAt, endedAt: msg.endedAt });
           break;
         case 'timerUpdate':
           dispatch({ type: 'TIMER_UPDATE', timerEnd: msg.timerEnd });
@@ -132,9 +133,7 @@ function RetroAppInner() {
         case 'actionAdded':
           dispatch({ type: 'ACTION_ADDED', action: msg.action });
           break;
-        case 'actionToggled':
-          dispatch({ type: 'ACTION_TOGGLED', actionId: msg.actionId, completed: msg.completed });
-          break;
+
         case 'columnsUpdated':
           dispatch({ type: 'COLUMNS_UPDATED', columns: msg.columns });
           break;
@@ -144,14 +143,29 @@ function RetroAppInner() {
         case 'privacyChanged':
           dispatch({ type: 'PRIVACY_CHANGED', privacyMode: msg.privacyMode });
           break;
+        case 'votesReset':
+          dispatch({ type: 'VOTES_RESET', cards: msg.cards, votes: msg.votes, participants: msg.participants });
+          break;
         case 'groupsUpdated':
-          dispatch({ type: 'GROUPS_UPDATED', groups: msg.groups, cards: msg.cards });
+          dispatch({ type: 'GROUPS_UPDATED', groups: msg.groups, cards: msg.cards, votes: msg.votes, participants: msg.participants });
           break;
         case 'settingsUpdated':
           dispatch({ type: 'SETTINGS_UPDATED', settings: msg.settings });
           break;
         case 'focusUpdated':
           dispatch({ type: 'FOCUS_UPDATED', focusedItemId: msg.focusedItemId });
+          break;
+        case 'actionDeleted':
+          dispatch({ type: 'ACTION_DELETED', actionId: msg.actionId });
+          break;
+        case 'actionEdited':
+          dispatch({ type: 'ACTION_EDITED', actionId: msg.actionId, text: msg.text });
+          break;
+        case 'hostTransferred':
+          dispatch({ type: 'HOST_TRANSFERRED', newHostId: msg.newHostId, participants: msg.participants });
+          break;
+        case 'actionsReordered':
+          dispatch({ type: 'ACTIONS_REORDERED', actionItems: msg.actionItems });
           break;
         case 'error':
           dispatch({ type: 'ERROR', message: msg.message });
@@ -174,12 +188,31 @@ function RetroAppInner() {
     setPendingMessage(null);
   }, []);
 
+  const handleSessionReplaced = useCallback(() => {
+    setActiveRoomCode(null);
+    dispatch({ type: 'RESET' });
+    dispatch({ type: 'ERROR', message: 'This session was opened in another window.' });
+    window.history.replaceState({}, '', '/retro');
+  }, [dispatch]);
+
+  // Auto-rejoin on reconnect or page reload with room code in URL
+  const userImageUrl = user?.imageUrl;
+  const getJoinMessage = useCallback((): ClientMessage | null => {
+    const roomCode = state.room?.roomCode ?? initialRoomCode;
+    if (roomCode) {
+      return { type: 'join', name: userName, userId, avatarUrl: userImageUrl, roomCode };
+    }
+    return null;
+  }, [state.room?.roomCode, initialRoomCode, userName, userId, userImageUrl]);
+
   const { send, isConnected } = useWebSocket({
     url: wsUrl,
     pendingMessage,
+    getJoinMessage,
     onPendingMessageSent: handlePendingMessageSent,
     onMessage: handleMessage,
     onStatusChange: handleStatusChange,
+    onReplaced: handleSessionReplaced,
   });
 
   const handleLobbyAction = useCallback(
@@ -204,6 +237,10 @@ function RetroAppInner() {
 
   // Show lobby if no room synced yet
   if (!state.room) {
+    // Auto-joining an existing room — show nothing while waiting for sync
+    if (initialRoomCode && !state.errorMessage) {
+      return null;
+    }
     return (
       <Lobby
         onSend={handleLobbyAction}
@@ -211,6 +248,7 @@ function RetroAppInner() {
         connectionStatus={state.connectionStatus}
         errorMessage={state.errorMessage}
         userName={userName}
+        userId={userId}
         userImageUrl={user?.imageUrl}
       />
     );
@@ -224,7 +262,6 @@ function RetroAppInner() {
       room={state.room}
       isHost={isHost}
       myParticipantId={state.myParticipantId!}
-      myAvatarUrl={user?.imageUrl}
       connectionStatus={state.connectionStatus}
       onSend={send}
     />
