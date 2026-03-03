@@ -4,12 +4,14 @@ import type { ClientMessage, ServerMessage } from '../types';
 interface UseWebSocketOptions {
   url: string | null;
   pendingMessage: ClientMessage | null;
+  getJoinMessage?: () => ClientMessage | null;
   onPendingMessageSent: () => void;
   onMessage: (msg: ServerMessage) => void;
   onStatusChange: (status: 'connecting' | 'connected' | 'disconnected' | 'error') => void;
+  onReplaced?: () => void;
 }
 
-export function useWebSocket({ url, pendingMessage, onPendingMessageSent, onMessage, onStatusChange }: UseWebSocketOptions) {
+export function useWebSocket({ url, pendingMessage, getJoinMessage, onPendingMessageSent, onMessage, onStatusChange, onReplaced }: UseWebSocketOptions) {
   const wsRef = useRef<WebSocket | null>(null);
   const reconnectTimerRef = useRef<ReturnType<typeof setTimeout>>();
   const reconnectAttemptRef = useRef(0);
@@ -17,12 +19,16 @@ export function useWebSocket({ url, pendingMessage, onPendingMessageSent, onMess
   const onMessageRef = useRef(onMessage);
   const onStatusRef = useRef(onStatusChange);
   const pendingRef = useRef(pendingMessage);
+  const getJoinMessageRef = useRef(getJoinMessage);
   const onPendingSentRef = useRef(onPendingMessageSent);
+  const onReplacedRef = useRef(onReplaced);
 
   useEffect(() => { onMessageRef.current = onMessage; }, [onMessage]);
   useEffect(() => { onStatusRef.current = onStatusChange; }, [onStatusChange]);
   useEffect(() => { pendingRef.current = pendingMessage; }, [pendingMessage]);
+  useEffect(() => { getJoinMessageRef.current = getJoinMessage; }, [getJoinMessage]);
   useEffect(() => { onPendingSentRef.current = onPendingMessageSent; }, [onPendingMessageSent]);
+  useEffect(() => { onReplacedRef.current = onReplaced; }, [onReplaced]);
 
   useEffect(() => {
     if (!url) return;
@@ -44,11 +50,16 @@ export function useWebSocket({ url, pendingMessage, onPendingMessageSent, onMess
         reconnectAttemptRef.current = 0;
         onStatusRef.current('connected');
 
-        // Flush pending message on connect
+        // Flush pending message on connect, or auto-rejoin on reconnect
         if (pendingRef.current) {
           ws.send(JSON.stringify(pendingRef.current));
           pendingRef.current = null;
           onPendingSentRef.current();
+        } else if (getJoinMessageRef.current) {
+          const joinMsg = getJoinMessageRef.current();
+          if (joinMsg) {
+            ws.send(JSON.stringify(joinMsg));
+          }
         }
 
         // Start keepalive ping (50s keeps connection alive under Cloudflare's 60s idle timeout)
@@ -68,8 +79,15 @@ export function useWebSocket({ url, pendingMessage, onPendingMessageSent, onMess
         }
       };
 
-      ws.onclose = () => {
+      ws.onclose = (event) => {
         clearPing();
+
+        // Session replaced by another connection — don't reconnect
+        if (event.code === 4001) {
+          onReplacedRef.current?.();
+          return;
+        }
+
         onStatusRef.current('disconnected');
 
         // Auto-reconnect with exponential backoff

@@ -1,0 +1,135 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.15s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.dialog {
+  background: var(--bg-surface);
+  border: 1px solid rgba(191, 0, 255, 0.15);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  max-width: 380px;
+  width: calc(100% - var(--space-lg) * 2);
+  animation: dialogSlideUp 0.2s ease-out;
+}
+
+@keyframes dialogSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.title {
+  font-family: var(--font-heading);
+  font-size: 0.85rem;
+  letter-spacing: 0.06em;
+  color: var(--text-primary);
+  margin-bottom: var(--space-sm);
+}
+
+.message {
+  font-family: var(--font-body);
+  font-size: 0.84rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: var(--space-lg);
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.cancelBtn {
+  padding: 0.4rem 0.85rem;
+  font-family: var(--font-heading);
+  font-size: 0.6rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--bg-elevated);
+  border-radius: 100px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.cancelBtn:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+  color: var(--text-primary);
+}
+
+.confirmBtn {
+  padding: 0.4rem 0.85rem;
+  font-family: var(--font-heading);
+  font-size: 0.6rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--bg-void);
+  background: var(--neon-purple);
+  border: none;
+  border-radius: 100px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.confirmBtn:hover {
+  box-shadow: 0 0 16px var(--neon-purple-glow);
+}
+
+.confirmBtnDanger {
+  composes: confirmBtn;
+  background: var(--neon-magenta);
+}
+
+.confirmBtnDanger:hover {
+  box-shadow: 0 0 16px var(--neon-magenta-glow);
+}
+
+.confirmBtnWarning {
+  composes: confirmBtn;
+  background: var(--neon-orange);
+}
+
+.confirmBtnWarning:hover {
+  box-shadow: 0 0 16px var(--neon-orange-glow);
+}
+
+@media (max-width: 640px) {
+  .cancelBtn,
+  .confirmBtn {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .backdrop {
+    animation: none;
+  }
+
+  .dialog {
+    animation: none;
+  }
+}

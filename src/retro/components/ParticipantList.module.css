@@ -98,14 +98,6 @@
   letter-spacing: 0.04em;
 }
 
-.avatarClickable {
-  cursor: pointer;
-}
-
-.avatarClickable:hover {
-  background: rgba(255, 255, 255, 0.06);
-}
-
 .readyBadge {
   font-family: var(--font-mono);
   font-size: 0.6rem;
@@ -113,33 +105,6 @@
   background: rgba(0, 212, 170, 0.1);
   padding: 1px 6px;
   border-radius: 100px;
-}
-
-.notReadyBadge {
-  font-family: var(--font-mono);
-  font-size: 0.6rem;
-  color: var(--text-muted);
-  background: rgba(255, 255, 255, 0.04);
-  padding: 1px 6px;
-  border-radius: 100px;
-  letter-spacing: 0.15em;
-}
-
-.allReadyTag {
-  font-family: var(--font-heading);
-  font-size: 0.6rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--neon-mint);
-  background: rgba(0, 212, 170, 0.08);
-  padding: 0.2rem 0.6rem;
-  border-radius: 100px;
-  animation: readyPulse 2s ease-in-out infinite;
-}
-
-@keyframes readyPulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.6; }
 }
 
 .voteBadge {
@@ -156,6 +121,40 @@
   color: var(--text-muted);
   background: rgba(255, 255, 255, 0.04);
   opacity: 0.6;
+}
+
+.makeHostBtn {
+  font-family: var(--font-mono);
+  font-size: 0.5rem;
+  color: var(--text-muted);
+  background: none;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 100px;
+  padding: 1px 6px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  opacity: 0;
+  white-space: nowrap;
+}
+
+.avatar:hover .makeHostBtn {
+  opacity: 1;
+}
+
+.makeHostBtn:hover {
+  color: var(--neon-purple);
+  border-color: rgba(191, 0, 255, 0.3);
+  background: rgba(191, 0, 255, 0.08);
+}
+
+@media (hover: none) {
+  .makeHostBtn {
+    opacity: 1;
+    min-height: 28px;
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+  }
 }
 
 @media (max-width: 640px) {

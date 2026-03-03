@@ -114,16 +114,16 @@
   background: none;
   border: none;
   color: var(--text-muted);
-  font-size: 0.7rem;
+  font-size: 0.85rem;
   cursor: pointer;
-  opacity: 0;
+  opacity: 0.4;
   transition: all var(--transition-fast);
-  padding: 2px 5px;
+  padding: 4px 8px;
   border-radius: var(--radius-sm);
 }
 
 .card:hover .deleteBtn {
-  opacity: 0.5;
+  opacity: 0.6;
 }
 
 .deleteBtn:hover {

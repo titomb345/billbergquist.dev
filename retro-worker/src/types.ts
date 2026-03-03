@@ -1,8 +1,8 @@
 // ── Room State ──
 
-export type RetroPhase = 'lobby' | 'write' | 'group' | 'vote' | 'discuss' | 'actions';
+export type RetroPhase = 'lobby' | 'write' | 'group' | 'vote' | 'discuss' | 'actions' | 'summary';
 
-export type ColumnColor = 'mint' | 'magenta' | 'orange';
+export type ColumnColor = 'mint' | 'magenta' | 'orange' | 'purple' | 'yellow';
 
 export interface Column {
   id: string;
@@ -36,16 +36,17 @@ export interface ActionItem {
   id: string;
   text: string;
   assignee: string;
-  completed: boolean;
 }
 
 export interface Participant {
   id: string;
   name: string;
+  userId: string;
   isHost: boolean;
   connected: boolean;
   votesRemaining: number;
   ready: boolean;
+  avatarUrl: string | null;
 }
 
 export interface RoomSettings {
@@ -66,6 +67,8 @@ export interface RoomState {
   timerEnd: number | null;
   privacyMode: boolean;
   createdAt: number;
+  startedAt: number | null;
+  endedAt: number | null;
   groups: CardGroup[];
   focusedItemId: string | null;
 }
@@ -73,8 +76,8 @@ export interface RoomState {
 // ── Client → Server Messages ──
 
 export type ClientMessage =
-  | { type: 'create'; name: string; settings?: Partial<RoomSettings> }
-  | { type: 'join'; name: string; roomCode: string }
+  | { type: 'create'; name: string; userId: string; avatarUrl?: string; settings?: Partial<RoomSettings>; columns?: Column[] }
+  | { type: 'join'; name: string; userId: string; avatarUrl?: string; roomCode: string }
   | { type: 'addCard'; columnId: string; text: string }
   | { type: 'deleteCard'; cardId: string }
   | { type: 'editCard'; cardId: string; text: string }
@@ -84,7 +87,7 @@ export type ClientMessage =
   | { type: 'startTimer'; duration?: number }
   | { type: 'stopTimer' }
   | { type: 'addAction'; text: string; assignee: string }
-  | { type: 'toggleAction'; actionId: string }
+
   | { type: 'updateColumns'; columns: Column[] }
   | { type: 'revealAuthors' }
   | { type: 'togglePrivacy' }
@@ -93,8 +96,13 @@ export type ClientMessage =
   | { type: 'dissolveGroup'; groupId: string }
   | { type: 'setGroupLabel'; groupId: string; label: string }
   | { type: 'updateSettings'; settings: Partial<RoomSettings> }
+  | { type: 'resetVotes' }
   | { type: 'toggleReady' }
   | { type: 'focusItem'; itemId: string | null }
+  | { type: 'deleteAction'; actionId: string }
+  | { type: 'editAction'; actionId: string; text: string }
+  | { type: 'transferHost'; targetParticipantId: string }
+  | { type: 'reorderActions'; actionIds: string[] }
   | { type: 'ping' };
 
 // ── Server → Client Messages ──
@@ -105,16 +113,21 @@ export type ServerMessage =
   | { type: 'cardDeleted'; cardId: string }
   | { type: 'cardEdited'; cardId: string; text: string }
   | { type: 'voteUpdated'; cardId: string; votes: number; participantId: string; action: 'vote' | 'unvote'; primary: boolean; votesRemaining: number }
-  | { type: 'phaseChanged'; phase: RetroPhase }
+  | { type: 'phaseChanged'; phase: RetroPhase; startedAt?: number; endedAt?: number }
   | { type: 'timerUpdate'; timerEnd: number | null }
   | { type: 'participantUpdate'; participants: Participant[] }
   | { type: 'actionAdded'; action: ActionItem }
-  | { type: 'actionToggled'; actionId: string; completed: boolean }
+
   | { type: 'columnsUpdated'; columns: Column[] }
   | { type: 'authorsRevealed'; cards: Card[] }
   | { type: 'privacyChanged'; privacyMode: boolean }
-  | { type: 'groupsUpdated'; groups: CardGroup[]; cards: Card[] }
+  | { type: 'groupsUpdated'; groups: CardGroup[]; cards: Card[]; votes?: Vote[]; participants?: Participant[] }
   | { type: 'settingsUpdated'; settings: RoomSettings }
   | { type: 'focusUpdated'; focusedItemId: string | null }
+  | { type: 'votesReset'; cards: Card[]; votes: Vote[]; participants: Participant[] }
+  | { type: 'actionDeleted'; actionId: string }
+  | { type: 'actionEdited'; actionId: string; text: string }
+  | { type: 'hostTransferred'; newHostId: string; participants: Participant[] }
+  | { type: 'actionsReordered'; actionItems: ActionItem[] }
   | { type: 'error'; message: string }
   | { type: 'pong' };
