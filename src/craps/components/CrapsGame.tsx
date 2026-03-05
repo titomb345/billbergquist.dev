@@ -119,6 +119,16 @@ export function CrapsGame({ room, myPlayerId, connectionStatus, lastRoll, diceAn
     [diceRolling, room.rollHistory],
   );
 
+  // Freeze table state while dice are animating so chips/point don't update early
+  const frozenBetsRef = useRef(room.bets);
+  const frozenPointRef = useRef(room.point);
+  if (!diceRolling && !diceAnimating) {
+    frozenBetsRef.current = room.bets;
+    frozenPointRef.current = room.point;
+  }
+  const visibleBets = (diceRolling || diceAnimating) ? frozenBetsRef.current : room.bets;
+  const visiblePoint = (diceRolling || diceAnimating) ? frozenPointRef.current : room.point;
+
   const [copyFeedback, setCopyFeedback] = useState(false);
   const handleCopyLink = useCallback(() => {
     navigator.clipboard.writeText(`${window.location.origin}/craps/${room.roomCode}`);
@@ -127,6 +137,22 @@ export function CrapsGame({ room, myPlayerId, connectionStatus, lastRoll, diceAn
   }, [room.roomCode]);
 
   const [showPayouts, setShowPayouts] = useState(false);
+
+  // Round countdown derived from server's roundDeadline
+  const [rollCountdown, setRollCountdown] = useState<number | null>(null);
+  useEffect(() => {
+    if (!room.roundDeadline || room.phase === 'lobby') {
+      setRollCountdown(null);
+      return;
+    }
+    const tick = () => {
+      const remaining = Math.min(60, Math.max(0, Math.ceil((room.roundDeadline! - Date.now()) / 1000)));
+      setRollCountdown(remaining);
+    };
+    tick();
+    const interval = setInterval(tick, 1000);
+    return () => clearInterval(interval);
+  }, [room.roundDeadline, room.phase]);
 
 
   // Lobby phase within the game room
@@ -300,8 +326,8 @@ export function CrapsGame({ room, myPlayerId, connectionStatus, lastRoll, diceAn
         <div className={styles.tableSection}>
           <RollHistory rolls={visibleRollHistory} />
           <CrapsTable
-            point={room.point}
-            bets={room.bets}
+            point={visiblePoint}
+            bets={visibleBets}
             players={room.players}
             myPlayerId={myPlayerId}
             onPlaceBet={handlePlaceBet}
@@ -351,6 +377,9 @@ export function CrapsGame({ room, myPlayerId, connectionStatus, lastRoll, diceAn
               </div>
             )}
           </div>
+          {rollCountdown !== null && rollCountdown > 0 && (room.phase === 'betting' || room.phase === 'rolling') && (
+            <p className={styles.autoRollTimer}>{rollCountdown}s</p>
+          )}
         </div>
       </div>
 

@@ -34,6 +34,7 @@ function makeState(overrides: Partial<CrapsGameState> = {}): CrapsGameState {
     bets: [],
     rollHistory: [],
     createdAt: Date.now(),
+    roundDeadline: null,
     ...overrides,
   };
 }

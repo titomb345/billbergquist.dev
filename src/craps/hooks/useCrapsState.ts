@@ -16,7 +16,7 @@ export type CrapsAction =
   | { type: 'PHASE_CHANGED'; phase: CrapsPhase; point: number | null }
   | { type: 'BET_PLACED'; bet: Bet; players: Player[] }
   | { type: 'BET_REMOVED'; betId: string; players: Player[] }
-  | { type: 'DICE_ROLLED'; roll: DiceRoll; resolutions: BetResolution[]; players: Player[]; bets: Bet[]; point: number | null; phase: CrapsPhase; shooterIndex: number }
+  | { type: 'DICE_ROLLED'; roll: DiceRoll; resolutions: BetResolution[]; players: Player[]; bets: Bet[]; point: number | null; phase: CrapsPhase; shooterIndex: number; roundDeadline: number | null }
   | { type: 'CONNECTION_STATUS'; status: CrapsClientState['connectionStatus'] }
   | { type: 'ERROR'; message: string }
   | { type: 'CLEAR_LAST_ROLL' }
@@ -90,6 +90,7 @@ function crapsReducer(state: CrapsClientState, action: CrapsAction): CrapsClient
           point: action.point,
           phase: action.phase,
           shooterIndex: action.shooterIndex,
+          roundDeadline: action.roundDeadline,
         },
         lastRoll: { roll: action.roll, resolutions: action.resolutions },
         diceAnimating: true,

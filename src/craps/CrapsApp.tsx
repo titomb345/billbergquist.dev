@@ -91,6 +91,7 @@ function CrapsAppInner() {
             point: msg.point,
             phase: msg.phase,
             shooterIndex: msg.shooterIndex,
+            roundDeadline: msg.roundDeadline,
           });
           break;
         case 'reaction':

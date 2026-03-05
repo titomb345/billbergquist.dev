@@ -59,10 +59,12 @@ export function Chat({ messages, onSend, myPlayerId, players }: ChatProps) {
   return (
     <div className={styles.chat}>
       <button className={styles.toggle} onClick={() => setExpanded((v) => !v)}>
-        <span>Chat</span>
-        {!expanded && unreadCount > 0 && (
-          <span className={styles.badge}>{unreadCount > 99 ? '99+' : unreadCount}</span>
-        )}
+        <span className={styles.toggleLabel}>
+          <span>Chat</span>
+          {!expanded && unreadCount > 0 && (
+            <span className={styles.badge}>{unreadCount > 99 ? '99+' : unreadCount}</span>
+          )}
+        </span>
         <span className={styles.arrow}>{expanded ? '\u25BC' : '\u25B2'}</span>
       </button>
 
