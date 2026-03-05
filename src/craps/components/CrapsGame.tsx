@@ -34,7 +34,7 @@ export function CrapsGame({ room, myPlayerId, connectionStatus, lastRoll, diceAn
   const isHost = me?.isHost ?? false;
   const isShooter = room.players[room.shooterIndex]?.id === myPlayerId;
   const shooter = room.players[room.shooterIndex];
-  const { playDiceRoll, playWin, playBigWin, playLoss, playChipPlace } = useSoundEffects();
+  const { playDiceRoll, playWin, playBigWin, playLoss, playChipPlace, muted, toggleMute } = useSoundEffects();
 
   const handleChatSend = useCallback((text: string) => {
     onSend({ type: 'chat', text });
@@ -119,6 +119,16 @@ export function CrapsGame({ room, myPlayerId, connectionStatus, lastRoll, diceAn
     [diceRolling, room.rollHistory],
   );
 
+  // Freeze table state while dice are animating so chips/point don't update early
+  const frozenBetsRef = useRef(room.bets);
+  const frozenPointRef = useRef(room.point);
+  if (!diceRolling && !diceAnimating) {
+    frozenBetsRef.current = room.bets;
+    frozenPointRef.current = room.point;
+  }
+  const visibleBets = (diceRolling || diceAnimating) ? frozenBetsRef.current : room.bets;
+  const visiblePoint = (diceRolling || diceAnimating) ? frozenPointRef.current : room.point;
+
   const [copyFeedback, setCopyFeedback] = useState(false);
   const handleCopyLink = useCallback(() => {
     navigator.clipboard.writeText(`${window.location.origin}/craps/${room.roomCode}`);
@@ -127,6 +137,22 @@ export function CrapsGame({ room, myPlayerId, connectionStatus, lastRoll, diceAn
   }, [room.roomCode]);
 
   const [showPayouts, setShowPayouts] = useState(false);
+
+  // Round countdown derived from server's roundDeadline
+  const [rollCountdown, setRollCountdown] = useState<number | null>(null);
+  useEffect(() => {
+    if (!room.roundDeadline || room.phase === 'lobby') {
+      setRollCountdown(null);
+      return;
+    }
+    const tick = () => {
+      const remaining = Math.min(60, Math.max(0, Math.ceil((room.roundDeadline! - Date.now()) / 1000)));
+      setRollCountdown(remaining);
+    };
+    tick();
+    const interval = setInterval(tick, 1000);
+    return () => clearInterval(interval);
+  }, [room.roundDeadline, room.phase]);
 
 
   // Lobby phase within the game room
@@ -237,6 +263,23 @@ export function CrapsGame({ room, myPlayerId, connectionStatus, lastRoll, diceAn
               <path d="M8 4.5v0m0 7V7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
             </svg>
           </button>
+          <button
+            className={`${styles.payoutBtn} ${muted ? styles.mutedBtn : ''}`}
+            onClick={toggleMute}
+            title={muted ? 'Unmute sounds' : 'Mute sounds'}
+          >
+            {muted ? (
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M8 2.5L4.5 5.5H2v5h2.5L8 13.5V2.5z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" />
+                <path d="M11 5.5l4 5M15 5.5l-4 5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
+              </svg>
+            ) : (
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M8 2.5L4.5 5.5H2v5h2.5L8 13.5V2.5z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" />
+                <path d="M11 5.5a3.5 3.5 0 010 5M13 3.5a6.5 6.5 0 010 9" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
+              </svg>
+            )}
+          </button>
           {me && (
             <div className={styles.balanceBar}>
               <span className={styles.balanceBarAmount}>${me.balance.toLocaleString()}</span>
@@ -300,8 +343,8 @@ export function CrapsGame({ room, myPlayerId, connectionStatus, lastRoll, diceAn
         <div className={styles.tableSection}>
           <RollHistory rolls={visibleRollHistory} />
           <CrapsTable
-            point={room.point}
-            bets={room.bets}
+            point={visiblePoint}
+            bets={visibleBets}
             players={room.players}
             myPlayerId={myPlayerId}
             onPlaceBet={handlePlaceBet}
@@ -351,6 +394,9 @@ export function CrapsGame({ room, myPlayerId, connectionStatus, lastRoll, diceAn
               </div>
             )}
           </div>
+          {rollCountdown !== null && rollCountdown > 0 && (room.phase === 'betting' || room.phase === 'rolling') && (
+            <p className={styles.autoRollTimer}>{rollCountdown}s</p>
+          )}
         </div>
       </div>
 

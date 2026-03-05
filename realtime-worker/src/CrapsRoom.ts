@@ -19,6 +19,7 @@ import { generateId } from './utils';
 
 const ROOM_TTL_MS = 3 * 60 * 60 * 1000; // 3 hours
 const EMPTY_ROOM_CLEANUP_MS = 15 * 60 * 1000; // 15 min after all disconnect
+const AUTO_ROLL_MS = 60_000; // 60s auto-roll if shooter is idle
 const MSG_RATE_WINDOW_MS = 5_000;
 const MSG_RATE_MAX = 30;
 interface WebSocketAttachment {
@@ -166,6 +167,7 @@ export class CrapsRoom implements DurableObject {
     const age = Date.now() - room.createdAt;
     const connected = room.players.some((p) => p.connected);
 
+    // Hard TTL expiry
     if (age >= ROOM_TTL_MS) {
       for (const ws of this.state.getWebSockets()) {
         try { ws.close(1000, 'Room expired'); } catch { /* noop */ }
@@ -174,18 +176,54 @@ export class CrapsRoom implements DurableObject {
       return;
     }
 
+    // Empty room cleanup
     if (!connected) {
       await this.state.storage.deleteAll();
       return;
     }
 
-    const remaining = ROOM_TTL_MS - age;
-    await this.state.storage.setAlarm(Date.now() + remaining);
+    // Round deadline: auto-confirm unconfirmed bets, then auto-roll
+    if (room.roundDeadline && Date.now() >= room.roundDeadline) {
+      if (room.phase === 'betting') {
+        // Auto-confirm all unconfirmed connected players
+        const connectedPlayers = room.players.filter((p) => p.connected);
+        for (const p of connectedPlayers) {
+          p.betsConfirmed = true;
+        }
+        room.phase = 'rolling';
+        await this.saveRoom(room);
+        this.broadcast({ type: 'playerUpdate', players: room.players });
+        this.broadcast({ type: 'phaseChanged', phase: 'rolling', point: room.point });
+        // Immediately auto-roll
+        await this.handleAutoRoll(room);
+      } else if (room.phase === 'rolling') {
+        await this.handleAutoRoll(room);
+      }
+    }
+
+    await this.scheduleAlarm(room);
+  }
+
+  private async scheduleAlarm(room: CrapsGameState): Promise<void> {
+    const now = Date.now();
+    const ttlAt = room.createdAt + ROOM_TTL_MS;
+    const deadlineAt = room.roundDeadline ?? Infinity;
+    const nextAlarm = Math.min(ttlAt, deadlineAt);
+    if (nextAlarm > now) {
+      await this.state.storage.setAlarm(nextAlarm);
+    }
   }
 
   // ── Room Lifecycle ──
 
   private async handleCreate(ws: WebSocket, name: string, userId: string, avatarUrl?: string): Promise<void> {
+    // If room already exists, treat as a join (prevents duplicate players)
+    const existingRoom = await this.getRoom();
+    if (existingRoom) {
+      await this.handleJoin(ws, name, userId, avatarUrl, existingRoom.roomCode);
+      return;
+    }
+
     const playerId = generateId();
     const roomCode = this.roomCode;
 
@@ -211,11 +249,12 @@ export class CrapsRoom implements DurableObject {
       bets: [],
       rollHistory: [],
       createdAt: Date.now(),
+      roundDeadline: null,
     };
 
     ws.serializeAttachment({ playerId, roomCode } satisfies WebSocketAttachment);
     await this.saveRoom(room);
-    await this.state.storage.setAlarm(Date.now() + ROOM_TTL_MS);
+    await this.scheduleAlarm(room);
 
     this.send(ws, { type: 'sync', state: room, playerId });
   }
@@ -275,11 +314,7 @@ export class CrapsRoom implements DurableObject {
 
     ws.serializeAttachment({ playerId, roomCode } satisfies WebSocketAttachment);
     await this.saveRoom(room);
-
-    const remaining = ROOM_TTL_MS - (Date.now() - room.createdAt);
-    if (remaining > 0) {
-      await this.state.storage.setAlarm(Date.now() + remaining);
-    }
+    await this.scheduleAlarm(room);
 
     this.send(ws, { type: 'sync', state: room, playerId });
     this.broadcast({ type: 'playerUpdate', players: room.players }, ws);
@@ -301,6 +336,17 @@ export class CrapsRoom implements DurableObject {
       const anyConnected = room.players.some((p) => p.connected);
       if (!anyConnected) {
         await this.state.storage.setAlarm(Date.now() + EMPTY_ROOM_CLEANUP_MS);
+      }
+
+      // If the disconnected player was the shooter in rolling phase,
+      // skip to next connected shooter and auto-roll
+      if (room.phase === 'rolling') {
+        const shooter = room.players[room.shooterIndex];
+        if (shooter && !shooter.connected) {
+          room.shooterIndex = this.getNextShooterIndex(room);
+          await this.saveRoom(room);
+          await this.handleAutoRoll(room);
+        }
       }
     }
   }
@@ -338,12 +384,14 @@ export class CrapsRoom implements DurableObject {
     }
 
     room.phase = 'betting';
+    room.roundDeadline = Date.now() + AUTO_ROLL_MS;
     for (const p of room.players) {
       p.ready = false;
       p.betsConfirmed = false;
     }
 
     await this.saveRoom(room);
+    await this.scheduleAlarm(room);
     this.broadcast({ type: 'phaseChanged', phase: 'betting', point: room.point });
     this.broadcast({ type: 'playerUpdate', players: room.players });
   }
@@ -432,6 +480,7 @@ export class CrapsRoom implements DurableObject {
     if (allConfirmed) {
       room.phase = 'rolling';
       await this.saveRoom(room);
+      await this.scheduleAlarm(room);
       this.broadcast({ type: 'playerUpdate', players: room.players });
       this.broadcast({ type: 'phaseChanged', phase: 'rolling', point: room.point });
     } else {
@@ -453,6 +502,15 @@ export class CrapsRoom implements DurableObject {
       return;
     }
 
+    await this.executeRoll(room);
+  }
+
+  private async handleAutoRoll(room: CrapsGameState): Promise<void> {
+    if (room.phase !== 'rolling') return;
+    await this.executeRoll(room);
+  }
+
+  private async executeRoll(room: CrapsGameState): Promise<void> {
     const roll = rollDice();
     room.rollHistory.push(roll);
 
@@ -480,6 +538,7 @@ export class CrapsRoom implements DurableObject {
       }
 
       await this.saveRoom(room);
+      await this.scheduleAlarm(room);
       this.broadcast({
         type: 'diceRolled',
         roll,
@@ -489,6 +548,7 @@ export class CrapsRoom implements DurableObject {
         point: room.point,
         phase: room.phase,
         shooterIndex: room.shooterIndex,
+        roundDeadline: room.roundDeadline,
       });
     } else {
       const { resolutions, pointMade, sevenOut } = resolvePointPhaseRoll(room.bets, roll, room.point!);
@@ -524,6 +584,7 @@ export class CrapsRoom implements DurableObject {
       }
 
       await this.saveRoom(room);
+      await this.scheduleAlarm(room);
       this.broadcast({
         type: 'diceRolled',
         roll,
@@ -533,6 +594,7 @@ export class CrapsRoom implements DurableObject {
         point: room.point,
         phase: room.phase,
         shooterIndex: room.shooterIndex,
+        roundDeadline: room.roundDeadline,
       });
     }
   }
@@ -559,6 +621,7 @@ export class CrapsRoom implements DurableObject {
     for (const p of room.players) {
       p.betsConfirmed = false;
     }
+    room.roundDeadline = Date.now() + AUTO_ROLL_MS;
   }
 
   private getNextShooterIndex(room: CrapsGameState): number {

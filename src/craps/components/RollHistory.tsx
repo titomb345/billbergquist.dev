@@ -62,8 +62,9 @@ export function RollHistory({ rolls }: RollHistoryProps) {
           ) : (
             [...rolls].reverse().map((roll, i) => {
               const { label, color } = getOutcome(roll.total);
+              const stableKey = rolls.length - 1 - i;
               return (
-                <div key={i} className={`${styles.roll} ${styles[color] ?? ''}`}>
+                <div key={stableKey} className={`${styles.roll} ${styles[color] ?? ''}`}>
                   <span className={styles.dice}>{roll.die1}+{roll.die2}</span>
                   <span className={styles.total}>{label}</span>
                 </div>

@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react';
+import { useCallback, useRef, useState } from 'react';
 
 let audioCtx: AudioContext | null = null;
 
@@ -43,8 +43,22 @@ function playNoise(duration: number, gain = 0.1) {
   source.stop(ctx.currentTime + duration);
 }
 
+const MUTE_KEY = 'craps-muted';
+
 export function useSoundEffects() {
-  const enabledRef = useRef(true);
+  const [muted, setMuted] = useState(() => {
+    try { return localStorage.getItem(MUTE_KEY) === '1'; } catch { return false; }
+  });
+  const enabledRef = useRef(!muted);
+
+  const toggleMute = useCallback(() => {
+    setMuted((prev) => {
+      const next = !prev;
+      enabledRef.current = !next;
+      try { localStorage.setItem(MUTE_KEY, next ? '1' : '0'); } catch {}
+      return next;
+    });
+  }, []);
 
   const playDiceRoll = useCallback(() => {
     if (!enabledRef.current) return;
@@ -94,5 +108,5 @@ export function useSoundEffects() {
     setTimeout(() => playTone(1200, 0.06, 'sine', 0.06), 40);
   }, []);
 
-  return { playDiceRoll, playWin, playBigWin, playLoss, playChipPlace, playReaction, enabledRef };
+  return { playDiceRoll, playWin, playBigWin, playLoss, playChipPlace, playReaction, muted, toggleMute };
 }
