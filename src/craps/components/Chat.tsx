@@ -25,18 +25,20 @@ export function Chat({ messages, onSend, myPlayerId, players }: ChatProps) {
   const [expanded, setExpanded] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const prevLengthRef = useRef(messages.length);
+  const autoExpandedRef = useRef(false);
 
-  // Auto-scroll on new messages
+  // Auto-scroll on new messages and auto-expand on first message
   useEffect(() => {
-    if (messages.length > prevLengthRef.current && scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    if (messages.length > prevLengthRef.current) {
+      if (scrollRef.current) {
+        scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+      }
+      if (!autoExpandedRef.current && messages.length >= 1) {
+        autoExpandedRef.current = true;
+        requestAnimationFrame(() => setExpanded(true));
+      }
     }
     prevLengthRef.current = messages.length;
-  }, [messages.length]);
-
-  // Auto-expand when first message arrives
-  useEffect(() => {
-    if (messages.length === 1) setExpanded(true);
   }, [messages.length]);
 
   const playerMap = useMemo(

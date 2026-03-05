@@ -23,7 +23,7 @@ interface BetCategory {
   bets: { type: BetType; label: string; available: boolean; betPoint?: number }[];
 }
 
-export function BettingControls({ balance, onPlaceBet, onRemoveBet, onConfirm, myBets, point, gameState, myPlayerId, selectedChip, onChipChange, confirmed = false }: BettingControlsProps) {
+export function BettingControls({ balance, onPlaceBet, onRemoveBet, onConfirm, myBets, point, gameState: _gameState, myPlayerId: _myPlayerId, selectedChip, onChipChange, confirmed = false }: BettingControlsProps) {
   const isComingOut = point === null;
 
   const comePointBets = myBets.filter((b) => b.type === 'come' && b.point);

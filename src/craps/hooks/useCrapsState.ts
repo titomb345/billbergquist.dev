@@ -7,6 +7,7 @@ export interface CrapsClientState {
   myPlayerId: string | null;
   errorMessage: string | null;
   lastRoll: { roll: DiceRoll; resolutions: BetResolution[] } | null;
+  diceAnimating: boolean;
 }
 
 export type CrapsAction =
@@ -19,6 +20,7 @@ export type CrapsAction =
   | { type: 'CONNECTION_STATUS'; status: CrapsClientState['connectionStatus'] }
   | { type: 'ERROR'; message: string }
   | { type: 'CLEAR_LAST_ROLL' }
+  | { type: 'DICE_ANIM_DONE' }
   | { type: 'RESET' };
 
 const initialState: CrapsClientState = {
@@ -27,6 +29,7 @@ const initialState: CrapsClientState = {
   myPlayerId: null,
   errorMessage: null,
   lastRoll: null,
+  diceAnimating: false,
 };
 
 function crapsReducer(state: CrapsClientState, action: CrapsAction): CrapsClientState {
@@ -89,7 +92,11 @@ function crapsReducer(state: CrapsClientState, action: CrapsAction): CrapsClient
           shooterIndex: action.shooterIndex,
         },
         lastRoll: { roll: action.roll, resolutions: action.resolutions },
+        diceAnimating: true,
       };
+
+    case 'DICE_ANIM_DONE':
+      return { ...state, diceAnimating: false };
 
     case 'CLEAR_LAST_ROLL':
       return { ...state, lastRoll: null };

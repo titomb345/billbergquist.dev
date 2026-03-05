@@ -197,8 +197,10 @@ function CrapsAppInner() {
       myPlayerId={state.myPlayerId!}
       connectionStatus={state.connectionStatus}
       lastRoll={state.lastRoll}
+      diceAnimating={state.diceAnimating}
       onSend={send}
       onClearLastRoll={() => dispatch({ type: 'CLEAR_LAST_ROLL' })}
+      onDiceAnimDone={() => dispatch({ type: 'DICE_ANIM_DONE' })}
       chatMessages={chatMessages}
     />
   );

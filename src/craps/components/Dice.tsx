@@ -44,12 +44,17 @@ export function Dice({ lastRoll, point, onRollingChange }: DiceProps) {
   const [displayRoll, setDisplayRoll] = useState<DiceRoll | null>(null);
   const [flickerValues, setFlickerValues] = useState<[number, number]>([1, 1]);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const onRollingChangeRef = useRef(onRollingChange);
+  useEffect(() => { onRollingChangeRef.current = onRollingChange; }, [onRollingChange]);
 
   useEffect(() => {
     if (!lastRoll) return;
 
-    setRolling(true);
-    onRollingChange?.(true);
+    // Start rolling on next frame to avoid synchronous setState in effect
+    const raf = requestAnimationFrame(() => {
+      setRolling(true);
+      onRollingChangeRef.current?.(true);
+    });
 
     // Flicker random faces during roll
     intervalRef.current = setInterval(() => {
@@ -62,11 +67,12 @@ export function Dice({ lastRoll, point, onRollingChange }: DiceProps) {
     const timer = setTimeout(() => {
       if (intervalRef.current) clearInterval(intervalRef.current);
       setRolling(false);
-      onRollingChange?.(false);
+      onRollingChangeRef.current?.(false);
       setDisplayRoll(lastRoll);
     }, DICE_ANIMATION_MS);
 
     return () => {
+      cancelAnimationFrame(raf);
       clearTimeout(timer);
       if (intervalRef.current) clearInterval(intervalRef.current);
     };

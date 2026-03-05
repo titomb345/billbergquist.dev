@@ -2,10 +2,9 @@ import { useEffect, useCallback, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import type { CrapsGameState, CrapsClientMessage, BetType, DiceRoll, BetResolution } from '../types';
 import { MAX_PLAYERS } from '../types';
-import { POST_ROLL_DELAY_MS, POST_RESULT_DELAY_MS } from '../constants';
+import { POST_ROLL_DELAY_MS } from '../constants';
 import { CrapsTable, getPlayerColors } from './CrapsTable';
 import { Dice } from './Dice';
-import { PlayerPanel } from './PlayerPanel';
 import { BettingControls } from './BettingControls';
 import { RollHistory } from './RollHistory';
 import { PayoutCard } from './PayoutCard';
@@ -23,12 +22,14 @@ interface CrapsGameProps {
   myPlayerId: string;
   connectionStatus: string;
   lastRoll: { roll: DiceRoll; resolutions: BetResolution[] } | null;
+  diceAnimating: boolean;
   onSend: (msg: CrapsClientMessage) => void;
   onClearLastRoll: () => void;
+  onDiceAnimDone: () => void;
   chatMessages?: ChatMessage[];
 }
 
-export function CrapsGame({ room, myPlayerId, connectionStatus, lastRoll, onSend, onClearLastRoll, chatMessages = [] }: CrapsGameProps) {
+export function CrapsGame({ room, myPlayerId, connectionStatus, lastRoll, diceAnimating, onSend, onClearLastRoll, onDiceAnimDone, chatMessages = [] }: CrapsGameProps) {
   const me = room.players.find((p) => p.id === myPlayerId);
   const isHost = me?.isHost ?? false;
   const isShooter = room.players[room.shooterIndex]?.id === myPlayerId;
@@ -60,20 +61,12 @@ export function CrapsGame({ room, myPlayerId, connectionStatus, lastRoll, onSend
   }, [lastRoll, myPlayerId, playDiceRoll, playWin, playBigWin, playLoss]);
 
   // Confetti state: show on wins
-  const [showConfetti, setShowConfetti] = useState(false);
-  useEffect(() => {
-    if (!lastRoll) { setShowConfetti(false); return; }
+  const showConfetti = useMemo(() => {
+    if (!lastRoll) return false;
     const myTotal = lastRoll.resolutions
       .filter((r) => r.playerId === myPlayerId)
       .reduce((sum, r) => sum + r.payout, 0);
-    if (myTotal >= 50) {
-      // Delay to sync with resolution overlay appearance
-      const timer = setTimeout(() => setShowConfetti(true), POST_RESULT_DELAY_MS);
-      const clear = setTimeout(() => setShowConfetti(false), POST_RESULT_DELAY_MS + 3000);
-      return () => { clearTimeout(timer); clearTimeout(clear); };
-    } else {
-      setShowConfetti(false);
-    }
+    return myTotal >= 50;
   }, [lastRoll, myPlayerId]);
 
   useEffect(() => {
@@ -115,26 +108,16 @@ export function CrapsGame({ room, myPlayerId, connectionStatus, lastRoll, onSend
   const myBets = useMemo(() => room.bets.filter((b) => b.playerId === myPlayerId), [room.bets, myPlayerId]);
   const [selectedChip, setSelectedChip] = useState(5);
   const [diceRolling, setDiceRolling] = useState(false);
-  // Bridge the one-frame gap between DICE_ROLLED (betsConfirmed=false) and
-  // the Dice component's useEffect setting diceRolling=true.
-  const awaitingDiceAnim = useRef(false);
-  const prevLastRollForLock = useRef(lastRoll);
-  if (lastRoll && lastRoll !== prevLastRollForLock.current) {
-    awaitingDiceAnim.current = true;
-  }
-  prevLastRollForLock.current = lastRoll;
-  if (diceRolling) {
-    awaitingDiceAnim.current = false;
-  }
-  const lockBridge = awaitingDiceAnim.current;
+  const handleDiceRollingChange = useCallback((rolling: boolean) => {
+    setDiceRolling(rolling);
+    if (!rolling) onDiceAnimDone();
+  }, [onDiceAnimDone]);
   const lastRollTotal = lastRoll?.roll.total ?? null;
 
   const visibleRollHistory = useMemo(
     () => diceRolling ? room.rollHistory.slice(0, -1) : room.rollHistory,
     [diceRolling, room.rollHistory],
   );
-
-  const otherPlayers = useMemo(() => room.players.filter((p) => p.id !== myPlayerId), [room.players, myPlayerId]);
 
   const [copyFeedback, setCopyFeedback] = useState(false);
   const handleCopyLink = useCallback(() => {
@@ -340,14 +323,14 @@ export function CrapsGame({ room, myPlayerId, connectionStatus, lastRoll, onSend
               myPlayerId={myPlayerId}
               selectedChip={selectedChip}
               onChipChange={setSelectedChip}
-              confirmed={room.phase !== 'betting' || (me?.betsConfirmed ?? false) || diceRolling || lockBridge}
+              confirmed={room.phase !== 'betting' || (me?.betsConfirmed ?? false) || diceRolling || diceAnimating}
             />
             <PhaseAnnouncement phase={room.phase} point={room.point} lastRollTotal={lastRollTotal} suppress={!!lastRoll && lastRoll.resolutions.length > 0} />
           </div>
 
           {/* Dice + Roll Button */}
           <div className={styles.diceActionRow}>
-            <Dice lastRoll={lastRoll?.roll ?? null} point={room.point} onRollingChange={setDiceRolling} />
+            <Dice lastRoll={lastRoll?.roll ?? null} point={room.point} onRollingChange={handleDiceRollingChange} />
 
             {room.phase === 'rolling' && isShooter && (
               <div className={styles.actionSlot}>
