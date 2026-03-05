@@ -1,9 +1,11 @@
 import { RetroRoom } from './RetroRoom';
+import { CrapsRoom } from './CrapsRoom';
 
-export { RetroRoom };
+export { RetroRoom, CrapsRoom };
 
 interface Env {
   RETRO_ROOM: DurableObjectNamespace;
+  CRAPS_ROOM: DurableObjectNamespace;
 }
 
 const ALLOWED_ORIGINS = [
@@ -40,6 +42,18 @@ export default {
       const stub = env.RETRO_ROOM.get(id);
 
       // Forward the request to the Durable Object, passing room code in the path
+      const doUrl = new URL(request.url);
+      doUrl.pathname = `/ws/${roomCode}`;
+      return stub.fetch(new Request(doUrl.toString(), request));
+    }
+
+    // GET /api/craps/:code/ws - Craps WebSocket connection
+    const crapsMatch = url.pathname.match(/^\/api\/craps\/([A-Z0-9]{4})\/ws$/);
+    if (crapsMatch) {
+      const roomCode = crapsMatch[1];
+      const id = env.CRAPS_ROOM.idFromName(roomCode);
+      const stub = env.CRAPS_ROOM.get(id);
+
       const doUrl = new URL(request.url);
       doUrl.pathname = `/ws/${roomCode}`;
       return stub.fetch(new Request(doUrl.toString(), request));

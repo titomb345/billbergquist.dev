@@ -1,0 +1,248 @@
+/* ═══════════════════════════════════════════
+   DICE — Compact Casino Dice
+   ═══════════════════════════════════════════ */
+
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 0;
+}
+
+.diceRow {
+  display: flex;
+  gap: 12px;
+  perspective: 600px;
+}
+
+.diceRowRolling {
+  filter: blur(0.5px);
+}
+
+/* ── Individual Die ── */
+
+.die {
+  width: 54px;
+  height: 54px;
+  position: relative;
+  transform-style: preserve-3d;
+}
+
+.dieRolling {
+  animation: diceThrow 1.2s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.dieLanded {
+  animation: diceLand 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.dieInner {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  border-radius: 11px;
+  background:
+    linear-gradient(145deg, #d42b2b, #a81e1e);
+  box-shadow:
+    0 4px 14px rgba(0, 0, 0, 0.5),
+    0 2px 4px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.15),
+    inset -1px 0 0 rgba(0, 0, 0, 0.1),
+    inset 1px 0 0 rgba(255, 255, 255, 0.05);
+}
+
+.dieShine {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 24px;
+  height: 24px;
+  border-radius: 8px 8px 50% 8px;
+  background: linear-gradient(135deg,
+    rgba(255, 255, 255, 0.3),
+    rgba(255, 255, 255, 0) 70%
+  );
+  pointer-events: none;
+}
+
+.face {
+  position: absolute;
+  inset: 0;
+}
+
+/* ── Pips (dots) ── */
+
+.pip {
+  position: absolute;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  background:
+    radial-gradient(circle at 40% 35%,
+      #ffffff 0%,
+      #f0f0f0 40%,
+      #e0e0e0 100%
+    );
+  box-shadow:
+    inset 0 1px 2px rgba(0, 0, 0, 0.15),
+    0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* ── Total Display (inline next to dice) ── */
+
+.totalDisplay {
+  position: absolute;
+  right: calc(100% + 12px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.totalVisible {
+  opacity: 1;
+  animation: fadeIn 0.3s ease;
+}
+
+.totalNumber {
+  font-family: var(--font-heading);
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: var(--neon-orange);
+  text-shadow:
+    0 0 10px var(--neon-orange),
+    0 0 30px var(--neon-orange-glow);
+  line-height: 1;
+}
+
+.totalLabel {
+  font-family: var(--font-heading);
+  font-size: 0.55rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+.totalSeven .totalNumber {
+  color: #ef4444;
+  text-shadow:
+    0 0 10px #ef4444,
+    0 0 30px rgba(239, 68, 68, 0.5);
+}
+
+.totalSeven .totalLabel {
+  color: #ef4444;
+}
+
+.totalYo .totalLabel {
+  color: var(--neon-orange);
+}
+
+.totalCraps .totalNumber {
+  color: #ef4444;
+  text-shadow:
+    0 0 10px #ef4444,
+    0 0 30px rgba(239, 68, 68, 0.5);
+}
+
+.totalCraps .totalLabel {
+  color: #ef4444;
+}
+
+.totalPoint .totalNumber {
+  color: #fbbf24;
+  text-shadow:
+    0 0 10px #fbbf24,
+    0 0 30px rgba(251, 191, 36, 0.5);
+}
+
+.totalPoint .totalLabel {
+  color: #fbbf24;
+}
+
+/* ── Animations ── */
+
+@keyframes diceThrow {
+  0% {
+    transform: translateY(0) rotate(0deg) scale(1);
+    opacity: 1;
+  }
+  15% {
+    transform: translateY(-40px) rotate(120deg) scale(1.1);
+  }
+  30% {
+    transform: translateY(-20px) rotate(240deg) scale(1.05);
+  }
+  50% {
+    transform: translateY(-30px) rotate(400deg) scale(1.08);
+  }
+  70% {
+    transform: translateY(-10px) rotate(560deg) scale(1.02);
+  }
+  85% {
+    transform: translateY(-5px) rotate(660deg) scale(1);
+  }
+  100% {
+    transform: translateY(0) rotate(720deg) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes diceLand {
+  0% {
+    transform: scale(1.08) translateY(-4px);
+  }
+  50% {
+    transform: scale(0.96) translateY(1px);
+  }
+  100% {
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── Responsive ── */
+
+@media (max-width: 640px) {
+  .die {
+    width: 46px;
+    height: 46px;
+  }
+
+  .dieInner {
+    border-radius: 9px;
+  }
+
+  .pip {
+    width: 9px;
+    height: 9px;
+  }
+
+  .diceRow {
+    gap: 10px;
+  }
+
+  .totalNumber {
+    font-size: 1.3rem;
+  }
+
+  .totalLabel {
+    font-size: 0.5rem;
+  }
+}

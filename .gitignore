@@ -2,7 +2,7 @@
 
 # dependencies
 /node_modules
-retro-worker/node_modules
+realtime-worker/node_modules
 /.pnp
 .pnp.js
 

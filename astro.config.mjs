@@ -7,11 +7,14 @@ export default defineConfig({
   vite: {
     plugins: [
       {
-        name: 'retro-room-rewrite',
+        name: 'room-code-rewrite',
         configureServer(server) {
           server.middlewares.use((req, _res, next) => {
             if (req.url && /^\/retro\/[A-Z0-9]{4}$/i.test(req.url)) {
               req.url = '/retro/';
+            }
+            if (req.url && /^\/craps\/[A-Z0-9]{4}$/i.test(req.url)) {
+              req.url = '/craps/';
             }
             next();
           });
@@ -22,7 +25,7 @@ export default defineConfig({
   integrations: [
     react(),
     sitemap({
-      filter: (page) => !page.includes('/404') && !page.includes('/retro'),
+      filter: (page) => !page.includes('/404') && !page.includes('/retro') && !page.includes('/craps'),
       customPages: [],
       serialize(item) {
         const priorities = {

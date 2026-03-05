@@ -8,6 +8,12 @@
   to = "/retro/index.html"
   status = 200
 
+# Serve the craps page for /craps/<roomcode> paths (clean URLs)
+[[redirects]]
+  from = "/craps/:code"
+  to = "/craps/index.html"
+  status = 200
+
 [[headers]]
   for = "/*"
   [headers.values]

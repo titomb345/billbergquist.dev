@@ -30,6 +30,8 @@
   --neon-purple: #bf00ff;
   --neon-orange: #ff6a00;
   --neon-yellow: #f59e0b;
+  --neon-blue: #4488ff;
+  --neon-peach: #ff8866;
 
   /* Neon glow variants (for shadows) */
   --neon-mint-glow: rgba(0, 212, 170, 0.5);
@@ -60,6 +62,23 @@
   --radius-sm: 4px;
   --radius-md: 8px;
   --radius-lg: 12px;
+
+  /* Numeric spacing scale (used by game components) */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-7: 2rem;
+  --space-8: 3rem;
+
+  /* Borders */
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-accent: rgba(0, 212, 170, 0.3);
+
+  /* Extended text */
+  --text-tertiary: #4a4a5a;
 
   /* Transitions */
   --transition-fast: 150ms ease;

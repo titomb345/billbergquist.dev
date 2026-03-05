@@ -1,0 +1,55 @@
+/* ═══════════════════════════════════════════
+   PAYOUT CARD — Reference Table
+   ═══════════════════════════════════════════ */
+
+.card {
+  padding: 0;
+}
+
+.header {
+  font-family: var(--font-heading);
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  padding: 10px 14px 6px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.7rem;
+}
+
+.table th {
+  text-align: left;
+  padding: 6px 14px;
+  color: var(--text-tertiary);
+  font-family: var(--font-heading);
+  font-size: 0.48rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  font-weight: 400;
+}
+
+.table td {
+  padding: 5px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  color: var(--text-secondary);
+  font-size: 0.65rem;
+}
+
+.table tr:last-child td {
+  border-bottom: none;
+}
+
+.table tr:hover td {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.edge {
+  font-family: var(--font-mono);
+  color: var(--neon-orange);
+  font-weight: 500;
+}

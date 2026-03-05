@@ -1,0 +1,63 @@
+/* ═══════════════════════════════════════════
+   BETTING TIPS — Contextual Help
+   ═══════════════════════════════════════════ */
+
+.tips {
+  background: rgba(20, 20, 31, 0.5);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 8px 12px;
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-family: var(--font-heading);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+
+.toggle:hover {
+  color: var(--neon-orange);
+}
+
+.arrow {
+  font-size: 0.55rem;
+  opacity: 0.5;
+}
+
+.collapse {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.25s ease;
+}
+
+.collapseOpen {
+  grid-template-rows: 1fr;
+}
+
+.collapseInner {
+  overflow: hidden;
+}
+
+.list {
+  margin: 0;
+  padding: 0 12px 10px 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.tip {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  line-height: 1.45;
+}

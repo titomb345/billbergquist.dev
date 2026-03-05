@@ -32,7 +32,7 @@ export default function RetroApp() {
           </DomainGuard>
         </SignedIn>
         <SignedOut>
-          <AuthGate />
+          <AuthGate subtitle="Sign in with your Kasa Google account to continue." />
         </SignedOut>
       </ErrorBoundary>
     </ClerkProvider>

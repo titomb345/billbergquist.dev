@@ -4,12 +4,13 @@ import Button from '../../components/ui/Button.astro';
 import GameCard from '../../components/ui/GameCard.astro';
 import MinesweeperRoguelikePreview from '../../components/home/MinesweeperRoguelikePreview.astro';
 import GridlockPreview from '../../components/home/GridlockPreview.astro';
+import CrapsPreview from '../../components/home/CrapsPreview.astro';
 import styles from '../ArcadePage.module.css';
 ---
 
 <Layout
   title="Arcade — Browser Games by Bill Bergquist"
-  description="Browser-based games built through AI-assisted development. Play Minesweeper: Descent and Gridlock: Showdown, free in your browser."
+  description="Browser-based games built through AI-assisted development. Play Minesweeper: Descent, Gridlock: Showdown, and Craps: High Roller, free in your browser."
   canonical="/arcade"
   ogImage="/og/arcade.png"
 >
@@ -65,6 +66,15 @@ import styles from '../ArcadePage.module.css';
         >
           <GridlockPreview slot="preview" />
           <Button variant="primary" href="/arcade/gridlock" slot="action">Play Now</Button>
+        </GameCard>
+      </div>
+      <div class={`${styles.cabinetFrame} scroll-reveal-child`}>
+        <GameCard
+          title="Craps: High Roller"
+          description="Roll the bones with up to 8 friends. Real-time multiplayer craps with full betting, no chips required."
+        >
+          <CrapsPreview slot="preview" />
+          <Button variant="primary" href="/craps" slot="action">Play Now</Button>
         </GameCard>
       </div>
     </section>
