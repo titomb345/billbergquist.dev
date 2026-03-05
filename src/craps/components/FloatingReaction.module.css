@@ -1,0 +1,42 @@
+/* ═══════════════════════════════════════════
+   FLOATING REACTION — Emoji Bubble
+   ═══════════════════════════════════════════ */
+
+.bubble {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  animation: floatUp 2.5s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+  pointer-events: none;
+  z-index: 20;
+  filter: drop-shadow(0 0 6px rgba(0, 0, 0, 0.5));
+}
+
+.bubbleExit {
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.emoji {
+  font-size: 1.8rem;
+  display: block;
+}
+
+@keyframes floatUp {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(0) scale(0.3);
+  }
+  15% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(-10px) scale(1.2);
+  }
+  30% {
+    transform: translateX(-50%) translateY(-20px) scale(1);
+  }
+  100% {
+    opacity: 0.3;
+    transform: translateX(-50%) translateY(-60px) scale(0.8);
+  }
+}

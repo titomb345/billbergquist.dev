@@ -72,7 +72,7 @@ export const PIECE_SHAPES: Record<PieceType, [number, number][][]> = {
  */
 type KickKey = `${RotationState}-${RotationState}`;
 
-const JLSTZ_KICKS: Record<KickKey, [number, number][]> = {
+const JLSTZ_KICKS: Partial<Record<KickKey, [number, number][]>> = {
   '0-1': [[0, -1], [-1, -1], [2, 0], [2, -1]],
   '1-0': [[0, 1], [1, 1], [-2, 0], [-2, 1]],
   '1-2': [[0, 1], [1, 1], [-2, 0], [-2, 1]],
@@ -83,7 +83,7 @@ const JLSTZ_KICKS: Record<KickKey, [number, number][]> = {
   '0-3': [[0, 1], [-1, 1], [2, 0], [2, 1]],
 };
 
-const I_KICKS: Record<KickKey, [number, number][]> = {
+const I_KICKS: Partial<Record<KickKey, [number, number][]>> = {
   '0-1': [[0, -2], [0, 1], [1, -2], [-2, 1]],
   '1-0': [[0, 2], [0, -1], [-1, 2], [2, -1]],
   '1-2': [[0, -1], [0, 2], [-2, -1], [1, 2]],

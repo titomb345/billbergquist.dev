@@ -1,0 +1,35 @@
+---
+import styles from '../../craps/CrapsPreview.module.css';
+
+// Dice face layout: 3x3 grid positions for each pip count
+// Positions: TL TC TR | ML MC MR | BL BC BR
+const pipLayouts: Record<number, number[]> = {
+  4: [0, 2, 6, 8],       // four corners
+  3: [0, 4, 8],           // diagonal
+};
+
+function getPips(value: number) {
+  const active = new Set(pipLayouts[value] ?? []);
+  return Array.from({ length: 9 }, (_, i) => active.has(i));
+}
+
+const die1Pips = getPips(4);
+const die2Pips = getPips(3);
+---
+
+<div class={styles.crapsPreview}>
+  <div class={styles.label}>COME OUT</div>
+  <div class={styles.diceArea}>
+    <div class={styles.die}>
+      {die1Pips.map((on) => (
+        <span class={`${styles.pip} ${!on ? styles.pipHidden : ''}`} />
+      ))}
+    </div>
+    <div class={styles.die}>
+      {die2Pips.map((on) => (
+        <span class={`${styles.pip} ${!on ? styles.pipHidden : ''}`} />
+      ))}
+    </div>
+  </div>
+  <div class={styles.pointIndicator}>NATURAL 7</div>
+</div>

@@ -1,17 +1,6 @@
 import type { Column, RoomSettings } from './types';
 
-// Update this after deploying the Cloudflare Worker
-export const WORKER_URL = 'https://retro-worker.billbergquist.workers.dev';
-
-const ROOM_CODE_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // No I/O/0/1 to avoid confusion
-
-export function generateRoomCode(): string {
-  let code = '';
-  for (let i = 0; i < 4; i++) {
-    code += ROOM_CODE_CHARS[Math.floor(Math.random() * ROOM_CODE_CHARS.length)];
-  }
-  return code;
-}
+export { WORKER_URL, generateRoomCode } from '../shared/constants';
 
 export const DEFAULT_COLUMNS: Column[] = [
   { id: 'col-1', label: 'Good', color: 'mint' },
