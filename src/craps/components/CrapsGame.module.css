@@ -368,6 +368,11 @@
   background: rgba(255, 106, 0, 0.06);
 }
 
+.mutedBtn {
+  color: var(--text-tertiary);
+  opacity: 0.6;
+}
+
 .balanceBar {
   display: flex;
   align-items: center;

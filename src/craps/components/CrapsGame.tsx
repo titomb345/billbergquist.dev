@@ -34,7 +34,7 @@ export function CrapsGame({ room, myPlayerId, connectionStatus, lastRoll, diceAn
   const isHost = me?.isHost ?? false;
   const isShooter = room.players[room.shooterIndex]?.id === myPlayerId;
   const shooter = room.players[room.shooterIndex];
-  const { playDiceRoll, playWin, playBigWin, playLoss, playChipPlace } = useSoundEffects();
+  const { playDiceRoll, playWin, playBigWin, playLoss, playChipPlace, muted, toggleMute } = useSoundEffects();
 
   const handleChatSend = useCallback((text: string) => {
     onSend({ type: 'chat', text });
@@ -262,6 +262,23 @@ export function CrapsGame({ room, myPlayerId, connectionStatus, lastRoll, diceAn
               <circle cx="8" cy="8" r="7" stroke="currentColor" strokeWidth="1.5" />
               <path d="M8 4.5v0m0 7V7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
             </svg>
+          </button>
+          <button
+            className={`${styles.payoutBtn} ${muted ? styles.mutedBtn : ''}`}
+            onClick={toggleMute}
+            title={muted ? 'Unmute sounds' : 'Mute sounds'}
+          >
+            {muted ? (
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M8 2.5L4.5 5.5H2v5h2.5L8 13.5V2.5z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" />
+                <path d="M11 5.5l4 5M15 5.5l-4 5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
+              </svg>
+            ) : (
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M8 2.5L4.5 5.5H2v5h2.5L8 13.5V2.5z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" />
+                <path d="M11 5.5a3.5 3.5 0 010 5M13 3.5a6.5 6.5 0 010 9" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
+              </svg>
+            )}
           </button>
           {me && (
             <div className={styles.balanceBar}>
