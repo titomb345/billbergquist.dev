@@ -368,6 +368,11 @@
   background: rgba(255, 106, 0, 0.06);
 }
 
+.mutedBtn {
+  color: var(--text-tertiary);
+  opacity: 0.6;
+}
+
 .balanceBar {
   display: flex;
   align-items: center;
@@ -507,7 +512,7 @@
   z-index: 100;
   display: flex;
   align-items: flex-start;
-  justify-content: flex-end;
+  justify-content: center;
   padding: 48px 16px 0;
 }
 
@@ -673,6 +678,14 @@
 
 .waitingDots span:nth-child(3) {
   animation-delay: 0.4s;
+}
+
+.autoRollTimer {
+  font-size: 0.65rem;
+  font-family: var(--font-mono);
+  color: var(--text-tertiary);
+  text-align: center;
+  margin: 4px 0 0;
 }
 
 @keyframes dotBounce {

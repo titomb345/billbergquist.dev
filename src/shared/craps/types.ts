@@ -71,6 +71,7 @@ export interface CrapsGameState {
   bets: Bet[];
   rollHistory: DiceRoll[];
   createdAt: number;
+  roundDeadline: number | null; // timestamp when auto-confirm + roll fires (null in lobby)
 }
 
 // ── Client → Server Messages ──
@@ -98,7 +99,7 @@ export type CrapsServerMessage =
   | { type: 'phaseChanged'; phase: CrapsPhase; point: number | null }
   | { type: 'betPlaced'; bet: Bet; players: Player[] }
   | { type: 'betRemoved'; betId: string; players: Player[] }
-  | { type: 'diceRolled'; roll: DiceRoll; resolutions: BetResolution[]; players: Player[]; bets: Bet[]; point: number | null; phase: CrapsPhase; shooterIndex: number }
+  | { type: 'diceRolled'; roll: DiceRoll; resolutions: BetResolution[]; players: Player[]; bets: Bet[]; point: number | null; phase: CrapsPhase; shooterIndex: number; roundDeadline: number | null }
   | { type: 'reaction'; playerId: string; reaction: ReactionKey }
   | { type: 'chatMessage'; playerId: string; name: string; text: string; timestamp: number }
   | { type: 'error'; message: string }
