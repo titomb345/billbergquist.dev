@@ -1,17 +1,31 @@
+import type { ReactNode } from 'react';
 import { SignIn } from '@clerk/clerk-react';
 import styles from './AuthGate.module.css';
 
 interface AuthGateProps {
   error?: string;
   onBack?: () => void;
+  brandContent?: ReactNode;
+  subtitle?: string;
+  redirectUrl?: string;
+  accentColor?: string;
 }
 
-export function AuthGate({ error, onBack }: AuthGateProps) {
+export function AuthGate({
+  error,
+  onBack,
+  brandContent,
+  subtitle = 'Sign in to continue.',
+  redirectUrl = '/retro',
+  accentColor = '#bf00ff',
+}: AuthGateProps) {
   return (
     <div className={styles.container}>
-      <span className={styles.brand}>
-        Retro<span className={styles.brandAccent}>Retro</span>
-      </span>
+      {brandContent ?? (
+        <span className={styles.brand}>
+          Retro<span className={styles.brandAccent}>Retro</span>
+        </span>
+      )}
       {error ? (
         <div className={styles.errorCard}>
           <p className={styles.errorText}>{error}</p>
@@ -23,13 +37,13 @@ export function AuthGate({ error, onBack }: AuthGateProps) {
         </div>
       ) : (
         <>
-          <p className={styles.subtitle}>Sign in with your Kasa Google account to continue.</p>
+          <p className={styles.subtitle}>{subtitle}</p>
           <SignIn
-            forceRedirectUrl="/retro"
-            signUpForceRedirectUrl="/retro"
+            forceRedirectUrl={redirectUrl}
+            signUpForceRedirectUrl={redirectUrl}
             appearance={{
               variables: {
-                colorPrimary: '#bf00ff',
+                colorPrimary: accentColor,
                 colorBackground: '#14141f',
                 colorText: '#ffffff',
                 colorTextSecondary: '#b0b0c0',
@@ -63,7 +77,7 @@ export function AuthGate({ error, onBack }: AuthGateProps) {
                   color: '#b0b0c0',
                 },
                 footerActionLink: {
-                  color: '#bf00ff',
+                  color: accentColor,
                 },
                 dividerLine: {
                   borderColor: 'rgba(255, 255, 255, 0.08)',

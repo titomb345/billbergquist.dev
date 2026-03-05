@@ -1,5 +1,5 @@
 {
-  "name": "retro-worker",
+  "name": "realtime-worker",
   "private": true,
   "scripts": {
     "dev": "wrangler dev",

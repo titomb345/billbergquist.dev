@@ -1,0 +1,156 @@
+/* ═══════════════════════════════════════════
+   PLAYER PANEL — Glass Morphism Card
+   ═══════════════════════════════════════════ */
+
+.panel {
+  position: relative;
+  background: rgba(20, 20, 31, 0.7);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  backdrop-filter: blur(6px);
+  transition: all var(--transition-fast);
+  overflow: visible;
+}
+
+.panelMe {
+  border-color: rgba(255, 106, 0, 0.3);
+  background: rgba(255, 106, 0, 0.04);
+  box-shadow:
+    0 0 1px rgba(255, 106, 0, 0.3),
+    inset 0 0 20px rgba(255, 106, 0, 0.02);
+}
+
+.panelOffline {
+  opacity: 0.4;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.identity {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border-subtle);
+}
+
+.panelMe .avatar {
+  border-color: rgba(255, 106, 0, 0.4);
+}
+
+.avatarPlaceholder {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--bg-elevated);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.55rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  letter-spacing: 0.05em;
+}
+
+.nameCol {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.name {
+  font-size: 0.82rem;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.youTag {
+  color: var(--text-tertiary);
+  font-size: 0.7rem;
+  font-weight: 400;
+}
+
+.shooterBadge {
+  font-size: 0.5rem;
+  font-family: var(--font-heading);
+  letter-spacing: 0.12em;
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.1);
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  width: fit-content;
+  text-shadow: 0 0 6px rgba(239, 68, 68, 0.3);
+}
+
+.balance {
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  color: var(--neon-orange);
+  font-weight: 600;
+  text-shadow: 0 0 8px var(--neon-orange-glow);
+}
+
+.bets {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-top: 6px;
+  border-top: 1px solid var(--border-subtle);
+  max-height: 100px;
+  overflow-y: auto;
+}
+
+.bet {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+}
+
+.betType {
+  color: var(--text-secondary);
+  flex: 1;
+}
+
+.betPoint {
+  color: var(--text-tertiary);
+  font-size: 0.65rem;
+}
+
+.betAmount {
+  font-family: var(--font-mono);
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.betTotal {
+  font-size: 0.65rem;
+  color: var(--text-tertiary);
+  text-align: right;
+  padding-top: 3px;
+  border-top: 1px dashed rgba(255, 255, 255, 0.04);
+  font-family: var(--font-mono);
+}
+
+.confirmedTag {
+  font-size: 0.55rem;
+  font-family: var(--font-heading);
+  letter-spacing: 0.08em;
+  color: var(--neon-orange);
+  text-align: center;
+  opacity: 0.7;
+}

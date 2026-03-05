@@ -1,0 +1,13 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import CrapsApp from '../../craps/CrapsApp';
+---
+
+<Layout
+  title="Craps — Bill Bergquist"
+  description="Multiplayer craps game. Practice before Vegas with up to 4 friends."
+  canonical="/craps"
+  noindex={true}
+>
+  <CrapsApp client:only="react" />
+</Layout>

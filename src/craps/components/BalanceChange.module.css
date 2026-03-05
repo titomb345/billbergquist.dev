@@ -1,0 +1,56 @@
+/* ═══════════════════════════════════════════
+   BALANCE CHANGE — Floating Win/Loss Amount
+   ═══════════════════════════════════════════ */
+
+.container {
+  position: relative;
+  display: inline-flex;
+  pointer-events: none;
+}
+
+.float {
+  position: absolute;
+  right: 0;
+  top: 0;
+  font-family: var(--font-heading);
+  font-size: 0.85rem;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  animation: floatUp 2s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+}
+
+.win {
+  color: var(--neon-orange);
+  text-shadow:
+    0 0 10px var(--neon-orange),
+    0 0 20px var(--neon-orange-glow);
+}
+
+.loss {
+  color: #ef4444;
+  text-shadow:
+    0 0 10px #ef4444,
+    0 0 20px rgba(239, 68, 68, 0.5);
+}
+
+@keyframes floatUp {
+  0% {
+    opacity: 0;
+    transform: translateY(0) scale(0.8);
+  }
+  15% {
+    opacity: 1;
+    transform: translateY(-10px) scale(1.1);
+  }
+  30% {
+    transform: translateY(-18px) scale(1);
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-40px) scale(0.9);
+  }
+}

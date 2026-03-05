@@ -1,0 +1,414 @@
+/* ═══════════════════════════════════════════
+   BETTING CONTROLS — Categorized Casino Panel
+   ═══════════════════════════════════════════ */
+
+.controls {
+  position: relative;
+  background:
+    linear-gradient(135deg, rgba(20, 20, 31, 0.85) 0%, rgba(15, 15, 24, 0.95) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: var(--radius-lg);
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  backdrop-filter: blur(12px);
+  overflow: hidden;
+}
+
+/* ── Chip Selector Bar ── */
+
+.chipBar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  background: rgba(255, 255, 255, 0.02);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.chipBarLabel {
+  font-size: 0.6rem;
+  font-family: var(--font-heading);
+  letter-spacing: 0.12em;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.chips {
+  display: flex;
+  gap: 6px;
+}
+
+.chipBtn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 2.5px solid rgba(255, 255, 255, 0.08);
+  background:
+    radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.08), transparent 60%),
+    var(--bg-elevated);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 120ms ease;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.chipBtn::after {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border-radius: 50%;
+  border: 1.5px dashed rgba(255, 255, 255, 0.06);
+  pointer-events: none;
+}
+
+.chipValue {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 700;
+  position: relative;
+  z-index: 1;
+}
+
+.chipBtn:hover:not(:disabled) {
+  border-color: rgba(255, 106, 0, 0.4);
+  transform: translateY(-2px) scale(1.05);
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.5),
+    0 0 8px rgba(255, 106, 0, 0.12);
+}
+
+.chipActive {
+  border-color: var(--neon-orange) !important;
+  background:
+    radial-gradient(circle at 35% 30%, rgba(255, 106, 0, 0.25), transparent 60%),
+    rgba(255, 106, 0, 0.1);
+  color: var(--neon-orange);
+  transform: translateY(-2px) scale(1.08);
+  box-shadow:
+    0 0 16px rgba(255, 106, 0, 0.35),
+    0 4px 8px rgba(0, 0, 0, 0.4),
+    inset 0 0 8px rgba(255, 106, 0, 0.08);
+}
+
+.chipActive::after {
+  border-color: rgba(255, 106, 0, 0.25);
+}
+
+.chipBtn:disabled {
+  opacity: 0.18;
+  cursor: not-allowed;
+}
+
+/* ── Bet Categories Grid ── */
+
+.betCategories {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0;
+  padding: 2px;
+}
+
+.category {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 12px;
+  position: relative;
+}
+
+/* Subtle vertical dividers between categories */
+.category + .category {
+  border-left: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.categoryLabel {
+  font-size: 0.5rem;
+  font-family: var(--font-heading);
+  letter-spacing: 0.18em;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  padding-bottom: 4px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.categoryBets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+/* ── Bet Buttons ── */
+
+.betBtn {
+  position: relative;
+  padding: 6px 10px;
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 6px;
+  color: var(--text-secondary);
+  font-size: 0.68rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 100ms ease;
+  text-align: center;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.betLabel {
+  position: relative;
+  z-index: 1;
+}
+
+.betBtn:hover:not(:disabled) {
+  border-color: rgba(255, 106, 0, 0.5);
+  color: var(--text-primary);
+  background: rgba(255, 106, 0, 0.08);
+  box-shadow: 0 0 8px rgba(255, 106, 0, 0.1);
+  transform: translateY(-1px);
+}
+
+.betBtn:active:not(:disabled) {
+  transform: translateY(0);
+  background: rgba(255, 106, 0, 0.14);
+}
+
+.betBtn:disabled {
+  opacity: 0.15;
+  cursor: not-allowed;
+}
+
+.betUnavailable {
+  opacity: 0.2;
+}
+
+/* Indicator dot for bets you already have */
+.betHasBet {
+  border-color: rgba(255, 106, 0, 0.3);
+  background: rgba(255, 106, 0, 0.06);
+}
+
+.betDot {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--neon-orange);
+  box-shadow: 0 0 6px rgba(255, 106, 0, 0.6);
+}
+
+/* ── Footer: Active Bets + Confirm ── */
+
+.footer {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  height: 130px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(0, 0, 0, 0.15);
+}
+
+.activeBets {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: 4px;
+  padding: 8px 14px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 106, 0, 0.2) transparent;
+}
+
+.activeBet {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.68rem;
+  padding: 4px 8px 4px 10px;
+  background: rgba(255, 106, 0, 0.06);
+  border: 1px solid rgba(255, 106, 0, 0.15);
+  border-radius: 20px;
+}
+
+.activeBetName {
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.activeBetAmount {
+  font-family: var(--font-mono);
+  color: var(--neon-orange);
+  font-weight: 600;
+  font-size: 0.65rem;
+}
+
+.removeBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  background: none;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 50%;
+  color: rgba(239, 68, 68, 0.7);
+  cursor: pointer;
+  padding: 0;
+  transition: all 100ms ease;
+}
+
+.removeBtn:hover {
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.4);
+  color: #ef4444;
+}
+
+.lockedTag {
+  font-size: 0.5rem;
+  color: var(--text-tertiary);
+  font-style: italic;
+  font-family: var(--font-mono);
+  letter-spacing: 0.04em;
+}
+
+/* ── Confirm Column (right side) ── */
+
+.confirmCol {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 8px 14px;
+  border-left: 1px solid rgba(255, 255, 255, 0.05);
+  min-width: 120px;
+}
+
+.totalBet {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.confirmBtn {
+  padding: 9px 20px;
+  background: linear-gradient(135deg, var(--neon-orange), #e05500);
+  color: var(--bg-void);
+  border: none;
+  border-radius: 6px;
+  font-family: var(--font-heading);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition: all 150ms ease;
+  box-shadow:
+    0 2px 12px rgba(255, 106, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  text-transform: uppercase;
+  white-space: nowrap;
+  width: 100%;
+  text-align: center;
+}
+
+.confirmBtn:hover:not(:disabled) {
+  box-shadow:
+    0 4px 20px rgba(255, 106, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  transform: translateY(-1px);
+}
+
+.confirmBtn:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 1px 6px rgba(255, 106, 0, 0.2);
+}
+
+/* ── Confirmed / Locked State ── */
+
+.confirmedOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10, 10, 15, 0.8);
+  backdrop-filter: blur(3px);
+  border-radius: var(--radius-lg);
+  pointer-events: none;
+}
+
+.confirmedLabel {
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  font-weight: 900;
+  letter-spacing: 0.25em;
+  color: var(--neon-orange);
+  text-shadow: 0 0 20px var(--neon-orange-glow);
+}
+
+.confirmLocked {
+  background: var(--bg-elevated) !important;
+  color: var(--text-tertiary) !important;
+  box-shadow: none !important;
+  cursor: default !important;
+}
+
+/* ── Responsive ── */
+
+@media (max-width: 700px) {
+  .betCategories {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .category + .category {
+    border-left: none;
+  }
+
+  .category:nth-child(odd) + .category {
+    border-left: 1px solid rgba(255, 255, 255, 0.04);
+  }
+
+  .category {
+    padding: 8px 10px;
+  }
+
+  .chipBar {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .footer {
+    height: 120px;
+  }
+
+  .confirmCol {
+    min-width: 100px;
+    padding: 8px 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .betCategories {
+    grid-template-columns: 1fr;
+  }
+
+  .category + .category {
+    border-left: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.04);
+  }
+}
