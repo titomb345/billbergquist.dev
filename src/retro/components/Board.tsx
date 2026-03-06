@@ -22,9 +22,10 @@ interface BoardProps {
   myParticipantId: string;
   connectionStatus: string;
   onSend: (msg: ClientMessage) => void;
+  onLeave: () => void;
 }
 
-export function Board({ room, isHost, myParticipantId, connectionStatus, onSend }: BoardProps) {
+export function Board({ room, isHost, myParticipantId, connectionStatus, onSend, onLeave }: BoardProps) {
   const me = room.participants.find((p) => p.id === myParticipantId);
   const canVote = (me?.votesRemaining ?? 0) > 0;
   const [copied, setCopied] = useState(false);
@@ -72,6 +73,7 @@ export function Board({ room, isHost, myParticipantId, connectionStatus, onSend 
         room={room}
         allReady={allReady}
         onSend={onSend}
+        onLeave={onLeave}
       />
 
       {room.phase !== 'lobby' && room.phase !== 'summary' && (

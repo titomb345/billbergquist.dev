@@ -107,119 +107,19 @@
   cursor: not-allowed;
 }
 
-/* ── Bet Categories Grid ── */
-
-.betCategories {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 0;
-  padding: 2px;
-}
-
-.category {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  padding: 10px 12px;
-  position: relative;
-}
-
-/* Subtle vertical dividers between categories */
-.category + .category {
-  border-left: 1px solid rgba(255, 255, 255, 0.04);
-}
-
-.categoryLabel {
-  font-size: 0.5rem;
-  font-family: var(--font-heading);
-  letter-spacing: 0.18em;
-  color: var(--text-tertiary);
-  text-transform: uppercase;
-  padding-bottom: 4px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
-}
-
-.categoryBets {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-}
-
-/* ── Bet Buttons ── */
-
-.betBtn {
-  position: relative;
-  padding: 6px 10px;
-  background: rgba(255, 255, 255, 0.025);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 6px;
-  color: var(--text-secondary);
-  font-size: 0.68rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 100ms ease;
-  text-align: center;
-  letter-spacing: 0.02em;
-  white-space: nowrap;
-  flex: 1 1 auto;
-  min-width: 0;
-}
-
-.betLabel {
-  position: relative;
-  z-index: 1;
-}
-
-.betBtn:hover:not(:disabled) {
-  border-color: rgba(255, 106, 0, 0.5);
-  color: var(--text-primary);
-  background: rgba(255, 106, 0, 0.08);
-  box-shadow: 0 0 8px rgba(255, 106, 0, 0.1);
-  transform: translateY(-1px);
-}
-
-.betBtn:active:not(:disabled) {
-  transform: translateY(0);
-  background: rgba(255, 106, 0, 0.14);
-}
-
-.betBtn:disabled {
-  opacity: 0.15;
-  cursor: not-allowed;
-}
-
-.betUnavailable {
-  opacity: 0.2;
-}
-
-/* Indicator dot for bets you already have */
-.betHasBet {
-  border-color: rgba(255, 106, 0, 0.3);
-  background: rgba(255, 106, 0, 0.06);
-}
-
-.betDot {
-  position: absolute;
-  top: 3px;
-  right: 3px;
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: var(--neon-orange);
-  box-shadow: 0 0 6px rgba(255, 106, 0, 0.6);
-}
-
 /* ── Footer: Active Bets + Confirm ── */
 
 .footer {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  height: 130px;
+  display: flex;
+  align-items: stretch;
+  min-height: 48px;
+  max-height: 140px;
   border-top: 1px solid rgba(255, 255, 255, 0.05);
   background: rgba(0, 0, 0, 0.15);
 }
 
 .activeBets {
+  flex: 1;
   display: flex;
   flex-wrap: wrap;
   align-content: flex-start;
@@ -280,6 +180,33 @@
   font-style: italic;
   font-family: var(--font-mono);
   letter-spacing: 0.04em;
+}
+
+.oddsBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 6px;
+  background: rgba(80, 200, 120, 0.12);
+  border: 1px solid rgba(80, 200, 120, 0.25);
+  border-radius: 4px;
+  color: rgba(80, 200, 120, 0.9);
+  font-size: 0.55rem;
+  font-weight: 700;
+  font-family: var(--font-heading);
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: all 100ms ease;
+}
+
+.oddsBtn:hover:not(:disabled) {
+  background: rgba(80, 200, 120, 0.2);
+  border-color: rgba(80, 200, 120, 0.45);
+}
+
+.oddsBtn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
 }
 
 /* ── Confirm Column (right side) ── */
@@ -371,44 +298,13 @@
 /* ── Responsive ── */
 
 @media (max-width: 700px) {
-  .betCategories {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .category + .category {
-    border-left: none;
-  }
-
-  .category:nth-child(odd) + .category {
-    border-left: 1px solid rgba(255, 255, 255, 0.04);
-  }
-
-  .category {
-    padding: 8px 10px;
-  }
-
   .chipBar {
     flex-wrap: wrap;
     gap: 8px;
   }
 
-  .footer {
-    height: 120px;
-  }
-
   .confirmCol {
     min-width: 100px;
     padding: 8px 10px;
-  }
-}
-
-@media (max-width: 480px) {
-  .betCategories {
-    grid-template-columns: 1fr;
-  }
-
-  .category + .category {
-    border-left: none;
-    border-top: 1px solid rgba(255, 255, 255, 0.04);
   }
 }

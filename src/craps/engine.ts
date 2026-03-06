@@ -12,6 +12,7 @@ export {
   establishComeBetPoints,
   snapBetAmount,
   aggregateBets,
+  groupBetsByPlayer,
 } from '../shared/craps/engine';
 
 export type { AggregatedBet } from '../shared/craps/engine';

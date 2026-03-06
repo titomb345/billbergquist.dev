@@ -30,6 +30,7 @@ export type RetroAction =
   | { type: 'ACTION_EDITED'; actionId: string; text: string }
   | { type: 'HOST_TRANSFERRED'; newHostId: string; participants: Participant[] }
   | { type: 'ACTIONS_REORDERED'; actionItems: ActionItem[] }
+  | { type: 'PARTICIPANT_LEFT'; participantId: string; participants: Participant[]; hostId: string }
   | { type: 'CONNECTION_STATUS'; status: RetroClientState['connectionStatus'] }
   | { type: 'ERROR'; message: string }
   | { type: 'RESET' };
@@ -239,6 +240,18 @@ function retroReducer(state: RetroClientState, action: RetroAction): RetroClient
         room: {
           ...state.room,
           actionItems: action.actionItems,
+        },
+      };
+
+    case 'PARTICIPANT_LEFT':
+      if (!state.room) return state;
+      return {
+        ...state,
+        room: {
+          ...state.room,
+          participants: action.participants,
+          hostId: action.hostId,
+          votes: state.room.votes.filter((v) => v.participantId !== action.participantId),
         },
       };
 

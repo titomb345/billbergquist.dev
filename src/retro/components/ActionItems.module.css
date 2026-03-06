@@ -26,8 +26,8 @@
   align-items: flex-start;
   gap: var(--space-sm);
   padding: 0.65rem 0.85rem;
-  background: rgba(255, 255, 255, 0.015);
-  border: 1px solid rgba(255, 255, 255, 0.04);
+  background: rgba(var(--glass-rgb), 0.015);
+  border: 1px solid rgba(var(--glass-rgb), 0.04);
   border-radius: var(--radius-md);
   border-left: 3px solid var(--neon-orange);
   transition: all var(--transition-fast);
@@ -35,7 +35,7 @@
 }
 
 .item:hover {
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(var(--glass-rgb), 0.03);
 }
 
 @keyframes cardSlideIn {
@@ -73,13 +73,13 @@
 }
 
 .itemText:hover {
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(var(--glass-rgb), 0.03);
 }
 
 .editInput {
   flex: 1;
   padding: 2px 4px;
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(var(--glass-rgb), 0.03);
   border: 1px solid rgba(191, 0, 255, 0.25);
   border-radius: 2px;
   color: var(--text-primary);
@@ -134,8 +134,8 @@
 .addInput {
   flex: 1;
   padding: 0.55rem 0.7rem;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(var(--glass-rgb), 0.02);
+  border: 1px solid rgba(var(--glass-rgb), 0.08);
   border-radius: var(--radius-md);
   color: var(--text-primary);
   font-family: var(--font-body);
@@ -155,8 +155,8 @@
 .assigneeSelect {
   width: 130px;
   padding: 0.55rem 0.7rem;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(var(--glass-rgb), 0.02);
+  border: 1px solid rgba(var(--glass-rgb), 0.08);
   border-radius: var(--radius-md);
   color: var(--text-primary);
   font-family: var(--font-body);
@@ -183,8 +183,8 @@
 .assigneeInput {
   width: 100px;
   padding: 0.55rem 0.7rem;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(var(--glass-rgb), 0.02);
+  border: 1px solid rgba(var(--glass-rgb), 0.08);
   border-radius: var(--radius-md);
   color: var(--text-primary);
   font-family: var(--font-body);

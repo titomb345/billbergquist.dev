@@ -103,6 +103,7 @@ export type ClientMessage =
   | { type: 'editAction'; actionId: string; text: string }
   | { type: 'transferHost'; targetParticipantId: string }
   | { type: 'reorderActions'; actionIds: string[] }
+  | { type: 'leave' }
   | { type: 'ping' };
 
 // ── Server → Client Messages ──
@@ -129,5 +130,6 @@ export type ServerMessage =
   | { type: 'actionEdited'; actionId: string; text: string }
   | { type: 'hostTransferred'; newHostId: string; participants: Participant[] }
   | { type: 'actionsReordered'; actionItems: ActionItem[] }
+  | { type: 'participantLeft'; participantId: string; participants: Participant[]; hostId: string }
   | { type: 'error'; message: string }
   | { type: 'pong' };

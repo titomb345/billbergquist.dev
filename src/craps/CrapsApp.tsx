@@ -108,6 +108,9 @@ function CrapsAppInner() {
             return next.length > 50 ? next.slice(-50) : next;
           });
           break;
+        case 'playerLeft':
+          dispatch({ type: 'PLAYER_LEFT', playerId: msg.playerId, players: msg.players, hostId: msg.hostId, shooterIndex: msg.shooterIndex });
+          break;
         case 'error':
           dispatch({ type: 'ERROR', message: msg.message });
           break;
@@ -155,6 +158,14 @@ function CrapsAppInner() {
     onReplaced: handleSessionReplaced,
   });
 
+  const handleLeaveRoom = useCallback(() => {
+    send({ type: 'leave' });
+    setActiveRoomCode(null);
+    dispatch({ type: 'RESET' });
+    setChatMessages([]);
+    window.history.replaceState({}, '', '/craps');
+  }, [send, dispatch]);
+
   const handleLobbyAction = useCallback(
     (msg: CrapsClientMessage) => {
       if (msg.type === 'create') {
@@ -200,6 +211,7 @@ function CrapsAppInner() {
       lastRoll={state.lastRoll}
       diceAnimating={state.diceAnimating}
       onSend={send}
+      onLeave={handleLeaveRoom}
       onClearLastRoll={() => dispatch({ type: 'CLEAR_LAST_ROLL' })}
       onDiceAnimDone={() => dispatch({ type: 'DICE_ANIM_DONE' })}
       chatMessages={chatMessages}

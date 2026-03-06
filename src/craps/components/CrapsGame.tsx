@@ -24,12 +24,13 @@ interface CrapsGameProps {
   lastRoll: { roll: DiceRoll; resolutions: BetResolution[] } | null;
   diceAnimating: boolean;
   onSend: (msg: CrapsClientMessage) => void;
+  onLeave: () => void;
   onClearLastRoll: () => void;
   onDiceAnimDone: () => void;
   chatMessages?: ChatMessage[];
 }
 
-export function CrapsGame({ room, myPlayerId, connectionStatus, lastRoll, diceAnimating, onSend, onClearLastRoll, onDiceAnimDone, chatMessages = [] }: CrapsGameProps) {
+export function CrapsGame({ room, myPlayerId, connectionStatus, lastRoll, diceAnimating, onSend, onLeave, onClearLastRoll, onDiceAnimDone, chatMessages = [] }: CrapsGameProps) {
   const me = room.players.find((p) => p.id === myPlayerId);
   const isHost = me?.isHost ?? false;
   const isShooter = room.players[room.shooterIndex]?.id === myPlayerId;
@@ -218,6 +219,10 @@ export function CrapsGame({ room, myPlayerId, connectionStatus, lastRoll, diceAn
           {isHost && otherPlayers.length > 0 && !allReady && (
             <p className={styles.hint}>Waiting for all players to ready up</p>
           )}
+
+          <button className={styles.leaveBtn} onClick={onLeave}>
+            Leave Room
+          </button>
         </div>
 
         {/* Chat in lobby */}
@@ -279,6 +284,16 @@ export function CrapsGame({ room, myPlayerId, connectionStatus, lastRoll, diceAn
                 <path d="M11 5.5a3.5 3.5 0 010 5M13 3.5a6.5 6.5 0 010 9" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
               </svg>
             )}
+          </button>
+          <button
+            className={styles.payoutBtn}
+            onClick={onLeave}
+            title="Leave room"
+          >
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M6 2H3.5A1.5 1.5 0 002 3.5v9A1.5 1.5 0 003.5 14H6" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
+              <path d="M11 11l3-3-3-3M6 8h8" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
           </button>
           {me && (
             <div className={styles.balanceBar}>
@@ -348,6 +363,7 @@ export function CrapsGame({ room, myPlayerId, connectionStatus, lastRoll, diceAn
             players={room.players}
             myPlayerId={myPlayerId}
             onPlaceBet={handlePlaceBet}
+            onRemoveBet={handleRemoveBet}
             phase={room.phase}
             betsConfirmed={me?.betsConfirmed ?? false}
             selectedChip={selectedChip}
@@ -362,8 +378,6 @@ export function CrapsGame({ room, myPlayerId, connectionStatus, lastRoll, diceAn
               onConfirm={handleConfirmBets}
               myBets={myBets}
               point={room.point}
-              gameState={room}
-              myPlayerId={myPlayerId}
               selectedChip={selectedChip}
               onChipChange={setSelectedChip}
               confirmed={room.phase !== 'betting' || (me?.betsConfirmed ?? false) || diceRolling || diceAnimating}
