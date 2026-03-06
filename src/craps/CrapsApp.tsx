@@ -6,18 +6,12 @@ import { useCrapsState } from './hooks/useCrapsState';
 import type { CrapsClientMessage, CrapsServerMessage } from './types';
 import type { ChatMessage } from './components/Chat';
 import { WORKER_URL, generateRoomCode } from './constants';
+import { getInitialRoomCode } from '../shared/utils/roomCode';
 import { CrapsLobby } from './components/CrapsLobby';
 import { CrapsGame } from './components/CrapsGame';
 import { AuthGate } from '../retro/components/AuthGate';
 
 const CLERK_KEY = import.meta.env.PUBLIC_CLERK_PUBLISHABLE_KEY;
-
-function getInitialRoomCode(): string | null {
-  const pathMatch = window.location.pathname.match(/^\/craps\/([A-Z0-9]{4})$/i);
-  if (pathMatch) return pathMatch[1].toUpperCase();
-  const params = new URLSearchParams(window.location.search);
-  return params.get('room')?.toUpperCase() ?? null;
-}
 
 export default function CrapsApp() {
   return (
@@ -46,7 +40,7 @@ export default function CrapsApp() {
 function CrapsAppInner() {
   const { user } = useUser();
   const [state, dispatch] = useCrapsState();
-  const initialRoomCode = useMemo(() => getInitialRoomCode(), []);
+  const initialRoomCode = useMemo(() => getInitialRoomCode('craps'), []);
   const userName = user?.firstName || 'Anonymous';
   const userId = user?.id || '';
 

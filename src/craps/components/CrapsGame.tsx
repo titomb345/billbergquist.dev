@@ -15,6 +15,7 @@ import { PhaseAnnouncement } from './PhaseAnnouncement';
 import { BalanceChange } from './BalanceChange';
 import { HotStreak } from './HotStreak';
 import { useSoundEffects } from '../hooks/useSoundEffects';
+import { useHideHeaderFooter } from '../../shared/hooks/useHideHeaderFooter';
 import styles from './CrapsGame.module.css';
 
 interface CrapsGameProps {
@@ -70,16 +71,7 @@ export function CrapsGame({ room, myPlayerId, connectionStatus, lastRoll, diceAn
     return myTotal >= 50;
   }, [lastRoll, myPlayerId]);
 
-  useEffect(() => {
-    const header = document.querySelector('header');
-    const footer = document.querySelector('footer');
-    if (header) header.style.display = 'none';
-    if (footer) footer.style.display = 'none';
-    return () => {
-      if (header) header.style.display = '';
-      if (footer) footer.style.display = '';
-    };
-  }, []);
+  useHideHeaderFooter();
 
   const handlePlaceBet = useCallback((betType: BetType, amount: number, betPoint?: number) => {
     onSend({ type: 'placeBet', betType, amount, betPoint });
@@ -106,6 +98,7 @@ export function CrapsGame({ room, myPlayerId, connectionStatus, lastRoll, diceAn
     onSend({ type: 'toggleReady' });
   }, [onSend]);
 
+  const playerColors = getPlayerColors();
   const myBets = useMemo(() => room.bets.filter((b) => b.playerId === myPlayerId), [room.bets, myPlayerId]);
   const [selectedChip, setSelectedChip] = useState(5);
   const [diceRolling, setDiceRolling] = useState(false);
@@ -310,12 +303,10 @@ export function CrapsGame({ room, myPlayerId, connectionStatus, lastRoll, diceAn
       {/* Players Strip — all players including current user */}
       <div className={styles.playersStrip}>
         <div className={styles.playersStripInner}>
-          {room.players.map((player) => {
-            const idx = room.players.indexOf(player);
-            const isPlayerShooter = idx >= 0 && idx === room.shooterIndex;
+          {room.players.map((player, idx) => {
+            const isPlayerShooter = idx === room.shooterIndex;
             const isMe = player.id === myPlayerId;
-            const colors = getPlayerColors();
-            const chipColor = colors[idx % colors.length];
+            const chipColor = playerColors[idx % playerColors.length];
             return (
               <div
                 key={player.id}

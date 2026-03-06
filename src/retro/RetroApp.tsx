@@ -5,6 +5,7 @@ import { useWebSocket } from './hooks/useWebSocket';
 import { useRetroState } from './hooks/useRetroState';
 import type { ClientMessage, ServerMessage } from './types';
 import { WORKER_URL, generateRoomCode } from './constants';
+import { getInitialRoomCode } from '../shared/utils/roomCode';
 import { Lobby } from './components/Lobby';
 import { Board } from './components/Board';
 import { AuthGate } from './components/AuthGate';
@@ -12,15 +13,6 @@ import { ThemeToggle } from './components/ThemeToggle';
 import './retro-theme.css';
 
 const CLERK_KEY = import.meta.env.PUBLIC_CLERK_PUBLISHABLE_KEY;
-
-function getInitialRoomCode(): string | null {
-  // Clean URL: /retro/ABCD
-  const pathMatch = window.location.pathname.match(/^\/retro\/([A-Z0-9]{4})$/i);
-  if (pathMatch) return pathMatch[1].toUpperCase();
-  // Legacy fallback: /retro?room=ABCD
-  const params = new URLSearchParams(window.location.search);
-  return params.get('room')?.toUpperCase() ?? null;
-}
 
 const ALLOWED_DOMAIN = 'kasa.com';
 
@@ -100,7 +92,7 @@ function DomainGuard({ children }: { children: React.ReactNode }) {
 function RetroAppInner() {
   const { user } = useUser();
   const [state, dispatch] = useRetroState();
-  const initialRoomCode = useMemo(() => getInitialRoomCode(), []);
+  const initialRoomCode = useMemo(() => getInitialRoomCode('retro'), []);
   const userName = user?.firstName || 'Anonymous';
   const userId = user?.id || '';
 

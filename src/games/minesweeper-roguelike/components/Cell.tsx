@@ -140,83 +140,43 @@ function CellComponent({
   };
 
   const getClassName = () => {
-    const classes = ['cell'];
+    // String concatenation avoids array allocation + join overhead (144 cells per board)
+    let cls = 'cell';
 
     if (cell.state === CellState.Hidden) {
-      classes.push('cell-hidden');
-      if (hasDanger) {
-        classes.push('cell-danger');
-      }
-      if (hasPatternMemory) {
-        classes.push('cell-pattern-memory');
-      }
-      if (hasProbabilityLens) {
-        classes.push('cell-probability-lens');
-      }
-      if (hasOracleGift) {
-        classes.push('cell-oracle-gift');
-      }
-      if (hasOpeningsMap) {
-        classes.push('cell-openings-map');
-      }
-      if (xRayMode) {
-        classes.push('cell-xray-target');
-      }
-      if (peekMode) {
-        classes.push('cell-peek-target');
-      }
-      if (safePathMode && hoveredRow === cell.row) {
-        classes.push('cell-row-highlight-green');
-      }
-      if (surveyMode && hoveredRow === cell.row && !isSurveyAlreadyDone) {
-        classes.push('cell-row-highlight-yellow');
-      }
-      if (surveyMode && isSurveyAlreadyDone) {
-        classes.push('cell-survey-already-done');
-      }
-      if (mineDetectorMode && !isMineDetectorScanned) {
-        classes.push('cell-detector-target');
-      }
-      if (mineDetectorMode && isMineDetectorScanned) {
-        classes.push('cell-detector-already-scanned');
-      }
-      if (mineDetectorResultValue !== null) {
-        classes.push('cell-detector-scanned');
-      }
-      if (peekValue !== null) {
-        classes.push('cell-peeked');
-      }
-      if (inDetectorZone) {
-        classes.push('cell-detector-zone');
-      }
-      if (isChordHighlighted) {
-        classes.push('cell-chord-highlight');
-      }
+      cls += ' cell-hidden';
+      if (hasDanger) cls += ' cell-danger';
+      if (hasPatternMemory) cls += ' cell-pattern-memory';
+      if (hasProbabilityLens) cls += ' cell-probability-lens';
+      if (hasOracleGift) cls += ' cell-oracle-gift';
+      if (hasOpeningsMap) cls += ' cell-openings-map';
+      if (xRayMode) cls += ' cell-xray-target';
+      if (peekMode) cls += ' cell-peek-target';
+      if (safePathMode && hoveredRow === cell.row) cls += ' cell-row-highlight-green';
+      if (surveyMode && hoveredRow === cell.row && !isSurveyAlreadyDone) cls += ' cell-row-highlight-yellow';
+      if (surveyMode && isSurveyAlreadyDone) cls += ' cell-survey-already-done';
+      if (mineDetectorMode) cls += isMineDetectorScanned ? ' cell-detector-already-scanned' : ' cell-detector-target';
+      if (mineDetectorResultValue !== null) cls += ' cell-detector-scanned';
+      if (peekValue !== null) cls += ' cell-peeked';
     } else if (cell.state === CellState.Flagged) {
-      classes.push('cell-flagged');
-      if (defusalKitMode) {
-        classes.push('cell-defusal-target');
-      }
-      if (inDetectorZone) {
-        classes.push('cell-detector-zone');
-      }
-      if (isChordHighlighted) {
-        classes.push('cell-chord-highlight');
-      }
+      cls += ' cell-flagged';
+      if (defusalKitMode) cls += ' cell-defusal-target';
     } else if (cell.state === CellState.Revealed) {
-      classes.push('cell-revealed');
+      cls += ' cell-revealed';
       if (cell.isMine) {
-        classes.push('cell-mine');
+        cls += ' cell-mine';
       } else if (cell.adjacentMines > 0) {
-        classes.push(`cell-${cell.adjacentMines}`);
-        // A4: Faded cell styling
-        if (isFaded) {
-          classes.push('cell-faded');
-        }
+        cls += ` cell-${cell.adjacentMines}`;
+        if (isFaded) cls += ' cell-faded';
       }
+      return cls;
     }
 
-    return classes.join(' ');
+    // Shared by Hidden and Flagged states (not Revealed)
+    if (inDetectorZone) cls += ' cell-detector-zone';
+    if (isChordHighlighted) cls += ' cell-chord-highlight';
+
+    return cls;
   };
 
   const getContent = () => {

@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect, useCallback } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import type { RoomState, ClientMessage } from '../types';
 import { PhaseBar } from './PhaseBar';
 import { ParticipantList } from './ParticipantList';
@@ -14,6 +14,7 @@ import { ColumnTemplateSelector } from './ColumnTemplateSelector';
 import { COLUMN_CSS_MAP } from '../constants';
 import { computeVotableUnits, sortVotableUnits } from '../utils/votableUnits';
 import { getAvatarColor, getInitials } from '../utils/avatar';
+import { useHideHeaderFooter } from '../../shared/hooks/useHideHeaderFooter';
 import styles from './Board.module.css';
 
 interface BoardProps {
@@ -43,17 +44,7 @@ export function Board({ room, isHost, myParticipantId, connectionStatus, onSend,
 
   const allReady = room.phase === 'write' && room.participants.length > 1 && room.participants.every((p) => p.ready);
 
-  // Hide site navbar and footer when retro board is active
-  useEffect(() => {
-    const header = document.querySelector('header');
-    const footer = document.querySelector('footer');
-    if (header) header.style.display = 'none';
-    if (footer) footer.style.display = 'none';
-    return () => {
-      if (header) header.style.display = '';
-      if (footer) footer.style.display = '';
-    };
-  }, []);
+  useHideHeaderFooter();
 
   const copyLink = () => {
     const url = `${window.location.origin}/retro/${room.roomCode}`;
@@ -286,6 +277,16 @@ function VoteDiscussList({ room, myParticipantId, canVote, isHost, onSend }: Vot
     return room.phase === 'discuss' ? sortVotableUnits(raw) : raw;
   }, [room.cards, room.groups, room.phase]);
 
+  const myVoteCounts = useMemo(() => {
+    const map = new Map<string, number>();
+    for (const v of room.votes) {
+      if (v.participantId === myParticipantId) {
+        map.set(v.cardId, (map.get(v.cardId) ?? 0) + 1);
+      }
+    }
+    return map;
+  }, [room.votes, myParticipantId]);
+
   const isDiscuss = room.phase === 'discuss';
   const focusedId = room.focusedItemId;
   const hasFocus = isDiscuss && focusedId != null;
@@ -372,9 +373,7 @@ function VoteDiscussList({ room, myParticipantId, canVote, isHost, onSend }: Vot
             );
           }
 
-          const myVoteCount = room.votes.filter(
-            (v) => v.participantId === myParticipantId && v.cardId === unit.card.id,
-          ).length;
+          const myVoteCount = myVoteCounts.get(unit.card.id) ?? 0;
 
           return (
             <div key={unit.card.id} className={dimmed ? styles.dimmed : undefined}>

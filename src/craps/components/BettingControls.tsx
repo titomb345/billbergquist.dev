@@ -53,7 +53,13 @@ export function BettingControls({ balance, onPlaceBet, onRemoveBet, onConfirm, m
       {/* Active Bets + Confirm */}
       <div className={styles.footer}>
         <div className={styles.activeBets}>
-          {grouped.map((group) => (
+          {grouped.map((group) => {
+            const comeOddsAmt = group.type === 'come' && group.point
+              ? snapBetAmount(selectedChip, 'comeOdds', point, group.point) : 0;
+            const dontComeOddsAmt = group.type === 'dontCome' && group.point
+              ? snapBetAmount(selectedChip, 'dontComeOdds', point, group.point) : 0;
+
+            return (
             <div key={group.key} className={styles.activeBet}>
               <span className={styles.activeBetName}>
                 {BET_LABELS[group.type]}
@@ -63,8 +69,8 @@ export function BettingControls({ balance, onPlaceBet, onRemoveBet, onConfirm, m
               {group.type === 'come' && group.point && (
                 <button
                   className={styles.oddsBtn}
-                  onClick={() => onPlaceBet('comeOdds', snapBetAmount(selectedChip, 'comeOdds', point, group.point), group.point)}
-                  disabled={confirmed || snapBetAmount(selectedChip, 'comeOdds', point, group.point) > balance}
+                  onClick={() => onPlaceBet('comeOdds', comeOddsAmt, group.point)}
+                  disabled={confirmed || comeOddsAmt > balance}
                   title="Add Come Odds"
                 >
                   +O
@@ -73,8 +79,8 @@ export function BettingControls({ balance, onPlaceBet, onRemoveBet, onConfirm, m
               {group.type === 'dontCome' && group.point && (
                 <button
                   className={styles.oddsBtn}
-                  onClick={() => onPlaceBet('dontComeOdds', snapBetAmount(selectedChip, 'dontComeOdds', point, group.point), group.point)}
-                  disabled={confirmed || snapBetAmount(selectedChip, 'dontComeOdds', point, group.point) > balance}
+                  onClick={() => onPlaceBet('dontComeOdds', dontComeOddsAmt, group.point)}
+                  disabled={confirmed || dontComeOddsAmt > balance}
                   title="Add DC Odds"
                 >
                   +O
@@ -95,7 +101,8 @@ export function BettingControls({ balance, onPlaceBet, onRemoveBet, onConfirm, m
                 <span className={styles.lockedTag}>locked</span>
               )}
             </div>
-          ))}
+            );
+          })}
         </div>
 
         <div className={styles.confirmCol}>

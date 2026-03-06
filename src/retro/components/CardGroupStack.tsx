@@ -33,21 +33,26 @@ export function CardGroupStack({
 
   const isVotable = phase === 'vote';
 
+  const findMyVote = () =>
+    votes.find((v) => v.participantId === myParticipantId && group.cardIds.includes(v.cardId));
+
+  const sendVote = () => {
+    if (canVote) onSend({ type: 'vote', cardId: group.cardIds[0] });
+  };
+
+  const sendUnvote = () => {
+    const myVote = findMyVote();
+    if (myVote) onSend({ type: 'unvote', cardId: myVote.cardId });
+  };
+
   const handleClick = () => {
-    if (isVotable && canVote) {
-      onSend({ type: 'vote', cardId: group.cardIds[0] });
-    }
+    if (isVotable) sendVote();
   };
 
   const handleContextMenu = (e: React.MouseEvent) => {
     if (!isVotable) return;
     e.preventDefault();
-    if (myVoteCount > 0) {
-      const myVote = votes.find(
-        (v) => v.participantId === myParticipantId && group.cardIds.includes(v.cardId),
-      );
-      if (myVote) onSend({ type: 'unvote', cardId: myVote.cardId });
-    }
+    if (myVoteCount > 0) sendUnvote();
   };
 
   const getColumnColor = (columnId: string) =>
@@ -64,14 +69,11 @@ export function CardGroupStack({
       onKeyDown={(e) => {
         if (isVotable && e.key === 'Enter') {
           e.preventDefault();
-          if (canVote) onSend({ type: 'vote', cardId: group.cardIds[0] });
+          sendVote();
         }
         if (isVotable && (e.key === 'Backspace' || e.key === 'Delete') && myVoteCount > 0) {
           e.preventDefault();
-          const myVote = votes.find(
-            (v) => v.participantId === myParticipantId && group.cardIds.includes(v.cardId),
-          );
-          if (myVote) onSend({ type: 'unvote', cardId: myVote.cardId });
+          sendUnvote();
         }
       }}
       tabIndex={isVotable ? 0 : undefined}
@@ -96,10 +98,7 @@ export function CardGroupStack({
               className={styles.unvoteBtn}
               onClick={(e) => {
                 e.stopPropagation();
-                const myVote = votes.find(
-                  (v) => v.participantId === myParticipantId && group.cardIds.includes(v.cardId),
-                );
-                if (myVote) onSend({ type: 'unvote', cardId: myVote.cardId });
+                sendUnvote();
               }}
               aria-label={`Remove vote from ${displayLabel} group`}
             >
