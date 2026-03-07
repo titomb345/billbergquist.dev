@@ -57,7 +57,7 @@ Now I was just having fun. I asked for three things: his domain, his logo file, 
 
 > The domain is hp-connect.co.uk. I will email you the logo separately. The company number is 12345678.
 
-12345678. The bot gave me a placeholder as a company number.
+12345678\. The bot gave me a placeholder as a company number.
 
 I looked it up anyway, because why not. Company 12345678 is BOCIOC M LIMITED, a dissolved freight transport company in Rugby. So unless Halton pivoted hard from trucking logistics, not a match.
 
