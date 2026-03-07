@@ -178,6 +178,7 @@ const jsonLdService = JSON.stringify({
   },
   serviceType: ['Web Design', 'Web Development', 'Website Redesign', 'Landing Page Design'],
   priceRange: '$$',
+  image: 'https://billbergquist.dev/og/services.png',
   hasOfferCatalog: {
     '@type': 'OfferCatalog',
     name: 'Web Development Services',
@@ -259,24 +260,22 @@ const jsonLdFaq = JSON.stringify({
       <div class="accent-line-orange"></div>
     </header>
 
-    <section class={`${styles.services} scroll-reveal`}>
+    <section class={styles.services}>
       <GlowText as="h2" size="medium" color="orange" class={styles.sectionTitle}>
         WHAT I OFFER
       </GlowText>
       <div class={styles.serviceGrid}>
         {
           services.map((service) => (
-            <div class="scroll-reveal-child">
-              <Card class={styles.serviceCard}>
-                <span class={`${styles.serviceIcon} ${styles[`color_${service.color}`]}`}>
-                  {service.icon}
-                </span>
-                <h3 class={`${styles.serviceTitle} ${styles[`color_${service.color}`]}`}>
-                  {service.title}
-                </h3>
-                <p class={styles.serviceDescription}>{service.description}</p>
-              </Card>
-            </div>
+            <Card class={styles.serviceCard}>
+              <span class={`${styles.serviceIcon} ${styles[`color_${service.color}`]}`}>
+                {service.icon}
+              </span>
+              <h3 class={`${styles.serviceTitle} ${styles[`color_${service.color}`]}`}>
+                {service.title}
+              </h3>
+              <p class={styles.serviceDescription}>{service.description}</p>
+            </Card>
           ))
         }
       </div>
@@ -288,7 +287,7 @@ const jsonLdFaq = JSON.stringify({
 
     <SectionDivider color="purple" />
 
-    <section class={`${styles.whySection} scroll-reveal`}>
+    <section class={styles.whySection}>
       <GlowText as="h2" size="medium" color="purple" class={styles.sectionTitle}>
         WHY WORK WITH A LOCAL DEVELOPER
       </GlowText>
@@ -303,7 +302,7 @@ const jsonLdFaq = JSON.stringify({
       <div class={styles.whyGrid}>
         {
           whyPoints.map((point) => (
-            <div class={`${styles.whyItem} scroll-reveal-child`}>
+            <div class={styles.whyItem}>
               <h3 class={styles.whyTitle}>{point.title}</h3>
               <p class={styles.whyDescription}>{point.description}</p>
             </div>
@@ -316,14 +315,14 @@ const jsonLdFaq = JSON.stringify({
 
     <SectionDivider color="orange" />
 
-    <section class={`${styles.process} scroll-reveal`}>
+    <section class={styles.process}>
       <GlowText as="h2" size="medium" color="magenta" class={styles.sectionTitle}>
         HOW IT WORKS
       </GlowText>
       <div class={styles.steps}>
         {
           steps.map((step, i) => (
-            <div class={`${styles.step} scroll-reveal-child`}>
+            <div class={styles.step}>
               <div class={styles.stepConnector}>
                 <span class={styles.stepNumber}>{step.number}</span>
                 {i < steps.length - 1 && <div class={styles.stepLine} />}
@@ -340,14 +339,14 @@ const jsonLdFaq = JSON.stringify({
 
     <SectionDivider color="purple" />
 
-    <section class={`${styles.faq} scroll-reveal`}>
+    <section class={styles.faq}>
       <GlowText as="h2" size="medium" color="orange" class={styles.sectionTitle}>
         FREQUENTLY ASKED QUESTIONS
       </GlowText>
       <div class={styles.faqList}>
         {
           faqs.map((faq) => (
-            <div class={`${styles.faqItem} scroll-reveal-child`}>
+            <div class={styles.faqItem}>
               <h3 class={styles.faqQuestion}>{faq.question}</h3>
               <p class={styles.faqAnswer}>{faq.answer}</p>
             </div>
@@ -358,7 +357,7 @@ const jsonLdFaq = JSON.stringify({
 
     <SectionDivider color="purple" />
 
-    <section class={`${styles.areasServed} scroll-reveal`}>
+    <section class={styles.areasServed}>
       <GlowText as="h2" size="medium" color="purple" class={styles.sectionTitle}>
         AREAS I SERVE
       </GlowText>
@@ -366,10 +365,10 @@ const jsonLdFaq = JSON.stringify({
         <a href="/services/denver" class={styles.areaLink}>Denver</a>
         <a href="/services/lakewood" class={styles.areaLink}>Lakewood</a>
         <a href="/services/boulder" class={styles.areaLink}>Boulder</a>
-        <span class={styles.areaText}>Golden</span>
-        <span class={styles.areaText}>Arvada</span>
+        <a href="/services/arvada" class={styles.areaLink}>Arvada</a>
+        <a href="/services/golden" class={styles.areaLink}>Golden</a>
+        <a href="/services/littleton" class={styles.areaLink}>Littleton</a>
         <span class={styles.areaText}>Wheat Ridge</span>
-        <span class={styles.areaText}>Littleton</span>
         <span class={styles.areaText}>Englewood</span>
         <span class={styles.areaText}>Aurora</span>
         <span class={styles.areaText}>Centennial</span>
@@ -386,7 +385,7 @@ const jsonLdFaq = JSON.stringify({
 
     <SectionDivider color="mint" />
 
-    <section class={`${styles.contact} scroll-reveal`}>
+    <section class={styles.contact}>
       <GlowText as="h2" size="medium" color="mint" class={styles.sectionTitle}>
         GET IN TOUCH
       </GlowText>
@@ -416,7 +415,7 @@ const jsonLdFaq = JSON.stringify({
       </div>
     </section>
 
-    <section class={`${styles.techStrip} scroll-reveal`}>
+    <section class={styles.techStrip}>
       <p class={styles.techStripLabel}>Built with modern tools</p>
       <div class={styles.techStripList}>
         <span class={styles.techStripItem}>Astro</span>

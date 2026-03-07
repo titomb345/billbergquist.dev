@@ -34,7 +34,7 @@ const jsonLdBlog = JSON.stringify({
   description="Articles on web development, small business websites, and local SEO for Denver and the Colorado Front Range."
   canonical="/blog"
   jsonLd={[jsonLdBlog]}
-  ogImage="/og-image.png"
+  ogImage="/og/blog.png"
 >
   <div class={styles.page}>
     <header class={styles.header}>
@@ -49,9 +49,9 @@ const jsonLdBlog = JSON.stringify({
     {posts.length === 0 ? (
       <p class={styles.empty}>Posts coming soon. Check back shortly.</p>
     ) : (
-      <div class={`${styles.grid} scroll-reveal`}>
+      <div class={styles.grid}>
         {posts.map((post) => (
-          <a href={`/blog/${stripExt(post.id)}`} class={`${styles.card} scroll-reveal-child`}>
+          <a href={`/blog/${stripExt(post.id)}`} class={styles.card}>
             <div class={styles.cardMeta}>
               <time datetime={post.data.publishDate.toISOString()} class={styles.cardDate}>
                 {post.data.publishDate.toLocaleDateString('en-US', {

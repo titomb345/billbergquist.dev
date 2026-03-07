@@ -3,6 +3,7 @@ title: "How Much Does a Website Cost for a Small Business in Denver?"
 description: "A straightforward breakdown of website costs for small businesses in Denver, Lakewood, and the Colorado Front Range. What to expect, what affects pricing, and how to get the most value."
 publishDate: 2026-02-28
 tags: ["web design", "denver", "small business", "pricing"]
+ogImage: "/og/blog/how-much-does-a-website-cost-denver.png"
 ---
 
 If you're a small business owner in Denver or the Front Range area, you've probably Googled "how much does a website cost" and gotten answers ranging from $0 to $100,000. That's not helpful.

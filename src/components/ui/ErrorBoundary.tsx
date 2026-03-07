@@ -49,7 +49,7 @@ const css = `
     background: linear-gradient(
       180deg,
       transparent,
-      rgba(255, 0, 255, 0.04),
+      rgba(217, 70, 239, 0.04),
       transparent
     );
     animation: eb-scanbar 4s linear infinite;
@@ -67,16 +67,16 @@ const css = `
     font-family: var(--font-heading, 'Orbitron', monospace);
     font-size: clamp(3rem, 10vw, 6rem);
     font-weight: 900;
-    color: var(--neon-magenta, #ff00ff);
+    color: var(--neon-magenta, #d946ef);
     text-transform: uppercase;
     letter-spacing: 0.08em;
     position: relative;
     line-height: 1;
     margin-bottom: 1.5rem;
     text-shadow:
-      0 0 10px var(--neon-magenta, #ff00ff),
-      0 0 30px rgba(255, 0, 255, 0.4),
-      0 0 60px rgba(255, 0, 255, 0.2);
+      0 0 10px var(--neon-magenta, #d946ef),
+      0 0 30px rgba(217, 70, 239, 0.4),
+      0 0 60px rgba(217, 70, 239, 0.2);
     animation: eb-flicker 3s ease-in-out infinite;
   }
 
@@ -91,15 +91,15 @@ const css = `
   }
 
   .eb-glitch::before {
-    color: var(--neon-mint, #00d4aa);
-    text-shadow: 0 0 10px var(--neon-mint, #00d4aa);
+    color: var(--neon-mint, #00c9a7);
+    text-shadow: 0 0 10px var(--neon-mint, #00c9a7);
     clip-path: inset(0 0 65% 0);
     animation: eb-glitch-top 2.5s steps(1) infinite;
   }
 
   .eb-glitch::after {
-    color: var(--neon-orange, #ff6a00);
-    text-shadow: 0 0 10px var(--neon-orange, #ff6a00);
+    color: var(--neon-orange, #f06418);
+    text-shadow: 0 0 10px var(--neon-orange, #f06418);
     clip-path: inset(60% 0 0 0);
     animation: eb-glitch-btm 3s steps(1) infinite;
   }
@@ -142,15 +142,15 @@ const css = `
     max-width: 420px;
     margin: 0 auto 2rem;
     padding: 0.75rem 1rem;
-    background: rgba(255, 0, 255, 0.03);
-    border: 1px solid rgba(255, 0, 255, 0.08);
+    background: rgba(217, 70, 239, 0.03);
+    border: 1px solid rgba(217, 70, 239, 0.08);
     border-radius: 4px;
     word-break: break-word;
     text-align: left;
   }
 
   .eb-msg-prefix {
-    color: var(--neon-magenta, #ff00ff);
+    color: var(--neon-magenta, #d946ef);
     user-select: none;
   }
 
@@ -159,9 +159,9 @@ const css = `
     font-size: 0.7rem;
     letter-spacing: 0.15em;
     text-transform: uppercase;
-    color: var(--neon-mint, #00d4aa);
+    color: var(--neon-mint, #00c9a7);
     background: transparent;
-    border: 1px solid var(--neon-mint, #00d4aa);
+    border: 1px solid var(--neon-mint, #00c9a7);
     padding: 0.6rem 2rem;
     border-radius: 2px;
     cursor: pointer;
@@ -174,7 +174,7 @@ const css = `
     content: '';
     position: absolute;
     inset: 0;
-    background: var(--neon-mint, #00d4aa);
+    background: var(--neon-mint, #00c9a7);
     opacity: 0;
     transition: opacity 0.2s ease;
   }
@@ -182,8 +182,8 @@ const css = `
   .eb-btn:hover {
     color: var(--bg-void, #0a0a0f);
     box-shadow:
-      0 0 15px rgba(0, 212, 170, 0.3),
-      0 0 30px rgba(0, 212, 170, 0.15);
+      0 0 15px rgba(0, 201, 167, 0.3),
+      0 0 30px rgba(0, 201, 167, 0.15);
   }
 
   .eb-btn:hover::before {
@@ -213,7 +213,7 @@ const css = `
     position: absolute;
     width: 20px;
     height: 20px;
-    border-color: rgba(255, 0, 255, 0.15);
+    border-color: rgba(217, 70, 239, 0.15);
     border-style: solid;
   }
 

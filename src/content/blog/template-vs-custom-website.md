@@ -3,6 +3,7 @@ title: "Why Your Denver Business Needs More Than a Wix Template"
 description: "Template website builders are convenient, but they come with real trade-offs in speed, SEO, and flexibility. Here's what small business owners should know before choosing."
 publishDate: 2026-02-20
 tags: ["web design", "small business", "denver", "seo"]
+ogImage: "/og/blog/template-vs-custom-website.png"
 ---
 
 Template builders like Wix, Squarespace, and WordPress.com have made it possible for anyone to put up a website in an afternoon. That's genuinely impressive, and for some situations, it's the right call.

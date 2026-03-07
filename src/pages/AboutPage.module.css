@@ -16,7 +16,7 @@
   border-radius: 50%;
   object-fit: cover;
   border: 3px solid var(--neon-mint);
-  box-shadow: 0 0 20px var(--neon-mint-glow), 0 0 40px rgba(0, 212, 170, 0.15);
+  box-shadow: 0 0 20px var(--neon-mint-glow), 0 0 40px rgba(0, 201, 167, 0.15);
   margin: 0 auto var(--space-lg);
 }
 
@@ -39,11 +39,11 @@
   max-width: 700px;
   margin: var(--space-lg) auto 0;
   padding: var(--space-md) var(--space-lg);
-  background: rgba(255, 106, 0, 0.08);
-  border: 1px solid rgba(255, 106, 0, 0.25);
+  background: rgba(240, 100, 24, 0.08);
+  border: 1px solid rgba(240, 100, 24, 0.25);
   border-left: 3px solid var(--neon-orange);
   border-radius: var(--radius-sm);
-  box-shadow: 0 0 20px rgba(255, 106, 0, 0.1);
+  box-shadow: 0 0 20px rgba(240, 100, 24, 0.1);
 }
 
 .content {
@@ -62,11 +62,11 @@
 
 .educationCard {
   background: var(--bg-surface);
-  border: 1px solid rgba(191, 0, 255, 0.25);
+  border: 1px solid rgba(168, 85, 247, 0.25);
   border-radius: var(--radius-md);
   padding: var(--space-lg);
   text-align: center;
-  box-shadow: 0 0 20px rgba(191, 0, 255, 0.08);
+  box-shadow: 0 0 20px rgba(168, 85, 247, 0.08);
 }
 
 .school {
@@ -116,7 +116,7 @@
   margin-top: var(--space-lg);
   padding: var(--space-lg);
   background: var(--bg-surface);
-  border: 1px solid rgba(0, 212, 170, 0.15);
+  border: 1px solid rgba(0, 201, 167, 0.15);
   border-radius: var(--radius-md);
 }
 

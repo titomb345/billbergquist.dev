@@ -27,6 +27,9 @@ const breadcrumbNames: Record<string, string> = {
   denver: 'Denver',
   lakewood: 'Lakewood',
   boulder: 'Boulder',
+  arvada: 'Arvada',
+  golden: 'Golden',
+  littleton: 'Littleton',
   blog: 'Blog',
   tag: 'Tag',
   privacy: 'Privacy Policy',
@@ -61,6 +64,7 @@ const breadcrumbLd = breadcrumbs.length > 1 ? JSON.stringify({
 }) : null;
 
 const allJsonLd = breadcrumbLd ? [...jsonLd, breadcrumbLd] : jsonLd;
+const isProd = import.meta.env.PROD;
 ---
 
 <!doctype html>
@@ -108,14 +112,18 @@ const allJsonLd = breadcrumbLd ? [...jsonLd, breadcrumbLd] : jsonLd;
       ))
     }
 
-    <!-- Google Analytics 4 -->
-    <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-WSEDR1ZR2Y"></script>
-    <script is:inline>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-WSEDR1ZR2Y');
-    </script>
+    {isProd && (
+      <>
+        {/* Google Analytics 4 */}
+        <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-WSEDR1ZR2Y"></script>
+        <script is:inline>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-WSEDR1ZR2Y');
+        </script>
+      </>
+    )}
 
     <slot name="head" />
   </head>
@@ -167,8 +175,8 @@ const allJsonLd = breadcrumbLd ? [...jsonLd, breadcrumbLd] : jsonLd;
         right: 0;
         bottom: 0;
         background:
-          linear-gradient(90deg, transparent 49%, rgba(0, 245, 255, 0.03) 50%, transparent 51%),
-          linear-gradient(0deg, transparent 49%, rgba(0, 245, 255, 0.03) 50%, transparent 51%);
+          linear-gradient(90deg, transparent 49%, rgba(0, 201, 167, 0.03) 50%, transparent 51%),
+          linear-gradient(0deg, transparent 49%, rgba(0, 201, 167, 0.03) 50%, transparent 51%);
         background-size: 50px 50px;
         pointer-events: none;
         z-index: 0;

@@ -63,8 +63,8 @@
 }
 
 .featured .content {
-  border-color: rgba(255, 106, 0, 0.3);
-  box-shadow: 0 0 20px rgba(255, 106, 0, 0.1);
+  border-color: rgba(240, 100, 24, 0.3);
+  box-shadow: 0 0 20px rgba(240, 100, 24, 0.1);
 }
 
 .header {

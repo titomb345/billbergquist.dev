@@ -44,6 +44,45 @@ const jsonLdService = JSON.stringify({
   },
   serviceType: ['Web Design', 'Web Development', 'Website Redesign', 'Landing Page Design'],
   priceRange: '$$',
+  image: 'https://billbergquist.dev/og/services-boulder.png',
+  hasOfferCatalog: {
+    '@type': 'OfferCatalog',
+    name: 'Web Development Services in Boulder',
+    itemListElement: [
+      {
+        '@type': 'Offer',
+        itemOffered: {
+          '@type': 'Service',
+          name: 'Business Websites',
+          description: 'Professional websites for Boulder small businesses. Fast, mobile-friendly, and built to convert.',
+        },
+      },
+      {
+        '@type': 'Offer',
+        itemOffered: {
+          '@type': 'Service',
+          name: 'Landing Pages',
+          description: 'Focused, single-page sites designed to drive bookings, signups, or sales for Boulder businesses.',
+        },
+      },
+      {
+        '@type': 'Offer',
+        itemOffered: {
+          '@type': 'Service',
+          name: 'Website Redesign',
+          description: 'Modernize your outdated website with a fresh design, faster performance, and better user experience.',
+        },
+      },
+      {
+        '@type': 'Offer',
+        itemOffered: {
+          '@type': 'Service',
+          name: 'Ongoing Support & Maintenance',
+          description: 'Website updates, tweaks, and maintenance from a local Front Range developer you can reach out to anytime.',
+        },
+      },
+    ],
+  },
 });
 
 const jsonLdFaq = JSON.stringify({
@@ -55,6 +94,10 @@ const jsonLdFaq = JSON.stringify({
     acceptedAnswer: { '@type': 'Answer', text: faq.answer },
   })),
 });
+
+const bookingMonth = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleString('en-US', {
+  month: 'long',
+});
 ---
 
 <Layout
@@ -62,7 +105,7 @@ const jsonLdFaq = JSON.stringify({
   description="Custom web design for Boulder small businesses. Fast, beautiful websites built by an experienced Front Range developer. From Pearl Street to Flatirons."
   canonical="/services/boulder"
   jsonLd={[jsonLdService, jsonLdFaq]}
-  ogImage="/og/services.png"
+  ogImage="/og/services-boulder.png"
   geoRegion="US-CO"
   geoPlacename="Boulder, CO"
 >
@@ -81,12 +124,12 @@ const jsonLdFaq = JSON.stringify({
       <div class="accent-line-orange"></div>
     </header>
 
-    <section class={`${styles.whySection} scroll-reveal`}>
+    <section class={styles.whySection}>
       <GlowText as="h2" size="medium" color="orange" class={styles.sectionTitle}>
         WHY BOULDER BUSINESSES INVEST IN CUSTOM WEBSITES
       </GlowText>
       <div class={styles.whyGrid}>
-        <div class={`${styles.whyItem} scroll-reveal-child`}>
+        <div class={styles.whyItem}>
           <h3 class={styles.whyTitle}>Boulder customers have high standards</h3>
           <p class={styles.whyDescription}>
             Boulder folks notice quality. They can tell when a website was thrown together from a template.
@@ -94,7 +137,7 @@ const jsonLdFaq = JSON.stringify({
             especially if you're in health, wellness, outdoor, or food.
           </p>
         </div>
-        <div class={`${styles.whyItem} scroll-reveal-child`}>
+        <div class={styles.whyItem}>
           <h3 class={styles.whyTitle}>Tourism drives online discovery</h3>
           <p class={styles.whyDescription}>
             Millions of visitors come to Boulder every year. They're searching on their phones for
@@ -102,7 +145,7 @@ const jsonLdFaq = JSON.stringify({
             mobile-friendly, and optimized for local search, you're invisible to visitors with money to spend.
           </p>
         </div>
-        <div class={`${styles.whyItem} scroll-reveal-child`}>
+        <div class={styles.whyItem}>
           <h3 class={styles.whyTitle}>Independent businesses deserve independent websites</h3>
           <p class={styles.whyDescription}>
             Boulder's identity is built on independent businesses, not chains. Your website should
@@ -110,7 +153,7 @@ const jsonLdFaq = JSON.stringify({
             A custom site gives you that.
           </p>
         </div>
-        <div class={`${styles.whyItem} scroll-reveal-child`}>
+        <div class={styles.whyItem}>
           <h3 class={styles.whyTitle}>Front Range developer, not a distant agency</h3>
           <p class={styles.whyDescription}>
             I'm based in the Denver metro area, 30 minutes from Boulder. I know the Front Range market
@@ -123,14 +166,57 @@ const jsonLdFaq = JSON.stringify({
 
     <SectionDivider color="orange" />
 
-    <section class={`${styles.faq} scroll-reveal`}>
+    <section class={styles.whySection}>
+      <GlowText as="h2" size="medium" color="purple" class={styles.sectionTitle}>
+        BOULDER BUSINESSES I WORK WITH
+      </GlowText>
+      <div class={styles.whyGrid}>
+        <div class={styles.whyItem}>
+          <h3 class={styles.whyTitle}>Outdoor recreation & gear</h3>
+          <p class={styles.whyDescription}>
+            Bike shops, climbing gyms, running stores, outdoor outfitters. Boulder is the outdoor
+            capital of Colorado, and your website needs to match that reputation. I build sites with
+            product showcases, event calendars, and the SEO that captures searches like "bike shop
+            near Boulder."
+          </p>
+        </div>
+        <div class={styles.whyItem}>
+          <h3 class={styles.whyTitle}>Health, wellness & yoga</h3>
+          <p class={styles.whyDescription}>
+            Boulder has more wellness practitioners per capita than almost anywhere. Yoga studios,
+            acupuncturists, massage therapists, nutritionists. A clean website with online booking,
+            practitioner bios, and class schedules helps you stand out in a crowded market.
+          </p>
+        </div>
+        <div class={styles.whyItem}>
+          <h3 class={styles.whyTitle}>Tech startups & SaaS</h3>
+          <p class={styles.whyDescription}>
+            Boulder's tech scene is serious. Startups, SaaS companies, and consulting firms need
+            websites that signal credibility to investors, customers, and talent. I build clean,
+            fast sites that feel like they belong to a company that knows what it's doing.
+          </p>
+        </div>
+        <div class={styles.whyItem}>
+          <h3 class={styles.whyTitle}>Restaurants & craft breweries</h3>
+          <p class={styles.whyDescription}>
+            Pearl Street restaurants, breweries on Walnut, coffee shops on the Hill. Boulder's food
+            scene attracts both locals and tourists. I build sites with menus, hours, reservation
+            links, and the local SEO that gets you found by visitors planning their Boulder trip.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <SectionDivider color="purple" />
+
+    <section class={styles.faq}>
       <GlowText as="h2" size="medium" color="orange" class={styles.sectionTitle}>
         FREQUENTLY ASKED QUESTIONS
       </GlowText>
       <div class={styles.faqList}>
         {
           faqs.map((faq) => (
-            <div class={`${styles.faqItem} scroll-reveal-child`}>
+            <div class={styles.faqItem}>
               <h3 class={styles.faqQuestion}>{faq.question}</h3>
               <p class={styles.faqAnswer}>{faq.answer}</p>
             </div>
@@ -139,9 +225,27 @@ const jsonLdFaq = JSON.stringify({
       </div>
     </section>
 
+    <SectionDivider color="purple" />
+
+    <section class={styles.areasServed}>
+      <GlowText as="h2" size="medium" color="purple" class={styles.sectionTitle}>
+        ALSO SERVING NEARBY
+      </GlowText>
+      <div class={styles.areasGrid}>
+        <a href="/services/denver" class={styles.areaLink}>Denver</a>
+        <a href="/services/lakewood" class={styles.areaLink}>Lakewood</a>
+        <a href="/services/arvada" class={styles.areaLink}>Arvada</a>
+        <a href="/services/golden" class={styles.areaLink}>Golden</a>
+        <a href="/services/littleton" class={styles.areaLink}>Littleton</a>
+        <span class={styles.areaText}>Broomfield</span>
+        <span class={styles.areaText}>Westminster</span>
+        <span class={styles.areaText}>Louisville</span>
+      </div>
+    </section>
+
     <SectionDivider color="mint" />
 
-    <section class={`${styles.contact} scroll-reveal`}>
+    <section class={styles.contact}>
       <GlowText as="h2" size="medium" color="mint" class={styles.sectionTitle}>
         LET'S BUILD YOUR BOULDER WEBSITE
       </GlowText>
@@ -149,6 +253,12 @@ const jsonLdFaq = JSON.stringify({
         Whether you run a Pearl Street boutique, a yoga studio on Arapahoe, a restaurant in
         North Boulder, or any other local business, I'd love to hear about your project.
       </p>
+
+      <div class={styles.trustSignals}>
+        <span class={styles.trustItem}>&#10003; Currently booking for {bookingMonth}</span>
+        <span class={styles.trustItem}>&#10003; Free consultation, no obligation</span>
+        <span class={styles.trustItem}>&#10003; Response within 1 business day</span>
+      </div>
 
       <ContactForm client:visible />
 

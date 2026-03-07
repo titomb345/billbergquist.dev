@@ -44,6 +44,45 @@ const jsonLdService = JSON.stringify({
   },
   serviceType: ['Web Design', 'Web Development', 'Website Redesign', 'Landing Page Design'],
   priceRange: '$$',
+  image: 'https://billbergquist.dev/og/services-lakewood.png',
+  hasOfferCatalog: {
+    '@type': 'OfferCatalog',
+    name: 'Web Development Services in Lakewood',
+    itemListElement: [
+      {
+        '@type': 'Offer',
+        itemOffered: {
+          '@type': 'Service',
+          name: 'Business Websites',
+          description: 'Professional websites for Lakewood small businesses. Fast, mobile-friendly, and built to convert.',
+        },
+      },
+      {
+        '@type': 'Offer',
+        itemOffered: {
+          '@type': 'Service',
+          name: 'Landing Pages',
+          description: 'Focused, single-page sites designed to drive bookings, signups, or sales for Lakewood businesses.',
+        },
+      },
+      {
+        '@type': 'Offer',
+        itemOffered: {
+          '@type': 'Service',
+          name: 'Website Redesign',
+          description: 'Modernize your outdated website with a fresh design, faster performance, and better user experience.',
+        },
+      },
+      {
+        '@type': 'Offer',
+        itemOffered: {
+          '@type': 'Service',
+          name: 'Ongoing Support & Maintenance',
+          description: 'Website updates, tweaks, and maintenance from a local Lakewood developer you can reach out to anytime.',
+        },
+      },
+    ],
+  },
 });
 
 const jsonLdFaq = JSON.stringify({
@@ -55,6 +94,10 @@ const jsonLdFaq = JSON.stringify({
     acceptedAnswer: { '@type': 'Answer', text: faq.answer },
   })),
 });
+
+const bookingMonth = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleString('en-US', {
+  month: 'long',
+});
 ---
 
 <Layout
@@ -62,7 +105,7 @@ const jsonLdFaq = JSON.stringify({
   description="Custom web design for Lakewood small businesses. Fast, mobile-friendly websites built by a local developer who lives in the Lakewood area."
   canonical="/services/lakewood"
   jsonLd={[jsonLdService, jsonLdFaq]}
-  ogImage="/og/services.png"
+  ogImage="/og/services-lakewood.png"
   geoRegion="US-CO"
   geoPlacename="Lakewood, CO"
 >
@@ -81,12 +124,12 @@ const jsonLdFaq = JSON.stringify({
       <div class="accent-line-orange"></div>
     </header>
 
-    <section class={`${styles.whySection} scroll-reveal`}>
+    <section class={styles.whySection}>
       <GlowText as="h2" size="medium" color="orange" class={styles.sectionTitle}>
         WHY LAKEWOOD BUSINESSES NEED A STRONG WEB PRESENCE
       </GlowText>
       <div class={styles.whyGrid}>
-        <div class={`${styles.whyItem} scroll-reveal-child`}>
+        <div class={styles.whyItem}>
           <h3 class={styles.whyTitle}>Lakewood isn't just "west Denver"</h3>
           <p class={styles.whyDescription}>
             People search for "restaurants in Lakewood" and "plumber near Belmar," not just "Denver."
@@ -94,7 +137,7 @@ const jsonLdFaq = JSON.stringify({
             specifically looking for local businesses, not results 20 miles away in Aurora or Thornton.
           </p>
         </div>
-        <div class={`${styles.whyItem} scroll-reveal-child`}>
+        <div class={styles.whyItem}>
           <h3 class={styles.whyTitle}>West side customers search differently</h3>
           <p class={styles.whyDescription}>
             Lakewood residents tend to stay on the west side. They search for services near Green Mountain,
@@ -102,7 +145,7 @@ const jsonLdFaq = JSON.stringify({
             neighborhood-level searches that a generic site misses.
           </p>
         </div>
-        <div class={`${styles.whyItem} scroll-reveal-child`}>
+        <div class={styles.whyItem}>
           <h3 class={styles.whyTitle}>Compete with Denver agencies for less</h3>
           <p class={styles.whyDescription}>
             Denver agencies charge $10,000-$25,000+ for a small business site. As a local independent
@@ -110,7 +153,7 @@ const jsonLdFaq = JSON.stringify({
             the person building your site, not an account manager.
           </p>
         </div>
-        <div class={`${styles.whyItem} scroll-reveal-child`}>
+        <div class={styles.whyItem}>
           <h3 class={styles.whyTitle}>I live here</h3>
           <p class={styles.whyDescription}>
             I'm based in the Lakewood area. I shop at the same stores and eat at the same restaurants.
@@ -123,14 +166,57 @@ const jsonLdFaq = JSON.stringify({
 
     <SectionDivider color="orange" />
 
-    <section class={`${styles.faq} scroll-reveal`}>
+    <section class={styles.whySection}>
+      <GlowText as="h2" size="medium" color="purple" class={styles.sectionTitle}>
+        LAKEWOOD BUSINESSES I WORK WITH
+      </GlowText>
+      <div class={styles.whyGrid}>
+        <div class={styles.whyItem}>
+          <h3 class={styles.whyTitle}>Home services</h3>
+          <p class={styles.whyDescription}>
+            Plumbers, HVAC techs, electricians, landscapers, roofers. Lakewood's residential
+            neighborhoods keep home services businesses busy, and a fast website with clear service
+            areas, pricing, and easy contact options means more calls from homeowners in your
+            actual coverage area.
+          </p>
+        </div>
+        <div class={styles.whyItem}>
+          <h3 class={styles.whyTitle}>Restaurants & breweries</h3>
+          <p class={styles.whyDescription}>
+            From Belmar dining to Wadsworth corridor restaurants to the growing craft brewery scene,
+            Lakewood's food and drink options are better than people think. I build sites with menus,
+            hours, and the local SEO that helps you compete with Denver restaurants for search traffic.
+          </p>
+        </div>
+        <div class={styles.whyItem}>
+          <h3 class={styles.whyTitle}>Retail & shopping</h3>
+          <p class={styles.whyDescription}>
+            Belmar boutiques, specialty shops along Wadsworth, stores near Colorado Mills. Lakewood
+            has a strong retail community that benefits from websites with product showcases, store
+            hours, and e-commerce for reaching customers beyond foot traffic.
+          </p>
+        </div>
+        <div class={styles.whyItem}>
+          <h3 class={styles.whyTitle}>Professional services</h3>
+          <p class={styles.whyDescription}>
+            Accountants, insurance agents, real estate offices, consultants. Lakewood's business
+            parks and the Federal Center area house plenty of professional services that need
+            clean, credible websites to attract clients from across the west metro.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <SectionDivider color="purple" />
+
+    <section class={styles.faq}>
       <GlowText as="h2" size="medium" color="orange" class={styles.sectionTitle}>
         FREQUENTLY ASKED QUESTIONS
       </GlowText>
       <div class={styles.faqList}>
         {
           faqs.map((faq) => (
-            <div class={`${styles.faqItem} scroll-reveal-child`}>
+            <div class={styles.faqItem}>
               <h3 class={styles.faqQuestion}>{faq.question}</h3>
               <p class={styles.faqAnswer}>{faq.answer}</p>
             </div>
@@ -139,9 +225,27 @@ const jsonLdFaq = JSON.stringify({
       </div>
     </section>
 
+    <SectionDivider color="purple" />
+
+    <section class={styles.areasServed}>
+      <GlowText as="h2" size="medium" color="purple" class={styles.sectionTitle}>
+        ALSO SERVING NEARBY
+      </GlowText>
+      <div class={styles.areasGrid}>
+        <a href="/services/denver" class={styles.areaLink}>Denver</a>
+        <a href="/services/arvada" class={styles.areaLink}>Arvada</a>
+        <a href="/services/golden" class={styles.areaLink}>Golden</a>
+        <a href="/services/littleton" class={styles.areaLink}>Littleton</a>
+        <a href="/services/boulder" class={styles.areaLink}>Boulder</a>
+        <span class={styles.areaText}>Wheat Ridge</span>
+        <span class={styles.areaText}>Edgewater</span>
+        <span class={styles.areaText}>Englewood</span>
+      </div>
+    </section>
+
     <SectionDivider color="mint" />
 
-    <section class={`${styles.contact} scroll-reveal`}>
+    <section class={styles.contact}>
       <GlowText as="h2" size="medium" color="mint" class={styles.sectionTitle}>
         LET'S BUILD YOUR LAKEWOOD WEBSITE
       </GlowText>
@@ -149,6 +253,12 @@ const jsonLdFaq = JSON.stringify({
         Whether you run a boutique in Belmar, a restaurant on Wadsworth, a home services company
         serving the west side, or any other Lakewood business, I'd love to hear about your project.
       </p>
+
+      <div class={styles.trustSignals}>
+        <span class={styles.trustItem}>&#10003; Currently booking for {bookingMonth}</span>
+        <span class={styles.trustItem}>&#10003; Free consultation, no obligation</span>
+        <span class={styles.trustItem}>&#10003; Response within 1 business day</span>
+      </div>
 
       <ContactForm client:visible />
 

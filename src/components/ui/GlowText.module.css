@@ -7,7 +7,7 @@
 /* Mint glow */
 .mint {
   color: var(--neon-mint);
-  text-shadow: 0 0 10px var(--neon-mint-glow);
+  text-shadow: 0 0 8px var(--neon-mint-glow);
 }
 
 .mint.animated {
@@ -19,7 +19,7 @@
 /* Magenta glow */
 .magenta {
   color: var(--neon-magenta);
-  text-shadow: 0 0 10px var(--neon-magenta-glow);
+  text-shadow: 0 0 8px var(--neon-magenta-glow);
 }
 
 .magenta.animated {
@@ -31,13 +31,13 @@
 /* Purple glow */
 .purple {
   color: var(--neon-purple);
-  text-shadow: 0 0 10px var(--neon-purple-glow);
+  text-shadow: 0 0 8px var(--neon-purple-glow);
 }
 
 /* Orange glow */
 .orange {
   color: var(--neon-orange);
-  text-shadow: 0 0 10px var(--neon-orange-glow);
+  text-shadow: 0 0 8px var(--neon-orange-glow);
 }
 
 .orange.animated {
@@ -57,7 +57,7 @@
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 0 8px var(--neon-mint-glow));
+  filter: drop-shadow(0 0 6px var(--neon-mint-glow));
 }
 
 /* Sizes */

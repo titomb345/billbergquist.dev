@@ -44,12 +44,12 @@
   padding: var(--space-lg);
   background: var(--bg-surface);
   border-radius: var(--radius-md);
-  border: 1px solid rgba(255, 106, 0, 0.1);
+  border: 1px solid rgba(240, 100, 24, 0.1);
   transition: var(--transition-normal);
 }
 
 .card:hover {
-  border-color: rgba(255, 106, 0, 0.3);
+  border-color: rgba(240, 100, 24, 0.3);
   transform: translateY(-2px);
 }
 
@@ -77,7 +77,7 @@
   font-size: 0.625rem;
   padding: 1px 8px;
   border-radius: 100px;
-  background: rgba(255, 106, 0, 0.08);
+  background: rgba(240, 100, 24, 0.08);
   color: var(--neon-orange);
   letter-spacing: 0.5px;
   text-transform: lowercase;

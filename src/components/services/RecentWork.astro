@@ -22,14 +22,14 @@ const projects = [
 ];
 ---
 
-<section class={`${styles.section} scroll-reveal`}>
+<section class={styles.section}>
   <GlowText as="h2" size="medium" color="mint" class={styles.sectionTitle}>
     RECENT WORK
   </GlowText>
   <div class={styles.grid}>
     {
       projects.map((project) => (
-        <div class={`${styles.project} scroll-reveal-child`}>
+        <div class={styles.project}>
           <div class={styles.projectHeader}>
             <h3 class={styles.projectName}>{project.name}</h3>
             <span class={styles.projectType}>{project.type}</span>

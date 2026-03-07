@@ -40,7 +40,7 @@ const projects = [
   {
     title: 'RetroRetro',
     description:
-      'A real-time retrospective board I built for my team at Kasa. Create a room, add sticky notes across categorized columns, group related items, vote on priorities, and discuss as a team. Features phased workflows, a built-in timer, drag-and-drop grouping, and CSV export. Auth-gated to Kasa employees via Clerk.',
+      'A real-time retrospective board for agile teams. Create a room, add sticky notes across categorized columns, group related items, vote on priorities, and discuss as a team. Features phased workflows, a built-in timer, drag-and-drop grouping, and CSV export.',
     techStack: ['React', 'TypeScript', 'Cloudflare Workers', 'WebSocket', 'Clerk'],
     url: 'https://billbergquist.dev/retro',
     color: 'magenta' as const,
@@ -111,16 +111,14 @@ const jsonLdProjects = JSON.stringify({
       <GlowText as="h2" size="small" color="mint" class={styles.sectionTitle}>
         WEB APPLICATIONS
       </GlowText>
-      <div class={`${styles.grid} scroll-reveal`}>
+      <div class={styles.grid}>
         {allProjects.map((project) => (
-          <div class="scroll-reveal-child">
-            <ProjectCard {...project} />
-          </div>
+          <ProjectCard {...project} />
         ))}
       </div>
     </section>
 
-    <section class={`${styles.approach} scroll-reveal`}>
+    <section class={styles.approach}>
       <GlowText as="h2" size="small" color="purple" class={styles.sectionTitle}>
         HOW I BUILD
       </GlowText>
