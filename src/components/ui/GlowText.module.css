@@ -11,11 +11,8 @@
 }
 
 .mint.animated {
-  text-shadow:
-    0 0 5px var(--neon-mint),
-    0 0 10px var(--neon-mint),
-    0 0 20px var(--neon-mint),
-    0 0 40px var(--neon-mint-glow);
+  --pulse-color: var(--neon-mint);
+  --pulse-glow: var(--neon-mint-glow);
   animation: neon-pulse 2s ease-in-out infinite;
 }
 
@@ -26,12 +23,9 @@
 }
 
 .magenta.animated {
-  text-shadow:
-    0 0 5px var(--neon-magenta),
-    0 0 10px var(--neon-magenta),
-    0 0 20px var(--neon-magenta),
-    0 0 40px var(--neon-magenta-glow);
-  animation: neon-pulse-magenta 2s ease-in-out infinite;
+  --pulse-color: var(--neon-magenta);
+  --pulse-glow: var(--neon-magenta-glow);
+  animation: neon-pulse 2s ease-in-out infinite;
 }
 
 /* Purple glow */
@@ -47,12 +41,9 @@
 }
 
 .orange.animated {
-  text-shadow:
-    0 0 5px var(--neon-orange),
-    0 0 10px var(--neon-orange),
-    0 0 20px var(--neon-orange),
-    0 0 40px var(--neon-orange-glow);
-  animation: neon-pulse-orange 2s ease-in-out infinite;
+  --pulse-color: var(--neon-orange);
+  --pulse-glow: var(--neon-orange-glow);
+  animation: neon-pulse 2s ease-in-out infinite;
 }
 
 /* Gradient text */

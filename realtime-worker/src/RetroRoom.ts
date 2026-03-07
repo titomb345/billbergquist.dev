@@ -128,6 +128,9 @@ export class RetroRoom implements DurableObject {
     const participantId = attachment.participantId;
 
     switch (msg.type) {
+      case 'leave':
+        await this.handleLeave(room, participantId, ws);
+        break;
       case 'addCard':
         await this.handleAddCard(room, participantId, msg.columnId, msg.text);
         break;
@@ -388,6 +391,56 @@ export class RetroRoom implements DurableObject {
         await this.state.storage.setAlarm(Date.now() + EMPTY_ROOM_CLEANUP_MS);
       }
     }
+  }
+
+  private async handleLeave(room: RoomState, participantId: string, ws: WebSocket): Promise<void> {
+    const idx = room.participants.findIndex((p) => p.id === participantId);
+    if (idx === -1) return;
+
+    // Remove this participant's votes and recalculate card vote counts
+    const removedVoteCardIds = room.votes
+      .filter((v) => v.participantId === participantId)
+      .map((v) => v.cardId);
+    room.votes = room.votes.filter((v) => v.participantId !== participantId);
+    for (const cardId of removedVoteCardIds) {
+      const card = room.cards.find((c) => c.id === cardId);
+      if (card && card.votes > 0) card.votes--;
+    }
+
+    // Remove the participant
+    room.participants.splice(idx, 1);
+
+    // If no participants left, clean up
+    if (room.participants.length === 0) {
+      ws.close(1000, 'Left room');
+      this.msgRates.delete(ws);
+      await this.state.storage.deleteAll();
+      return;
+    }
+
+    // Transfer host if the leaving participant was the host
+    if (room.hostId === participantId) {
+      const newHost = room.participants.find((p) => p.connected) ?? room.participants[0];
+      room.hostId = newHost.id;
+      for (const p of room.participants) {
+        p.isHost = p.id === newHost.id;
+      }
+    }
+
+    // If no one is connected, schedule cleanup
+    const anyConnected = room.participants.some((p) => p.connected);
+    if (!anyConnected) {
+      await this.state.storage.setAlarm(Date.now() + EMPTY_ROOM_CLEANUP_MS);
+    }
+
+    await this.saveRoom(room);
+
+    // Close the leaving participant's WebSocket (code 4000 = intentional leave)
+    ws.close(4000, 'Left room');
+    this.msgRates.delete(ws);
+
+    // Broadcast to remaining participants
+    this.broadcast({ type: 'participantLeft', participantId, participants: room.participants, hostId: room.hostId });
   }
 
   // ── Card Operations ──

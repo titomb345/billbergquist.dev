@@ -45,16 +45,16 @@
   font-size: 0.65rem;
   color: var(--text-muted);
   padding: 3px 10px;
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(var(--glass-rgb), 0.06);
   border-radius: 100px;
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(var(--glass-rgb), 0.02);
 }
 
 .card {
   width: 100%;
   max-width: 380px;
-  background: rgba(255, 255, 255, 0.015);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(var(--glass-rgb), 0.015);
+  border: 1px solid rgba(var(--glass-rgb), 0.06);
   border-radius: var(--radius-lg);
   padding: var(--space-lg);
   backdrop-filter: blur(8px);
@@ -67,12 +67,12 @@
   gap: var(--space-sm);
   margin-bottom: var(--space-lg);
   padding-bottom: var(--space-md);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid rgba(var(--glass-rgb), 0.06);
 }
 
 .avatar {
   border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(var(--glass-rgb), 0.1);
 }
 
 .userDetails {
@@ -124,8 +124,8 @@
 .input {
   width: 100%;
   padding: 0.6rem 0.75rem;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(var(--glass-rgb), 0.03);
+  border: 1px solid rgba(var(--glass-rgb), 0.08);
   border-radius: var(--radius-md);
   color: var(--text-primary);
   font-family: var(--font-body);
@@ -204,7 +204,7 @@
   top: 50%;
   width: 38%;
   height: 1px;
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(var(--glass-rgb), 0.06);
 }
 
 .divider::before {
@@ -219,7 +219,7 @@
   width: 100%;
   padding: 0.6rem 1rem;
   background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(var(--glass-rgb), 0.08);
   border-radius: var(--radius-md);
   color: var(--text-muted);
   font-family: var(--font-heading);
@@ -231,9 +231,9 @@
 }
 
 .ghostBtn:hover {
-  border-color: rgba(255, 255, 255, 0.15);
+  border-color: rgba(var(--glass-rgb), 0.15);
   color: var(--text-secondary);
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(var(--glass-rgb), 0.02);
 }
 
 .error {

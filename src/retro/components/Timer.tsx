@@ -60,7 +60,9 @@ interface TimerProps {
 }
 
 export function Timer({ timerEnd, isHost, defaultDuration, muted = false, onToggleMute, onSend }: TimerProps) {
-  const { secondsRemaining, isExpired, isRunning } = useTimer(timerEnd);
+  const timer = useTimer(timerEnd);
+  const secondsRemaining = Math.min(timer.secondsRemaining, defaultDuration);
+  const { isExpired, isRunning } = timer;
   const [showPicker, setShowPicker] = useState(false);
   const [flash, setFlash] = useState(false);
   const prevExpiredRef = useRef(false);

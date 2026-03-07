@@ -6,18 +6,12 @@ import { useCrapsState } from './hooks/useCrapsState';
 import type { CrapsClientMessage, CrapsServerMessage } from './types';
 import type { ChatMessage } from './components/Chat';
 import { WORKER_URL, generateRoomCode } from './constants';
+import { getInitialRoomCode } from '../shared/utils/roomCode';
 import { CrapsLobby } from './components/CrapsLobby';
 import { CrapsGame } from './components/CrapsGame';
 import { AuthGate } from '../retro/components/AuthGate';
 
 const CLERK_KEY = import.meta.env.PUBLIC_CLERK_PUBLISHABLE_KEY;
-
-function getInitialRoomCode(): string | null {
-  const pathMatch = window.location.pathname.match(/^\/craps\/([A-Z0-9]{4})$/i);
-  if (pathMatch) return pathMatch[1].toUpperCase();
-  const params = new URLSearchParams(window.location.search);
-  return params.get('room')?.toUpperCase() ?? null;
-}
 
 export default function CrapsApp() {
   return (
@@ -46,7 +40,7 @@ export default function CrapsApp() {
 function CrapsAppInner() {
   const { user } = useUser();
   const [state, dispatch] = useCrapsState();
-  const initialRoomCode = useMemo(() => getInitialRoomCode(), []);
+  const initialRoomCode = useMemo(() => getInitialRoomCode('craps'), []);
   const userName = user?.firstName || 'Anonymous';
   const userId = user?.id || '';
 
@@ -108,6 +102,9 @@ function CrapsAppInner() {
             return next.length > 50 ? next.slice(-50) : next;
           });
           break;
+        case 'playerLeft':
+          dispatch({ type: 'PLAYER_LEFT', playerId: msg.playerId, players: msg.players, hostId: msg.hostId, shooterIndex: msg.shooterIndex });
+          break;
         case 'error':
           dispatch({ type: 'ERROR', message: msg.message });
           break;
@@ -155,6 +152,14 @@ function CrapsAppInner() {
     onReplaced: handleSessionReplaced,
   });
 
+  const handleLeaveRoom = useCallback(() => {
+    send({ type: 'leave' });
+    setActiveRoomCode(null);
+    dispatch({ type: 'RESET' });
+    setChatMessages([]);
+    window.history.replaceState({}, '', '/craps');
+  }, [send, dispatch]);
+
   const handleLobbyAction = useCallback(
     (msg: CrapsClientMessage) => {
       if (msg.type === 'create') {
@@ -200,6 +205,7 @@ function CrapsAppInner() {
       lastRoll={state.lastRoll}
       diceAnimating={state.diceAnimating}
       onSend={send}
+      onLeave={handleLeaveRoom}
       onClearLastRoll={() => dispatch({ type: 'CLEAR_LAST_ROLL' })}
       onDiceAnimDone={() => dispatch({ type: 'DICE_ANIM_DONE' })}
       chatMessages={chatMessages}

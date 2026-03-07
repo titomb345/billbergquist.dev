@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import type { Bet, BetType, CrapsGameState } from '../types';
+import type { Bet, BetType } from '../types';
 import { CHIP_DENOMINATIONS, BET_LABELS } from '../constants';
 import { aggregateBets, snapBetAmount } from '../engine';
 import styles from './BettingControls.module.css';
@@ -11,89 +11,12 @@ interface BettingControlsProps {
   onConfirm: () => void;
   myBets: Bet[];
   point: number | null;
-  gameState: CrapsGameState;
-  myPlayerId: string;
   selectedChip: number;
   onChipChange: (chip: number) => void;
   confirmed?: boolean;
 }
 
-interface BetCategory {
-  label: string;
-  bets: { type: BetType; label: string; available: boolean; betPoint?: number }[];
-}
-
-export function BettingControls({ balance, onPlaceBet, onRemoveBet, onConfirm, myBets, point, gameState: _gameState, myPlayerId: _myPlayerId, selectedChip, onChipChange, confirmed = false }: BettingControlsProps) {
-  const isComingOut = point === null;
-
-  const comePointBets = myBets.filter((b) => b.type === 'come' && b.point);
-  const dontComePointBets = myBets.filter((b) => b.type === 'dontCome' && b.point);
-
-  const categories = useMemo((): BetCategory[] => {
-    const cats: BetCategory[] = [
-      {
-        label: 'Line Bets',
-        bets: [
-          { type: 'pass', label: BET_LABELS.pass, available: isComingOut },
-          { type: 'dontPass', label: BET_LABELS.dontPass, available: isComingOut },
-          { type: 'come', label: BET_LABELS.come, available: !isComingOut },
-          { type: 'dontCome', label: BET_LABELS.dontCome, available: !isComingOut },
-        ],
-      },
-      {
-        label: 'Place Bets',
-        bets: [
-          { type: 'place4', label: '4', available: true },
-          { type: 'place5', label: '5', available: true },
-          { type: 'place6', label: '6', available: true },
-          { type: 'place8', label: '8', available: true },
-          { type: 'place9', label: '9', available: true },
-          { type: 'place10', label: '10', available: true },
-        ],
-      },
-      {
-        label: 'Odds',
-        bets: [
-          { type: 'passOdds', label: BET_LABELS.passOdds, available: !isComingOut && myBets.some((b) => b.type === 'pass') },
-          { type: 'dontPassOdds', label: BET_LABELS.dontPassOdds, available: !isComingOut && myBets.some((b) => b.type === 'dontPass') },
-          ...comePointBets.map((b) => ({
-            type: 'comeOdds' as BetType,
-            label: `Come (${b.point})`,
-            available: true,
-            betPoint: b.point,
-          })),
-          ...dontComePointBets.map((b) => ({
-            type: 'dontComeOdds' as BetType,
-            label: `DC (${b.point})`,
-            available: true,
-            betPoint: b.point,
-          })),
-        ],
-      },
-      {
-        label: 'Hardways',
-        bets: [
-          { type: 'hard4', label: '4', available: true },
-          { type: 'hard6', label: '6', available: true },
-          { type: 'hard8', label: '8', available: true },
-          { type: 'hard10', label: '10', available: true },
-        ],
-      },
-      {
-        label: 'Props',
-        bets: [
-          { type: 'field', label: BET_LABELS.field, available: true },
-          { type: 'anyCraps', label: 'Craps', available: true },
-          { type: 'anySeven', label: 'Any 7', available: true },
-          { type: 'yo', label: 'Yo 11', available: true },
-          { type: 'horn', label: BET_LABELS.horn, available: true },
-        ],
-      },
-    ];
-    // Filter out odds category if no odds bets are available
-    return cats.filter((c) => c.bets.length > 0);
-  }, [isComingOut, myBets, comePointBets, dontComePointBets]);
-
+export function BettingControls({ balance, onPlaceBet, onRemoveBet, onConfirm, myBets, point, selectedChip, onChipChange, confirmed = false }: BettingControlsProps) {
   const grouped = useMemo(
     () => aggregateBets(myBets, point, true),
     [myBets, point],
@@ -127,49 +50,48 @@ export function BettingControls({ balance, onPlaceBet, onRemoveBet, onConfirm, m
         </div>
       </div>
 
-      {/* Bet Categories */}
-      <div className={styles.betCategories}>
-        {categories.map((cat) => (
-          <div key={cat.label} className={styles.category}>
-            <span className={styles.categoryLabel}>{cat.label}</span>
-            <div className={styles.categoryBets}>
-              {cat.bets.map(({ type, label, available, betPoint: bp }) => {
-                const amount = snapBetAmount(selectedChip, type, point, bp);
-                const key = bp != null ? `${type}:${bp}` : type;
-                const hasBet = myBets.some((b) => b.type === type && (bp == null || b.point === bp));
-                return (
-                  <button
-                    key={key}
-                    className={`${styles.betBtn} ${!available ? styles.betUnavailable : ''} ${hasBet ? styles.betHasBet : ''}`}
-                    onClick={() => onPlaceBet(type, amount, bp)}
-                    disabled={confirmed || !available || amount > balance}
-                  >
-                    <span className={styles.betLabel}>{label}</span>
-                    {hasBet && <span className={styles.betDot} />}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        ))}
-      </div>
-
       {/* Active Bets + Confirm */}
       <div className={styles.footer}>
         <div className={styles.activeBets}>
-          {grouped.map((group) => (
+          {grouped.map((group) => {
+            const comeOddsAmt = group.type === 'come' && group.point
+              ? snapBetAmount(selectedChip, 'comeOdds', point, group.point) : 0;
+            const dontComeOddsAmt = group.type === 'dontCome' && group.point
+              ? snapBetAmount(selectedChip, 'dontComeOdds', point, group.point) : 0;
+
+            return (
             <div key={group.key} className={styles.activeBet}>
               <span className={styles.activeBetName}>
                 {BET_LABELS[group.type]}
                 {group.point ? ` (${group.point})` : ''}
               </span>
               <span className={styles.activeBetAmount}>${group.total}</span>
-              {group.removableId ? (
+              {group.type === 'come' && group.point && (
+                <button
+                  className={styles.oddsBtn}
+                  onClick={() => onPlaceBet('comeOdds', comeOddsAmt, group.point)}
+                  disabled={confirmed || comeOddsAmt > balance}
+                  title="Add Come Odds"
+                >
+                  +O
+                </button>
+              )}
+              {group.type === 'dontCome' && group.point && (
+                <button
+                  className={styles.oddsBtn}
+                  onClick={() => onPlaceBet('dontComeOdds', dontComeOddsAmt, group.point)}
+                  disabled={confirmed || dontComeOddsAmt > balance}
+                  title="Add DC Odds"
+                >
+                  +O
+                </button>
+              )}
+              {group.removableIds.length > 0 ? (
                 <button
                   className={styles.removeBtn}
-                  onClick={() => onRemoveBet(group.removableId!)}
-                  title="Remove last bet"
-                  aria-label="Remove bet"
+                  onClick={() => group.removableIds.forEach((id) => onRemoveBet(id))}
+                  title="Remove all bets"
+                  aria-label="Remove all bets"
                 >
                   <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
                     <path d="M2 2l6 6M8 2l-6 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
@@ -179,7 +101,8 @@ export function BettingControls({ balance, onPlaceBet, onRemoveBet, onConfirm, m
                 <span className={styles.lockedTag}>locked</span>
               )}
             </div>
-          ))}
+            );
+          })}
         </div>
 
         <div className={styles.confirmCol}>

@@ -1,5 +1,5 @@
 import type { Bet, BetType, CrapsPhase, Player } from '../types';
-import { snapBetAmount } from '../engine';
+import { snapBetAmount, groupBetsByPlayer, isContractBet } from '../engine';
 import styles from './CrapsTable.module.css';
 
 interface CrapsTableProps {
@@ -8,6 +8,7 @@ interface CrapsTableProps {
   players: Player[];
   myPlayerId: string;
   onPlaceBet: (betType: BetType, amount: number, betPoint?: number) => void;
+  onRemoveBet: (betId: string) => void;
   phase: CrapsPhase;
   betsConfirmed: boolean;
   selectedChip: number;
@@ -55,12 +56,12 @@ const CHIP_STACK_OFFSET = 3;
  * chipStack anchor (centered in the zone by default, overridden per
  * zone in CSS). Positions are hand-tuned so chips never cover labels.
  */
-type ChipZone = 'dontPass' | 'number' | 'dontCome' | 'come' | 'field' | 'passOdds' | 'pass';
+type ChipZone = 'dontPass' | 'number' | 'dontCome' | 'come' | 'field' | 'passOdds' | 'dontPassOdds' | 'pass';
 
 const CHIP_POSITIONS: Record<ChipZone, [number, number][]> = {
-  // Full-width ~820px, narrow bar — evenly spaced across the zone
+  // ~680px wide (in grid with dontPassOdds) — evenly spaced
   dontPass: [
-    [-340, 0], [-220, 0], [220, 0], [340, 0],
+    [-260, 0], [-140, 0], [140, 0], [260, 0],
   ],
   // ~143px wide boxes — four corners, spread wider
   number: [
@@ -80,15 +81,27 @@ const CHIP_POSITIONS: Record<ChipZone, [number, number][]> = {
   field: [
     [-360, 0], [-240, 0], [240, 0], [360, 0],
   ],
-  // Full-width ~820px, narrow
+  // Full-width ~820px pass odds strip
   passOdds: [
-    [-320, 0], [-200, 0], [200, 0], [320, 0],
+    [-300, 0], [-140, 0], [140, 0], [300, 0],
+  ],
+  // ~140px narrow zone next to don't pass bar
+  dontPassOdds: [
+    [-25, -8], [25, -8],
+    [-25, 8],  [25, 8],
   ],
   // Full-width ~820px, curved bottom
   pass: [
     [-300, 0], [-180, 0], [180, 0], [300, 0],
   ],
 };
+
+/** Resolve player index, color, and name from a playerId */
+function resolvePlayer(playerId: string, players: Player[], colors: string[]) {
+  const idx = players.findIndex((p) => p.id === playerId);
+  const slotIdx = idx % colors.length;
+  return { idx, slotIdx, color: colors[slotIdx], name: players[idx]?.name ?? 'Player' };
+}
 
 interface ChipStackProps {
   bets: Bet[];
@@ -99,22 +112,14 @@ interface ChipStackProps {
 function ChipStack({ bets, players, zone }: ChipStackProps) {
   if (bets.length === 0) return null;
 
-  // Aggregate bets by player
-  const byPlayer = new Map<string, number>();
-  for (const bet of bets) {
-    byPlayer.set(bet.playerId, (byPlayer.get(bet.playerId) ?? 0) + bet.amount);
-  }
-
+  const byPlayer = groupBetsByPlayer(bets);
   const positions = CHIP_POSITIONS[zone];
+  const colors = getPlayerColors();
 
   return (
     <div className={styles.chipStack}>
       {[...byPlayer.entries()].map(([playerId, total]) => {
-        const globalIdx = players.findIndex((p) => p.id === playerId);
-        const colors = getPlayerColors();
-        const slotIdx = globalIdx % colors.length;
-        const playerColor = colors[slotIdx];
-        const playerName = players[globalIdx]?.name ?? 'Player';
+        const { slotIdx, color: playerColor, name: playerName } = resolvePlayer(playerId, players, colors);
         const [x, y] = positions[slotIdx];
         const visualChips = breakIntoChips(total);
 
@@ -161,30 +166,29 @@ function ChipStack({ bets, players, zone }: ChipStackProps) {
   );
 }
 
-function BetIndicatorRow({ bets, players, label, position }: { bets: Bet[]; players: Player[]; label: string; position: 'top' | 'bottom' }) {
-  const wrapClass = position === 'bottom' ? styles.comeIndicators : styles.dontComeIndicators;
-  const badgeClass = position === 'bottom' ? styles.comeIndicatorBadge : styles.dontComeIndicatorBadge;
+/** DRY helper: renders player-colored dots with tooltips for a set of bets */
+function PlayerDots({ bets, players }: { bets: Bet[]; players: Player[] }) {
+  const byPlayer = groupBetsByPlayer(bets);
+  const colors = getPlayerColors();
   return (
-    <div className={wrapClass}>
-      <span className={badgeClass}>{label}</span>
-      {bets.map((b) => {
-        const idx = players.findIndex((p) => p.id === b.playerId);
-        const colors = getPlayerColors();
-        const color = colors[idx % colors.length];
+    <>
+      {[...byPlayer.entries()].map(([playerId, total]) => {
+        const { color, name } = resolvePlayer(playerId, players, colors);
         return (
-          <div key={b.id} className={styles.indicatorDotWrap}>
+          <div key={playerId} className={styles.indicatorDotWrap}>
             <div className={styles.comeIndicatorDot} style={{ background: color }} />
             <div className={styles.chipTooltip}>
               <span className={styles.tooltipDot} style={{ background: color }} />
-              <span className={styles.tooltipName}>{players[idx]?.name ?? 'Player'}</span>
-              <span className={styles.tooltipAmount}>${b.amount}</span>
+              <span className={styles.tooltipName}>{name}</span>
+              <span className={styles.tooltipAmount}>${total}</span>
             </div>
           </div>
         );
       })}
-    </div>
+    </>
   );
 }
+
 
 function PointPuck({ point }: { point: number | null }) {
   return (
@@ -212,6 +216,18 @@ const NUMBER_DISPLAY: Record<number, string> = {
 const PLACE_NUMBERS = [4, 5, 6, 8, 9, 10] as const;
 const PLACE_BET_MAP: Record<number, BetType> = { 4: 'place4', 5: 'place5', 6: 'place6', 8: 'place8', 9: 'place9', 10: 'place10' };
 
+/** Center bet definitions: row 1 = hardways, row 2 = props */
+const CENTER_BETS: { type: BetType; label: string }[] = [
+  { type: 'hard4', label: 'H4' },
+  { type: 'hard6', label: 'H6' },
+  { type: 'hard8', label: 'H8' },
+  { type: 'hard10', label: 'H10' },
+  { type: 'anyCraps', label: 'CRAPS' },
+  { type: 'anySeven', label: 'ANY 7' },
+  { type: 'yo', label: 'YO' },
+  { type: 'horn', label: 'HORN' },
+];
+
 // ── DEBUG: set to true to preview a fully loaded board ──
 const DEBUG_FULL_BOARD = false;
 
@@ -238,6 +254,8 @@ function makeDebugData() {
     ...all('dontPass', [25, 15, 50, 30]),
     // Pass Odds
     ...all('passOdds', [50, 100, 25, 75]),
+    // Don't Pass Odds
+    ...all('dontPassOdds', [25, 50, 30, 40]),
     // Field
     ...all('field', [5, 10, 25, 5]),
     // Place bets on every number
@@ -257,12 +275,40 @@ function makeDebugData() {
     // Don't Come — established on numbers
     ...all('dontCome', [25, 30, 50, 20], 4),
     ...all('dontCome', [20, 25, 15, 40], 10),
+    // Hardways
+    ...all('hard4', [5, 10, 5, 10]),
+    ...all('hard6', [10, 5, 10, 5]),
+    ...all('hard8', [5, 5, 10, 10]),
+    ...all('hard10', [10, 10, 5, 5]),
+    // Props
+    ...all('anyCraps', [5, 5, 5, 5]),
+    ...all('anySeven', [10, 5, 10, 5]),
+    ...all('yo', [5, 10, 5, 10]),
+    ...all('horn', [5, 5, 5, 5]),
   ];
 
   return { fakePlayers, fakeBets };
 }
 
-export function CrapsTable({ point: realPoint, bets: realBets, players: realPlayers, myPlayerId, onPlaceBet, phase, betsConfirmed, selectedChip }: CrapsTableProps) {
+/** Build a bet index keyed by "type" or "type:point" for O(1) lookups */
+function indexBets(bets: Bet[]) {
+  const byType = new Map<string, Bet[]>();
+  const push = (key: string, bet: Bet) => {
+    const arr = byType.get(key);
+    if (arr) arr.push(bet);
+    else byType.set(key, [bet]);
+  };
+  for (const b of bets) {
+    push(b.type, b);
+    if (b.point != null) push(`${b.type}:${b.point}`, b);
+    else push(`${b.type}:none`, b);
+  }
+  return byType;
+}
+
+const EMPTY_BETS: Bet[] = [];
+
+export function CrapsTable({ point: realPoint, bets: realBets, players: realPlayers, myPlayerId, onPlaceBet, onRemoveBet, phase, betsConfirmed, selectedChip }: CrapsTableProps) {
   // Debug override
   const { fakePlayers, fakeBets } = DEBUG_FULL_BOARD ? makeDebugData() : { fakePlayers: null, fakeBets: null };
   const point = DEBUG_FULL_BOARD ? 8 : realPoint;
@@ -272,6 +318,16 @@ export function CrapsTable({ point: realPoint, bets: realBets, players: realPlay
   const canBet = phase === 'betting' && !betsConfirmed;
   const isComingOut = point === null;
 
+  // Pre-index all bets once instead of repeated .filter() calls
+  const betIndex = indexBets(bets);
+  const getBets = (betType: BetType) => betIndex.get(betType) ?? EMPTY_BETS;
+  const getBetsByPoint = (betType: BetType, pt: number) => betIndex.get(`${betType}:${pt}`) ?? EMPTY_BETS;
+  const unestablishedComeBets = betIndex.get('come:none') ?? EMPTY_BETS;
+  const unestablishedDontComeBets = betIndex.get('dontCome:none') ?? EMPTY_BETS;
+
+  const hasMyPassBet = getBets('pass').some((b) => b.playerId === myPlayerId);
+  const hasMyDontPassBet = getBets('dontPass').some((b) => b.playerId === myPlayerId);
+
   const getAmount = (betType: BetType) => snapBetAmount(selectedChip, betType, point);
 
   const handleClick = (betType: BetType) => {
@@ -279,17 +335,17 @@ export function CrapsTable({ point: realPoint, bets: realBets, players: realPlay
     onPlaceBet(betType, getAmount(betType));
   };
 
-  const getBets = (betType: BetType) => bets.filter((b) => b.type === betType);
-
-  /** Come/don't-come bets that have established a point on a given number */
-  const getComeBetsOnNumber = (num: number) =>
-    bets.filter((b) => b.type === 'come' && b.point === num);
-  const getDontComeBetsOnNumber = (num: number) =>
-    bets.filter((b) => b.type === 'dontCome' && b.point === num);
-
-  /** Come/don't-come bets still waiting in their zone (no point yet) */
-  const unestablishedComeBets = bets.filter((b) => b.type === 'come' && !b.point);
-  const unestablishedDontComeBets = bets.filter((b) => b.type === 'dontCome' && !b.point);
+  /** Right-click: remove my last removable bet of this type */
+  const handleContextRemove = (e: React.MouseEvent, betType: BetType) => {
+    e.preventDefault();
+    if (!canBet) return;
+    const myRemovable = getBets(betType).filter(
+      (b) => b.playerId === myPlayerId && !isContractBet(b, point),
+    );
+    if (myRemovable.length > 0) {
+      onRemoveBet(myRemovable[myRemovable.length - 1].id);
+    }
+  };
 
   return (
     <div className={styles.tableWrap}>
@@ -299,24 +355,16 @@ export function CrapsTable({ point: realPoint, bets: realBets, players: realPlay
         <div className={styles.felt}>
           <div className={styles.feltNoise} />
 
-          {/* Don't Pass Bar */}
-          <button
-            className={`${styles.zone} ${styles.dontPass} ${canBet && isComingOut ? styles.zoneBettable : ''}`}
-            onClick={() => handleClick('dontPass')}
-            disabled={!canBet || !isComingOut}
-          >
-            <span className={styles.zoneLabel}>DON&#39;T PASS BAR</span>
-            <ChipStack bets={getBets('dontPass')} players={players} zone="dontPass" />
-          </button>
-
           {/* Number Boxes */}
           <div className={styles.numberRow}>
             {PLACE_NUMBERS.map((num) => {
               const betType = PLACE_BET_MAP[num];
               const isClickable = canBet;
               const isPoint = point === num;
-              const comeBetsHere = getComeBetsOnNumber(num);
-              const dontComeBetsHere = getDontComeBetsOnNumber(num);
+              const comeBetsHere = getBetsByPoint('come', num);
+              const dontComeBetsHere = getBetsByPoint('dontCome', num);
+              const comeOddsHere = getBetsByPoint('comeOdds', num);
+              const dontComeOddsHere = getBetsByPoint('dontComeOdds', num);
 
               return (
                 <button
@@ -327,6 +375,7 @@ export function CrapsTable({ point: realPoint, bets: realBets, players: realPlay
                     isPoint ? styles.numberBoxPoint : '',
                   ].filter(Boolean).join(' ')}
                   onClick={() => handleClick(betType)}
+                  onContextMenu={(e) => handleContextRemove(e, betType)}
                   disabled={!isClickable}
                 >
                   <span className={`${styles.numberLabel} ${num === 6 || num === 9 ? styles.numberLabelText : ''}`}>
@@ -335,11 +384,37 @@ export function CrapsTable({ point: realPoint, bets: realBets, players: realPlay
                   {isPoint && <PointPuck point={point} />}
                   <ChipStack bets={getBets(betType)} players={players} zone="number" />
 
-                  {comeBetsHere.length > 0 && (
-                    <BetIndicatorRow bets={comeBetsHere} players={players} label="C" position="bottom" />
+                  {(comeBetsHere.length > 0 || comeOddsHere.length > 0) && (
+                    <div className={styles.comeIndicators}>
+                      {comeBetsHere.length > 0 && (
+                        <>
+                          <span className={styles.comeIndicatorBadge}>C</span>
+                          <PlayerDots bets={comeBetsHere} players={players} />
+                        </>
+                      )}
+                      {comeOddsHere.length > 0 && (
+                        <>
+                          <span className={styles.comeIndicatorBadge}>CO</span>
+                          <PlayerDots bets={comeOddsHere} players={players} />
+                        </>
+                      )}
+                    </div>
                   )}
-                  {dontComeBetsHere.length > 0 && (
-                    <BetIndicatorRow bets={dontComeBetsHere} players={players} label="DC" position="top" />
+                  {(dontComeBetsHere.length > 0 || dontComeOddsHere.length > 0) && (
+                    <div className={styles.dontComeIndicators}>
+                      {dontComeBetsHere.length > 0 && (
+                        <>
+                          <span className={styles.dontComeIndicatorBadge}>DC</span>
+                          <PlayerDots bets={dontComeBetsHere} players={players} />
+                        </>
+                      )}
+                      {dontComeOddsHere.length > 0 && (
+                        <>
+                          <span className={styles.dontComeIndicatorBadge}>DCO</span>
+                          <PlayerDots bets={dontComeOddsHere} players={players} />
+                        </>
+                      )}
+                    </div>
                   )}
                 </button>
               );
@@ -351,6 +426,7 @@ export function CrapsTable({ point: realPoint, bets: realBets, players: realPlay
             <button
               className={`${styles.zone} ${styles.dontCome} ${canBet && !isComingOut ? styles.zoneBettable : ''}`}
               onClick={() => handleClick('dontCome')}
+              onContextMenu={(e) => handleContextRemove(e, 'dontCome')}
               disabled={!canBet || isComingOut}
             >
               <span className={styles.zoneLabel}>DON&#39;T COME</span>
@@ -360,6 +436,7 @@ export function CrapsTable({ point: realPoint, bets: realBets, players: realPlay
             <button
               className={`${styles.zone} ${styles.come} ${canBet && !isComingOut ? styles.zoneBettable : ''}`}
               onClick={() => handleClick('come')}
+              onContextMenu={(e) => handleContextRemove(e, 'come')}
               disabled={!canBet || isComingOut}
             >
               <span className={styles.comeLabel}>COME</span>
@@ -371,6 +448,7 @@ export function CrapsTable({ point: realPoint, bets: realBets, players: realPlay
           <button
             className={`${styles.zone} ${styles.field} ${canBet ? styles.zoneBettable : ''}`}
             onClick={() => handleClick('field')}
+            onContextMenu={(e) => handleContextRemove(e, 'field')}
             disabled={!canBet}
           >
             <div className={styles.fieldInner}>
@@ -382,15 +460,57 @@ export function CrapsTable({ point: realPoint, bets: realBets, players: realPlay
             <ChipStack bets={getBets('field')} players={players} zone="field" />
           </button>
 
-          {/* Pass Odds — always rendered for layout stability, hidden on come-out */}
+          {/* Center Bets (hardways + props) */}
+          <div className={styles.centerBets}>
+            {CENTER_BETS.map(({ type, label }) => (
+              <button
+                key={type}
+                className={`${styles.centerCell} ${canBet ? styles.centerCellBettable : ''}`}
+                onClick={() => handleClick(type)}
+                onContextMenu={(e) => handleContextRemove(e, type)}
+                disabled={!canBet}
+              >
+                <span className={styles.centerCellLabel}>{label}</span>
+                <div className={styles.centerCellDots}>
+                  <PlayerDots bets={getBets(type)} players={players} />
+                </div>
+              </button>
+            ))}
+          </div>
+
+          {/* Don't Pass Bar + Don't Pass Odds */}
+          <div className={styles.dontPassRow}>
+            <button
+              className={`${styles.zone} ${styles.dontPass} ${canBet && isComingOut ? styles.zoneBettable : ''}`}
+              onClick={() => handleClick('dontPass')}
+              onContextMenu={(e) => handleContextRemove(e, 'dontPass')}
+              disabled={!canBet || !isComingOut}
+            >
+              <span className={styles.zoneLabel}>DON&#39;T PASS BAR</span>
+              <ChipStack bets={getBets('dontPass')} players={players} zone="dontPass" />
+            </button>
+
+            <button
+              className={`${styles.zone} ${styles.dontPassOdds} ${
+                canBet && !isComingOut && hasMyDontPassBet ? styles.zoneBettable : ''
+              }`}
+              onClick={() => handleClick('dontPassOdds')}
+              onContextMenu={(e) => handleContextRemove(e, 'dontPassOdds')}
+              disabled={isComingOut || !canBet || !hasMyDontPassBet}
+            >
+              <span className={styles.oddsLabel}>DON&#39;T PASS ODDS</span>
+              <ChipStack bets={getBets('dontPassOdds')} players={players} zone="dontPassOdds" />
+            </button>
+          </div>
+
+          {/* Pass Line Odds — always visible on felt */}
           <button
             className={`${styles.zone} ${styles.passOdds} ${
-              isComingOut ? styles.zoneHidden : ''
-            } ${
-              canBet && !isComingOut && bets.some((b) => b.playerId === myPlayerId && b.type === 'pass') ? styles.zoneBettable : ''
+              canBet && !isComingOut && hasMyPassBet ? styles.zoneBettable : ''
             }`}
             onClick={() => handleClick('passOdds')}
-            disabled={isComingOut || !canBet || !bets.some((b) => b.playerId === myPlayerId && b.type === 'pass')}
+            onContextMenu={(e) => handleContextRemove(e, 'passOdds')}
+            disabled={isComingOut || !canBet || !hasMyPassBet}
           >
             <span className={styles.oddsLabel}>PASS LINE ODDS</span>
             <ChipStack bets={getBets('passOdds')} players={players} zone="passOdds" />
@@ -400,6 +520,7 @@ export function CrapsTable({ point: realPoint, bets: realBets, players: realPlay
           <button
             className={`${styles.zone} ${styles.passLine} ${canBet && isComingOut ? styles.zoneBettable : ''}`}
             onClick={() => handleClick('pass')}
+            onContextMenu={(e) => handleContextRemove(e, 'pass')}
             disabled={!canBet || !isComingOut}
           >
             <span className={styles.passLineLabel}>P A S S&nbsp;&nbsp;L I N E</span>

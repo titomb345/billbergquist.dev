@@ -472,6 +472,15 @@ export function snapBetAmount(amount: number, betType: BetType, point: number | 
 
 // ── Bet Aggregation ──
 
+/** Aggregate bets by player, returning a map of playerId → total amount */
+export function groupBetsByPlayer(bets: Bet[]): Map<string, number> {
+  const map = new Map<string, number>();
+  for (const bet of bets) {
+    map.set(bet.playerId, (map.get(bet.playerId) ?? 0) + bet.amount);
+  }
+  return map;
+}
+
 export interface AggregatedBet {
   key: string;
   type: BetType;
@@ -479,9 +488,10 @@ export interface AggregatedBet {
   total: number;
   count: number;
   removableId: string | null;
+  removableIds: string[];
 }
 
-/** Group bets by type+point, track total and the last removable bet id */
+/** Group bets by type+point, track total and removable bet ids */
 export function aggregateBets(bets: Bet[], point: number | null, trackRemovable: boolean = false): AggregatedBet[] {
   const map = new Map<string, AggregatedBet>();
   for (const bet of bets) {
@@ -491,9 +501,12 @@ export function aggregateBets(bets: Bet[], point: number | null, trackRemovable:
     if (existing) {
       existing.total += bet.amount;
       existing.count++;
-      if (canRemove) existing.removableId = bet.id;
+      if (canRemove) {
+        existing.removableId = bet.id;
+        existing.removableIds.push(bet.id);
+      }
     } else {
-      map.set(key, { key, type: bet.type, point: bet.point, total: bet.amount, count: 1, removableId: canRemove ? bet.id : null });
+      map.set(key, { key, type: bet.type, point: bet.point, total: bet.amount, count: 1, removableId: canRemove ? bet.id : null, removableIds: canRemove ? [bet.id] : [] });
     }
   }
   return [...map.values()];

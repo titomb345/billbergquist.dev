@@ -1,6 +1,6 @@
 .wrapper {
   padding: 4px 0 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.04);
+  border-top: 1px solid rgba(var(--glass-rgb), 0.04);
 }
 
 .inputRow {
@@ -12,8 +12,8 @@
   min-height: 52px;
   padding: 0.55rem 0.7rem;
   padding-right: 3.5rem;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px dashed rgba(255, 255, 255, 0.08);
+  background: rgba(var(--glass-rgb), 0.02);
+  border: 1px dashed rgba(var(--glass-rgb), 0.08);
   border-radius: var(--radius-sm);
   color: var(--text-primary);
   font-family: var(--font-body);

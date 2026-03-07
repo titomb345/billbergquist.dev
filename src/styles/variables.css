@@ -73,6 +73,9 @@
   --space-7: 2rem;
   --space-8: 3rem;
 
+  /* Glass overlay base (raw RGB channels for rgba() usage) */
+  --glass-rgb: 255, 255, 255;
+
   /* Borders */
   --border-subtle: rgba(255, 255, 255, 0.08);
   --border-accent: rgba(0, 212, 170, 0.3);

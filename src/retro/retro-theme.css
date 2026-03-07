@@ -1,0 +1,69 @@
+/* RetroRetro Light/Dark Theme
+   Scoped to [data-retro-theme] wrapper. Dark is the default (inherits :root).
+   Light overrides redefine CSS variables so all existing CSS modules "just work". */
+
+.themeRoot {
+  min-height: 100vh;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+[data-retro-theme="light"] {
+  /* Backgrounds */
+  --bg-void: #f0f0f5;
+  --bg-primary: #f5f5fa;
+  --bg-surface: #ffffff;
+  --bg-elevated: #e4e4ee;
+
+  /* Text */
+  --text-primary: #1a1a2e;
+  --text-secondary: #4a4a60;
+  --text-muted: #7a7a90;
+  --text-tertiary: #a0a0b0;
+
+  /* Neon accents (darkened for contrast on white) */
+  --neon-mint: #009978;
+  --neon-magenta: #cc00cc;
+  --neon-purple: #9900cc;
+  --neon-orange: #d45500;
+  --neon-yellow: #c07800;
+  --neon-blue: #2266dd;
+  --neon-peach: #cc5533;
+
+  /* Glows become subtle in light mode */
+  --neon-mint-glow: rgba(0, 153, 120, 0.2);
+  --neon-magenta-glow: rgba(204, 0, 204, 0.15);
+  --neon-purple-glow: rgba(153, 0, 204, 0.15);
+  --neon-orange-glow: rgba(212, 85, 0, 0.15);
+  --neon-yellow-glow: rgba(192, 120, 0, 0.15);
+
+  /* Borders */
+  --border-subtle: rgba(0, 0, 0, 0.08);
+  --border-accent: rgba(0, 153, 120, 0.3);
+
+  /* Glass overlay base (white in dark, black in light) */
+  --glass-rgb: 0, 0, 0;
+
+  /* Status bar (floating pill) */
+  --status-bar-bg: rgba(255, 255, 255, 0.92);
+
+  color-scheme: light;
+}
+
+[data-retro-theme="light"] ::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+[data-retro-theme="light"] ::-webkit-scrollbar-thumb {
+  background: var(--bg-elevated);
+}
+
+[data-retro-theme="light"] ::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+[data-retro-theme="light"] ::selection {
+  background-color: var(--neon-mint);
+  color: #ffffff;
+}

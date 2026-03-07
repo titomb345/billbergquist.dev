@@ -10,15 +10,21 @@ interface AggregatedResolution {
   totalPayout: number;
 }
 
+/** Build a resolution key that distinguishes come/dontCome on different points */
+function resolutionKey(r: BetResolutionType): string {
+  return r.betType;
+}
+
 function aggregateResolutions(resolutions: BetResolutionType[]): AggregatedResolution[] {
   const map = new Map<string, AggregatedResolution>();
   for (const r of resolutions) {
-    const existing = map.get(r.betType);
+    const key = resolutionKey(r);
+    const existing = map.get(key);
     if (existing) {
       existing.totalWagered += r.amount;
       existing.totalPayout += r.payout;
     } else {
-      map.set(r.betType, { key: r.betType, betType: r.betType, totalWagered: r.amount, totalPayout: r.payout });
+      map.set(key, { key, betType: r.betType, totalWagered: r.amount, totalPayout: r.payout });
     }
   }
   return [...map.values()];
@@ -28,17 +34,18 @@ function aggregateByPlayer(resolutions: BetResolutionType[], players: Player[]) 
   const playerMap = new Map(players.map((p) => [p.id, p.name]));
   const map = new Map<string, { playerId: string; name: string; totalPayout: number; lines: AggregatedResolution[] }>();
   for (const r of resolutions) {
+    const key = resolutionKey(r);
     const existing = map.get(r.playerId);
     if (!existing) {
-      map.set(r.playerId, { playerId: r.playerId, name: playerMap.get(r.playerId) ?? '?', totalPayout: r.payout, lines: [{ key: r.betType, betType: r.betType, totalWagered: r.amount, totalPayout: r.payout }] });
+      map.set(r.playerId, { playerId: r.playerId, name: playerMap.get(r.playerId) ?? '?', totalPayout: r.payout, lines: [{ key, betType: r.betType, totalWagered: r.amount, totalPayout: r.payout }] });
     } else {
       existing.totalPayout += r.payout;
-      const line = existing.lines.find((l) => l.betType === r.betType);
+      const line = existing.lines.find((l) => l.key === key);
       if (line) {
         line.totalWagered += r.amount;
         line.totalPayout += r.payout;
       } else {
-        existing.lines.push({ key: r.betType, betType: r.betType, totalWagered: r.amount, totalPayout: r.payout });
+        existing.lines.push({ key, betType: r.betType, totalWagered: r.amount, totalPayout: r.payout });
       }
     }
   }

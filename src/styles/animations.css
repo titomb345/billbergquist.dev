@@ -1,55 +1,19 @@
-/* Neon pulse animation */
+/* Neon pulse animation — set --pulse-color and --pulse-glow on the element */
 @keyframes neon-pulse {
   0%,
   100% {
     text-shadow:
-      0 0 5px var(--neon-mint),
-      0 0 10px var(--neon-mint),
-      0 0 20px var(--neon-mint),
-      0 0 40px var(--neon-mint-glow);
+      0 0 5px var(--pulse-color),
+      0 0 10px var(--pulse-color),
+      0 0 20px var(--pulse-color),
+      0 0 40px var(--pulse-glow);
   }
   50% {
     text-shadow:
-      0 0 2px var(--neon-mint),
-      0 0 5px var(--neon-mint),
-      0 0 10px var(--neon-mint),
-      0 0 20px var(--neon-mint-glow);
-  }
-}
-
-@keyframes neon-pulse-magenta {
-  0%,
-  100% {
-    text-shadow:
-      0 0 5px var(--neon-magenta),
-      0 0 10px var(--neon-magenta),
-      0 0 20px var(--neon-magenta),
-      0 0 40px var(--neon-magenta-glow);
-  }
-  50% {
-    text-shadow:
-      0 0 2px var(--neon-magenta),
-      0 0 5px var(--neon-magenta),
-      0 0 10px var(--neon-magenta),
-      0 0 20px var(--neon-magenta-glow);
-  }
-}
-
-@keyframes neon-pulse-orange {
-  0%,
-  100% {
-    text-shadow:
-      0 0 5px var(--neon-orange),
-      0 0 10px var(--neon-orange),
-      0 0 20px var(--neon-orange),
-      0 0 40px var(--neon-orange-glow);
-  }
-  50% {
-    text-shadow:
-      0 0 2px var(--neon-orange),
-      0 0 5px var(--neon-orange),
-      0 0 10px var(--neon-orange),
-      0 0 20px var(--neon-orange-glow);
+      0 0 2px var(--pulse-color),
+      0 0 5px var(--pulse-color),
+      0 0 10px var(--pulse-color),
+      0 0 20px var(--pulse-glow);
   }
 }
 
