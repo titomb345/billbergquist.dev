@@ -56,7 +56,9 @@ import { getAscensionModifiers, type AscensionLevel } from '../ascension';
 /** Auto-clear transient state after a delay. Triggers clear callback when value is truthy. */
 function useAutoClear(value: unknown, delayMs: number, clear: () => void) {
   const clearRef = useRef(clear);
-  clearRef.current = clear;
+  useEffect(() => {
+    clearRef.current = clear;
+  });
   useEffect(() => {
     if (!value) return;
     const timeout = setTimeout(() => clearRef.current(), delayMs);
@@ -160,7 +162,7 @@ function checkQuickRecoveryEligibility(
 }
 
 /** Per-floor reset fields shared by SELECT_POWER_UP and Quick Recovery */
-function resetFloorPowerUpState(run: RunState): Partial<RunState> {
+function resetFloorPowerUpState(_run: RunState): Partial<RunState> {
   return {
     ironWillUsedThisFloor: false,
     xRayUsedThisFloor: false,
@@ -1108,7 +1110,7 @@ export function useRoguelikeState(isMobile: boolean = false, isPaused: boolean =
     dispatch({ type: 'CHORD_CLICK', row, col });
   }, []);
 
-  const useXRay = useCallback((row: number, col: number) => {
+  const activateXRay = useCallback((row: number, col: number) => {
     dispatch({ type: 'USE_X_RAY', row, col });
   }, []);
 
@@ -1136,7 +1138,7 @@ export function useRoguelikeState(isMobile: boolean = false, isPaused: boolean =
     dispatch({ type: 'CLEAR_CHORD_HIGHLIGHT' });
   }, []);
 
-  const usePeek = useCallback((row: number, col: number) => {
+  const activatePeek = useCallback((row: number, col: number) => {
     dispatch({ type: 'USE_PEEK', row, col });
   }, []);
 
@@ -1144,23 +1146,23 @@ export function useRoguelikeState(isMobile: boolean = false, isPaused: boolean =
     dispatch({ type: 'CLEAR_PEEK' });
   }, []);
 
-  const useSafePath = useCallback((direction: 'row' | 'col', index: number) => {
+  const activateSafePath = useCallback((direction: 'row' | 'col', index: number) => {
     dispatch({ type: 'USE_SAFE_PATH', direction, index });
   }, []);
 
-  const useDefusalKit = useCallback((row: number, col: number) => {
+  const activateDefusalKit = useCallback((row: number, col: number) => {
     dispatch({ type: 'USE_DEFUSAL_KIT', row, col });
   }, []);
 
-  const useSurvey = useCallback((direction: 'row' | 'col', index: number) => {
+  const activateSurvey = useCallback((direction: 'row' | 'col', index: number) => {
     dispatch({ type: 'USE_SURVEY', direction, index });
   }, []);
 
-  const useProbabilityLens = useCallback(() => {
+  const activateProbabilityLens = useCallback(() => {
     dispatch({ type: 'USE_PROBABILITY_LENS' });
   }, []);
 
-  const useMineDetector = useCallback((row: number, col: number) => {
+  const activateMineDetector = useCallback((row: number, col: number) => {
     dispatch({ type: 'USE_MINE_DETECTOR', row, col });
   }, []);
 
@@ -1184,14 +1186,14 @@ export function useRoguelikeState(isMobile: boolean = false, isPaused: boolean =
     revealCell: revealCellAction,
     toggleFlag: toggleFlagAction,
     chordClick,
-    useXRay,
-    usePeek,
+    activateXRay,
+    activatePeek,
     clearPeek,
-    useSafePath,
-    useDefusalKit,
-    useSurvey,
-    useProbabilityLens,
-    useMineDetector,
+    activateSafePath,
+    activateDefusalKit,
+    activateSurvey,
+    activateProbabilityLens,
+    activateMineDetector,
     toggleSixthSenseArm,
     selectPowerUp,
     explosionComplete,

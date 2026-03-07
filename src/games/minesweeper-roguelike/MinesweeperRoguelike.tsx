@@ -35,13 +35,13 @@ function Minesweeper({ resetRef, isPaused = false, onResume }: MinesweeperProps)
     revealCell,
     toggleFlag,
     chordClick,
-    useXRay,
-    usePeek,
-    useSafePath,
-    useDefusalKit,
-    useSurvey,
-    useProbabilityLens,
-    useMineDetector,
+    activateXRay,
+    activatePeek,
+    activateSafePath,
+    activateDefusalKit,
+    activateSurvey,
+    activateProbabilityLens,
+    activateMineDetector,
     toggleSixthSenseArm,
     selectPowerUp,
     explosionComplete,
@@ -163,12 +163,12 @@ function Minesweeper({ resetRef, isPaused = false, onResume }: MinesweeperProps)
   };
 
   /** Use an ability and deactivate its mode */
-  const handleXRayClick = (row: number, col: number) => { useXRay(row, col); setActiveMode(null); };
-  const handlePeekClick = (row: number, col: number) => { usePeek(row, col); setActiveMode(null); };
-  const handleSafePathClick = (row: number, _col: number) => { useSafePath('row', row); setActiveMode(null); };
-  const handleDefusalKitClick = (row: number, col: number) => { useDefusalKit(row, col); setActiveMode(null); };
-  const handleSurveyClick = (row: number, _col: number) => { useSurvey('row', row); setActiveMode(null); };
-  const handleMineDetectorClick = (row: number, col: number) => { useMineDetector(row, col); setActiveMode(null); };
+  const handleXRayClick = (row: number, col: number) => { activateXRay(row, col); setActiveMode(null); };
+  const handlePeekClick = (row: number, col: number) => { activatePeek(row, col); setActiveMode(null); };
+  const handleSafePathClick = (row: number, _col: number) => { activateSafePath('row', row); setActiveMode(null); };
+  const handleDefusalKitClick = (row: number, col: number) => { activateDefusalKit(row, col); setActiveMode(null); };
+  const handleSurveyClick = (row: number, _col: number) => { activateSurvey('row', row); setActiveMode(null); };
+  const handleMineDetectorClick = (row: number, col: number) => { activateMineDetector(row, col); setActiveMode(null); };
 
   const handleToggleSixthSenseArm = () => {
     setActiveMode(null);
@@ -235,7 +235,7 @@ function Minesweeper({ resetRef, isPaused = false, onResume }: MinesweeperProps)
             onToggleMineDetector={() => toggleMode('mineDetector')}
             mineDetectorScansRemaining={state.run.mineDetectorScansRemaining}
             canUseProbabilityLens={canUseProbabilityLens}
-            onUseProbabilityLens={useProbabilityLens}
+            onUseProbabilityLens={activateProbabilityLens}
             probabilityLensActive={state.probabilityLensCells.size > 0}
             sixthSenseArmed={state.run.sixthSenseArmed}
             canUseSixthSense={canUseSixthSense}

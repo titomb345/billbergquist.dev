@@ -114,14 +114,17 @@ export function CrapsGame({ room, myPlayerId, connectionStatus, lastRoll, diceAn
   );
 
   // Freeze table state while dice are animating so chips/point don't update early
-  const frozenBetsRef = useRef(room.bets);
-  const frozenPointRef = useRef(room.point);
-  if (!diceRolling && !diceAnimating) {
-    frozenBetsRef.current = room.bets;
-    frozenPointRef.current = room.point;
+  const isDiceActive = diceRolling || diceAnimating;
+  const lastStableBets = useRef(room.bets);
+  const lastStablePoint = useRef(room.point);
+  /* eslint-disable react-hooks/refs -- intentional: freeze/read snapshot during dice animation */
+  if (!isDiceActive) {
+    lastStableBets.current = room.bets;
+    lastStablePoint.current = room.point;
   }
-  const visibleBets = (diceRolling || diceAnimating) ? frozenBetsRef.current : room.bets;
-  const visiblePoint = (diceRolling || diceAnimating) ? frozenPointRef.current : room.point;
+  const visibleBets = isDiceActive ? lastStableBets.current : room.bets;
+  const visiblePoint = isDiceActive ? lastStablePoint.current : room.point;
+  /* eslint-enable react-hooks/refs */
 
   const [copyFeedback, setCopyFeedback] = useState(false);
   const handleCopyLink = useCallback(() => {
@@ -132,7 +135,7 @@ export function CrapsGame({ room, myPlayerId, connectionStatus, lastRoll, diceAn
 
   const [showPayouts, setShowPayouts] = useState(false);
 
-  // Round countdown derived from server's roundDeadline
+  // Round countdown derived from server's roundDeadline (timer subscription)
   const [rollCountdown, setRollCountdown] = useState<number | null>(null);
   useEffect(() => {
     if (!room.roundDeadline || room.phase === 'lobby') {
