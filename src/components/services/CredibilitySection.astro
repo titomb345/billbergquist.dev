@@ -9,11 +9,11 @@ const stats = [
 ];
 ---
 
-<section class={`${styles.section} scroll-reveal`}>
+<section class={styles.section}>
   <div class={styles.grid}>
     {
       stats.map((stat) => (
-        <div class={`${styles.stat} scroll-reveal-child`}>
+        <div class={styles.stat}>
           <span class={`${styles.value} ${styles[`color_${stat.color}`]}`}>{stat.value}</span>
           <span class={styles.label}>{stat.label}</span>
           {stat.sublabel && <span class={styles.sublabel}>{stat.sublabel}</span>}

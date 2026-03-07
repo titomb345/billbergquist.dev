@@ -1,0 +1,13 @@
+---
+import GameCard from '../ui/GameCard.astro';
+import Button from '../ui/Button.astro';
+import MinesweeperRoguelikePreview from '../home/MinesweeperRoguelikePreview.astro';
+---
+
+<GameCard
+  title="Minesweeper: Descent"
+  description="Roguelike minesweeper. Descend 10 floors of escalating danger. Collect power-ups to survive."
+>
+  <MinesweeperRoguelikePreview slot="preview" />
+  <Button variant="primary" href="/arcade/descent" slot="action">Play Now</Button>
+</GameCard>

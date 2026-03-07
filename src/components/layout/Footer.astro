@@ -13,15 +13,23 @@ import styles from './Footer.module.css';
       <a href="/projects" class={styles.navLink}>Projects</a>
       <a href="/blog" class={styles.navLink}>Blog</a>
       <a href="/arcade" class={styles.navLink}>Arcade</a>
-      <a href="/retro" class={styles.navLink}>Retro</a>
     </nav>
 
     <div class={styles.serviceLinks}>
-      <a href="/services/denver" class={styles.serviceLink}>Denver</a>
-      <a href="/services/lakewood" class={styles.serviceLink}>Lakewood</a>
-      <a href="/services/boulder" class={styles.serviceLink}>Boulder</a>
-      <span class={styles.serviceDivider}>|</span>
-      <a href="mailto:services@billbergquist.dev" class={styles.serviceLink}>services@billbergquist.dev</a>
+      <div class={styles.cityLinks}>
+        <a href="/services/denver" class={styles.serviceLink}>Denver</a>
+        <span class={styles.dot}>&middot;</span>
+        <a href="/services/lakewood" class={styles.serviceLink}>Lakewood</a>
+        <span class={styles.dot}>&middot;</span>
+        <a href="/services/boulder" class={styles.serviceLink}>Boulder</a>
+        <span class={styles.dot}>&middot;</span>
+        <a href="/services/arvada" class={styles.serviceLink}>Arvada</a>
+        <span class={styles.dot}>&middot;</span>
+        <a href="/services/golden" class={styles.serviceLink}>Golden</a>
+        <span class={styles.dot}>&middot;</span>
+        <a href="/services/littleton" class={styles.serviceLink}>Littleton</a>
+      </div>
+      <a href="mailto:services@billbergquist.dev" class={styles.emailLink}>services@billbergquist.dev</a>
     </div>
 
     <div class={styles.social}>

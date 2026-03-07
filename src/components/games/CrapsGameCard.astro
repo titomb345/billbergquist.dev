@@ -1,0 +1,13 @@
+---
+import GameCard from '../ui/GameCard.astro';
+import Button from '../ui/Button.astro';
+import CrapsPreview from '../home/CrapsPreview.astro';
+---
+
+<GameCard
+  title="Craps: High Roller"
+  description="Roll the bones with up to 4 friends. Real-time multiplayer craps with full betting. Free to play, no real money involved."
+>
+  <CrapsPreview slot="preview" />
+  <Button variant="primary" href="/craps" slot="action">Play Now</Button>
+</GameCard>

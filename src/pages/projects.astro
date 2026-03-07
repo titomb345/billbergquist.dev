@@ -111,16 +111,14 @@ const jsonLdProjects = JSON.stringify({
       <GlowText as="h2" size="small" color="mint" class={styles.sectionTitle}>
         WEB APPLICATIONS
       </GlowText>
-      <div class={`${styles.grid} scroll-reveal`}>
+      <div class={styles.grid}>
         {allProjects.map((project) => (
-          <div class="scroll-reveal-child">
-            <ProjectCard {...project} />
-          </div>
+          <ProjectCard {...project} />
         ))}
       </div>
     </section>
 
-    <section class={`${styles.approach} scroll-reveal`}>
+    <section class={styles.approach}>
       <GlowText as="h2" size="small" color="purple" class={styles.sectionTitle}>
         HOW I BUILD
       </GlowText>

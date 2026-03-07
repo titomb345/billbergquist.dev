@@ -34,10 +34,6 @@
   gap: var(--space-lg);
 }
 
-.grid :global(.scroll-reveal-child) {
-  height: 100%;
-}
-
 /* ── Approach section ── */
 
 .approach {

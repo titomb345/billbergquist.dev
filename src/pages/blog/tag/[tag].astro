@@ -71,7 +71,7 @@ const jsonLdTag = JSON.stringify({
   description={`Blog posts tagged "${label}" by Bill Bergquist.`}
   canonical={`/blog/tag/${tag}`}
   jsonLd={[jsonLdTag]}
-  ogImage="/og-image.png"
+  ogImage="/og/blog.png"
 >
   <div class={styles.page}>
     <header class={styles.header}>
@@ -87,9 +87,9 @@ const jsonLdTag = JSON.stringify({
       <div class="accent-line-orange"></div>
     </header>
 
-    <div class={`${styles.grid} scroll-reveal`}>
+    <div class={styles.grid}>
       {posts.map((post) => (
-        <a href={`/blog/${stripExt(post.id)}`} class={`${styles.card} scroll-reveal-child`}>
+        <a href={`/blog/${stripExt(post.id)}`} class={styles.card}>
           <div class={styles.cardMeta}>
             <time datetime={post.data.publishDate.toISOString()} class={styles.cardDate}>
               {post.data.publishDate.toLocaleDateString('en-US', {

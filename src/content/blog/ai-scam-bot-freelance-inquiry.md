@@ -3,6 +3,7 @@ title: "An AI Bot Tried to Hire Me (It Didn't Go Well)"
 description: "A scam bot posing as a potential client emailed me about building a website. I decided to play along and see how far it would go."
 publishDate: 2026-03-07
 tags: ["freelancing", "AI", "web design", "scams"]
+ogImage: "/og/blog/ai-scam-bot-freelance-inquiry.png"
 draft: false
 ---
 

@@ -94,8 +94,15 @@
 
 .serviceLinks {
   display: flex;
+  flex-direction: column;
   align-items: center;
   gap: var(--space-sm);
+}
+
+.cityLinks {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
   flex-wrap: wrap;
   justify-content: center;
 }
@@ -112,10 +119,24 @@
   color: var(--neon-mint);
 }
 
-.serviceDivider {
+.dot {
   color: var(--text-muted);
   opacity: 0.3;
   font-size: 0.75rem;
+}
+
+.emailLink {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: var(--text-muted);
+  text-decoration: none;
+  opacity: 0.6;
+  transition: var(--transition-fast);
+}
+
+.emailLink:hover {
+  color: var(--neon-mint);
+  opacity: 1;
 }
 
 .bottomRow {
@@ -177,13 +198,8 @@
     gap: var(--space-md);
   }
 
-  .serviceLinks {
-    flex-direction: column;
+  .cityLinks {
     gap: var(--space-xs);
-  }
-
-  .serviceDivider {
-    display: none;
   }
 
   .bottomRow {

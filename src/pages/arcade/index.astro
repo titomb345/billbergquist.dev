@@ -1,10 +1,8 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import Button from '../../components/ui/Button.astro';
-import GameCard from '../../components/ui/GameCard.astro';
-import MinesweeperRoguelikePreview from '../../components/home/MinesweeperRoguelikePreview.astro';
-import GridlockPreview from '../../components/home/GridlockPreview.astro';
-import CrapsPreview from '../../components/home/CrapsPreview.astro';
+import DescentGameCard from '../../components/games/DescentGameCard.astro';
+import GridlockGameCard from '../../components/games/GridlockGameCard.astro';
+import CrapsGameCard from '../../components/games/CrapsGameCard.astro';
 import styles from '../ArcadePage.module.css';
 ---
 
@@ -49,33 +47,15 @@ import styles from '../ArcadePage.module.css';
       <div class="accent-line-orange"></div>
     </header>
 
-    <section class={`${styles.grid} scroll-reveal`}>
-      <div class={`${styles.cabinetFrame} scroll-reveal-child`}>
-        <GameCard
-          title="Minesweeper: Descent"
-          description="Roguelike minesweeper. Descend 10 floors of escalating danger. Collect power-ups to survive."
-        >
-          <MinesweeperRoguelikePreview slot="preview" />
-          <Button variant="primary" href="/arcade/descent" slot="action">Play Now</Button>
-        </GameCard>
+    <section class={styles.grid}>
+      <div class={styles.cabinetFrame}>
+        <DescentGameCard />
       </div>
-      <div class={`${styles.cabinetFrame} scroll-reveal-child`}>
-        <GameCard
-          title="Gridlock: Showdown"
-          description="Classic falling-blocks puzzle. Stack blocks, clear lines, and compete on the global leaderboard."
-        >
-          <GridlockPreview slot="preview" />
-          <Button variant="primary" href="/arcade/gridlock" slot="action">Play Now</Button>
-        </GameCard>
+      <div class={styles.cabinetFrame}>
+        <GridlockGameCard />
       </div>
-      <div class={`${styles.cabinetFrame} scroll-reveal-child`}>
-        <GameCard
-          title="Craps: High Roller"
-          description="Roll the bones with up to 4 friends. Real-time multiplayer craps with full betting, no chips required."
-        >
-          <CrapsPreview slot="preview" />
-          <Button variant="primary" href="/craps" slot="action">Play Now</Button>
-        </GameCard>
+      <div class={styles.cabinetFrame}>
+        <CrapsGameCard />
       </div>
     </section>
   </div>
