@@ -13,7 +13,7 @@ import styles from './Footer.module.css';
       <a href="/projects" class={styles.navLink}>Projects</a>
       <a href="/blog" class={styles.navLink}>Blog</a>
       <a href="/arcade" class={styles.navLink}>Arcade</a>
-      <a href="/retro" id="footer-retro" class={styles.navLink} style="display:none">Retro</a>
+      <a href="/retro" class={styles.navLink}>Retro</a>
     </nav>
 
     <div class={styles.serviceLinks}>
@@ -91,7 +91,7 @@ import styles from './Footer.module.css';
     <button class={styles.backToTop} id="back-to-top">&uarr; Back to Top</button>
 
     <div class={styles.bottomRow}>
-      <p class={styles.copyright}>&gt; 2026 // BILL BERGQUIST // ALL SYSTEMS ONLINE</p>
+      <p class={styles.copyright}>&copy; 2026 // BILL BERGQUIST</p>
       <a href="/privacy" class={styles.privacyLink}>Privacy</a>
     </div>
   </div>
@@ -101,11 +101,4 @@ import styles from './Footer.module.css';
   document.getElementById('back-to-top')?.addEventListener('click', () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   });
-
-  // Show Retro link only for authorized @kasa.com users
-  try {
-    if (localStorage.getItem('retro-authorized') === '1') {
-      document.getElementById('footer-retro')?.style.setProperty('display', '');
-    }
-  } catch { /* noop */ }
 </script>

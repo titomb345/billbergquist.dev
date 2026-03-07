@@ -31,14 +31,6 @@ const navLinks = [
         );
       })
     }
-    <a
-      href="/retro"
-      id="nav-retro"
-      class={`${styles.navLink} ${currentPath.startsWith('/retro') ? styles.active : ''}`}
-      style="display:none"
-    >
-      Retro
-    </a>
   </nav>
 
   <button
@@ -72,14 +64,6 @@ const navLinks = [
           );
         })
       }
-      <a
-        href="/retro"
-        id="nav-retro-mobile"
-        class={`${styles.mobileNavLink} ${currentPath.startsWith('/retro') ? styles.mobileActive : ''}`}
-        style="display:none"
-      >
-        Retro
-      </a>
     </div>
   </nav>
 </header>
@@ -122,11 +106,4 @@ const navLinks = [
     if (e.key === 'Escape') closeMenu();
   });
 
-  // Show Retro link only for authorized @kasa.com users
-  try {
-    if (localStorage.getItem('retro-authorized') === '1') {
-      document.getElementById('nav-retro')?.style.setProperty('display', '');
-      document.getElementById('nav-retro-mobile')?.style.setProperty('display', '');
-    }
-  } catch { /* noop */ }
 </script>

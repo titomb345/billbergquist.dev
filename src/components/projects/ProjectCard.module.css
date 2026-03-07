@@ -132,7 +132,7 @@
   background: linear-gradient(
     135deg,
     var(--bg-surface) 60%,
-    rgba(0, 212, 170, 0.08)
+    rgba(0, 201, 167, 0.08)
   );
 }
 
@@ -140,7 +140,7 @@
   background: linear-gradient(
     135deg,
     var(--bg-surface) 60%,
-    rgba(255, 0, 255, 0.08)
+    rgba(217, 70, 239, 0.08)
   );
 }
 
@@ -148,7 +148,7 @@
   background: linear-gradient(
     135deg,
     var(--bg-surface) 60%,
-    rgba(191, 0, 255, 0.08)
+    rgba(168, 85, 247, 0.08)
   );
 }
 
@@ -156,7 +156,7 @@
   background: linear-gradient(
     135deg,
     var(--bg-surface) 60%,
-    rgba(255, 106, 0, 0.08)
+    rgba(240, 100, 24, 0.08)
   );
 }
 

@@ -50,7 +50,7 @@
 }
 
 .homeLink:hover {
-  background-color: rgba(0, 245, 255, 0.1);
+  background-color: rgba(0, 201, 167, 0.1);
   box-shadow:
     0 0 10px var(--neon-cyan-glow),
     0 0 20px var(--neon-cyan-glow);

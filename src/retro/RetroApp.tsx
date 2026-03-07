@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { ClerkProvider, SignedIn, SignedOut, useClerk, useUser } from '@clerk/clerk-react';
+import { useCallback, useMemo, useState } from 'react';
+import { ClerkProvider, SignedIn, SignedOut, useUser } from '@clerk/clerk-react';
 import { ErrorBoundary } from '../components/ui/ErrorBoundary';
 import { useWebSocket } from './hooks/useWebSocket';
 import { useRetroState } from './hooks/useRetroState';
@@ -13,8 +13,6 @@ import { ThemeToggle } from './components/ThemeToggle';
 import './retro-theme.css';
 
 const CLERK_KEY = import.meta.env.PUBLIC_CLERK_PUBLISHABLE_KEY;
-
-const ALLOWED_DOMAIN = 'kasa.com';
 
 function useRetroTheme() {
   const [theme, setTheme] = useState<'dark' | 'light'>(() => {
@@ -41,52 +39,15 @@ export default function RetroApp() {
         <ErrorBoundary>
           <ThemeToggle theme={theme} onToggle={toggle} />
           <SignedIn>
-            <DomainGuard>
-              <RetroAppInner />
-            </DomainGuard>
+            <RetroAppInner />
           </SignedIn>
           <SignedOut>
-            <AuthGate subtitle="Sign in with your Kasa Google account to continue." />
+            <AuthGate />
           </SignedOut>
         </ErrorBoundary>
       </ClerkProvider>
     </div>
   );
-}
-
-function DomainGuard({ children }: { children: React.ReactNode }) {
-  const { user, isLoaded } = useUser();
-  const { signOut } = useClerk();
-
-  const email = user?.primaryEmailAddress?.emailAddress ?? '';
-  const isAllowed = !isLoaded || !user || email.endsWith(`@${ALLOWED_DOMAIN}`);
-
-  useEffect(() => {
-    if (!isLoaded || !user) return;
-    try {
-      if (isAllowed) {
-        localStorage.setItem('retro-authorized', '1');
-      } else {
-        localStorage.removeItem('retro-authorized');
-      }
-    } catch { /* noop */ }
-  }, [isLoaded, user, isAllowed]);
-
-  if (!isLoaded) return null;
-
-  if (!isAllowed) {
-    return (
-      <AuthGate
-        error={`Access is restricted to @${ALLOWED_DOMAIN} accounts.`}
-        onBack={() => {
-          try { localStorage.removeItem('retro-authorized'); } catch { /* noop */ }
-          signOut({ redirectUrl: '/retro' });
-        }}
-      />
-    );
-  }
-
-  return <>{children}</>;
 }
 
 function RetroAppInner() {
