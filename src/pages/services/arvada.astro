@@ -1,7 +1,5 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import GlowText from '../../components/ui/GlowText.astro';
-import SectionDivider from '../../components/ui/SectionDivider.astro';
 import ContactForm from '../../components/services/ContactForm';
 import styles from '../ServicesPage.module.css';
 
@@ -111,9 +109,9 @@ const bookingMonth = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleStr
 >
   <div class={styles.page}>
     <header class={styles.header}>
-      <GlowText as="h1" size="large" color="mint" class={styles.title}>
-        WEB DESIGN IN ARVADA, CO
-      </GlowText>
+      <h1 class={styles.title}>
+        Web Design in Arvada, CO
+      </h1>
       <p class={styles.subtitle}>Custom Websites for Arvada Small Businesses</p>
       <p class={styles.intro}>
         Arvada has changed a lot over the past decade, but the one thing that hasn't changed is the
@@ -122,13 +120,12 @@ const bookingMonth = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleStr
         need websites that reflect the quality of what they do. I build fast, custom websites that help
         Arvada businesses get found online and win more customers.
       </p>
-      <div class="accent-line-orange"></div>
     </header>
 
     <section class={styles.whySection}>
-      <GlowText as="h2" size="medium" color="orange" class={styles.sectionTitle}>
-        WHY ARVADA BUSINESSES INVEST IN CUSTOM WEBSITES
-      </GlowText>
+      <h2 class={styles.sectionTitle}>
+        Why Arvada Businesses Invest in Custom Websites
+      </h2>
       <div class={styles.whyGrid}>
         <div class={styles.whyItem}>
           <h3 class={styles.whyTitle}>Olde Town draws foot traffic and search traffic</h3>
@@ -165,12 +162,12 @@ const bookingMonth = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleStr
       </div>
     </section>
 
-    <SectionDivider color="orange" />
+    <div class={styles.divider}></div>
 
     <section class={styles.whySection}>
-      <GlowText as="h2" size="medium" color="purple" class={styles.sectionTitle}>
-        ARVADA BUSINESSES I WORK WITH
-      </GlowText>
+      <h2 class={styles.sectionTitle}>
+        Arvada Businesses I Work With
+      </h2>
       <div class={styles.whyGrid}>
         <div class={styles.whyItem}>
           <h3 class={styles.whyTitle}>Restaurants & breweries</h3>
@@ -207,12 +204,12 @@ const bookingMonth = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleStr
       </div>
     </section>
 
-    <SectionDivider color="purple" />
+    <div class={styles.divider}></div>
 
     <section class={styles.faq}>
-      <GlowText as="h2" size="medium" color="orange" class={styles.sectionTitle}>
-        FREQUENTLY ASKED QUESTIONS
-      </GlowText>
+      <h2 class={styles.sectionTitle}>
+        Frequently Asked Questions
+      </h2>
       <div class={styles.faqList}>
         {
           faqs.map((faq) => (
@@ -225,12 +222,12 @@ const bookingMonth = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleStr
       </div>
     </section>
 
-    <SectionDivider color="purple" />
+    <div class={styles.divider}></div>
 
     <section class={styles.areasServed}>
-      <GlowText as="h2" size="medium" color="purple" class={styles.sectionTitle}>
-        ALSO SERVING NEARBY
-      </GlowText>
+      <h2 class={styles.sectionTitle}>
+        Also Serving Nearby
+      </h2>
       <div class={styles.areasGrid}>
         <a href="/services/denver" class={styles.areaLink}>Denver</a>
         <a href="/services/lakewood" class={styles.areaLink}>Lakewood</a>
@@ -243,12 +240,12 @@ const bookingMonth = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleStr
       </div>
     </section>
 
-    <SectionDivider color="mint" />
+    <div class={styles.divider}></div>
 
     <section class={styles.contact}>
-      <GlowText as="h2" size="medium" color="mint" class={styles.sectionTitle}>
-        LET'S BUILD YOUR ARVADA WEBSITE
-      </GlowText>
+      <h2 class={styles.sectionTitle}>
+        Let's Build Your Arvada Website
+      </h2>
       <p class={styles.contactIntro}>
         Whether you run a shop in Olde Town, a restaurant near Ralston Creek, a home services
         company covering the west side, or any other Arvada business, I'd love to hear about your project.

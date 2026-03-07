@@ -1,7 +1,5 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import GlowText from '../../components/ui/GlowText.astro';
-import SectionDivider from '../../components/ui/SectionDivider.astro';
 import ContactForm from '../../components/services/ContactForm';
 import styles from '../ServicesPage.module.css';
 
@@ -111,9 +109,9 @@ const bookingMonth = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleStr
 >
   <div class={styles.page}>
     <header class={styles.header}>
-      <GlowText as="h1" size="large" color="mint" class={styles.title}>
-        WEB DESIGN IN LITTLETON, CO
-      </GlowText>
+      <h1 class={styles.title}>
+        Web Design in Littleton, CO
+      </h1>
       <p class={styles.subtitle}>Custom Websites for Littleton Small Businesses</p>
       <p class={styles.intro}>
         Littleton's historic downtown is one of the best in the Denver metro. Main Street has the kind
@@ -122,13 +120,12 @@ const bookingMonth = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleStr
         years. Your website should reflect that same quality. I build fast, custom websites that help
         Littleton businesses reach more customers online while staying true to the community they serve.
       </p>
-      <div class="accent-line-orange"></div>
     </header>
 
     <section class={styles.whySection}>
-      <GlowText as="h2" size="medium" color="orange" class={styles.sectionTitle}>
-        WHY LITTLETON BUSINESSES NEED CUSTOM WEBSITES
-      </GlowText>
+      <h2 class={styles.sectionTitle}>
+        Why Littleton Businesses Need Custom Websites
+      </h2>
       <div class={styles.whyGrid}>
         <div class={styles.whyItem}>
           <h3 class={styles.whyTitle}>Main Street businesses deserve Main Street websites</h3>
@@ -165,12 +162,12 @@ const bookingMonth = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleStr
       </div>
     </section>
 
-    <SectionDivider color="orange" />
+    <div class={styles.divider}></div>
 
     <section class={styles.whySection}>
-      <GlowText as="h2" size="medium" color="purple" class={styles.sectionTitle}>
-        LITTLETON BUSINESSES I WORK WITH
-      </GlowText>
+      <h2 class={styles.sectionTitle}>
+        Littleton Businesses I Work With
+      </h2>
       <div class={styles.whyGrid}>
         <div class={styles.whyItem}>
           <h3 class={styles.whyTitle}>Downtown boutiques & retail</h3>
@@ -208,12 +205,12 @@ const bookingMonth = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleStr
       </div>
     </section>
 
-    <SectionDivider color="purple" />
+    <div class={styles.divider}></div>
 
     <section class={styles.faq}>
-      <GlowText as="h2" size="medium" color="orange" class={styles.sectionTitle}>
-        FREQUENTLY ASKED QUESTIONS
-      </GlowText>
+      <h2 class={styles.sectionTitle}>
+        Frequently Asked Questions
+      </h2>
       <div class={styles.faqList}>
         {
           faqs.map((faq) => (
@@ -226,12 +223,12 @@ const bookingMonth = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleStr
       </div>
     </section>
 
-    <SectionDivider color="purple" />
+    <div class={styles.divider}></div>
 
     <section class={styles.areasServed}>
-      <GlowText as="h2" size="medium" color="purple" class={styles.sectionTitle}>
-        ALSO SERVING NEARBY
-      </GlowText>
+      <h2 class={styles.sectionTitle}>
+        Also Serving Nearby
+      </h2>
       <div class={styles.areasGrid}>
         <a href="/services/denver" class={styles.areaLink}>Denver</a>
         <a href="/services/lakewood" class={styles.areaLink}>Lakewood</a>
@@ -244,12 +241,12 @@ const bookingMonth = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleStr
       </div>
     </section>
 
-    <SectionDivider color="mint" />
+    <div class={styles.divider}></div>
 
     <section class={styles.contact}>
-      <GlowText as="h2" size="medium" color="mint" class={styles.sectionTitle}>
-        LET'S BUILD YOUR LITTLETON WEBSITE
-      </GlowText>
+      <h2 class={styles.sectionTitle}>
+        Let's Build Your Littleton Website
+      </h2>
       <p class={styles.contactIntro}>
         Whether you run a boutique on Main Street, a restaurant downtown, a professional practice,
         or any other Littleton business, I'd love to hear about your project.
