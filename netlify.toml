@@ -2,6 +2,12 @@
   command = "npm run build"
   publish = "dist"
 
+# Redirect /sitemap.xml to Astro's generated sitemap index
+[[redirects]]
+  from = "/sitemap.xml"
+  to = "/sitemap-index.xml"
+  status = 301
+
 # Serve the retro page for /retro/<roomcode> paths (clean URLs)
 [[redirects]]
   from = "/retro/:code"
@@ -21,6 +27,8 @@
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self'; connect-src 'self' https://www.google-analytics.com https://region1.google-analytics.com; frame-src 'none'"
 
 [[headers]]
   for = "/_astro/*"

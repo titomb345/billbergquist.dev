@@ -4,12 +4,68 @@ import DescentGameCard from '../../components/games/DescentGameCard.astro';
 import GridlockGameCard from '../../components/games/GridlockGameCard.astro';
 import CrapsGameCard from '../../components/games/CrapsGameCard.astro';
 import styles from '../ArcadePage.module.css';
+
+const jsonLdArcade = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: 'Arcade — Browser Games by Bill Bergquist',
+  description: 'Browser-based games built through AI-assisted development. Play free in your browser.',
+  url: 'https://billbergquist.dev/arcade/',
+  mainEntity: {
+    '@type': 'ItemList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        item: {
+          '@type': 'SoftwareApplication',
+          name: 'Minesweeper: Descent',
+          applicationCategory: 'Game',
+          operatingSystem: 'Web Browser',
+          url: 'https://billbergquist.dev/arcade/descent/',
+          description: 'Roguelike minesweeper. Descend 10 floors of escalating danger. Collect power-ups to survive.',
+          offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+          author: { '@id': 'https://billbergquist.dev/#person' },
+        },
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        item: {
+          '@type': 'SoftwareApplication',
+          name: 'Gridlock: Showdown',
+          applicationCategory: 'Game',
+          operatingSystem: 'Web Browser',
+          url: 'https://billbergquist.dev/arcade/gridlock/',
+          description: 'Classic falling-blocks puzzle. Stack blocks, clear lines, and compete on the global leaderboard.',
+          offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+          author: { '@id': 'https://billbergquist.dev/#person' },
+        },
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        item: {
+          '@type': 'SoftwareApplication',
+          name: 'Craps: High Roller',
+          applicationCategory: 'Game',
+          operatingSystem: 'Web Browser',
+          url: 'https://billbergquist.dev/craps/',
+          description: 'Roll the bones with up to 4 friends. Real-time multiplayer craps with full betting.',
+          offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+          author: { '@id': 'https://billbergquist.dev/#person' },
+        },
+      },
+    ],
+  },
+});
 ---
 
 <Layout
   title="Arcade — Browser Games by Bill Bergquist"
   description="Browser-based games built through AI-assisted development. Play Minesweeper: Descent, Gridlock: Showdown, and Craps: High Roller, free in your browser."
   canonical="/arcade"
+  jsonLd={[jsonLdArcade]}
   ogImage="/og/arcade.png"
 >
   <div class={styles.page}>

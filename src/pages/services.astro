@@ -141,8 +141,14 @@ const jsonLdService = JSON.stringify({
   name: 'Bill Bergquist — Web Development Services',
   description:
     'Professional web design and development services for small businesses in Denver, Lakewood, and the Colorado Front Range.',
-  url: 'https://billbergquist.dev/services',
+  url: 'https://billbergquist.dev/services/',
   email: 'services@billbergquist.dev',
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Denver',
+    addressRegion: 'CO',
+    addressCountry: 'US',
+  },
   areaServed: [
     { '@type': 'City', name: 'Denver', containedInPlace: { '@type': 'State', name: 'Colorado' } },
     { '@type': 'City', name: 'Lakewood', containedInPlace: { '@type': 'State', name: 'Colorado' } },
@@ -164,10 +170,7 @@ const jsonLdService = JSON.stringify({
     { '@type': 'City', name: 'Commerce City', containedInPlace: { '@type': 'State', name: 'Colorado' } },
   ],
   provider: {
-    '@type': 'Person',
-    name: 'Bill Bergquist',
-    jobTitle: 'Staff Software Engineer',
-    url: 'https://billbergquist.dev',
+    '@id': 'https://billbergquist.dev/#person',
   },
   serviceType: ['Web Design', 'Web Development', 'Website Redesign', 'Landing Page Design'],
   priceRange: '$$',
@@ -248,6 +251,8 @@ const jsonLdFaq = JSON.stringify({
         small businesses across Denver, Lakewood, and the Colorado Front Range get online with fast,
         modern websites that look great and actually work.
       </p>
+      <a href="#contact" class={styles.headerCta}>Get a Free Quote &darr;</a>
+      <p class={styles.headerTrust}>Currently booking for {bookingMonth} &middot; Free consultation &middot; No obligation</p>
     </header>
 
     <section class={styles.services}>
@@ -259,6 +264,7 @@ const jsonLdFaq = JSON.stringify({
               <span class={styles.serviceIcon}>{service.icon}</span>
               <h3 class={styles.serviceTitle}>{service.title}</h3>
               <p class={styles.serviceDescription}>{service.description}</p>
+              <a href="#contact" class={styles.serviceCardCta}>Get started &rarr;</a>
             </div>
           ))
         }
@@ -338,12 +344,12 @@ const jsonLdFaq = JSON.stringify({
     <section class={styles.areasServed}>
       <h2 class={styles.sectionTitle}>Areas I Serve</h2>
       <div class={styles.areasGrid}>
-        <a href="/services/denver" class={styles.areaLink}>Denver</a>
-        <a href="/services/lakewood" class={styles.areaLink}>Lakewood</a>
-        <a href="/services/boulder" class={styles.areaLink}>Boulder</a>
-        <a href="/services/arvada" class={styles.areaLink}>Arvada</a>
-        <a href="/services/golden" class={styles.areaLink}>Golden</a>
-        <a href="/services/littleton" class={styles.areaLink}>Littleton</a>
+        <a href="/services/denver/" class={styles.areaLink}>Denver</a>
+        <a href="/services/lakewood/" class={styles.areaLink}>Lakewood</a>
+        <a href="/services/boulder/" class={styles.areaLink}>Boulder</a>
+        <a href="/services/arvada/" class={styles.areaLink}>Arvada</a>
+        <a href="/services/golden/" class={styles.areaLink}>Golden</a>
+        <a href="/services/littleton/" class={styles.areaLink}>Littleton</a>
         <span class={styles.areaText}>Wheat Ridge</span>
         <span class={styles.areaText}>Englewood</span>
         <span class={styles.areaText}>Aurora</span>
@@ -361,7 +367,7 @@ const jsonLdFaq = JSON.stringify({
 
     <div class={styles.divider}></div>
 
-    <section class={styles.contact}>
+    <section id="contact" class={styles.contact}>
       <h2 class={styles.sectionTitle}>Get in Touch</h2>
       <p class={styles.contactIntro}>
         Have a project in mind? Whether you run a coffee shop in Denver, a boutique in Lakewood, a

@@ -22,7 +22,7 @@ const jsonLdBlog = JSON.stringify({
     itemListElement: posts.map((post, i) => ({
       '@type': 'ListItem',
       position: i + 1,
-      url: `https://billbergquist.dev/blog/${stripExt(post.id)}`,
+      url: `https://billbergquist.dev/blog/${stripExt(post.id)}/`,
       name: post.data.title,
     })),
   },
@@ -51,18 +51,19 @@ const jsonLdBlog = JSON.stringify({
     ) : (
       <div class={styles.grid}>
         {posts.map((post) => (
-          <a href={`/blog/${stripExt(post.id)}`} class={styles.card}>
+          <a href={`/blog/${stripExt(post.id)}/`} class={styles.card}>
             <div class={styles.cardMeta}>
               <time datetime={post.data.publishDate.toISOString()} class={styles.cardDate}>
                 {post.data.publishDate.toLocaleDateString('en-US', {
                   year: 'numeric',
                   month: 'short',
                   day: 'numeric',
+                  timeZone: 'UTC',
                 })}
               </time>
               <div class={styles.cardTags}>
                 {post.data.tags.slice(0, 3).map((tag) => (
-                  <span class={styles.cardTag}>{tag}</span>
+                  <span class={styles.cardTag} data-tag-href={`/blog/tag/${tag.toLowerCase().replace(/\s+/g, '-')}/`}>{tag}</span>
                 ))}
               </div>
             </div>
@@ -73,4 +74,15 @@ const jsonLdBlog = JSON.stringify({
       </div>
     )}
   </div>
+
+  <script>
+    document.querySelectorAll('[data-tag-href]').forEach((tag) => {
+      tag.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const href = (tag as HTMLElement).dataset.tagHref;
+        if (href) window.location.href = href;
+      });
+    });
+  </script>
 </Layout>

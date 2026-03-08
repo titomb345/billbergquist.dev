@@ -19,6 +19,19 @@ const bookingMonth = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleStr
     Front Range. From custom business sites to landing pages and redesigns, built with the same
     engineering standards I bring to enterprise software.
   </p>
+  <p class={styles.description}>
+    Every site I build is hand-coded, mobile-first, and optimized for local search from day one.
+    No templates, no page builders, no bloated platform costs. You get a site that loads in under
+    a second, ranks in Google, and actually converts visitors into customers.
+  </p>
+
+  <ul class={styles.serviceList}>
+    <li>Custom business websites and landing pages</li>
+    <li>Website redesigns and performance upgrades</li>
+    <li>Local SEO setup with Google Business Profile integration</li>
+    <li>Mobile-first, responsive design tested on real devices</li>
+    <li>Ongoing support and maintenance after launch</li>
+  </ul>
 
   <div class={styles.proofSection}>
     <div class={styles.proofCard}>
@@ -51,5 +64,5 @@ const bookingMonth = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleStr
     <span class={styles.trustItem}>&#10003; Response within 1 business day</span>
   </div>
 
-  <Button variant="primary" size="large" href="/services">View Services &rarr;</Button>
+  <Button variant="primary" size="large" href="/services/">View Services &rarr;</Button>
 </section>

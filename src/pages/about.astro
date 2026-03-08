@@ -11,9 +11,18 @@ import styles from './AboutPage.module.css';
 const jsonLdPerson = JSON.stringify({
   '@context': 'https://schema.org',
   '@type': 'Person',
+  '@id': 'https://billbergquist.dev/#person',
   name: 'Bill Bergquist',
   jobTitle: 'Staff Software Engineer',
+  description: 'Staff Software Engineer with 14+ years of experience. Web developer in Denver, CO specializing in React, TypeScript, and modern web applications for small businesses.',
   url: 'https://billbergquist.dev',
+  image: 'https://billbergquist.dev/og/about.png',
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Denver',
+    addressRegion: 'CO',
+    addressCountry: 'US',
+  },
   sameAs: [
     'https://github.com/titomb345',
     'https://www.linkedin.com/in/bill-bergquist/',
@@ -108,7 +117,7 @@ const jsonLdPerson = JSON.stringify({
           load fast, and are maintainable by whoever comes next.
         </p>
         <p class={styles.approachText}>
-          I also build <a href="/arcade">browser games</a> in my spare time as a way to explore new
+          I also build <a href="/arcade/">browser games</a> in my spare time as a way to explore new
           technologies and keep building things that are just fun.
         </p>
       </section>
@@ -118,7 +127,7 @@ const jsonLdPerson = JSON.stringify({
           If you're a small business in Denver or the Colorado Front Range looking for a website, I'd love to help.
           I bring the same engineering standards from my enterprise work to every client project.
         </p>
-        <a href="/services" class={styles.servicesCtaLink}>View My Services &rarr;</a>
+        <a href="/services/" class={styles.servicesCtaLink}>View My Services &rarr;</a>
       </section>
     </main>
   </div>

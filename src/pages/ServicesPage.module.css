@@ -52,6 +52,32 @@
   margin: 0 auto;
 }
 
+.headerCta {
+  display: inline-block;
+  margin-top: var(--space-lg);
+  padding: 0.75rem 2rem;
+  border: 1px solid var(--neon-teal);
+  color: var(--neon-teal);
+  border-radius: 4px;
+  text-decoration: none;
+  font-size: 1rem;
+  letter-spacing: 0.5px;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.headerCta:hover {
+  background-color: rgba(0, 201, 167, 0.15);
+  color: var(--neon-teal);
+}
+
+.headerTrust {
+  margin-top: var(--space-sm);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  letter-spacing: 0.3px;
+}
+
 /* ── Section titles ── */
 
 .sectionTitle {
@@ -111,7 +137,6 @@
   display: block;
   margin-bottom: var(--space-md);
   color: var(--text-muted);
-  opacity: 0.4;
 }
 
 .serviceTitle {
@@ -128,6 +153,20 @@
   line-height: 1.7;
   color: var(--text-secondary);
   margin: 0;
+}
+
+.serviceCardCta {
+  display: inline-block;
+  margin-top: var(--space-sm);
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  color: var(--neon-teal);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.serviceCardCta:hover {
+  color: var(--neon-mint);
 }
 
 /* ── Process steps ── */

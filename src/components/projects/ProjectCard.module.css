@@ -49,9 +49,8 @@
 .browserUrl {
   font-family: var(--font-mono);
   font-size: 0.625rem;
-  color: var(--text-muted);
+  color: var(--text-secondary);
   margin-left: 8px;
-  opacity: 0.6;
 }
 
 .screenshot {

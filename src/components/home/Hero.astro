@@ -1,0 +1,71 @@
+---
+import styles from './Hero.module.css';
+---
+
+<section class={styles.hero}>
+  <div class={styles.content}>
+    <p class={styles.greeting}>
+      <span class={styles.hello}>Hello</span>, I'm
+    </p>
+    <h1 class={styles.name}>
+      <span class={styles.firstName}>Bill</span>
+      <span class={styles.lastName}>Bergquist</span>
+    </h1>
+    <div class={styles.role}>
+      <span class={styles.roleText}>
+        <span id="hero-role-text">Staff Software Engineer</span><span class="blinking-cursor">_</span>
+      </span>
+    </div>
+    <p class={styles.tagline}>
+      14+ years building for the web. From enterprise software to small business sites and browser games.
+    </p>
+    <div class={styles.cta}>
+      <a href="/projects/" class={styles.ctaButton}>
+        View My Work
+      </a>
+      <a href="/services/" class={styles.ctaButtonSecondary}>
+        Get a Free Quote
+      </a>
+    </div>
+  </div>
+</section>
+
+<script>
+  const roles = [
+    'Staff Software Engineer',
+    'Denver Web Developer',
+    'Browser Game Builder',
+  ];
+
+  const el = document.getElementById('hero-role-text');
+  if (el && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    let roleIndex = 0;
+    let charIndex = roles[0].length;
+    const typingSpeed = 60;
+    const pauseAfterType = 3000;
+    const initialDelay = 800;
+
+    function erase() {
+      if (charIndex > 0) {
+        charIndex--;
+        el.textContent = roles[roleIndex].slice(0, charIndex);
+        setTimeout(erase, typingSpeed / 2);
+      } else {
+        roleIndex = (roleIndex + 1) % roles.length;
+        setTimeout(type, 0);
+      }
+    }
+
+    function type() {
+      if (charIndex < roles[roleIndex].length) {
+        charIndex++;
+        el.textContent = roles[roleIndex].slice(0, charIndex);
+        setTimeout(type, typingSpeed);
+      } else {
+        setTimeout(erase, pauseAfterType);
+      }
+    }
+
+    setTimeout(erase, initialDelay + pauseAfterType);
+  }
+</script>
