@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { ErrorBoundary } from '../ui/ErrorBoundary';
 import styles from './Hero.module.css';
 
@@ -8,64 +8,72 @@ const roles = [
   'Browser Game Builder',
 ];
 
+function prefersReducedMotion() {
+  return typeof window !== 'undefined' &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
 function useRoleCycler(delay: number, typingSpeed: number, pauseAfterType: number) {
-  const [displayed, setDisplayed] = useState('');
-  const [roleIndex, setRoleIndex] = useState(0);
-  const [phase, setPhase] = useState<'waiting' | 'typing' | 'paused' | 'erasing'>('waiting');
-
-  const tick = useCallback(() => {
-    const currentRole = roles[roleIndex];
-
-    if (phase === 'waiting') {
-      // Initial delay before first type
-      const timeout = setTimeout(() => setPhase('typing'), delay);
-      return () => clearTimeout(timeout);
-    }
-
-    if (phase === 'typing') {
-      if (displayed.length < currentRole.length) {
-        const timeout = setTimeout(() => {
-          setDisplayed(currentRole.slice(0, displayed.length + 1));
-        }, typingSpeed);
-        return () => clearTimeout(timeout);
-      }
-      // Done typing, pause
-      const timeout = setTimeout(() => setPhase('paused'), pauseAfterType);
-      return () => clearTimeout(timeout);
-    }
-
-    if (phase === 'paused') {
-      const timeout = setTimeout(() => setPhase('erasing'), 0);
-      return () => clearTimeout(timeout);
-    }
-
-    if (phase === 'erasing') {
-      if (displayed.length > 0) {
-        const timeout = setTimeout(() => {
-          setDisplayed(displayed.slice(0, -1));
-        }, typingSpeed / 2);
-        return () => clearTimeout(timeout);
-      }
-      // Done erasing, move to next role
-      setRoleIndex((roleIndex + 1) % roles.length);
-      setPhase('typing');
-    }
-  }, [displayed, roleIndex, phase, delay, typingSpeed, pauseAfterType]);
+  const [displayed, setDisplayed] = useState(() => prefersReducedMotion() ? roles[0] : '');
+  const [isTyping, setIsTyping] = useState(false);
+  const stateRef = useRef({
+    roleIndex: 0,
+    phase: 'waiting' as 'waiting' | 'typing' | 'paused' | 'erasing',
+    charIndex: 0,
+  });
+  const timerRef = useRef<ReturnType<typeof setTimeout>>();
 
   useEffect(() => {
-    const prefersReducedMotion = window.matchMedia(
-      '(prefers-reduced-motion: reduce)',
-    ).matches;
+    if (prefersReducedMotion()) return;
 
-    if (prefersReducedMotion) {
-      setDisplayed(roles[0]);
-      return;
+    function schedule(fn: () => void, ms: number) {
+      timerRef.current = setTimeout(fn, ms);
     }
 
-    return tick();
-  }, [tick]);
+    function tick() {
+      const s = stateRef.current;
+      const currentRole = roles[s.roleIndex];
 
-  const isTyping = phase === 'typing' || phase === 'erasing';
+      if (s.phase === 'waiting') {
+        schedule(() => {
+          s.phase = 'typing';
+          setIsTyping(true);
+          tick();
+        }, delay);
+        return;
+      }
+
+      if (s.phase === 'typing') {
+        if (s.charIndex < currentRole.length) {
+          s.charIndex++;
+          setDisplayed(currentRole.slice(0, s.charIndex));
+          schedule(tick, typingSpeed);
+        } else {
+          s.phase = 'paused';
+          schedule(() => {
+            s.phase = 'erasing';
+            tick();
+          }, pauseAfterType);
+        }
+        return;
+      }
+
+      if (s.phase === 'erasing') {
+        if (s.charIndex > 0) {
+          s.charIndex--;
+          setDisplayed(currentRole.slice(0, s.charIndex));
+          schedule(tick, typingSpeed / 2);
+        } else {
+          s.roleIndex = (s.roleIndex + 1) % roles.length;
+          s.phase = 'typing';
+          tick();
+        }
+      }
+    }
+
+    tick();
+    return () => clearTimeout(timerRef.current);
+  }, [delay, typingSpeed, pauseAfterType]);
 
   return { displayed, isTyping };
 }
