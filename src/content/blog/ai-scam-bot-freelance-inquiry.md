@@ -83,6 +83,10 @@ These AI-powered fake inquiries usually go one of two ways:
 
 Both depend on you being too excited about a new lead to ask basic verification questions.
 
+There's a third version I've heard about from other freelancers: they build trust over a few emails, then send a "contract" or "brief" as a PDF or ZIP. You open what you think is a project scope doc, and you've just installed malware.
+
+The common thread: they want to move fast, stay text-only, and the details fall apart the second you check them.
+
 ## What Gave It Away
 
 If you freelance and get cold inquiries, here's what to watch for:
@@ -92,8 +96,28 @@ If you freelance and get cold inquiries, here's what to watch for:
 - **No phone or video calls.** Text-only communication is where bots can operate. A real client will eventually hop on a call.
 - **Verification details don't check out.** Ask for a Companies House number, a LinkedIn, a website. Real people have these things. Bots make them up. Badly.
 
+## Why These Scams Are Getting Better
+
+A year ago, scam emails were easy to spot. Bad grammar, weird formatting, obvious templates. AI changed that. Now they're clean, contextual, and personalized enough to pass a quick read.
+
+This bot read my site well enough to know I build websites, asked for a reasonable scope (five pages), and matched the casual tone I use in my own copy. If I hadn't noticed the UK email on a Denver-focused site, I probably would've spent 20 minutes writing a real reply.
+
+These are only going to get better. That's why process matters more than instinct. Don't rely on "this feels off." Have a checklist so you catch the ones that don't feel off.
+
+## My Process for Vetting Inquiries
+
+After this experience, I formalized how I vet new leads. It takes about two minutes and has saved me hours:
+
+1. **Search their name.** LinkedIn, Google, social media. Everyone has a footprint.
+2. **Check their domain.** If they mention a business, does it exist? Is there a website, even a basic one?
+3. **Verify the business entity.** For US clients, a quick Secretary of State search. For UK, Companies House. Takes 30 seconds.
+4. **Ask for a call.** "Can we do a quick 15-minute video call to discuss the project?" Real clients say yes. Bots make excuses.
+5. **Watch for perfect responses.** Real people miss questions, respond at odd hours, and write messy emails. Robots are suspiciously thorough.
+
+None of this is paranoid. It's two minutes of Googling that saves you from wasting an afternoon on a fake client.
+
 ## The Simple Fix
 
-You don't need to be paranoid about every inquiry. Just verify before you invest time. A 30-second Companies House search, a LinkedIn lookup, or a "can we do a quick video call?" filters out most of this stuff immediately.
+You don't need to be paranoid about every inquiry. Just verify before you invest time. A 30-second search, a LinkedIn lookup, or a "can we do a quick video call?" filters out most of this stuff immediately.
 
 And if you're building a scam bot, maybe don't use 12345678 as your company number.

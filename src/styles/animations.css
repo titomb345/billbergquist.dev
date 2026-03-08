@@ -135,8 +135,10 @@
   }
 }
 
-/* Scroll reveal animations */
-.scroll-reveal {
+/* Scroll reveal animations
+   Content is visible by default for crawlers/noscript.
+   JS adds .scroll-reveal-ready to <html> to enable the hidden initial state. */
+.scroll-reveal-ready .scroll-reveal {
   opacity: 0;
   transform: translateY(30px);
   transition:
@@ -150,7 +152,7 @@
 }
 
 /* Staggered children within a revealed section */
-.scroll-reveal .scroll-reveal-child {
+.scroll-reveal-ready .scroll-reveal .scroll-reveal-child {
   opacity: 0;
   transform: translateY(20px);
   transition:

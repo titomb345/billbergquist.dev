@@ -6,13 +6,13 @@ tags: ["web design", "small business", "redesign"]
 ogImage: "/og/blog/signs-your-business-website-needs-redesign.png"
 ---
 
-Your website is your hardest-working employee. It's available 24/7, talks to every potential customer before you do, and either builds trust or destroys it in under three seconds.
+Most small business owners built their website once and haven't really looked at it since. Maybe it was fine three years ago. But the web moves fast, and what worked in 2022 can actively hurt you in 2026. I see this all the time with businesses in Lakewood, Littleton, and across the Front Range.
 
-The problem is that most small business owners don't look at their own site the way a customer does. Here are five signs that your website might be working against you.
+Here are five signs that your website might be working against you instead of for you.
 
 ## 1. It's Slow
 
-If your site takes more than 3 seconds to load, you're losing visitors. Google's data shows that 53% of mobile users leave a site that takes longer than 3 seconds. And slow sites rank lower in search results, so you're losing traffic you never even see.
+If your site takes more than 3 seconds to load, you're losing visitors. [Google's research](https://blog.google/products/admanager/the-need-for-mobile-speed/) found that 53% of mobile users leave a site that takes longer than 3 seconds to load. And slow sites rank lower in search results, so you're losing traffic you never even see.
 
 Common causes of slow websites:
 
@@ -23,9 +23,11 @@ Common causes of slow websites:
 
 A well-built modern site loads in under 1 second. That's not an exaggeration. It's what current tools and hosting platforms make possible.
 
+The fix isn't always a full redesign. Sometimes it's as simple as compressing your images or switching to a modern format like WebP. But if your site has years of accumulated plugins and patches, a clean rebuild is usually faster and cheaper than trying to untangle the mess. If you're on Wix or Squarespace and wondering whether it's worth switching, I wrote about [the trade-offs here](/blog/template-vs-custom-website/).
+
 ## 2. It Doesn't Work on Phones
 
-Over 60% of web traffic comes from mobile devices. If your site isn't mobile-friendly, the majority of your potential customers are having a bad experience.
+[Over 60% of web traffic](https://www.statista.com/statistics/277125/share-of-website-traffic-coming-from-mobile-devices/) comes from mobile devices. If your site isn't mobile-friendly, the majority of your potential customers are having a bad experience.
 
 This isn't just about the layout fitting on a smaller screen. Mobile-friendly means:
 
@@ -37,11 +39,17 @@ This isn't just about the layout fitting on a smaller screen. Mobile-friendly me
 
 Pull out your phone right now and visit your own website. Try to navigate it with one thumb. If it's frustrating, your customers feel the same way.
 
+[Google completed its switch to mobile-first indexing in 2023](https://developers.google.com/search/blog/2023/10/mobile-first-is-here), which means Google primarily looks at the mobile version of your site when deciding how to rank it. A site that looks great on desktop but falls apart on mobile is being judged by its worst version. For Denver businesses competing in local search, this is a ranking factor you can't afford to ignore.
+
 ## 3. You're Embarrassed to Share the Link
 
 This is the most honest test. When someone asks for your website, do you confidently share it? Or do you make excuses like "It's a little outdated" or "We're working on it"?
 
 Your website is often the first impression a potential customer has of your business. If you wouldn't hand someone a crumpled, faded business card, you shouldn't be directing them to a site that looks like it was built in 2015.
+
+Design trends move fast. What looked professional five years ago reads as dated today. Rounded corners on everything, stock photo banners with text overlaid, tiny body copy, hamburger menus on desktop. Your customers might not be able to articulate why your site feels old, but they notice.
+
+A redesign doesn't mean throwing everything away. Your content, branding, and domain all carry over. It's the structure and code underneath that gets rebuilt.
 
 ## 4. You Can't Find Yourself on Google
 
@@ -57,6 +65,8 @@ Common issues that tank search visibility:
 
 Good SEO isn't a mystery. It's clean code, useful content, and the right technical foundations. Every site I build includes these basics from day one.
 
+For businesses on the Front Range, local SEO is the whole game. If someone searches "best coffee shop in Lakewood" or "plumber in Golden" and you don't show up, that customer goes to whoever does. Local search means your Google Business Profile, location-specific structured data, and content that actually says where you are and what you serve. A lot of older sites were built before any of that mattered.
+
 ## 5. It Doesn't Generate Leads or Sales
 
 If your website gets traffic but no one calls, emails, or fills out a form, there's a conversion problem. Common issues:
@@ -69,6 +79,8 @@ If your website gets traffic but no one calls, emails, or fills out a form, ther
 
 A good business website has one primary goal on every page and makes it obvious how to take the next step.
 
+Quick test: pull up your homepage on your phone and see how long it takes to find your phone number or contact form. More than one scroll? You're losing people. Every page on your site should answer three questions fast: what do you do, where do you do it, and how do I hire you.
+
 ## What a Redesign Actually Involves
 
 A redesign doesn't mean slapping a new coat of paint on the same site. It means:
@@ -80,10 +92,10 @@ A redesign doesn't mean slapping a new coat of paint on the same site. It means:
 5. Making sure it's fast, mobile-friendly, and accessible
 6. Testing everything before launch
 
-The result is a site that loads fast, looks professional, shows up in search results, and actually converts visitors into customers.
+The result is a site that loads fast, looks professional, shows up in search results, and actually converts visitors into customers. That's what I did for [Critter Care](https://critter-care.com), rebuilding their site from scratch with sub-second load times and proper local SEO.
 
 ## Is It Time?
 
-If you recognized your business in any of these five signs, it's probably time for a conversation. I build websites for small businesses in Denver, Lakewood, and the Colorado Front Range. I'll take a look at your current site for free and give you an honest assessment of what it would take to fix it.
+If you recognized your business in any of these signs, it's probably time for a conversation. I build websites for small businesses in Denver, Lakewood, and the Colorado Front Range. I'll take a look at your current site for free and tell you honestly what it would take to fix. If you're curious about what a rebuild costs, I wrote a [full pricing breakdown here](/blog/how-much-does-a-website-cost-denver/).
 
-[Let's talk &rarr;](/services)
+[Let's talk &rarr;](/services/)

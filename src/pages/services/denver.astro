@@ -29,16 +29,19 @@ const jsonLdService = JSON.stringify({
     'Custom web design and development for small businesses in Denver, Colorado. Fast, modern websites built by a local developer with 14+ years of experience.',
   url: 'https://billbergquist.dev/services/denver',
   email: 'services@billbergquist.dev',
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Denver',
+    addressRegion: 'CO',
+    addressCountry: 'US',
+  },
   areaServed: {
     '@type': 'City',
     name: 'Denver',
     containedInPlace: { '@type': 'State', name: 'Colorado' },
   },
   provider: {
-    '@type': 'Person',
-    name: 'Bill Bergquist',
-    jobTitle: 'Staff Software Engineer',
-    url: 'https://billbergquist.dev',
+    '@id': 'https://billbergquist.dev/#person',
   },
   serviceType: ['Web Design', 'Web Development', 'Website Redesign', 'Landing Page Design'],
   priceRange: '$$',
@@ -228,11 +231,11 @@ const bookingMonth = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleStr
         Also Serving Nearby
       </h2>
       <div class={styles.areasGrid}>
-        <a href="/services/lakewood" class={styles.areaLink}>Lakewood</a>
-        <a href="/services/arvada" class={styles.areaLink}>Arvada</a>
-        <a href="/services/golden" class={styles.areaLink}>Golden</a>
-        <a href="/services/boulder" class={styles.areaLink}>Boulder</a>
-        <a href="/services/littleton" class={styles.areaLink}>Littleton</a>
+        <a href="/services/lakewood/" class={styles.areaLink}>Lakewood</a>
+        <a href="/services/arvada/" class={styles.areaLink}>Arvada</a>
+        <a href="/services/golden/" class={styles.areaLink}>Golden</a>
+        <a href="/services/boulder/" class={styles.areaLink}>Boulder</a>
+        <a href="/services/littleton/" class={styles.areaLink}>Littleton</a>
         <span class={styles.areaText}>Wheat Ridge</span>
         <span class={styles.areaText}>Englewood</span>
         <span class={styles.areaText}>Aurora</span>
@@ -266,7 +269,7 @@ const bookingMonth = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleStr
           </a>
         </p>
         <p style="margin-top: var(--space-md);">
-          <a href="/services" class={styles.emailLink}>&larr; Back to all services</a>
+          <a href="/services/" class={styles.emailLink}>&larr; Back to all services</a>
         </p>
       </div>
     </section>

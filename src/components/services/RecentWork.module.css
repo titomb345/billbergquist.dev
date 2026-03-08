@@ -49,7 +49,7 @@
 .browserUrl {
   font-family: var(--font-mono);
   font-size: 0.7rem;
-  color: var(--text-muted);
+  color: var(--text-secondary);
   margin-left: 8px;
 }
 

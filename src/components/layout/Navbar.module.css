@@ -87,6 +87,25 @@
   width: 100%;
 }
 
+.navCta {
+  font-family: var(--font-body);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--neon-teal);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 0.375rem 1rem;
+  border: 1px solid var(--neon-teal);
+  border-radius: 4px;
+  text-decoration: none;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  margin-left: var(--space-sm);
+}
+
+.navCta:hover {
+  background-color: rgba(0, 201, 167, 0.15);
+}
+
 /* ── Hamburger toggle (hidden on desktop) ── */
 
 .menuToggle {
@@ -212,6 +231,26 @@
   background: rgba(0, 201, 167, 0.08);
   border-left-color: var(--neon-mint);
   text-shadow: 0 0 10px var(--neon-mint-glow);
+}
+
+.mobileNavCta {
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--neon-teal);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  padding: var(--space-md) var(--space-sm);
+  margin-top: var(--space-md);
+  border: 1px solid var(--neon-teal);
+  border-radius: 4px;
+  text-align: center;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+
+.mobileNavCta:hover {
+  background: rgba(0, 201, 167, 0.1);
 }
 
 /* ── Responsive: show mobile nav, hide desktop nav ── */

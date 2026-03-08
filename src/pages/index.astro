@@ -1,6 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import Hero from '../components/home/Hero';
+import Hero from '../components/home/Hero.astro';
 import SectionDivider from '../components/ui/SectionDivider.astro';
 import ServicesCTA from '../components/home/ServicesCTA.astro';
 import AboutSection from '../components/home/AboutSection.astro';
@@ -9,9 +9,18 @@ import ArcadeTeaser from '../components/home/ArcadeTeaser.astro';
 const jsonLdPerson = JSON.stringify({
   '@context': 'https://schema.org',
   '@type': 'Person',
+  '@id': 'https://billbergquist.dev/#person',
   name: 'Bill Bergquist',
   jobTitle: 'Staff Software Engineer',
+  description: 'Staff Software Engineer with 14+ years of experience. Web developer in Denver, CO specializing in React, TypeScript, and modern web applications for small businesses.',
   url: 'https://billbergquist.dev',
+  image: 'https://billbergquist.dev/og/home.png',
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Denver',
+    addressRegion: 'CO',
+    addressCountry: 'US',
+  },
   sameAs: [
     'https://github.com/titomb345',
     'https://www.linkedin.com/in/bill-bergquist/',
@@ -21,6 +30,7 @@ const jsonLdPerson = JSON.stringify({
 const jsonLdWebsite = JSON.stringify({
   '@context': 'https://schema.org',
   '@type': 'WebSite',
+  '@id': 'https://billbergquist.dev/#website',
   name: 'Bill Bergquist',
   url: 'https://billbergquist.dev',
 });
@@ -32,8 +42,10 @@ const jsonLdWebsite = JSON.stringify({
   canonical="/"
   jsonLd={[jsonLdPerson, jsonLdWebsite]}
   ogImage="/og/home.png"
+  geoRegion="US-CO"
+  geoPlacename="Denver, CO"
 >
-  <Hero client:load />
+  <Hero />
   <SectionDivider color="orange" />
   <ServicesCTA />
   <SectionDivider color="magenta" />
