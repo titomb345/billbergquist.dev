@@ -1,14 +1,19 @@
 .navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: var(--space-md) var(--space-lg);
   background-color: rgba(10, 10, 15, 0.8);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(0, 201, 167, 0.1);
   position: sticky;
   top: 0;
   z-index: 100;
+}
+
+.navbarInner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--space-md) var(--space-lg);
 }
 
 .logo {
@@ -212,7 +217,7 @@
 /* ── Responsive: show mobile nav, hide desktop nav ── */
 
 @media (max-width: 768px) {
-  .navbar {
+  .navbarInner {
     padding: var(--space-sm) var(--space-md);
   }
 

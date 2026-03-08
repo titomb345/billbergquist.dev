@@ -1,11 +1,17 @@
 ---
+import { Image } from 'astro:assets';
 import GlowText from '../ui/GlowText.astro';
 import Button from '../ui/Button.astro';
+import crittercareImg from '../../assets/screenshots/crittercare.png';
 import styles from './ServicesCTA.module.css';
+
+const bookingMonth = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleString('en-US', {
+  month: 'long',
+});
 ---
 
 <section class={`${styles.section} scroll-reveal`}>
-  <GlowText as="h2" size="medium" color="mint" class={styles.title}>
+  <GlowText as="h2" size="medium" color="orange" class={styles.title}>
     NEED A WEBSITE?
   </GlowText>
   <p class={styles.description}>
@@ -13,15 +19,37 @@ import styles from './ServicesCTA.module.css';
     Front Range. From custom business sites to landing pages and redesigns, built with the same
     engineering standards I bring to enterprise software.
   </p>
-  <ul class={styles.servicesList}>
-    <li>Restaurants, coffee shops, and food service businesses</li>
-    <li>Pet care, landscaping, and home service providers</li>
-    <li>Boutiques, salons, and retail storefronts</li>
-    <li>Professional services, consultants, and freelancers</li>
-  </ul>
-  <p class={styles.descriptionSmall}>
-    Free consultation. I'll take a look at your current site and give you an honest assessment.
-    See some of my <a href="/projects">recent projects</a> to get a sense of my work.
-  </p>
-  <Button variant="primary" href="/services">View Services &rarr;</Button>
+
+  <div class={styles.proofSection}>
+    <div class={styles.proofCard}>
+      <div class={styles.browserFrame}>
+        <div class={styles.browserBar}>
+          <span class={styles.browserDot}></span>
+          <span class={styles.browserDot}></span>
+          <span class={styles.browserDot}></span>
+          <span class={styles.browserUrl}>critter-care.com</span>
+        </div>
+        <Image
+          src={crittercareImg}
+          alt="Critter Care - pet sitting business website built by Bill Bergquist"
+          width={600}
+          height={375}
+          class={styles.screenshot}
+          loading="lazy"
+        />
+      </div>
+      <p class={styles.proofCaption}>
+        <a href="https://critter-care.com" target="_blank" rel="noopener noreferrer" class={styles.proofLink}>Critter Care</a>
+        &mdash; a pet sitting business site with CMS, testimonials, and a simple contact form.
+      </p>
+    </div>
+  </div>
+
+  <div class={styles.trustSignals}>
+    <span class={styles.trustItem}>&#10003; Booking for {bookingMonth}</span>
+    <span class={styles.trustItem}>&#10003; Free consultation</span>
+    <span class={styles.trustItem}>&#10003; Response within 1 business day</span>
+  </div>
+
+  <Button variant="primary" size="large" href="/services">View Services &rarr;</Button>
 </section>

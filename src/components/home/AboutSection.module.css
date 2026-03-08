@@ -44,8 +44,8 @@
 .highlightValue {
   font-family: var(--font-heading);
   font-size: 1.5rem;
-  color: var(--neon-mint);
-  text-shadow: 0 0 10px var(--neon-mint-glow);
+  color: var(--neon-purple);
+  text-shadow: 0 0 10px var(--neon-purple-glow);
 }
 
 .highlightLabel {

@@ -1,0 +1,34 @@
+.section {
+  padding: var(--space-lg);
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.text {
+  font-size: 0.9375rem;
+  color: var(--text-muted);
+  margin-bottom: var(--space-sm);
+  line-height: 1.5;
+}
+
+.link {
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  color: var(--neon-magenta);
+  text-decoration: none;
+  letter-spacing: 0.5px;
+  transition: var(--transition-fast);
+}
+
+.link:hover {
+  color: var(--neon-magenta);
+  text-shadow: 0 0 8px var(--neon-magenta-glow);
+  text-decoration: underline;
+}
+
+@media (max-width: 640px) {
+  .section {
+    padding: var(--space-lg) var(--space-md-lg);
+  }
+}
