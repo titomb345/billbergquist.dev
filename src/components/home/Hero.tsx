@@ -105,10 +105,10 @@ function Hero() {
           14+ years building for the web. From enterprise software to small business sites and browser games.
         </p>
         <div className={styles.cta}>
-          <a href="/projects" className={styles.ctaButton}>
+          <a href="/projects/" className={styles.ctaButton}>
             View My Work
           </a>
-          <a href="/services" className={styles.ctaButtonSecondary}>
+          <a href="/services/" className={styles.ctaButtonSecondary}>
             Get a Free Quote
           </a>
         </div>

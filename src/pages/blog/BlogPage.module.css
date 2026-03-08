@@ -81,6 +81,12 @@
   color: var(--neon-orange);
   letter-spacing: 0.5px;
   text-transform: lowercase;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.cardTag:hover {
+  background: rgba(240, 100, 24, 0.2);
 }
 
 .cardTitle {

@@ -991,7 +991,7 @@ for (let i = 0; i < blogFiles.length; i++) {
     .join('');
 
   const formattedDate = date
-    ? new Date(date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+    ? new Date(date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' })
     : '';
 
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630">

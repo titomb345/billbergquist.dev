@@ -4,11 +4,11 @@ import styles from './Navbar.module.css';
 const currentPath = Astro.url.pathname;
 
 const navLinks = [
-  { href: '/services', label: 'Services', exact: false },
-  { href: '/projects', label: 'Projects', exact: false },
-  { href: '/about', label: 'About', exact: false },
-  { href: '/blog', label: 'Blog', exact: false },
-  { href: '/arcade', label: 'Arcade', exact: false },
+  { href: '/services/', label: 'Services', exact: false },
+  { href: '/projects/', label: 'Projects', exact: false },
+  { href: '/about/', label: 'About', exact: false },
+  { href: '/blog/', label: 'Blog', exact: false },
+  { href: '/arcade/', label: 'Arcade', exact: false },
 ];
 ---
 
@@ -30,6 +30,7 @@ const navLinks = [
           );
         })
       }
+      <a href="/services/#contact" class={styles.navCta}>Get a Quote</a>
     </nav>
 
     <button
@@ -62,6 +63,7 @@ const navLinks = [
           );
         })
       }
+      <a href="/services/#contact" class={styles.mobileNavCta}>Get a Quote</a>
     </div>
   </nav>
 </header>

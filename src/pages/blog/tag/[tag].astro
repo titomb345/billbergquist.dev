@@ -59,7 +59,7 @@ const jsonLdTag = JSON.stringify({
     itemListElement: posts.map((post, i) => ({
       '@type': 'ListItem',
       position: i + 1,
-      url: `https://billbergquist.dev/blog/${stripExt(post.id)}`,
+      url: `https://billbergquist.dev/blog/${stripExt(post.id)}/`,
       name: post.data.title,
     })),
   },
@@ -70,6 +70,7 @@ const jsonLdTag = JSON.stringify({
   title={`${label} — Blog — Bill Bergquist`}
   description={`Blog posts tagged "${label}" by Bill Bergquist.`}
   canonical={`/blog/tag/${tag}`}
+  noindex={true}
   jsonLd={[jsonLdTag]}
   ogImage="/og/blog.png"
 >
@@ -82,20 +83,21 @@ const jsonLdTag = JSON.stringify({
         {posts.length} {posts.length === 1 ? 'post' : 'posts'} tagged "{label}"
       </p>
       <p class={styles.backLink}>
-        <a href="/blog">&larr; All posts</a>
+        <a href="/blog/">&larr; All posts</a>
       </p>
       <div class="accent-line-orange"></div>
     </header>
 
     <div class={styles.grid}>
       {posts.map((post) => (
-        <a href={`/blog/${stripExt(post.id)}`} class={styles.card}>
+        <a href={`/blog/${stripExt(post.id)}/`} class={styles.card}>
           <div class={styles.cardMeta}>
             <time datetime={post.data.publishDate.toISOString()} class={styles.cardDate}>
               {post.data.publishDate.toLocaleDateString('en-US', {
                 year: 'numeric',
                 month: 'short',
                 day: 'numeric',
+                timeZone: 'UTC',
               })}
             </time>
             <div class={styles.cardTags}>

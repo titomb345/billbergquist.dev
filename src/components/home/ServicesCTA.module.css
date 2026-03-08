@@ -17,6 +17,27 @@
   margin: 0 auto var(--space-lg);
 }
 
+/* Service list */
+.serviceList {
+  list-style: none;
+  padding: 0;
+  margin: 0 auto var(--space-lg);
+  max-width: 420px;
+  text-align: left;
+}
+
+.serviceList li {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  padding: 4px 0;
+}
+
+.serviceList li::before {
+  content: '→ ';
+  color: var(--neon-orange);
+}
+
 /* Proof section with screenshot */
 .proofSection {
   margin-bottom: var(--space-lg);
@@ -53,7 +74,7 @@
 .browserUrl {
   font-family: var(--font-mono);
   font-size: 0.7rem;
-  color: var(--text-muted);
+  color: var(--text-secondary);
   margin-left: 8px;
 }
 

@@ -1,0 +1,59 @@
+---
+---
+
+<div class="scroll-progress-track" aria-hidden="true">
+  <div class="scroll-progress-bar" id="scroll-progress-bar"></div>
+</div>
+
+<script>
+  function initScrollProgress() {
+    const bar = document.getElementById('scroll-progress-bar');
+    if (!bar) return;
+
+    let rafId = 0;
+
+    function handleScroll() {
+      if (rafId) return;
+      rafId = requestAnimationFrame(() => {
+        rafId = 0;
+        const scrollTop = window.scrollY;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        if (docHeight > 0) {
+          bar.style.width = `${(scrollTop / docHeight) * 100}%`;
+        }
+      });
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+  }
+
+  initScrollProgress();
+  document.addEventListener('astro:after-swap', initScrollProgress);
+</script>
+
+<style>
+  .scroll-progress-track {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    z-index: 200;
+    background: transparent;
+    pointer-events: none;
+  }
+
+  .scroll-progress-bar {
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      var(--neon-mint),
+      var(--neon-magenta),
+      var(--neon-orange)
+    );
+    box-shadow:
+      0 0 8px var(--neon-mint-glow),
+      0 0 16px var(--neon-magenta-glow);
+    transition: width 50ms linear;
+  }
+</style>

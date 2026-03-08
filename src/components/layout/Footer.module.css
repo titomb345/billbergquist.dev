@@ -155,13 +155,11 @@
   font-size: 0.6875rem;
   color: var(--text-muted);
   text-decoration: none;
-  opacity: 0.6;
   transition: var(--transition-fast);
 }
 
 .emailLink:hover {
   color: var(--neon-mint);
-  opacity: 1;
 }
 
 .bottomRow {
@@ -177,7 +175,6 @@
   font-size: 0.6875rem;
   color: var(--text-muted);
   letter-spacing: 2px;
-  opacity: 0.6;
 }
 
 .privacyLink {
@@ -185,13 +182,11 @@
   font-size: 0.6875rem;
   color: var(--text-muted);
   text-decoration: none;
-  opacity: 0.6;
   transition: var(--transition-fast);
 }
 
 .privacyLink:hover {
   color: var(--neon-mint);
-  opacity: 1;
 }
 
 @media (max-width: 768px) {

@@ -1,4 +1,7 @@
 function initScrollReveal() {
+  // Enable scroll-reveal CSS (content stays visible for crawlers/noscript without this class)
+  document.documentElement.classList.add('scroll-reveal-ready');
+
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const elements = document.querySelectorAll('.scroll-reveal');
 
