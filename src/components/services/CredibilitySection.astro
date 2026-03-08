@@ -2,10 +2,9 @@
 import styles from './CredibilitySection.module.css';
 
 const stats = [
-  { value: '14+', label: 'Years of Experience', color: 'mint' },
-  { value: '3', label: 'Shipped Projects', color: 'orange' },
-  { value: 'Staff', label: 'Engineer at Kasa', color: 'magenta' },
-  { value: '0', label: 'Templates Used', sublabel: 'Built from scratch', color: 'purple' },
+  { value: '14+', label: 'Years of Experience' },
+  { value: 'Local', label: 'Denver Metro Based' },
+  { value: '100%', label: 'Custom Built' },
 ];
 ---
 
@@ -14,9 +13,8 @@ const stats = [
     {
       stats.map((stat) => (
         <div class={styles.stat}>
-          <span class={`${styles.value} ${styles[`color_${stat.color}`]}`}>{stat.value}</span>
+          <span class={styles.value}>{stat.value}</span>
           <span class={styles.label}>{stat.label}</span>
-          {stat.sublabel && <span class={styles.sublabel}>{stat.sublabel}</span>}
         </div>
       ))
     }

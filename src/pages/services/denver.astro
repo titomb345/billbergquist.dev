@@ -1,7 +1,5 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import GlowText from '../../components/ui/GlowText.astro';
-import SectionDivider from '../../components/ui/SectionDivider.astro';
 import ContactForm from '../../components/services/ContactForm';
 import styles from '../ServicesPage.module.css';
 
@@ -111,9 +109,9 @@ const bookingMonth = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleStr
 >
   <div class={styles.page}>
     <header class={styles.header}>
-      <GlowText as="h1" size="large" color="mint" class={styles.title}>
-        WEB DESIGN IN DENVER, CO
-      </GlowText>
+      <h1 class={styles.title}>
+        Web Design in Denver, CO
+      </h1>
       <p class={styles.subtitle}>Custom Websites for Denver Small Businesses</p>
       <p class={styles.intro}>
         Denver's small business scene is competitive, and it's only getting more so. Whether you're
@@ -121,13 +119,12 @@ const bookingMonth = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleStr
         a professional services firm in the DTC, your website is usually the first thing potential customers
         see. I build fast, modern websites that help Denver businesses look good online and get more calls.
       </p>
-      <div class="accent-line-orange"></div>
     </header>
 
     <section class={styles.whySection}>
-      <GlowText as="h2" size="medium" color="orange" class={styles.sectionTitle}>
-        WHY DENVER BUSINESSES CHOOSE CUSTOM WEBSITES
-      </GlowText>
+      <h2 class={styles.sectionTitle}>
+        Why Denver Businesses Choose Custom Websites
+      </h2>
       <div class={styles.whyGrid}>
         <div class={styles.whyItem}>
           <h3 class={styles.whyTitle}>Local competition is real</h3>
@@ -164,12 +161,12 @@ const bookingMonth = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleStr
       </div>
     </section>
 
-    <SectionDivider color="orange" />
+    <div class={styles.divider}></div>
 
     <section class={styles.whySection}>
-      <GlowText as="h2" size="medium" color="purple" class={styles.sectionTitle}>
-        DENVER BUSINESSES I WORK WITH
-      </GlowText>
+      <h2 class={styles.sectionTitle}>
+        Denver Businesses I Work With
+      </h2>
       <div class={styles.whyGrid}>
         <div class={styles.whyItem}>
           <h3 class={styles.whyTitle}>Restaurants & food service</h3>
@@ -206,12 +203,12 @@ const bookingMonth = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleStr
       </div>
     </section>
 
-    <SectionDivider color="purple" />
+    <div class={styles.divider}></div>
 
     <section class={styles.faq}>
-      <GlowText as="h2" size="medium" color="orange" class={styles.sectionTitle}>
-        FREQUENTLY ASKED QUESTIONS
-      </GlowText>
+      <h2 class={styles.sectionTitle}>
+        Frequently Asked Questions
+      </h2>
       <div class={styles.faqList}>
         {
           faqs.map((faq) => (
@@ -224,12 +221,12 @@ const bookingMonth = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleStr
       </div>
     </section>
 
-    <SectionDivider color="purple" />
+    <div class={styles.divider}></div>
 
     <section class={styles.areasServed}>
-      <GlowText as="h2" size="medium" color="purple" class={styles.sectionTitle}>
-        ALSO SERVING NEARBY
-      </GlowText>
+      <h2 class={styles.sectionTitle}>
+        Also Serving Nearby
+      </h2>
       <div class={styles.areasGrid}>
         <a href="/services/lakewood" class={styles.areaLink}>Lakewood</a>
         <a href="/services/arvada" class={styles.areaLink}>Arvada</a>
@@ -242,12 +239,12 @@ const bookingMonth = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleStr
       </div>
     </section>
 
-    <SectionDivider color="mint" />
+    <div class={styles.divider}></div>
 
     <section class={styles.contact}>
-      <GlowText as="h2" size="medium" color="mint" class={styles.sectionTitle}>
-        LET'S BUILD YOUR DENVER WEBSITE
-      </GlowText>
+      <h2 class={styles.sectionTitle}>
+        Let's Build Your Denver Website
+      </h2>
       <p class={styles.contactIntro}>
         Whether you're opening a new restaurant in LoDo, growing a consulting practice in Cherry Creek,
         or running a home services business anywhere in the city, I'd love to hear about your project.
