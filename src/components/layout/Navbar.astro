@@ -4,57 +4,54 @@ import styles from './Navbar.module.css';
 const currentPath = Astro.url.pathname;
 
 const navLinks = [
-  { href: '/', label: 'Home', exact: true },
-  { href: '/about', label: 'About', exact: false },
   { href: '/services', label: 'Services', exact: false },
   { href: '/projects', label: 'Projects', exact: false },
+  { href: '/about', label: 'About', exact: false },
   { href: '/blog', label: 'Blog', exact: false },
   { href: '/arcade', label: 'Arcade', exact: false },
 ];
 ---
 
 <header class={styles.navbar}>
-  <a href="/" class={styles.logo}>
-    <img src="/favicon.svg" alt="Bill Bergquist" class={styles.logoIcon} width="40" height="40" />
-    <span class={styles.logoText}>Bill Bergquist</span>
-  </a>
+  <div class={styles.navbarInner}>
+    <a href="/" class={styles.logo}>
+      <img src="/favicon.svg" alt="Bill Bergquist" class={styles.logoIcon} width="40" height="40" />
+      <span class={styles.logoText}>Bill Bergquist</span>
+    </a>
 
-  <nav class={styles.nav} aria-label="Primary navigation">
-    {
-      navLinks.map(({ href, label, exact }) => {
-        const isActive = exact
-          ? currentPath === href || currentPath === `${href}/` || currentPath === ''
-          : currentPath.startsWith(href);
-        return (
-          <a href={href} class={`${styles.navLink} ${isActive ? styles.active : ''}`}>
-            {label}
-          </a>
-        );
-      })
-    }
-  </nav>
+    <nav class={styles.nav} aria-label="Primary navigation">
+      {
+        navLinks.map(({ href, label }) => {
+          const isActive = currentPath.startsWith(href);
+          return (
+            <a href={href} class={`${styles.navLink} ${isActive ? styles.active : ''}`}>
+              {label}
+            </a>
+          );
+        })
+      }
+    </nav>
 
-  <button
-    class={styles.menuToggle}
-    id="mobile-menu-toggle"
-    aria-label="Toggle navigation menu"
-    aria-expanded="false"
-    aria-controls="mobile-menu"
-  >
-    <span class={styles.hamburgerLine}></span>
-    <span class={styles.hamburgerLine}></span>
-    <span class={styles.hamburgerLine}></span>
-  </button>
+    <button
+      class={styles.menuToggle}
+      id="mobile-menu-toggle"
+      aria-label="Toggle navigation menu"
+      aria-expanded="false"
+      aria-controls="mobile-menu"
+    >
+      <span class={styles.hamburgerLine}></span>
+      <span class={styles.hamburgerLine}></span>
+      <span class={styles.hamburgerLine}></span>
+    </button>
+  </div>
 
   <div class={styles.mobileOverlay} id="mobile-overlay"></div>
 
   <nav class={styles.mobileNav} id="mobile-menu" aria-label="Mobile navigation">
     <div class={styles.mobileNavInner}>
       {
-        navLinks.map(({ href, label, exact }) => {
-          const isActive = exact
-            ? currentPath === href || currentPath === `${href}/` || currentPath === ''
-            : currentPath.startsWith(href);
+        navLinks.map(({ href, label }) => {
+          const isActive = currentPath.startsWith(href);
           return (
             <a
               href={href}

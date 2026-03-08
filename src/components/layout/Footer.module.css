@@ -24,6 +24,31 @@
   padding: var(--space-xl) var(--space-lg);
 }
 
+.footerCta {
+  text-align: center;
+}
+
+.footerCtaText {
+  font-family: var(--font-body);
+  font-size: 0.9375rem;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-sm);
+}
+
+.footerCtaLink {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  color: var(--neon-mint);
+  text-decoration: none;
+  letter-spacing: 0.5px;
+  transition: var(--transition-fast);
+}
+
+.footerCtaLink:hover {
+  text-shadow: 0 0 8px var(--neon-mint-glow);
+  text-decoration: underline;
+}
+
 .nav {
   display: flex;
   gap: var(--space-xl);

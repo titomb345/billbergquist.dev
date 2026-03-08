@@ -2,10 +2,9 @@
 import Layout from '../layouts/Layout.astro';
 import Hero from '../components/home/Hero';
 import SectionDivider from '../components/ui/SectionDivider.astro';
-import AboutSection from '../components/home/AboutSection.astro';
-import ProjectsPreview from '../components/home/ProjectsPreview.astro';
-import GameGrid from '../components/home/GameGrid.astro';
 import ServicesCTA from '../components/home/ServicesCTA.astro';
+import AboutSection from '../components/home/AboutSection.astro';
+import ArcadeTeaser from '../components/home/ArcadeTeaser.astro';
 
 const jsonLdPerson = JSON.stringify({
   '@context': 'https://schema.org',
@@ -29,18 +28,16 @@ const jsonLdWebsite = JSON.stringify({
 
 <Layout
   title="Bill Bergquist — Staff Software Engineer"
-  description="Staff software engineer with 14+ years of experience building web applications with React, TypeScript, and Node.js."
+  description="Staff software engineer and web developer in Denver, CO. I build fast, modern websites for small businesses and custom web applications. 14+ years of experience with React, TypeScript, and Node.js."
   canonical="/"
   jsonLd={[jsonLdPerson, jsonLdWebsite]}
   ogImage="/og/home.png"
 >
   <Hero client:load />
-  <SectionDivider color="mint" />
-  <AboutSection />
   <SectionDivider color="orange" />
-  <ProjectsPreview />
-  <SectionDivider color="mint" />
   <ServicesCTA />
   <SectionDivider color="magenta" />
-  <GameGrid />
+  <AboutSection />
+  <SectionDivider color="magenta" />
+  <ArcadeTeaser />
 </Layout>

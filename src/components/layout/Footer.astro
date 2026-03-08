@@ -6,11 +6,15 @@ import styles from './Footer.module.css';
   <div class={styles.topBorder}></div>
 
   <div class={styles.content}>
+    <div class={styles.footerCta}>
+      <p class={styles.footerCtaText}>Need a website for your business?</p>
+      <a href="/services" class={styles.footerCtaLink}>Get a free consultation &rarr;</a>
+    </div>
+
     <nav class={styles.nav} aria-label="Footer navigation">
-      <a href="/" class={styles.navLink}>Home</a>
-      <a href="/about" class={styles.navLink}>About</a>
       <a href="/services" class={styles.navLink}>Services</a>
       <a href="/projects" class={styles.navLink}>Projects</a>
+      <a href="/about" class={styles.navLink}>About</a>
       <a href="/blog" class={styles.navLink}>Blog</a>
       <a href="/arcade" class={styles.navLink}>Arcade</a>
     </nav>
