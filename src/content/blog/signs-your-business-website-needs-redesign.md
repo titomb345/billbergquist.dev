@@ -3,6 +3,7 @@ title: "5 Signs Your Small Business Website Needs a Redesign"
 description: "How to tell if your website is hurting your business instead of helping it. Five clear signals that it's time for a redesign, from load times to mobile experience."
 publishDate: 2026-02-25
 tags: ["web design", "small business", "redesign"]
+ogImage: "/og/blog/signs-your-business-website-needs-redesign.png"
 ---
 
 Your website is your hardest-working employee. It's available 24/7, talks to every potential customer before you do, and either builds trust or destroys it in under three seconds.

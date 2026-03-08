@@ -14,9 +14,10 @@ interface PhaseBarProps {
   room: RoomState;
   allReady?: boolean;
   onSend: (msg: ClientMessage) => void;
+  onLeave: () => void;
 }
 
-export function PhaseBar({ currentPhase, roomCode, isHost, connectionStatus, privacyMode, room, allReady, onSend }: PhaseBarProps) {
+export function PhaseBar({ currentPhase, roomCode, isHost, connectionStatus, privacyMode, room, allReady, onSend, onLeave }: PhaseBarProps) {
   const currentIndex = PHASE_ORDER.indexOf(currentPhase);
   const [copied, setCopied] = useState(false);
   const [confirmAction, setConfirmAction] = useState<'resetVotes' | 'back' | 'endRetro' | null>(null);
@@ -156,6 +157,14 @@ export function PhaseBar({ currentPhase, roomCode, isHost, connectionStatus, pri
           </div>
 
           <ExportMenu room={room} />
+          <button
+            className={styles.leaveBtn}
+            onClick={onLeave}
+            title="Leave room"
+            aria-label="Leave room"
+          >
+            Leave
+          </button>
         </div>
 
         <div className={styles.center}>

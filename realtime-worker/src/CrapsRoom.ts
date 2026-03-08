@@ -117,6 +117,9 @@ export class CrapsRoom implements DurableObject {
     const playerId = attachment.playerId;
 
     switch (msg.type) {
+      case 'leave':
+        await this.handleLeave(room, playerId, ws);
+        break;
       case 'toggleReady':
         await this.handleToggleReady(room, playerId);
         break;
@@ -348,6 +351,81 @@ export class CrapsRoom implements DurableObject {
           await this.handleAutoRoll(room);
         }
       }
+    }
+  }
+
+  private async handleLeave(room: CrapsGameState, playerId: string, ws: WebSocket): Promise<void> {
+    const playerIndex = room.players.findIndex((p) => p.id === playerId);
+    if (playerIndex === -1) return;
+
+    // Refund all of this player's bets
+    const playerBets = room.bets.filter((b) => b.playerId === playerId);
+    room.bets = room.bets.filter((b) => b.playerId !== playerId);
+
+    // Remove the player
+    room.players.splice(playerIndex, 1);
+
+    // If no players left, clean up the room
+    if (room.players.length === 0) {
+      ws.close(1000, 'Left room');
+      this.msgRates.delete(ws);
+      await this.state.storage.deleteAll();
+      return;
+    }
+
+    // Transfer host if the leaving player was the host
+    if (room.hostId === playerId) {
+      const newHost = room.players.find((p) => p.connected) ?? room.players[0];
+      room.hostId = newHost.id;
+      newHost.isHost = true;
+    }
+
+    // Adjust shooter index
+    if (room.shooterIndex >= room.players.length) {
+      room.shooterIndex = 0;
+    }
+    // If the shooter left and we're in rolling phase, find the next connected shooter
+    if (room.phase === 'rolling') {
+      const shooter = room.players[room.shooterIndex];
+      if (!shooter?.connected) {
+        room.shooterIndex = this.getNextShooterIndex(room);
+      }
+    }
+
+    // If only disconnected players remain, schedule cleanup
+    const anyConnected = room.players.some((p) => p.connected);
+    if (!anyConnected) {
+      await this.state.storage.setAlarm(Date.now() + EMPTY_ROOM_CLEANUP_MS);
+    }
+
+    // If in lobby phase and there's only one player left, reset ready states
+    if (room.phase === 'lobby') {
+      for (const p of room.players) {
+        p.ready = false;
+      }
+    }
+
+    // If in betting phase, check if all remaining connected players have confirmed
+    if (room.phase === 'betting') {
+      const connectedPlayers = room.players.filter((p) => p.connected);
+      const allConfirmed = connectedPlayers.length > 0 && connectedPlayers.every((p) => p.betsConfirmed);
+      if (allConfirmed) {
+        room.phase = 'rolling';
+      }
+    }
+
+    await this.saveRoom(room);
+
+    // Close the leaving player's WebSocket (code 4000 = intentional leave, don't reconnect)
+    ws.close(4000, 'Left room');
+    this.msgRates.delete(ws);
+
+    // Broadcast to remaining players
+    this.broadcast({ type: 'playerLeft', playerId, players: room.players, hostId: room.hostId, shooterIndex: room.shooterIndex });
+
+    // If we transitioned to rolling, broadcast that too
+    if (room.phase === 'rolling') {
+      this.broadcast({ type: 'phaseChanged', phase: 'rolling', point: room.point });
     }
   }
 

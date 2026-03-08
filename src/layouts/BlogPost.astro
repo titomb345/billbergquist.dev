@@ -54,7 +54,7 @@ const jsonLdArticle = JSON.stringify({
   description={description}
   canonical={`/blog/${slug}`}
   jsonLd={[jsonLdArticle]}
-  ogImage={ogImage || '/og-image.png'}
+  ogImage={ogImage || '/og/blog.png'}
 >
   <article class={styles.article}>
     <header class={styles.header}>
@@ -95,4 +95,5 @@ const jsonLdArticle = JSON.stringify({
       </div>
     </div>
   </article>
+
 </Layout>

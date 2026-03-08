@@ -37,6 +37,14 @@ export const COLUMN_CSS_MAP: Record<string, string> = {
   yellow: 'var(--neon-yellow)',
 };
 
+export const COLUMN_GLOW_MAP: Record<string, string> = {
+  mint: 'var(--neon-mint-glow)',
+  magenta: 'var(--neon-magenta-glow)',
+  orange: 'var(--neon-orange-glow)',
+  purple: 'var(--neon-purple-glow)',
+  yellow: 'var(--neon-yellow-glow)',
+};
+
 export interface ColumnTemplate {
   name: string;
   columns: Column[];

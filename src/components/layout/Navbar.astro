@@ -4,64 +4,54 @@ import styles from './Navbar.module.css';
 const currentPath = Astro.url.pathname;
 
 const navLinks = [
-  { href: '/', label: 'Home', exact: true },
-  { href: '/about', label: 'About', exact: false },
   { href: '/services', label: 'Services', exact: false },
   { href: '/projects', label: 'Projects', exact: false },
+  { href: '/about', label: 'About', exact: false },
   { href: '/blog', label: 'Blog', exact: false },
   { href: '/arcade', label: 'Arcade', exact: false },
 ];
 ---
 
 <header class={styles.navbar}>
-  <a href="/" class={styles.logo}>
-    <img src="/favicon.svg" alt="Bill Bergquist" class={styles.logoIcon} width="32" height="32" />
-  </a>
-
-  <nav class={styles.nav} aria-label="Primary navigation">
-    {
-      navLinks.map(({ href, label, exact }) => {
-        const isActive = exact
-          ? currentPath === href || currentPath === `${href}/` || currentPath === ''
-          : currentPath.startsWith(href);
-        return (
-          <a href={href} class={`${styles.navLink} ${isActive ? styles.active : ''}`}>
-            {label}
-          </a>
-        );
-      })
-    }
-    <a
-      href="/retro"
-      id="nav-retro"
-      class={`${styles.navLink} ${currentPath.startsWith('/retro') ? styles.active : ''}`}
-      style="display:none"
-    >
-      Retro
+  <div class={styles.navbarInner}>
+    <a href="/" class={styles.logo}>
+      <img src="/favicon.svg" alt="Bill Bergquist" class={styles.logoIcon} width="40" height="40" />
+      <span class={styles.logoText}>Bill Bergquist</span>
     </a>
-  </nav>
 
-  <button
-    class={styles.menuToggle}
-    id="mobile-menu-toggle"
-    aria-label="Toggle navigation menu"
-    aria-expanded="false"
-    aria-controls="mobile-menu"
-  >
-    <span class={styles.hamburgerLine}></span>
-    <span class={styles.hamburgerLine}></span>
-    <span class={styles.hamburgerLine}></span>
-  </button>
+    <nav class={styles.nav} aria-label="Primary navigation">
+      {
+        navLinks.map(({ href, label }) => {
+          const isActive = currentPath.startsWith(href);
+          return (
+            <a href={href} class={`${styles.navLink} ${isActive ? styles.active : ''}`}>
+              {label}
+            </a>
+          );
+        })
+      }
+    </nav>
+
+    <button
+      class={styles.menuToggle}
+      id="mobile-menu-toggle"
+      aria-label="Toggle navigation menu"
+      aria-expanded="false"
+      aria-controls="mobile-menu"
+    >
+      <span class={styles.hamburgerLine}></span>
+      <span class={styles.hamburgerLine}></span>
+      <span class={styles.hamburgerLine}></span>
+    </button>
+  </div>
 
   <div class={styles.mobileOverlay} id="mobile-overlay"></div>
 
   <nav class={styles.mobileNav} id="mobile-menu" aria-label="Mobile navigation">
     <div class={styles.mobileNavInner}>
       {
-        navLinks.map(({ href, label, exact }) => {
-          const isActive = exact
-            ? currentPath === href || currentPath === `${href}/` || currentPath === ''
-            : currentPath.startsWith(href);
+        navLinks.map(({ href, label }) => {
+          const isActive = currentPath.startsWith(href);
           return (
             <a
               href={href}
@@ -72,14 +62,6 @@ const navLinks = [
           );
         })
       }
-      <a
-        href="/retro"
-        id="nav-retro-mobile"
-        class={`${styles.mobileNavLink} ${currentPath.startsWith('/retro') ? styles.mobileActive : ''}`}
-        style="display:none"
-      >
-        Retro
-      </a>
     </div>
   </nav>
 </header>
@@ -122,11 +104,4 @@ const navLinks = [
     if (e.key === 'Escape') closeMenu();
   });
 
-  // Show Retro link only for authorized @kasa.com users
-  try {
-    if (localStorage.getItem('retro-authorized') === '1') {
-      document.getElementById('nav-retro')?.style.setProperty('display', '');
-      document.getElementById('nav-retro-mobile')?.style.setProperty('display', '');
-    }
-  } catch { /* noop */ }
 </script>

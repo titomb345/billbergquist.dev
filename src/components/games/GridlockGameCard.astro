@@ -1,0 +1,13 @@
+---
+import GameCard from '../ui/GameCard.astro';
+import Button from '../ui/Button.astro';
+import GridlockPreview from '../home/GridlockPreview.astro';
+---
+
+<GameCard
+  title="Gridlock: Showdown"
+  description="Classic falling-blocks puzzle. Stack blocks, clear lines, and compete on the global leaderboard."
+>
+  <GridlockPreview slot="preview" />
+  <Button variant="primary" href="/arcade/gridlock" slot="action">Play Now</Button>
+</GameCard>

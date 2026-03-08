@@ -2,6 +2,28 @@ import { useState, useRef } from 'react';
 import type { RunState, PowerUp } from '../types';
 import { MAX_FLOOR, type MineDensityInfo } from '../constants';
 
+const formatNumber = (num: number): string => {
+  const clamped = Math.max(-99, Math.min(999, num));
+  if (clamped < 0) {
+    return '-' + String(Math.abs(clamped)).padStart(2, '0');
+  }
+  return String(clamped).padStart(3, '0');
+};
+
+const formatScore = (num: number): string => {
+  if (num >= 10000) {
+    return Math.floor(num / 1000) + 'K';
+  }
+  return String(num);
+};
+
+/** Power-up IDs that display a charge badge */
+const CHARGE_BADGE_IDS: Record<string, true> = {
+  'survey': true,
+  'mine-detector': true,
+  'sixth-sense': true,
+};
+
 interface RoguelikeHeaderProps {
   floor: number;
   score: number;
@@ -84,21 +106,6 @@ function RoguelikeHeader({
   const [hoveredPowerUp, setHoveredPowerUp] = useState<HoveredPowerUp | null>(null);
   const [densityHovered, setDensityHovered] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-
-  const formatNumber = (num: number): string => {
-    const clamped = Math.max(-99, Math.min(999, num));
-    if (clamped < 0) {
-      return '-' + String(Math.abs(clamped)).padStart(2, '0');
-    }
-    return String(clamped).padStart(3, '0');
-  };
-
-  const formatScore = (num: number): string => {
-    if (num >= 10000) {
-      return Math.floor(num / 1000) + 'K';
-    }
-    return String(num);
-  };
 
   const handleMouseEnter = (powerUp: PowerUp, isUsed: boolean, iconElement: HTMLSpanElement) => {
     if (!containerRef.current) return;
@@ -272,103 +279,89 @@ function RoguelikeHeader({
             />
           </div>
         )}
-        {/* All relics in acquisition order */}
-        {run.activePowerUps.map((powerUp) => {
-          const isActive = powerUp.type === 'active';
-          const isXRay = powerUp.id === 'x-ray-vision';
-          const isXRayUsed = isXRay && run.xRayUsedThisFloor;
-          const isPeek = powerUp.id === 'peek';
-          const isPeekUsed = isPeek && run.peekUsedThisFloor;
-          const isSafePath = powerUp.id === 'safe-path';
-          const isSafePathUsed = isSafePath && run.safePathUsedThisFloor;
-          const isDefusalKit = powerUp.id === 'defusal-kit';
-          const isDefusalKitUsed = isDefusalKit && run.defusalKitUsedThisFloor;
-          const isSurvey = powerUp.id === 'survey';
-          const isSurveyUsed = isSurvey && run.surveyChargesRemaining <= 0;
-          const isMineDetector = powerUp.id === 'mine-detector';
-          const isMineDetectorUsed = isMineDetector && run.mineDetectorScansRemaining <= 0;
-          const isProbabilityLens = powerUp.id === 'probability-lens';
-          const isProbabilityLensUsed = isProbabilityLens && run.probabilityLensUsedThisFloor;
-          const isSixthSense = powerUp.id === 'sixth-sense';
-          const isSixthSenseUsed = isSixthSense && run.sixthSenseChargesRemaining <= 0;
-          // Check per-floor usage instead of run-wide availability
-          const isIronWillUsed = run.ironWillUsedThisFloor && powerUp.id === 'iron-will';
-          const isQuickRecoveryUsed =
-            powerUp.id === 'quick-recovery' &&
-            (run.quickRecoveryUsedThisRun || !run.quickRecoveryEligibleThisFloor);
-          const isUsed =
-            isXRayUsed ||
-            isPeekUsed ||
-            isSafePathUsed ||
-            isDefusalKitUsed ||
-            isSurveyUsed ||
-            isMineDetectorUsed ||
-            isProbabilityLensUsed ||
-            isSixthSenseUsed ||
-            isIronWillUsed ||
-            isQuickRecoveryUsed;
-
-          const isXRayClickable = isXRay && canUseXRay && onToggleXRay;
-          const isPeekClickable = isPeek && canUsePeek && onTogglePeek;
-          const isSafePathClickable = isSafePath && canUseSafePath && onToggleSafePath;
-          const isDefusalKitClickable = isDefusalKit && canUseDefusalKit && onToggleDefusalKit;
-          const isSurveyClickable = isSurvey && canUseSurvey && onToggleSurvey;
-          const isMineDetectorClickable =
-            isMineDetector && canUseMineDetector && onToggleMineDetector;
-          const isProbabilityLensClickable =
-            isProbabilityLens && canUseProbabilityLens && onUseProbabilityLens;
-          const isSixthSenseClickable = isSixthSense && canUseSixthSense && onToggleSixthSenseArm;
-          const isClickable =
-            isXRayClickable ||
-            isPeekClickable ||
-            isSafePathClickable ||
-            isDefusalKitClickable ||
-            isSurveyClickable ||
-            isMineDetectorClickable ||
-            isProbabilityLensClickable ||
-            isSixthSenseClickable;
-
-          const showSurveyBadge = isSurvey;
-          const showMineDetectorBadge = isMineDetector;
-          const showSixthSenseBadge = isSixthSense;
-
-          const getClickHandler = () => {
-            if (isXRayClickable) return onToggleXRay;
-            if (isPeekClickable) return onTogglePeek;
-            if (isSafePathClickable) return onToggleSafePath;
-            if (isDefusalKitClickable) return onToggleDefusalKit;
-            if (isSurveyClickable) return onToggleSurvey;
-            if (isMineDetectorClickable) return onToggleMineDetector;
-            if (isProbabilityLensClickable) return onUseProbabilityLens;
-            if (isSixthSenseClickable) return onToggleSixthSenseArm;
-            return undefined;
+        {/* All relics in acquisition order — maps built once, not per-powerup */}
+        {(() => {
+          // Built once per render, not per power-up iteration
+          const usedMap: Record<string, boolean> = {
+            'x-ray-vision': run.xRayUsedThisFloor,
+            'peek': run.peekUsedThisFloor,
+            'safe-path': run.safePathUsedThisFloor,
+            'defusal-kit': run.defusalKitUsedThisFloor,
+            'survey': run.surveyChargesRemaining <= 0,
+            'mine-detector': run.mineDetectorScansRemaining <= 0,
+            'probability-lens': run.probabilityLensUsedThisFloor,
+            'sixth-sense': run.sixthSenseChargesRemaining <= 0,
+            'iron-will': run.ironWillUsedThisFloor,
+            'quick-recovery': run.quickRecoveryUsedThisRun || !run.quickRecoveryEligibleThisFloor,
           };
 
-          return (
-            <span
-              key={powerUp.id}
-              className={`powerup-icon-wrapper rarity-${powerUp.rarity} ${isActive ? 'type-active' : 'type-passive'} ${isUsed ? 'used' : ''} ${isXRay ? 'xray' : ''} ${xRayMode ? 'xray-active' : ''} ${isPeek ? 'peek' : ''} ${peekMode ? 'peek-active' : ''} ${isSafePath ? 'safe-path' : ''} ${safePathMode ? 'safe-path-active' : ''} ${isDefusalKit ? 'defusal-kit' : ''} ${defusalKitMode ? 'defusal-kit-active' : ''} ${isSurvey ? 'survey' : ''} ${surveyMode ? 'survey-active' : ''} ${isMineDetector ? 'mine-detector' : ''} ${mineDetectorMode ? 'mine-detector-active' : ''} ${isProbabilityLens ? 'probability-lens' : ''} ${probabilityLensActive ? 'probability-lens-active' : ''} ${isSixthSense ? 'sixth-sense' : ''} ${isSixthSense && sixthSenseArmed ? 'sixth-sense-active' : ''} ${isClickable ? 'clickable' : ''}`}
-              onMouseEnter={(e) => handleMouseEnter(powerUp, isUsed, e.currentTarget)}
-              onMouseLeave={() => setHoveredPowerUp(null)}
-              onClick={getClickHandler()}
-            >
-              <span className="powerup-icon-inner">
-                <span className="powerup-icon-emoji">{powerUp.icon}</span>
+          const clickableMap: Record<string, (() => void) | undefined> = {
+            'x-ray-vision': canUseXRay ? onToggleXRay : undefined,
+            'peek': canUsePeek ? onTogglePeek : undefined,
+            'safe-path': canUseSafePath ? onToggleSafePath : undefined,
+            'defusal-kit': canUseDefusalKit ? onToggleDefusalKit : undefined,
+            'survey': canUseSurvey ? onToggleSurvey : undefined,
+            'mine-detector': canUseMineDetector ? onToggleMineDetector : undefined,
+            'probability-lens': canUseProbabilityLens ? onUseProbabilityLens : undefined,
+            'sixth-sense': canUseSixthSense ? onToggleSixthSenseArm : undefined,
+          };
+
+          const modeMap: Record<string, [string, boolean]> = {
+            'x-ray-vision': ['xray', xRayMode],
+            'peek': ['peek', peekMode],
+            'safe-path': ['safe-path', safePathMode],
+            'defusal-kit': ['defusal-kit', defusalKitMode],
+            'survey': ['survey', surveyMode],
+            'mine-detector': ['mine-detector', mineDetectorMode],
+            'probability-lens': ['probability-lens', probabilityLensActive],
+            'sixth-sense': ['sixth-sense', sixthSenseArmed],
+          };
+
+          const chargesMap: Record<string, number> = {
+            'survey': surveyChargesRemaining,
+            'mine-detector': mineDetectorScansRemaining,
+            'sixth-sense': sixthSenseChargesRemaining,
+          };
+
+          return run.activePowerUps.map((powerUp) => {
+            const id = powerUp.id;
+            const isActive = powerUp.type === 'active';
+            const isUsed = !!usedMap[id];
+            const clickHandler = clickableMap[id];
+            const isClickable = !!clickHandler;
+            const mode = modeMap[id];
+
+            const classes = [
+              'powerup-icon-wrapper',
+              `rarity-${powerUp.rarity}`,
+              isActive ? 'type-active' : 'type-passive',
+              isUsed && 'used',
+              mode && mode[0],
+              mode && mode[1] && `${mode[0]}-active`,
+              isClickable && 'clickable',
+            ].filter(Boolean).join(' ');
+
+            return (
+              <span
+                key={id}
+                className={classes}
+                onMouseEnter={(e) => handleMouseEnter(powerUp, isUsed, e.currentTarget)}
+                onMouseLeave={() => setHoveredPowerUp(null)}
+                onClick={clickHandler}
+              >
+                <span className="powerup-icon-inner">
+                  <span className="powerup-icon-emoji">{powerUp.icon}</span>
+                </span>
+                {isActive && <span className="active-relic-badge">⚡</span>}
+                {CHARGE_BADGE_IDS[id] && (
+                  <span className={`mine-detector-badge${id === 'survey' ? ' survey-badge' : ''}`}>
+                    {chargesMap[id]}
+                  </span>
+                )}
               </span>
-              {/* Lightning badge for active-type relics */}
-              {isActive && <span className="active-relic-badge">⚡</span>}
-              {showSurveyBadge && (
-                <span className="mine-detector-badge survey-badge">{surveyChargesRemaining}</span>
-              )}
-              {showMineDetectorBadge && (
-                <span className="mine-detector-badge">{mineDetectorScansRemaining}</span>
-              )}
-              {showSixthSenseBadge && (
-                <span className="mine-detector-badge">{sixthSenseChargesRemaining}</span>
-              )}
-            </span>
-          );
-        })}
+            );
+          });
+        })()}
       </div>
     </div>
   );

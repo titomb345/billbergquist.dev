@@ -79,37 +79,17 @@ body {
 }
 
 /* Utility classes */
-.neon-text-mint {
-  color: var(--neon-mint);
-  text-shadow:
-    0 0 5px var(--neon-mint),
-    0 0 10px var(--neon-mint),
-    0 0 20px var(--neon-mint-glow);
-}
-
-.neon-text-magenta {
-  color: var(--neon-magenta);
-  text-shadow:
-    0 0 5px var(--neon-magenta),
-    0 0 10px var(--neon-magenta),
-    0 0 20px var(--neon-magenta-glow);
-}
-
-.neon-text-purple {
-  color: var(--neon-purple);
-  text-shadow:
-    0 0 5px var(--neon-purple),
-    0 0 10px var(--neon-purple),
-    0 0 20px var(--neon-purple-glow);
-}
-
+.neon-text-mint,
+.neon-text-magenta,
+.neon-text-purple,
 .neon-text-orange {
-  color: var(--neon-orange);
-  text-shadow:
-    0 0 5px var(--neon-orange),
-    0 0 10px var(--neon-orange),
-    0 0 20px var(--neon-orange-glow);
+  text-shadow: 0 0 8px var(--neon-glow);
 }
+
+.neon-text-mint    { color: var(--neon-mint);    --neon-color: var(--neon-mint);    --neon-glow: var(--neon-mint-glow); }
+.neon-text-magenta { color: var(--neon-magenta); --neon-color: var(--neon-magenta); --neon-glow: var(--neon-magenta-glow); }
+.neon-text-purple  { color: var(--neon-purple);  --neon-color: var(--neon-purple);  --neon-glow: var(--neon-purple-glow); }
+.neon-text-orange  { color: var(--neon-orange);  --neon-color: var(--neon-orange);  --neon-glow: var(--neon-orange-glow); }
 
 /* Reusable orange accent line */
 .accent-line-orange {
@@ -125,7 +105,7 @@ body {
     var(--neon-orange),
     transparent
   );
-  box-shadow: 0 0 15px var(--neon-orange-glow);
+  box-shadow: 0 0 10px var(--neon-orange-glow);
   z-index: 2;
 }
 
@@ -150,8 +130,8 @@ body {
   line-height: 1;
   text-shadow:
     0 0 10px var(--neon-magenta),
-    0 0 30px rgba(255, 0, 255, 0.4),
-    0 0 60px rgba(255, 0, 255, 0.2);
+    0 0 30px rgba(217, 70, 239, 0.4),
+    0 0 60px rgba(217, 70, 239, 0.2);
   animation: glitch-flicker 3s ease-in-out infinite;
 }
 
@@ -207,8 +187,8 @@ body {
   font-size: 0.75rem;
   text-align: center;
   padding: var(--space-sm) var(--space-md);
-  background: rgba(255, 106, 0, 0.1);
-  border: 1px solid rgba(255, 106, 0, 0.25);
+  background: rgba(240, 100, 24, 0.1);
+  border: 1px solid rgba(240, 100, 24, 0.25);
   border-radius: var(--radius-sm);
   color: var(--neon-orange);
   margin: var(--space-md);

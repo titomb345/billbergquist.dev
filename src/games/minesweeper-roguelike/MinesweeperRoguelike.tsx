@@ -1,4 +1,4 @@
-import { useRef, useState, useCallback, useEffect, type MutableRefObject } from 'react';
+import { useRef, useState, useCallback, useEffect, useMemo, type MutableRefObject } from 'react';
 import { useRoguelikeState } from './hooks/useRoguelikeState';
 import { useContainerWidth } from './hooks/useContainerWidth';
 import { useRoguelikeStats } from './hooks/useRoguelikeStats';
@@ -35,13 +35,13 @@ function Minesweeper({ resetRef, isPaused = false, onResume }: MinesweeperProps)
     revealCell,
     toggleFlag,
     chordClick,
-    useXRay,
-    usePeek,
-    useSafePath,
-    useDefusalKit,
-    useSurvey,
-    useProbabilityLens,
-    useMineDetector,
+    activateXRay,
+    activatePeek,
+    activateSafePath,
+    activateDefusalKit,
+    activateSurvey,
+    activateProbabilityLens,
+    activateMineDetector,
     toggleSixthSenseArm,
     selectPowerUp,
     explosionComplete,
@@ -51,12 +51,8 @@ function Minesweeper({ resetRef, isPaused = false, onResume }: MinesweeperProps)
     clearChordHighlight,
   } = useRoguelikeState(isConstrained, isPaused);
 
-  const [xRayMode, setXRayMode] = useState(false);
-  const [peekMode, setPeekMode] = useState(false);
-  const [safePathMode, setSafePathMode] = useState(false);
-  const [defusalKitMode, setDefusalKitMode] = useState(false);
-  const [surveyMode, setSurveyMode] = useState(false);
-  const [mineDetectorMode, setMineDetectorMode] = useState(false);
+  type AbilityMode = 'xRay' | 'peek' | 'safePath' | 'defusalKit' | 'survey' | 'mineDetector';
+  const [activeMode, setActiveMode] = useState<AbilityMode | null>(null);
   const [hoveredCell, setHoveredCell] = useState<{ row: number; col: number } | null>(null);
 
   // Wrapper that records the run before going to start (if a run was active)
@@ -121,10 +117,20 @@ function Minesweeper({ resetRef, isPaused = false, onResume }: MinesweeperProps)
     currentTraumaStacks: state.run.traumaStacks,
   });
 
-  // Mine Detector: active scan mode
-  const hasMineDetector = state.run.activePowerUps.some((p) => p.id === 'mine-detector');
-  const canUseMineDetector =
-    hasMineDetector && state.run.mineDetectorScansRemaining > 0 && !state.isFirstClick;
+  // Build a Set of active power-up IDs for O(1) lookups
+  const activePowerUpIds = useMemo(
+    () => new Set(state.run.activePowerUps.map((p) => p.id)),
+    [state.run.activePowerUps],
+  );
+
+  // Memoize hint text map so we don't scan activePowerUps 7 times per render
+  const hintMap = useMemo(() => {
+    const map = new Map<string, string>();
+    for (const p of state.run.activePowerUps) {
+      if (p.activeHint) map.set(p.id, p.activeHint);
+    }
+    return map;
+  }, [state.run.activePowerUps]);
 
   const handleCellHover = useCallback((row: number, col: number) => {
     setHoveredCell({ row, col });
@@ -134,138 +140,48 @@ function Minesweeper({ resetRef, isPaused = false, onResume }: MinesweeperProps)
     setHoveredCell(null);
   }, []);
 
-  const handleXRayClick = (row: number, col: number) => {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    useXRay(row, col);
-    setXRayMode(false);
-  };
-
-  const handleToggleXRayMode = () => {
-    const newMode = !xRayMode;
-    clearAllModes();
-    setXRayMode(newMode);
-  };
-
-  // Check if X-Ray is available
-  const hasXRay = state.run.activePowerUps.some((p) => p.id === 'x-ray-vision');
-  const canUseXRay = hasXRay && !state.run.xRayUsedThisFloor && !state.isFirstClick;
-
-  // Check if Peek is available
-  const hasPeek = state.run.activePowerUps.some((p) => p.id === 'peek');
-  const canUsePeek = hasPeek && !state.run.peekUsedThisFloor && !state.isFirstClick;
-
-  // Check if Safe Path is available
-  const hasSafePath = state.run.activePowerUps.some((p) => p.id === 'safe-path');
-  const canUseSafePath = hasSafePath && !state.run.safePathUsedThisFloor && !state.isFirstClick;
-
-  // Check if Defusal Kit is available
-  const hasDefusalKit = state.run.activePowerUps.some((p) => p.id === 'defusal-kit');
-  const canUseDefusalKit =
-    hasDefusalKit && !state.run.defusalKitUsedThisFloor && !state.isFirstClick;
-
-  // Check if Survey is available
-  const hasSurvey = state.run.activePowerUps.some((p) => p.id === 'survey');
-  const canUseSurvey =
-    hasSurvey && state.run.surveyChargesRemaining > 0 && !state.isFirstClick;
-
-  // Check if Probability Lens is available
-  const hasProbabilityLens = state.run.activePowerUps.some((p) => p.id === 'probability-lens');
-  const canUseProbabilityLens =
-    hasProbabilityLens && !state.run.probabilityLensUsedThisFloor && !state.isFirstClick;
-
-  // Check if Sixth Sense is available
-  const hasSixthSense = state.run.activePowerUps.some((p) => p.id === 'sixth-sense');
-  const canUseSixthSense =
-    hasSixthSense && state.run.sixthSenseChargesRemaining > 0 && !state.isFirstClick;
+  // Ability availability
+  const canUseXRay = activePowerUpIds.has('x-ray-vision') && !state.run.xRayUsedThisFloor && !state.isFirstClick;
+  const canUsePeek = activePowerUpIds.has('peek') && !state.run.peekUsedThisFloor && !state.isFirstClick;
+  const canUseSafePath = activePowerUpIds.has('safe-path') && !state.run.safePathUsedThisFloor && !state.isFirstClick;
+  const canUseDefusalKit = activePowerUpIds.has('defusal-kit') && !state.run.defusalKitUsedThisFloor && !state.isFirstClick;
+  const canUseSurvey = activePowerUpIds.has('survey') && state.run.surveyChargesRemaining > 0 && !state.isFirstClick;
+  const canUseMineDetector = activePowerUpIds.has('mine-detector') && state.run.mineDetectorScansRemaining > 0 && !state.isFirstClick;
+  const canUseProbabilityLens = activePowerUpIds.has('probability-lens') && !state.run.probabilityLensUsedThisFloor && !state.isFirstClick;
+  const canUseSixthSense = activePowerUpIds.has('sixth-sense') && state.run.sixthSenseChargesRemaining > 0 && !state.isFirstClick;
 
   const clearAllModes = () => {
-    setXRayMode(false);
-    setPeekMode(false);
-    setSafePathMode(false);
-    setDefusalKitMode(false);
-    setSurveyMode(false);
-    setMineDetectorMode(false);
-    if (state.run.sixthSenseArmed) {
-      toggleSixthSenseArm();
-    }
+    setActiveMode(null);
+    if (state.run.sixthSenseArmed) toggleSixthSenseArm();
   };
 
-  const handlePeekClick = (row: number, col: number) => {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    usePeek(row, col);
-    setPeekMode(false);
-  };
-
-  const handleTogglePeekMode = () => {
-    const newMode = !peekMode;
+  /** Toggle an ability mode (mutually exclusive with all others) */
+  const toggleMode = (mode: AbilityMode) => {
+    const wasActive = activeMode === mode;
     clearAllModes();
-    setPeekMode(newMode);
+    if (!wasActive) setActiveMode(mode);
   };
 
-  const handleSafePathClick = (row: number, _col: number) => {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    useSafePath('row', row);
-    setSafePathMode(false);
-  };
-
-  const handleToggleSafePathMode = () => {
-    const newMode = !safePathMode;
-    clearAllModes();
-    setSafePathMode(newMode);
-  };
-
-  const handleDefusalKitClick = (row: number, col: number) => {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    useDefusalKit(row, col);
-    setDefusalKitMode(false);
-  };
-
-  const handleToggleDefusalKitMode = () => {
-    const newMode = !defusalKitMode;
-    clearAllModes();
-    setDefusalKitMode(newMode);
-  };
-
-  const handleSurveyClick = (row: number, _col: number) => {
-    // Survey reveals mine count in the clicked row
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    useSurvey('row', row);
-    setSurveyMode(false);
-  };
-
-  const handleToggleSurveyMode = () => {
-    const newMode = !surveyMode;
-    clearAllModes();
-    setSurveyMode(newMode);
-  };
-
-  const handleMineDetectorClick = (row: number, col: number) => {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    useMineDetector(row, col);
-    setMineDetectorMode(false);
-  };
-
-  const handleToggleMineDetectorMode = () => {
-    const newMode = !mineDetectorMode;
-    clearAllModes();
-    setMineDetectorMode(newMode);
-  };
-
-  const handleUseProbabilityLens = () => {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    useProbabilityLens();
-  };
+  /** Use an ability and deactivate its mode */
+  const handleXRayClick = (row: number, col: number) => { activateXRay(row, col); setActiveMode(null); };
+  const handlePeekClick = (row: number, col: number) => { activatePeek(row, col); setActiveMode(null); };
+  const handleSafePathClick = (row: number, _col: number) => { activateSafePath('row', row); setActiveMode(null); };
+  const handleDefusalKitClick = (row: number, col: number) => { activateDefusalKit(row, col); setActiveMode(null); };
+  const handleSurveyClick = (row: number, _col: number) => { activateSurvey('row', row); setActiveMode(null); };
+  const handleMineDetectorClick = (row: number, col: number) => { activateMineDetector(row, col); setActiveMode(null); };
 
   const handleToggleSixthSenseArm = () => {
-    // Clear other modes first, then toggle arm
-    setXRayMode(false);
-    setPeekMode(false);
-    setSafePathMode(false);
-    setDefusalKitMode(false);
-    setSurveyMode(false);
-    setMineDetectorMode(false);
+    setActiveMode(null);
     toggleSixthSenseArm();
   };
+
+  // Derive boolean flags from single activeMode state
+  const xRayMode = activeMode === 'xRay';
+  const peekMode = activeMode === 'peek';
+  const safePathMode = activeMode === 'safePath';
+  const defusalKitMode = activeMode === 'defusalKit';
+  const surveyMode = activeMode === 'survey';
+  const mineDetectorMode = activeMode === 'mineDetector';
 
   const isGameOver = state.phase === GamePhase.RunOver || state.phase === GamePhase.Victory;
 
@@ -300,26 +216,26 @@ function Minesweeper({ resetRef, isPaused = false, onResume }: MinesweeperProps)
             densityInfo={densityInfo}
             xRayMode={xRayMode}
             canUseXRay={canUseXRay}
-            onToggleXRay={handleToggleXRayMode}
+            onToggleXRay={() => toggleMode('xRay')}
             peekMode={peekMode}
             canUsePeek={canUsePeek}
-            onTogglePeek={handleTogglePeekMode}
+            onTogglePeek={() => toggleMode('peek')}
             safePathMode={safePathMode}
             canUseSafePath={canUseSafePath}
-            onToggleSafePath={handleToggleSafePathMode}
+            onToggleSafePath={() => toggleMode('safePath')}
             defusalKitMode={defusalKitMode}
             canUseDefusalKit={canUseDefusalKit}
-            onToggleDefusalKit={handleToggleDefusalKitMode}
+            onToggleDefusalKit={() => toggleMode('defusalKit')}
             surveyMode={surveyMode}
             canUseSurvey={canUseSurvey}
-            onToggleSurvey={handleToggleSurveyMode}
+            onToggleSurvey={() => toggleMode('survey')}
             surveyChargesRemaining={state.run.surveyChargesRemaining}
             mineDetectorMode={mineDetectorMode}
             canUseMineDetector={canUseMineDetector}
-            onToggleMineDetector={handleToggleMineDetectorMode}
+            onToggleMineDetector={() => toggleMode('mineDetector')}
             mineDetectorScansRemaining={state.run.mineDetectorScansRemaining}
             canUseProbabilityLens={canUseProbabilityLens}
-            onUseProbabilityLens={handleUseProbabilityLens}
+            onUseProbabilityLens={activateProbabilityLens}
             probabilityLensActive={state.probabilityLensCells.size > 0}
             sixthSenseArmed={state.run.sixthSenseArmed}
             canUseSixthSense={canUseSixthSense}
@@ -327,13 +243,13 @@ function Minesweeper({ resetRef, isPaused = false, onResume }: MinesweeperProps)
             sixthSenseChargesRemaining={state.run.sixthSenseChargesRemaining}
           />
           <div className="board-with-hints">
-            <GameToast variant="hint" visible={xRayMode} message={state.run.activePowerUps.find((p) => p.id === 'x-ray-vision')?.activeHint ?? ''} color="var(--neon-mint)" />
-            <GameToast variant="hint" visible={peekMode} message={state.run.activePowerUps.find((p) => p.id === 'peek')?.activeHint ?? ''} color="var(--neon-purple)" />
-            <GameToast variant="hint" visible={safePathMode} message={state.run.activePowerUps.find((p) => p.id === 'safe-path')?.activeHint ?? ''} color="var(--neon-mint)" />
-            <GameToast variant="hint" visible={defusalKitMode} message={state.run.activePowerUps.find((p) => p.id === 'defusal-kit')?.activeHint ?? ''} color="var(--neon-mint)" />
-            <GameToast variant="hint" visible={surveyMode} message={state.run.activePowerUps.find((p) => p.id === 'survey')?.activeHint ?? ''} color="var(--neon-yellow)" />
-            <GameToast variant="hint" visible={mineDetectorMode} message={state.run.activePowerUps.find((p) => p.id === 'mine-detector')?.activeHint ?? ''} color="#00f5ff" />
-            <GameToast variant="hint" visible={state.run.sixthSenseArmed} message={state.run.activePowerUps.find((p) => p.id === 'sixth-sense')?.activeHint ?? ''} color="var(--neon-yellow)" />
+            <GameToast variant="hint" visible={xRayMode} message={hintMap.get('x-ray-vision') ?? ''} color="var(--neon-mint)" />
+            <GameToast variant="hint" visible={peekMode} message={hintMap.get('peek') ?? ''} color="var(--neon-purple)" />
+            <GameToast variant="hint" visible={safePathMode} message={hintMap.get('safe-path') ?? ''} color="var(--neon-mint)" />
+            <GameToast variant="hint" visible={defusalKitMode} message={hintMap.get('defusal-kit') ?? ''} color="var(--neon-mint)" />
+            <GameToast variant="hint" visible={surveyMode} message={hintMap.get('survey') ?? ''} color="var(--neon-yellow)" />
+            <GameToast variant="hint" visible={mineDetectorMode} message={hintMap.get('mine-detector') ?? ''} color="#00f5ff" />
+            <GameToast variant="hint" visible={state.run.sixthSenseArmed} message={hintMap.get('sixth-sense') ?? ''} color="var(--neon-yellow)" />
             <GameToast visible={state.sixthSenseTriggered} message="Sixth Sense triggered!" color="var(--neon-yellow)" />
             <GameToast visible={state.falseStartTriggered} message="False Start — Flag removed" color="#f87171" />
             <div className="minesweeper">

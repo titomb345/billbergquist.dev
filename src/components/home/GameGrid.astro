@@ -1,8 +1,7 @@
 ---
 import GlowText from '../ui/GlowText.astro';
 import Button from '../ui/Button.astro';
-import GameCard from '../ui/GameCard.astro';
-import MinesweeperRoguelikePreview from './MinesweeperRoguelikePreview.astro';
+import CrapsGameCard from '../games/CrapsGameCard.astro';
 import styles from './GameGrid.module.css';
 ---
 
@@ -16,13 +15,7 @@ import styles from './GameGrid.module.css';
     explore what's possible when you combine modern React with AI-powered development.
   </p>
   <div class={styles.grid}>
-    <GameCard
-      title="Minesweeper: Descent"
-      description="Roguelike minesweeper. Descend 10 floors of escalating danger. Collect power-ups to survive."
-    >
-      <MinesweeperRoguelikePreview slot="preview" />
-      <Button variant="primary" href="/arcade/descent" slot="action">Play Now</Button>
-    </GameCard>
+    <CrapsGameCard />
   </div>
   <div class={styles.arcadeLink}>
     <Button variant="secondary" href="/arcade">View My Arcade &rarr;</Button>

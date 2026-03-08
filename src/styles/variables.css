@@ -24,21 +24,21 @@
   --bg-surface: #14141f;
   --bg-elevated: #1a1a2e;
 
-  /* Neon accents */
-  --neon-mint: #00d4aa;
-  --neon-magenta: #ff00ff;
-  --neon-purple: #bf00ff;
-  --neon-orange: #ff6a00;
+  /* Neon accents (refined: ~20% less saturated for professional tone) */
+  --neon-mint: #00c9a7;
+  --neon-magenta: #d946ef;
+  --neon-purple: #a855f7;
+  --neon-orange: #f06418;
   --neon-yellow: #f59e0b;
   --neon-blue: #4488ff;
   --neon-peach: #ff8866;
 
   /* Neon glow variants (for shadows) */
-  --neon-mint-glow: rgba(0, 212, 170, 0.5);
-  --neon-magenta-glow: rgba(255, 0, 255, 0.5);
-  --neon-purple-glow: rgba(191, 0, 255, 0.5);
-  --neon-orange-glow: rgba(255, 106, 0, 0.5);
-  --neon-yellow-glow: rgba(245, 158, 11, 0.5);
+  --neon-mint-glow: rgba(0, 201, 167, 0.35);
+  --neon-magenta-glow: rgba(217, 70, 239, 0.35);
+  --neon-purple-glow: rgba(168, 85, 247, 0.35);
+  --neon-orange-glow: rgba(240, 100, 24, 0.35);
+  --neon-yellow-glow: rgba(245, 158, 11, 0.35);
 
   /* Text */
   --text-primary: #ffffff;
@@ -73,9 +73,12 @@
   --space-7: 2rem;
   --space-8: 3rem;
 
+  /* Glass overlay base (raw RGB channels for rgba() usage) */
+  --glass-rgb: 255, 255, 255;
+
   /* Borders */
   --border-subtle: rgba(255, 255, 255, 0.08);
-  --border-accent: rgba(0, 212, 170, 0.3);
+  --border-accent: rgba(0, 201, 167, 0.3);
 
   /* Extended text */
   --text-tertiary: #4a4a5a;

@@ -7,10 +7,10 @@
   align-items: center;
   gap: var(--space-md);
   padding: 0.5rem 0.75rem;
-  background: rgba(20, 20, 31, 0.92);
+  background: var(--status-bar-bg, rgba(20, 20, 31, 0.92));
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(var(--glass-rgb), 0.06);
   border-radius: 100px;
   z-index: 100;
   animation: barSlideUp 0.3s ease-out;
@@ -76,8 +76,8 @@
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--text-secondary);
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(var(--glass-rgb), 0.04);
+  border: 1px solid rgba(var(--glass-rgb), 0.1);
   border-radius: 100px;
   cursor: pointer;
   transition: all var(--transition-fast);

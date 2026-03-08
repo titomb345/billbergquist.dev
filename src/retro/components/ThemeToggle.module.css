@@ -1,0 +1,34 @@
+.toggle {
+  position: fixed;
+  bottom: var(--space-lg);
+  right: var(--space-lg);
+  z-index: 100;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-surface);
+  border: 1px solid rgba(var(--glass-rgb), 0.1);
+  border-radius: 50%;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.toggle:hover {
+  color: var(--neon-purple);
+  border-color: rgba(153, 0, 204, 0.3);
+  box-shadow: 0 2px 12px var(--neon-purple-glow);
+  transform: scale(1.1);
+}
+
+@media (max-width: 640px) {
+  .toggle {
+    bottom: var(--space-md);
+    right: var(--space-md);
+    width: 44px;
+    height: 44px;
+  }
+}

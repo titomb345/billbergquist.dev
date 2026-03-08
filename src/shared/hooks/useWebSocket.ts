@@ -87,6 +87,12 @@ export function useWebSocket<TClient, TServer>({ url, pendingMessage, getJoinMes
           return;
         }
 
+        // Intentional leave — don't reconnect
+        if (event.code === 4000) {
+          onStatusRef.current('disconnected');
+          return;
+        }
+
         onStatusRef.current('disconnected');
 
         // Auto-reconnect with exponential backoff
@@ -133,5 +139,14 @@ export function useWebSocket<TClient, TServer>({ url, pendingMessage, getJoinMes
     return wsRef.current?.readyState === WebSocket.OPEN;
   }, []);
 
-  return { send, isConnected };
+  const disconnect = useCallback(() => {
+    if (wsRef.current) {
+      const ws = wsRef.current;
+      wsRef.current = null;
+      ws.onclose = null;
+      ws.close();
+    }
+  }, []);
+
+  return { send, isConnected, disconnect };
 }

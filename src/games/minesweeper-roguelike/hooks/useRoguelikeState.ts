@@ -1,4 +1,4 @@
-import { useReducer, useEffect, useCallback } from 'react';
+import { useReducer, useEffect, useCallback, useRef } from 'react';
 import {
   GamePhase,
   CellState,
@@ -52,6 +52,19 @@ import {
 } from '../constants';
 import { saveGameState, loadGameState, clearGameState } from '../persistence';
 import { getAscensionModifiers, type AscensionLevel } from '../ascension';
+
+/** Auto-clear transient state after a delay. Triggers clear callback when value is truthy. */
+function useAutoClear(value: unknown, delayMs: number, clear: () => void) {
+  const clearRef = useRef(clear);
+  useEffect(() => {
+    clearRef.current = clear;
+  });
+  useEffect(() => {
+    if (!value) return;
+    const timeout = setTimeout(() => clearRef.current(), delayMs);
+    return () => clearTimeout(timeout);
+  }, [value, delayMs]);
+}
 
 // Helper: Handle floor clear transition and calculate draft options
 function handleFloorClearTransition(
@@ -146,6 +159,66 @@ function checkQuickRecoveryEligibility(
     return { ...run, quickRecoveryEligibleThisFloor: false };
   }
   return run;
+}
+
+/** Per-floor reset fields shared by SELECT_POWER_UP and Quick Recovery */
+function resetFloorPowerUpState(_run: RunState): Partial<RunState> {
+  return {
+    ironWillUsedThisFloor: false,
+    xRayUsedThisFloor: false,
+    luckyStartUsedThisFloor: false,
+    momentumActive: false,
+    peekUsedThisFloor: false,
+    safePathUsedThisFloor: false,
+    defusalKitUsedThisFloor: false,
+    surveyChargesRemaining: 2,
+    probabilityLensUsedThisFloor: false,
+    mineDetectorScansRemaining: 3,
+    sixthSenseChargesRemaining: 1,
+    sixthSenseArmed: false,
+    falseStartAvailableThisFloor: true,
+    patternMemoryAvailableThisFloor: true,
+  };
+}
+
+/** Fresh floor-level UI state (Sets, cells, triggers) */
+function freshFloorUiState() {
+  return {
+    dangerCells: new Set<string>(),
+    patternMemoryCells: new Set<string>(),
+    openingsMapCells: new Set<string>(),
+    cellsRevealedThisFloor: 0,
+    probabilityLensCells: new Set<string>(),
+    oracleGiftCells: new Set<string>(),
+    mineDetectorScannedCells: new Set<string>(),
+    mineDetectorResult: null as null,
+    sixthSenseTriggered: false,
+    falseStartTriggered: false,
+  };
+}
+
+/**
+ * Shared post-reveal logic: score the reveal, check floor clear, check quick recovery.
+ * Used by USE_X_RAY, USE_SAFE_PATH, USE_DEFUSAL_KIT.
+ */
+function postRevealCheck(
+  state: RoguelikeGameState,
+  newBoard: Cell[][],
+  newRun: RunState,
+  floorConfig: { rows: number; cols: number; mines: number },
+): { phase: GamePhase; run: RunState; draftOptions: PowerUp[] } {
+  let phase: GamePhase = state.phase;
+  let draftOptions: PowerUp[] = [];
+
+  if (checkFloorCleared(newBoard)) {
+    const clearResult = handleFloorClearTransition(newRun, state.time);
+    newRun.score = clearResult.score;
+    phase = clearResult.phase;
+    draftOptions = clearResult.draftOptions;
+  }
+
+  const run = checkQuickRecoveryEligibility(newRun, newBoard, floorConfig);
+  return { phase, run, draftOptions };
 }
 
 function roguelikeReducer(state: RoguelikeGameState, action: RoguelikeAction): RoguelikeGameState {
@@ -354,7 +427,7 @@ function roguelikeReducer(state: RoguelikeGameState, action: RoguelikeAction): R
       ) {
         const safeCell = calculatePatternMemoryCell(newBoard, row, col);
         if (safeCell) {
-          newPatternMemoryCells = new Set([...newPatternMemoryCells, safeCell]);
+          newPatternMemoryCells = new Set(newPatternMemoryCells); newPatternMemoryCells.add(safeCell);
           newRun = { ...newRun, patternMemoryAvailableThisFloor: false };
         }
       }
@@ -501,7 +574,7 @@ function roguelikeReducer(state: RoguelikeGameState, action: RoguelikeAction): R
             if (wasHidden && isNowRevealed && has3Plus && !finalBoard[r][c].isMine) {
               const safeCell = calculatePatternMemoryCell(finalBoard, r, c);
               if (safeCell) {
-                newPatternMemoryCells = new Set([...newPatternMemoryCells, safeCell]);
+                newPatternMemoryCells = new Set(newPatternMemoryCells); newPatternMemoryCells.add(safeCell);
                 newRun = { ...newRun, patternMemoryAvailableThisFloor: false };
               }
             }
@@ -542,31 +615,20 @@ function roguelikeReducer(state: RoguelikeGameState, action: RoguelikeAction): R
       const newRun = {
         ...state.run,
         xRayUsedThisFloor: true,
-        momentumActive: false, // Using ability clears momentum
+        momentumActive: false,
         score:
           state.run.score +
           calculateRevealScore(newRevealed - prevRevealed, state.run.currentFloor),
       };
 
-      let newPhase: GamePhase = state.phase;
-      let newDraftOptions: PowerUp[] = [];
-
-      if (checkFloorCleared(newBoard)) {
-        const clearResult = handleFloorClearTransition(newRun, state.time);
-        newRun.score = clearResult.score;
-        newPhase = clearResult.phase;
-        newDraftOptions = clearResult.draftOptions;
-      }
-
-      // Update Quick Recovery eligibility based on progress
-      const xRayCheckedRun = checkQuickRecoveryEligibility(newRun, newBoard, state.floorConfig);
+      const result = postRevealCheck(state, newBoard, newRun, state.floorConfig);
 
       return {
         ...state,
         board: newBoard,
-        run: xRayCheckedRun,
-        phase: newPhase,
-        draftOptions: newDraftOptions,
+        run: result.run,
+        phase: result.phase,
+        draftOptions: result.draftOptions,
         minesRemaining: state.floorConfig.mines - countFlags(newBoard),
       };
     }
@@ -601,35 +663,13 @@ function roguelikeReducer(state: RoguelikeGameState, action: RoguelikeAction): R
           ...state.run,
           activePowerUps: newPowerUps,
           currentFloor: nextFloor,
-          ironWillUsedThisFloor: false, // Reset shield for new floor
           quickRecoveryEligibleThisFloor: !state.run.quickRecoveryUsedThisRun,
-          xRayUsedThisFloor: false,
-          luckyStartUsedThisFloor: false,
-          momentumActive: false,
-          peekUsedThisFloor: false,
-          safePathUsedThisFloor: false,
-          defusalKitUsedThisFloor: false,
-          surveyChargesRemaining: 2,
-          probabilityLensUsedThisFloor: false,
-          mineDetectorScansRemaining: 3,
-          sixthSenseChargesRemaining: 1,
-          sixthSenseArmed: false,
-          falseStartAvailableThisFloor: true,
-          patternMemoryAvailableThisFloor: true,
+          ...resetFloorPowerUpState(state.run),
         },
         draftOptions: [],
-        dangerCells: new Set(),
-        patternMemoryCells: new Set(),
-        openingsMapCells: new Set(),
         peekCell: null,
         surveyedRows: new Map(),
-        cellsRevealedThisFloor: 0,
-        probabilityLensCells: new Set(),
-        oracleGiftCells: new Set(),
-        mineDetectorScannedCells: new Set(),
-        mineDetectorResult: null,
-        sixthSenseTriggered: false,
-        falseStartTriggered: false,
+        ...freshFloorUiState(),
       };
     }
 
@@ -686,25 +726,14 @@ function roguelikeReducer(state: RoguelikeGameState, action: RoguelikeAction): R
           calculateRevealScore(newRevealed - prevRevealed, state.run.currentFloor),
       };
 
-      let newPhase: GamePhase = state.phase;
-      let newDraftOptions: PowerUp[] = [];
-
-      if (checkFloorCleared(newBoard)) {
-        const clearResult = handleFloorClearTransition(newRun, state.time);
-        newRun.score = clearResult.score;
-        newPhase = clearResult.phase;
-        newDraftOptions = clearResult.draftOptions;
-      }
-
-      // Update Quick Recovery eligibility based on progress
-      const safePathCheckedRun = checkQuickRecoveryEligibility(newRun, newBoard, state.floorConfig);
+      const result = postRevealCheck(state, newBoard, newRun, state.floorConfig);
 
       return {
         ...state,
         board: newBoard,
-        run: safePathCheckedRun,
-        phase: newPhase,
-        draftOptions: newDraftOptions,
+        run: result.run,
+        phase: result.phase,
+        draftOptions: result.draftOptions,
         minesRemaining: state.floorConfig.mines - countFlags(newBoard),
       };
     }
@@ -762,26 +791,15 @@ function roguelikeReducer(state: RoguelikeGameState, action: RoguelikeAction): R
         momentumActive: false,
       };
 
-      let newPhase: GamePhase = state.phase;
-      let newDraftOptions: PowerUp[] = [];
-
-      if (checkFloorCleared(newBoard)) {
-        const clearResult = handleFloorClearTransition(newRun, state.time);
-        newRun.score = clearResult.score;
-        newPhase = clearResult.phase;
-        newDraftOptions = clearResult.draftOptions;
-      }
-
-      // Update Quick Recovery eligibility based on progress (use updated mine count)
       const defusalFloorConfig = { ...state.floorConfig, mines: state.floorConfig.mines - 1 };
-      const defusalCheckedRun = checkQuickRecoveryEligibility(newRun, newBoard, defusalFloorConfig);
+      const result = postRevealCheck(state, newBoard, newRun, defusalFloorConfig);
 
       return {
         ...state,
         board: newBoard,
-        run: defusalCheckedRun,
-        phase: newPhase,
-        draftOptions: newDraftOptions,
+        run: result.run,
+        phase: result.phase,
+        draftOptions: result.draftOptions,
         floorConfig: defusalFloorConfig,
         minesRemaining: state.floorConfig.mines - 1 - countFlags(newBoard),
       };
@@ -822,35 +840,13 @@ function roguelikeReducer(state: RoguelikeGameState, action: RoguelikeAction): R
           time: 0,
           isFirstClick: true,
           explodedCell: null,
-          dangerCells: new Set(),
-          patternMemoryCells: new Set(),
-          openingsMapCells: new Set(),
-          cellsRevealedThisFloor: 0,
-          probabilityLensCells: new Set(),
-          oracleGiftCells: new Set(),
-          mineDetectorScannedCells: new Set(),
-          mineDetectorResult: null,
-          sixthSenseTriggered: false,
-          falseStartTriggered: false,
           run: {
             ...state.run,
             quickRecoveryUsedThisRun: true,
-            quickRecoveryEligibleThisFloor: false, // Consumed this run
-            ironWillUsedThisFloor: false, // Reset shield for floor restart
-            xRayUsedThisFloor: false,
-            luckyStartUsedThisFloor: false,
-            momentumActive: false,
-            peekUsedThisFloor: false,
-            safePathUsedThisFloor: false,
-            defusalKitUsedThisFloor: false,
-            surveyChargesRemaining: 2,
-            probabilityLensUsedThisFloor: false,
-            mineDetectorScansRemaining: 3,
-            sixthSenseChargesRemaining: 1,
-            sixthSenseArmed: false,
-            falseStartAvailableThisFloor: true,
-            patternMemoryAvailableThisFloor: true,
+            quickRecoveryEligibleThisFloor: false,
+            ...resetFloorPowerUpState(state.run),
           },
+          ...freshFloorUiState(),
         };
       }
 
@@ -1114,7 +1110,7 @@ export function useRoguelikeState(isMobile: boolean = false, isPaused: boolean =
     dispatch({ type: 'CHORD_CLICK', row, col });
   }, []);
 
-  const useXRay = useCallback((row: number, col: number) => {
+  const activateXRay = useCallback((row: number, col: number) => {
     dispatch({ type: 'USE_X_RAY', row, col });
   }, []);
 
@@ -1142,7 +1138,7 @@ export function useRoguelikeState(isMobile: boolean = false, isPaused: boolean =
     dispatch({ type: 'CLEAR_CHORD_HIGHLIGHT' });
   }, []);
 
-  const usePeek = useCallback((row: number, col: number) => {
+  const activatePeek = useCallback((row: number, col: number) => {
     dispatch({ type: 'USE_PEEK', row, col });
   }, []);
 
@@ -1150,23 +1146,23 @@ export function useRoguelikeState(isMobile: boolean = false, isPaused: boolean =
     dispatch({ type: 'CLEAR_PEEK' });
   }, []);
 
-  const useSafePath = useCallback((direction: 'row' | 'col', index: number) => {
+  const activateSafePath = useCallback((direction: 'row' | 'col', index: number) => {
     dispatch({ type: 'USE_SAFE_PATH', direction, index });
   }, []);
 
-  const useDefusalKit = useCallback((row: number, col: number) => {
+  const activateDefusalKit = useCallback((row: number, col: number) => {
     dispatch({ type: 'USE_DEFUSAL_KIT', row, col });
   }, []);
 
-  const useSurvey = useCallback((direction: 'row' | 'col', index: number) => {
+  const activateSurvey = useCallback((direction: 'row' | 'col', index: number) => {
     dispatch({ type: 'USE_SURVEY', direction, index });
   }, []);
 
-  const useProbabilityLens = useCallback(() => {
+  const activateProbabilityLens = useCallback(() => {
     dispatch({ type: 'USE_PROBABILITY_LENS' });
   }, []);
 
-  const useMineDetector = useCallback((row: number, col: number) => {
+  const activateMineDetector = useCallback((row: number, col: number) => {
     dispatch({ type: 'USE_MINE_DETECTOR', row, col });
   }, []);
 
@@ -1174,49 +1170,11 @@ export function useRoguelikeState(isMobile: boolean = false, isPaused: boolean =
     dispatch({ type: 'TOGGLE_SIXTH_SENSE_ARM' });
   }, []);
 
-  // Auto-clear peek after a short delay
-  useEffect(() => {
-    if (!state.peekCell) return;
-
-    const timeout = setTimeout(() => {
-      dispatch({ type: 'CLEAR_PEEK' });
-    }, 2000); // Show peek for 2 seconds
-
-    return () => clearTimeout(timeout);
-  }, [state.peekCell]);
-
-  // Auto-clear mine detector result after 3 seconds
-  useEffect(() => {
-    if (!state.mineDetectorResult) return;
-
-    const timeout = setTimeout(() => {
-      dispatch({ type: 'CLEAR_MINE_DETECTOR_RESULT' });
-    }, 3000);
-
-    return () => clearTimeout(timeout);
-  }, [state.mineDetectorResult]);
-
-  // Auto-clear sixth sense triggered toast after 2 seconds
-  useEffect(() => {
-    if (!state.sixthSenseTriggered) return;
-
-    const timeout = setTimeout(() => {
-      dispatch({ type: 'CLEAR_SIXTH_SENSE_TRIGGERED' });
-    }, 2000);
-
-    return () => clearTimeout(timeout);
-  }, [state.sixthSenseTriggered]);
-
-  // Auto-clear false start triggered toast after 2 seconds
-  useEffect(() => {
-    if (!state.falseStartTriggered) return;
-
-    const timeout = setTimeout(() => {
-      dispatch({ type: 'CLEAR_FALSE_START_TRIGGERED' });
-    }, 2000);
-
-    return () => clearTimeout(timeout);
-  }, [state.falseStartTriggered]);
+  // Auto-clear transient state after timeouts
+  useAutoClear(state.peekCell, 2000, () => dispatch({ type: 'CLEAR_PEEK' }));
+  useAutoClear(state.mineDetectorResult, 3000, () => dispatch({ type: 'CLEAR_MINE_DETECTOR_RESULT' }));
+  useAutoClear(state.sixthSenseTriggered, 2000, () => dispatch({ type: 'CLEAR_SIXTH_SENSE_TRIGGERED' }));
+  useAutoClear(state.falseStartTriggered, 2000, () => dispatch({ type: 'CLEAR_FALSE_START_TRIGGERED' }));
 
   // Note: Probability Lens highlights persist until floor end (no auto-clear timer)
   // This gives players time to act on the strategic guidance
@@ -1228,14 +1186,14 @@ export function useRoguelikeState(isMobile: boolean = false, isPaused: boolean =
     revealCell: revealCellAction,
     toggleFlag: toggleFlagAction,
     chordClick,
-    useXRay,
-    usePeek,
+    activateXRay,
+    activatePeek,
     clearPeek,
-    useSafePath,
-    useDefusalKit,
-    useSurvey,
-    useProbabilityLens,
-    useMineDetector,
+    activateSafePath,
+    activateDefusalKit,
+    activateSurvey,
+    activateProbabilityLens,
+    activateMineDetector,
     toggleSixthSenseArm,
     selectPowerUp,
     explosionComplete,

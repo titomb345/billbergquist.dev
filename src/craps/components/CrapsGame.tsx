@@ -15,6 +15,7 @@ import { PhaseAnnouncement } from './PhaseAnnouncement';
 import { BalanceChange } from './BalanceChange';
 import { HotStreak } from './HotStreak';
 import { useSoundEffects } from '../hooks/useSoundEffects';
+import { useHideHeaderFooter } from '../../shared/hooks/useHideHeaderFooter';
 import styles from './CrapsGame.module.css';
 
 interface CrapsGameProps {
@@ -24,12 +25,13 @@ interface CrapsGameProps {
   lastRoll: { roll: DiceRoll; resolutions: BetResolution[] } | null;
   diceAnimating: boolean;
   onSend: (msg: CrapsClientMessage) => void;
+  onLeave: () => void;
   onClearLastRoll: () => void;
   onDiceAnimDone: () => void;
   chatMessages?: ChatMessage[];
 }
 
-export function CrapsGame({ room, myPlayerId, connectionStatus, lastRoll, diceAnimating, onSend, onClearLastRoll, onDiceAnimDone, chatMessages = [] }: CrapsGameProps) {
+export function CrapsGame({ room, myPlayerId, connectionStatus, lastRoll, diceAnimating, onSend, onLeave, onClearLastRoll, onDiceAnimDone, chatMessages = [] }: CrapsGameProps) {
   const me = room.players.find((p) => p.id === myPlayerId);
   const isHost = me?.isHost ?? false;
   const isShooter = room.players[room.shooterIndex]?.id === myPlayerId;
@@ -69,16 +71,7 @@ export function CrapsGame({ room, myPlayerId, connectionStatus, lastRoll, diceAn
     return myTotal >= 50;
   }, [lastRoll, myPlayerId]);
 
-  useEffect(() => {
-    const header = document.querySelector('header');
-    const footer = document.querySelector('footer');
-    if (header) header.style.display = 'none';
-    if (footer) footer.style.display = 'none';
-    return () => {
-      if (header) header.style.display = '';
-      if (footer) footer.style.display = '';
-    };
-  }, []);
+  useHideHeaderFooter();
 
   const handlePlaceBet = useCallback((betType: BetType, amount: number, betPoint?: number) => {
     onSend({ type: 'placeBet', betType, amount, betPoint });
@@ -105,6 +98,7 @@ export function CrapsGame({ room, myPlayerId, connectionStatus, lastRoll, diceAn
     onSend({ type: 'toggleReady' });
   }, [onSend]);
 
+  const playerColors = getPlayerColors();
   const myBets = useMemo(() => room.bets.filter((b) => b.playerId === myPlayerId), [room.bets, myPlayerId]);
   const [selectedChip, setSelectedChip] = useState(5);
   const [diceRolling, setDiceRolling] = useState(false);
@@ -120,14 +114,17 @@ export function CrapsGame({ room, myPlayerId, connectionStatus, lastRoll, diceAn
   );
 
   // Freeze table state while dice are animating so chips/point don't update early
-  const frozenBetsRef = useRef(room.bets);
-  const frozenPointRef = useRef(room.point);
-  if (!diceRolling && !diceAnimating) {
-    frozenBetsRef.current = room.bets;
-    frozenPointRef.current = room.point;
+  const isDiceActive = diceRolling || diceAnimating;
+  const lastStableBets = useRef(room.bets);
+  const lastStablePoint = useRef(room.point);
+  /* eslint-disable react-hooks/refs -- intentional: freeze/read snapshot during dice animation */
+  if (!isDiceActive) {
+    lastStableBets.current = room.bets;
+    lastStablePoint.current = room.point;
   }
-  const visibleBets = (diceRolling || diceAnimating) ? frozenBetsRef.current : room.bets;
-  const visiblePoint = (diceRolling || diceAnimating) ? frozenPointRef.current : room.point;
+  const visibleBets = isDiceActive ? lastStableBets.current : room.bets;
+  const visiblePoint = isDiceActive ? lastStablePoint.current : room.point;
+  /* eslint-enable react-hooks/refs */
 
   const [copyFeedback, setCopyFeedback] = useState(false);
   const handleCopyLink = useCallback(() => {
@@ -138,7 +135,7 @@ export function CrapsGame({ room, myPlayerId, connectionStatus, lastRoll, diceAn
 
   const [showPayouts, setShowPayouts] = useState(false);
 
-  // Round countdown derived from server's roundDeadline
+  // Round countdown derived from server's roundDeadline (timer subscription)
   const [rollCountdown, setRollCountdown] = useState<number | null>(null);
   useEffect(() => {
     if (!room.roundDeadline || room.phase === 'lobby') {
@@ -218,6 +215,10 @@ export function CrapsGame({ room, myPlayerId, connectionStatus, lastRoll, diceAn
           {isHost && otherPlayers.length > 0 && !allReady && (
             <p className={styles.hint}>Waiting for all players to ready up</p>
           )}
+
+          <button className={styles.leaveBtn} onClick={onLeave}>
+            Leave Room
+          </button>
         </div>
 
         {/* Chat in lobby */}
@@ -280,6 +281,16 @@ export function CrapsGame({ room, myPlayerId, connectionStatus, lastRoll, diceAn
               </svg>
             )}
           </button>
+          <button
+            className={styles.payoutBtn}
+            onClick={onLeave}
+            title="Leave room"
+          >
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M6 2H3.5A1.5 1.5 0 002 3.5v9A1.5 1.5 0 003.5 14H6" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
+              <path d="M11 11l3-3-3-3M6 8h8" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
           {me && (
             <div className={styles.balanceBar}>
               <span className={styles.balanceBarAmount}>${me.balance.toLocaleString()}</span>
@@ -295,12 +306,10 @@ export function CrapsGame({ room, myPlayerId, connectionStatus, lastRoll, diceAn
       {/* Players Strip — all players including current user */}
       <div className={styles.playersStrip}>
         <div className={styles.playersStripInner}>
-          {room.players.map((player) => {
-            const idx = room.players.indexOf(player);
-            const isPlayerShooter = idx >= 0 && idx === room.shooterIndex;
+          {room.players.map((player, idx) => {
+            const isPlayerShooter = idx === room.shooterIndex;
             const isMe = player.id === myPlayerId;
-            const colors = getPlayerColors();
-            const chipColor = colors[idx % colors.length];
+            const chipColor = playerColors[idx % playerColors.length];
             return (
               <div
                 key={player.id}
@@ -348,6 +357,7 @@ export function CrapsGame({ room, myPlayerId, connectionStatus, lastRoll, diceAn
             players={room.players}
             myPlayerId={myPlayerId}
             onPlaceBet={handlePlaceBet}
+            onRemoveBet={handleRemoveBet}
             phase={room.phase}
             betsConfirmed={me?.betsConfirmed ?? false}
             selectedChip={selectedChip}
@@ -362,8 +372,6 @@ export function CrapsGame({ room, myPlayerId, connectionStatus, lastRoll, diceAn
               onConfirm={handleConfirmBets}
               myBets={myBets}
               point={room.point}
-              gameState={room}
-              myPlayerId={myPlayerId}
               selectedChip={selectedChip}
               onChipChange={setSelectedChip}
               confirmed={room.phase !== 'betting' || (me?.betsConfirmed ?? false) || diceRolling || diceAnimating}

@@ -34,10 +34,6 @@
   gap: var(--space-lg);
 }
 
-.grid :global(.scroll-reveal-child) {
-  height: 100%;
-}
-
 /* ── Approach section ── */
 
 .approach {
@@ -60,9 +56,9 @@
   margin-top: var(--space-xl);
   padding: var(--space-lg);
   background: var(--bg-surface);
-  border: 1px solid rgba(0, 212, 170, 0.15);
+  border: 1px solid rgba(0, 201, 167, 0.15);
   border-radius: var(--radius-md);
-  box-shadow: 0 0 20px rgba(0, 212, 170, 0.06);
+  box-shadow: 0 0 20px rgba(0, 201, 167, 0.06);
 }
 
 .ctaText {

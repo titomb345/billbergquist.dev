@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import type { Cell as CellType } from '../types';
 import Cell from './Cell';
 
@@ -76,42 +76,49 @@ function Board({
   // Track hovered row for Safe Path and Survey row highlighting
   const [hoveredRow, setHoveredRow] = useState<number | null>(null);
 
-  // Check if a cell is within the 4x4 detector zone (offsets -1 to +2)
-  const isInDetectorZone = (row: number, col: number): boolean => {
-    if (!detectorCenter) return false;
-    const rowDiff = row - detectorCenter.row;
-    const colDiff = col - detectorCenter.col;
-    return rowDiff >= -1 && rowDiff <= 2 && colDiff >= -1 && colDiff <= 2;
-  };
+  // Pre-compute detector zone as a Set for O(1) lookups instead of per-cell bounds checks
+  const detectorZone = useMemo(() => {
+    if (!detectorCenter) return null;
+    const zone = new Set<string>();
+    for (let r = detectorCenter.row - 1; r <= detectorCenter.row + 2; r++) {
+      for (let c = detectorCenter.col - 1; c <= detectorCenter.col + 2; c++) {
+        zone.add(`${r},${c}`);
+      }
+    }
+    return zone;
+  }, [detectorCenter]);
 
   // Show row markers when survey mode is active OR when there are surveyed rows to display
   const showRowMarkers = surveyMode || (surveyedRows && surveyedRows.size > 0);
+  const rowHoverMode = safePathMode || surveyMode;
 
   return (
     <div
       className={`minesweeper-board ${xRayMode ? 'xray-mode' : ''} ${showRowMarkers ? 'has-survey-markers' : ''}`}
       onContextMenu={(e) => e.preventDefault()}
     >
-      {board.map((row, rowIndex) => (
+      {board.map((row, rowIndex) => {
+        // Per-row: compute survey state once (shared by all cells in this row)
+        const rowSurveyed = surveyedRows?.has(rowIndex) ?? false;
+        const rowMineCount = surveyedRows?.get(rowIndex);
+
+        return (
         <div key={rowIndex} className="board-row">
           {showRowMarkers && (() => {
-            const isSurveyed = surveyedRows?.has(rowIndex);
-            const mineCount = surveyedRows?.get(rowIndex);
-            const isHovered = surveyMode && hoveredRow === rowIndex && !isSurveyed;
-            // When not in survey mode, only render markers for surveyed rows
-            if (!surveyMode && !isSurveyed) {
+            const isHovered = surveyMode && hoveredRow === rowIndex && !rowSurveyed;
+            if (!surveyMode && !rowSurveyed) {
               return <div className="survey-row-marker placeholder" />;
             }
             return (
               <div
-                className={`survey-row-marker ${isSurveyed ? 'surveyed' : ''} ${surveyMode && !isSurveyed ? 'active' : ''} ${surveyMode && isSurveyed ? 'surveyed-targeting' : ''} ${isHovered ? 'hovered' : ''}`}
+                className={`survey-row-marker ${rowSurveyed ? 'surveyed' : ''} ${surveyMode && !rowSurveyed ? 'active' : ''} ${surveyMode && rowSurveyed ? 'surveyed-targeting' : ''} ${isHovered ? 'hovered' : ''}`}
                 onClick={() => {
-                  if (surveyMode && !isSurveyed && onSurvey) {
+                  if (surveyMode && !rowSurveyed && onSurvey) {
                     onSurvey(rowIndex, 0);
                   }
                 }}
                 onMouseEnter={() => {
-                  if (surveyMode && !isSurveyed) {
+                  if (surveyMode && !rowSurveyed) {
                     setHoveredRow(rowIndex);
                   }
                 }}
@@ -121,10 +128,10 @@ function Board({
                   }
                 }}
               >
-                {isSurveyed ? (
+                {rowSurveyed ? (
                   <span className="survey-badge-result">
                     <span className="survey-badge-mine">💣</span>
-                    <span className="survey-badge-count">{mineCount}</span>
+                    <span className="survey-badge-count">{rowMineCount}</span>
                   </span>
                 ) : (
                   <span className="survey-marker-dot">▶</span>
@@ -132,7 +139,10 @@ function Board({
               </div>
             );
           })()}
-          {row.map((cell) => (
+          {row.map((cell) => {
+            // Cache cellKey once instead of computing 9 times per cell
+            const cellKey = `${cell.row},${cell.col}`;
+            return (
             <Cell
               key={`${cell.row}-${cell.col}`}
               cell={cell}
@@ -140,8 +150,8 @@ function Board({
               onFlag={onFlag}
               onChord={onChord}
               gameOver={gameOver}
-              hasDanger={dangerCells?.has(`${cell.row},${cell.col}`)}
-              hasPatternMemory={patternMemoryCells?.has(`${cell.row},${cell.col}`)}
+              hasDanger={dangerCells?.has(cellKey)}
+              hasPatternMemory={patternMemoryCells?.has(cellKey)}
               xRayMode={xRayMode}
               peekMode={peekMode}
               safePathMode={safePathMode}
@@ -162,24 +172,26 @@ function Board({
               onDefusalKit={onDefusalKit}
               onSurvey={onSurvey}
               onMineDetector={onMineDetector}
-              isSurveyAlreadyDone={surveyMode && (surveyedRows?.has(cell.row) ?? false)}
-              isMineDetectorScanned={mineDetectorScannedCells?.has(`${cell.row},${cell.col}`)}
+              isSurveyAlreadyDone={surveyMode && rowSurveyed}
+              isMineDetectorScanned={mineDetectorScannedCells?.has(cellKey)}
               onHover={onCellHover}
               onHoverEnd={onCellHoverEnd}
-              inDetectorZone={isInDetectorZone(cell.row, cell.col)}
-              isChordHighlighted={chordHighlightCells?.has(`${cell.row},${cell.col}`)}
+              inDetectorZone={detectorZone?.has(cellKey) ?? false}
+              isChordHighlighted={chordHighlightCells?.has(cellKey)}
               onChordHighlightStart={onChordHighlightStart}
               onChordHighlightEnd={onChordHighlightEnd}
-              isFaded={fadedCells?.has(`${cell.row},${cell.col}`)}
-              hoveredRow={safePathMode || surveyMode ? hoveredRow : null}
-              onRowHover={safePathMode || surveyMode ? setHoveredRow : undefined}
-              hasProbabilityLens={probabilityLensCells?.has(`${cell.row},${cell.col}`)}
-              hasOracleGift={oracleGiftCells?.has(`${cell.row},${cell.col}`)}
-              hasOpeningsMap={openingsMapCells?.has(`${cell.row},${cell.col}`)}
+              isFaded={fadedCells?.has(cellKey)}
+              hoveredRow={rowHoverMode ? hoveredRow : null}
+              onRowHover={rowHoverMode ? setHoveredRow : undefined}
+              hasProbabilityLens={probabilityLensCells?.has(cellKey)}
+              hasOracleGift={oracleGiftCells?.has(cellKey)}
+              hasOpeningsMap={openingsMapCells?.has(cellKey)}
             />
-          ))}
+            );
+          })}
         </div>
-      ))}
+        );
+      })}
     </div>
   );
 }

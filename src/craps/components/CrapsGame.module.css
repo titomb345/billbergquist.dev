@@ -247,6 +247,26 @@
   font-style: italic;
 }
 
+.leaveBtn {
+  background: transparent;
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  color: var(--text-tertiary);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-size: 0.72rem;
+  font-family: var(--font-heading);
+  letter-spacing: 0.04em;
+  transition: all var(--transition-fast);
+  margin-top: var(--space-2);
+}
+
+.leaveBtn:hover {
+  border-color: #ef4444;
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.06);
+}
+
 /* ═══════════════════════════════════════════
    Top Bar
    ═══════════════════════════════════════════ */

@@ -1,52 +1,46 @@
 ---
-import GlowText from '../ui/GlowText.astro';
+import { Image } from 'astro:assets';
+import crittercareImg from '../../assets/screenshots/crittercare.png';
 import styles from './RecentWork.module.css';
-
-const projects = [
-  {
-    name: 'Critter Care',
-    type: 'Local Business Website',
-    description:
-      'Built a pet sitting and dog walking website from scratch. Fast, mobile-friendly, and designed to convert visitors into bookings. Includes service pages, pricing, and a contact form.',
-    url: 'https://critter-care.com',
-    tech: ['Astro', 'Tailwind CSS', 'Decap CMS'],
-  },
-  {
-    name: 'CreatiCalc',
-    type: 'Web Application',
-    description:
-      'An earnings calculator helping content creators estimate YouTube, Instagram, and TikTok revenue. Built for speed with real-time calculations and mobile-first design.',
-    url: 'https://creaticalc.com',
-    tech: ['Next.js', 'React', 'TypeScript'],
-  },
-];
 ---
 
-<section class={`${styles.section} scroll-reveal`}>
-  <GlowText as="h2" size="medium" color="mint" class={styles.sectionTitle}>
-    RECENT WORK
-  </GlowText>
-  <div class={styles.grid}>
-    {
-      projects.map((project) => (
-        <div class={`${styles.project} scroll-reveal-child`}>
-          <div class={styles.projectHeader}>
-            <h3 class={styles.projectName}>{project.name}</h3>
-            <span class={styles.projectType}>{project.type}</span>
-          </div>
-          <p class={styles.projectDescription}>{project.description}</p>
-          <div class={styles.projectFooter}>
-            <div class={styles.techList}>
-              {project.tech.map((t) => (
-                <span class={styles.techTag}>{t}</span>
-              ))}
-            </div>
-            <a href={project.url} target="_blank" rel="noopener noreferrer" class={styles.projectLink}>
-              View Site &rarr;
-            </a>
-          </div>
+<section class={styles.section}>
+  <h2 class={styles.sectionTitle}>Recent Work</h2>
+  <div class={styles.showcase}>
+    <div class={styles.browserFrame}>
+      <div class={styles.browserBar}>
+        <span class={styles.browserDot}></span>
+        <span class={styles.browserDot}></span>
+        <span class={styles.browserDot}></span>
+        <span class={styles.browserUrl}>critter-care.com</span>
+      </div>
+      <Image
+        src={crittercareImg}
+        alt="Critter Care - pet sitting business website built by Bill Bergquist"
+        width={600}
+        height={375}
+        class={styles.screenshot}
+        loading="lazy"
+      />
+    </div>
+    <div class={styles.details}>
+      <h3 class={styles.projectName}>Critter Care</h3>
+      <span class={styles.projectType}>Local Business Website</span>
+      <p class={styles.projectDescription}>
+        Built a pet sitting and dog walking website from scratch. Fast, mobile-friendly, and
+        designed to convert visitors into bookings. Includes service pages, pricing, testimonials,
+        and a contact form with CMS-powered content.
+      </p>
+      <div class={styles.projectFooter}>
+        <div class={styles.techList}>
+          <span class={styles.techTag}>Astro</span>
+          <span class={styles.techTag}>Tailwind CSS</span>
+          <span class={styles.techTag}>Decap CMS</span>
         </div>
-      ))
-    }
+        <a href="https://critter-care.com" target="_blank" rel="noopener noreferrer" class={styles.projectLink}>
+          Visit Site &rarr;
+        </a>
+      </div>
+    </div>
   </div>
 </section>

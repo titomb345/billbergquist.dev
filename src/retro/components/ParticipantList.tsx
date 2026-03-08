@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import type { Participant, RetroPhase, ClientMessage } from '../types';
 import { getAvatarColor, getInitials } from '../utils/avatar';
 import styles from './ParticipantList.module.css';
@@ -70,6 +71,10 @@ export function ParticipantList({ participants, phase, myParticipantId, isHost, 
   const me = participants.find((p) => p.id === myParticipantId);
   const others = participants.filter((p) => p.id !== myParticipantId);
 
+  const handleTransferHost = useCallback((targetId: string) => {
+    onSend({ type: 'transferHost', targetParticipantId: targetId });
+  }, [onSend]);
+
   const chipProps = (p: Participant) => ({
     p,
     isMe: p.id === myParticipantId,
@@ -79,7 +84,7 @@ export function ParticipantList({ participants, phase, myParticipantId, isHost, 
     votesUsed: votesPerPerson - p.votesRemaining,
     votesPerPerson,
     canTransferHost: isHost && !p.isHost && p.id !== myParticipantId,
-    onTransferHost: () => onSend({ type: 'transferHost', targetParticipantId: p.id }),
+    onTransferHost: () => handleTransferHost(p.id),
   });
 
   return (

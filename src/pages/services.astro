@@ -1,9 +1,6 @@
 ---
 import { Image } from 'astro:assets';
 import Layout from '../layouts/Layout.astro';
-import GlowText from '../components/ui/GlowText.astro';
-import Card from '../components/ui/Card.astro';
-import SectionDivider from '../components/ui/SectionDivider.astro';
 import ContactForm from '../components/services/ContactForm';
 import CredibilitySection from '../components/services/CredibilitySection.astro';
 import RecentWork from '../components/services/RecentWork.astro';
@@ -20,28 +17,24 @@ const services = [
     title: 'Business Websites',
     description:
       'A professional site that helps your Denver or Lakewood business get found online. Fast on every device, easy to navigate, and built to get you more calls and bookings.',
-    color: 'mint',
   },
   {
     icon: '02',
     title: 'Landing Pages',
     description:
       'Single-page sites built around one goal: getting people to book, sign up, or buy. Great for promotions, new services, or testing an idea.',
-    color: 'orange',
   },
   {
     icon: '03',
     title: 'Website Redesign',
     description:
       "If your current site looks like it's from 2015, I can help. I'll rebuild it with a modern design, better performance, and a layout that actually works for your customers.",
-    color: 'magenta',
   },
   {
     icon: '04',
     title: 'Ongoing Support',
     description:
       'Need something updated? Have a question about your site? I stick around after launch. You get a real person to call, not a support ticket.',
-    color: 'purple',
   },
 ];
 
@@ -178,6 +171,7 @@ const jsonLdService = JSON.stringify({
   },
   serviceType: ['Web Design', 'Web Development', 'Website Redesign', 'Landing Page Design'],
   priceRange: '$$',
+  image: 'https://billbergquist.dev/og/services.png',
   hasOfferCatalog: {
     '@type': 'OfferCatalog',
     name: 'Web Development Services',
@@ -247,51 +241,38 @@ const jsonLdFaq = JSON.stringify({
 >
   <div class={styles.page}>
     <header class={styles.header}>
-      <GlowText as="h1" size="large" color="mint" class={styles.title}>
-        WEB DESIGN & DEVELOPMENT IN DENVER
-      </GlowText>
+      <h1 class={styles.title}>Web Design & Development in Denver</h1>
       <p class={styles.subtitle}>Denver &middot; Lakewood &middot; Front Range &middot; Colorado</p>
       <p class={styles.intro}>
         I'm a staff software engineer with over 14 years of experience building for the web. I help
         small businesses across Denver, Lakewood, and the Colorado Front Range get online with fast,
         modern websites that look great and actually work.
       </p>
-      <div class="accent-line-orange"></div>
     </header>
 
-    <section class={`${styles.services} scroll-reveal`}>
-      <GlowText as="h2" size="medium" color="orange" class={styles.sectionTitle}>
-        WHAT I OFFER
-      </GlowText>
+    <section class={styles.services}>
+      <h2 class={styles.sectionTitle}>What I Offer</h2>
       <div class={styles.serviceGrid}>
         {
           services.map((service) => (
-            <div class="scroll-reveal-child">
-              <Card class={styles.serviceCard}>
-                <span class={`${styles.serviceIcon} ${styles[`color_${service.color}`]}`}>
-                  {service.icon}
-                </span>
-                <h3 class={`${styles.serviceTitle} ${styles[`color_${service.color}`]}`}>
-                  {service.title}
-                </h3>
-                <p class={styles.serviceDescription}>{service.description}</p>
-              </Card>
+            <div class={styles.serviceCard}>
+              <span class={styles.serviceIcon}>{service.icon}</span>
+              <h3 class={styles.serviceTitle}>{service.title}</h3>
+              <p class={styles.serviceDescription}>{service.description}</p>
             </div>
           ))
         }
       </div>
     </section>
 
-    <SectionDivider color="mint" />
+    <div class={styles.divider}></div>
 
     <RecentWork />
 
-    <SectionDivider color="purple" />
+    <div class={styles.divider}></div>
 
-    <section class={`${styles.whySection} scroll-reveal`}>
-      <GlowText as="h2" size="medium" color="purple" class={styles.sectionTitle}>
-        WHY WORK WITH A LOCAL DEVELOPER
-      </GlowText>
+    <section class={styles.whySection}>
+      <h2 class={styles.sectionTitle}>Why Work With a Local Developer</h2>
       <Image
         src={headshot}
         alt="Bill Bergquist — web developer in Denver, CO"
@@ -303,7 +284,7 @@ const jsonLdFaq = JSON.stringify({
       <div class={styles.whyGrid}>
         {
           whyPoints.map((point) => (
-            <div class={`${styles.whyItem} scroll-reveal-child`}>
+            <div class={styles.whyItem}>
               <h3 class={styles.whyTitle}>{point.title}</h3>
               <p class={styles.whyDescription}>{point.description}</p>
             </div>
@@ -314,16 +295,14 @@ const jsonLdFaq = JSON.stringify({
 
     <CredibilitySection />
 
-    <SectionDivider color="orange" />
+    <div class={styles.divider}></div>
 
-    <section class={`${styles.process} scroll-reveal`}>
-      <GlowText as="h2" size="medium" color="magenta" class={styles.sectionTitle}>
-        HOW IT WORKS
-      </GlowText>
+    <section class={styles.process}>
+      <h2 class={styles.sectionTitle}>How It Works</h2>
       <div class={styles.steps}>
         {
           steps.map((step, i) => (
-            <div class={`${styles.step} scroll-reveal-child`}>
+            <div class={styles.step}>
               <div class={styles.stepConnector}>
                 <span class={styles.stepNumber}>{step.number}</span>
                 {i < steps.length - 1 && <div class={styles.stepLine} />}
@@ -338,16 +317,14 @@ const jsonLdFaq = JSON.stringify({
       </div>
     </section>
 
-    <SectionDivider color="purple" />
+    <div class={styles.divider}></div>
 
-    <section class={`${styles.faq} scroll-reveal`}>
-      <GlowText as="h2" size="medium" color="orange" class={styles.sectionTitle}>
-        FREQUENTLY ASKED QUESTIONS
-      </GlowText>
+    <section class={styles.faq}>
+      <h2 class={styles.sectionTitle}>Frequently Asked Questions</h2>
       <div class={styles.faqList}>
         {
           faqs.map((faq) => (
-            <div class={`${styles.faqItem} scroll-reveal-child`}>
+            <div class={styles.faqItem}>
               <h3 class={styles.faqQuestion}>{faq.question}</h3>
               <p class={styles.faqAnswer}>{faq.answer}</p>
             </div>
@@ -356,20 +333,18 @@ const jsonLdFaq = JSON.stringify({
       </div>
     </section>
 
-    <SectionDivider color="purple" />
+    <div class={styles.divider}></div>
 
-    <section class={`${styles.areasServed} scroll-reveal`}>
-      <GlowText as="h2" size="medium" color="purple" class={styles.sectionTitle}>
-        AREAS I SERVE
-      </GlowText>
+    <section class={styles.areasServed}>
+      <h2 class={styles.sectionTitle}>Areas I Serve</h2>
       <div class={styles.areasGrid}>
         <a href="/services/denver" class={styles.areaLink}>Denver</a>
         <a href="/services/lakewood" class={styles.areaLink}>Lakewood</a>
         <a href="/services/boulder" class={styles.areaLink}>Boulder</a>
-        <span class={styles.areaText}>Golden</span>
-        <span class={styles.areaText}>Arvada</span>
+        <a href="/services/arvada" class={styles.areaLink}>Arvada</a>
+        <a href="/services/golden" class={styles.areaLink}>Golden</a>
+        <a href="/services/littleton" class={styles.areaLink}>Littleton</a>
         <span class={styles.areaText}>Wheat Ridge</span>
-        <span class={styles.areaText}>Littleton</span>
         <span class={styles.areaText}>Englewood</span>
         <span class={styles.areaText}>Aurora</span>
         <span class={styles.areaText}>Centennial</span>
@@ -384,12 +359,10 @@ const jsonLdFaq = JSON.stringify({
       </p>
     </section>
 
-    <SectionDivider color="mint" />
+    <div class={styles.divider}></div>
 
-    <section class={`${styles.contact} scroll-reveal`}>
-      <GlowText as="h2" size="medium" color="mint" class={styles.sectionTitle}>
-        GET IN TOUCH
-      </GlowText>
+    <section class={styles.contact}>
+      <h2 class={styles.sectionTitle}>Get in Touch</h2>
       <p class={styles.contactIntro}>
         Have a project in mind? Whether you run a coffee shop in Denver, a boutique in Lakewood, a
         restaurant in Arvada, or any other Front Range business, I'd love to hear about it.
@@ -413,17 +386,6 @@ const jsonLdFaq = JSON.stringify({
             services@billbergquist.dev
           </a>
         </p>
-      </div>
-    </section>
-
-    <section class={`${styles.techStrip} scroll-reveal`}>
-      <p class={styles.techStripLabel}>Built with modern tools</p>
-      <div class={styles.techStripList}>
-        <span class={styles.techStripItem}>Astro</span>
-        <span class={styles.techStripItem}>React</span>
-        <span class={styles.techStripItem}>TypeScript</span>
-        <span class={styles.techStripItem}>Netlify</span>
-        <span class={styles.techStripItem}>Tailwind CSS</span>
       </div>
     </section>
   </div>

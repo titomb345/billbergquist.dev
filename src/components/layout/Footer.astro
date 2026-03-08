@@ -6,22 +6,34 @@ import styles from './Footer.module.css';
   <div class={styles.topBorder}></div>
 
   <div class={styles.content}>
+    <div class={styles.footerCta}>
+      <p class={styles.footerCtaText}>Need a website for your business?</p>
+      <a href="/services" class={styles.footerCtaLink}>Get a free consultation &rarr;</a>
+    </div>
+
     <nav class={styles.nav} aria-label="Footer navigation">
-      <a href="/" class={styles.navLink}>Home</a>
-      <a href="/about" class={styles.navLink}>About</a>
       <a href="/services" class={styles.navLink}>Services</a>
       <a href="/projects" class={styles.navLink}>Projects</a>
+      <a href="/about" class={styles.navLink}>About</a>
       <a href="/blog" class={styles.navLink}>Blog</a>
       <a href="/arcade" class={styles.navLink}>Arcade</a>
-      <a href="/retro" id="footer-retro" class={styles.navLink} style="display:none">Retro</a>
     </nav>
 
     <div class={styles.serviceLinks}>
-      <a href="/services/denver" class={styles.serviceLink}>Denver</a>
-      <a href="/services/lakewood" class={styles.serviceLink}>Lakewood</a>
-      <a href="/services/boulder" class={styles.serviceLink}>Boulder</a>
-      <span class={styles.serviceDivider}>|</span>
-      <a href="mailto:services@billbergquist.dev" class={styles.serviceLink}>services@billbergquist.dev</a>
+      <div class={styles.cityLinks}>
+        <a href="/services/denver" class={styles.serviceLink}>Denver</a>
+        <span class={styles.dot}>&middot;</span>
+        <a href="/services/lakewood" class={styles.serviceLink}>Lakewood</a>
+        <span class={styles.dot}>&middot;</span>
+        <a href="/services/boulder" class={styles.serviceLink}>Boulder</a>
+        <span class={styles.dot}>&middot;</span>
+        <a href="/services/arvada" class={styles.serviceLink}>Arvada</a>
+        <span class={styles.dot}>&middot;</span>
+        <a href="/services/golden" class={styles.serviceLink}>Golden</a>
+        <span class={styles.dot}>&middot;</span>
+        <a href="/services/littleton" class={styles.serviceLink}>Littleton</a>
+      </div>
+      <a href="mailto:services@billbergquist.dev" class={styles.emailLink}>services@billbergquist.dev</a>
     </div>
 
     <div class={styles.social}>
@@ -91,7 +103,7 @@ import styles from './Footer.module.css';
     <button class={styles.backToTop} id="back-to-top">&uarr; Back to Top</button>
 
     <div class={styles.bottomRow}>
-      <p class={styles.copyright}>&gt; 2026 // BILL BERGQUIST // ALL SYSTEMS ONLINE</p>
+      <p class={styles.copyright}>&copy; 2026 // BILL BERGQUIST</p>
       <a href="/privacy" class={styles.privacyLink}>Privacy</a>
     </div>
   </div>
@@ -101,11 +113,4 @@ import styles from './Footer.module.css';
   document.getElementById('back-to-top')?.addEventListener('click', () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   });
-
-  // Show Retro link only for authorized @kasa.com users
-  try {
-    if (localStorage.getItem('retro-authorized') === '1') {
-      document.getElementById('footer-retro')?.style.setProperty('display', '');
-    }
-  } catch { /* noop */ }
 </script>

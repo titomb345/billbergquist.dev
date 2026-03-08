@@ -10,33 +10,21 @@ const publicDir = join(__dirname, '..', 'public');
 const svgRaster = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
   <defs>
     <filter id="glow">
-      <feGaussianBlur in="SourceGraphic" stdDeviation="14"/>
+      <feGaussianBlur in="SourceGraphic" stdDeviation="10"/>
     </filter>
   </defs>
   <rect width="512" height="512" fill="#0d0d14"/>
-  <polygon points="168,72 344,72 440,216 256,448 72,216"
-    fill="#00d4ff" opacity="0.2" filter="url(#glow)"/>
-  <polygon points="168,72 344,72 304,148 208,148" fill="#55faff"/>
-  <polygon points="168,72 208,148 72,216" fill="#00d8e8"/>
-  <polygon points="344,72 304,148 440,216" fill="#00b8d0"/>
-  <polygon points="208,148 304,148 256,216" fill="#22e8f5"/>
-  <polygon points="208,148 72,216 256,216" fill="#10c4d8"/>
-  <polygon points="304,148 440,216 256,216" fill="#0098c0"/>
-  <polygon points="72,216 256,216 256,448" fill="#6872e8"/>
-  <polygon points="440,216 256,216 256,448" fill="#9458e0"/>
-  <g stroke="rgba(255,255,255,0.18)" stroke-width="1.5" fill="none">
-    <polygon points="168,72 344,72 440,216 256,448 72,216"/>
-    <line x1="208" y1="148" x2="304" y2="148"/>
-    <line x1="72" y1="216" x2="440" y2="216"/>
-    <line x1="168" y1="72" x2="208" y2="148"/>
-    <line x1="344" y1="72" x2="304" y2="148"/>
-    <line x1="208" y1="148" x2="72" y2="216"/>
-    <line x1="304" y1="148" x2="440" y2="216"/>
-    <line x1="208" y1="148" x2="256" y2="216"/>
-    <line x1="304" y1="148" x2="256" y2="216"/>
-    <line x1="256" y1="216" x2="256" y2="448"/>
+  <!-- Ambient glow -->
+  <g filter="url(#glow)" opacity="0.3">
+    <polygon points="96,136 96,180 276,264 96,348 96,392 328,264" fill="#00c9a7"/>
+    <rect x="272" y="340" width="152" height="44" fill="#f06418"/>
   </g>
-  <polygon points="200,88 312,88 288,120 216,120" fill="rgba(255,255,255,0.15)"/>
+  <!-- Purple shadow -->
+  <polygon points="108,148 108,192 288,276 108,360 108,404 340,276" fill="#a855f7" opacity="0.45"/>
+  <!-- Main chevron -->
+  <polygon points="96,136 96,180 276,264 96,348 96,392 328,264" fill="#00c9a7"/>
+  <!-- Cursor block -->
+  <rect x="272" y="340" width="152" height="44" rx="4" fill="#f06418"/>
 </svg>`;
 
 const svgBuffer = Buffer.from(svgRaster);

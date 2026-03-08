@@ -89,6 +89,7 @@ export type CrapsClientMessage =
   | { type: 'rollDice' }
   | { type: 'react'; reaction: ReactionKey }
   | { type: 'chat'; text: string }
+  | { type: 'leave' }
   | { type: 'ping' };
 
 // ── Server → Client Messages ──
@@ -102,6 +103,7 @@ export type CrapsServerMessage =
   | { type: 'diceRolled'; roll: DiceRoll; resolutions: BetResolution[]; players: Player[]; bets: Bet[]; point: number | null; phase: CrapsPhase; shooterIndex: number; roundDeadline: number | null }
   | { type: 'reaction'; playerId: string; reaction: ReactionKey }
   | { type: 'chatMessage'; playerId: string; name: string; text: string; timestamp: number }
+  | { type: 'playerLeft'; playerId: string; players: Player[]; hostId: string; shooterIndex: number }
   | { type: 'error'; message: string }
   | { type: 'pong' };
 

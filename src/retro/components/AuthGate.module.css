@@ -35,7 +35,7 @@
 .errorCard {
   width: 100%;
   max-width: 380px;
-  background: rgba(255, 255, 255, 0.015);
+  background: rgba(var(--glass-rgb), 0.015);
   border: 1px solid rgba(255, 0, 255, 0.15);
   border-radius: var(--radius-lg);
   padding: var(--space-lg);
@@ -52,7 +52,7 @@
 .backBtn {
   padding: 0.6rem 1.2rem;
   background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(var(--glass-rgb), 0.08);
   border-radius: var(--radius-md);
   color: var(--text-muted);
   font-family: var(--font-heading);
@@ -64,7 +64,7 @@
 }
 
 .backBtn:hover {
-  border-color: rgba(255, 255, 255, 0.15);
+  border-color: rgba(var(--glass-rgb), 0.15);
   color: var(--text-secondary);
 }
 

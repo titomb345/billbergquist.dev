@@ -1,7 +1,8 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import { useClerk, useUser } from '@clerk/clerk-react';
 import type { CrapsClientMessage } from '../types';
 import { MAX_PLAYERS } from '../types';
+import { useHideHeaderFooter } from '../../shared/hooks/useHideHeaderFooter';
 import styles from './CrapsLobby.module.css';
 
 interface CrapsLobbyProps {
@@ -30,16 +31,7 @@ export function CrapsLobby({ onSend, initialRoomCode, connectionStatus, errorMes
     onSend({ type: 'join', name: userName, userId, avatarUrl: userImageUrl, roomCode: code });
   }, [onSend, roomCode, userName, userId, userImageUrl]);
 
-  useEffect(() => {
-    const header = document.querySelector('header');
-    const footer = document.querySelector('footer');
-    if (header) header.style.display = 'none';
-    if (footer) footer.style.display = 'none';
-    return () => {
-      if (header) header.style.display = '';
-      if (footer) footer.style.display = '';
-    };
-  }, []);
+  useHideHeaderFooter();
 
   return (
     <div className={styles.lobby}>

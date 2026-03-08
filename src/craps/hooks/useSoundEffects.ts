@@ -55,7 +55,7 @@ export function useSoundEffects() {
     setMuted((prev) => {
       const next = !prev;
       enabledRef.current = !next;
-      try { localStorage.setItem(MUTE_KEY, next ? '1' : '0'); } catch {}
+      try { localStorage.setItem(MUTE_KEY, next ? '1' : '0'); } catch { /* localStorage unavailable */ }
       return next;
     });
   }, []);

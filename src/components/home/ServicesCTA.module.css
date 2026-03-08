@@ -1,6 +1,6 @@
 .section {
   padding: var(--space-lg);
-  max-width: 600px;
+  max-width: 700px;
   margin: 0 auto;
   text-align: center;
 }
@@ -13,53 +13,97 @@
   color: var(--text-secondary);
   font-size: 1rem;
   line-height: 1.6;
-  max-width: 450px;
-  margin: 0 auto var(--space-md);
-}
-
-.servicesList {
-  list-style: none;
-  padding: 0;
-  margin: 0 auto var(--space-md);
-  max-width: 400px;
-  text-align: left;
-}
-
-.servicesList li {
-  font-size: 0.9375rem;
-  color: var(--text-secondary);
-  padding: var(--space-xs) 0;
-  padding-left: var(--space-md);
-  position: relative;
-}
-
-.servicesList li::before {
-  content: '\2713';
-  position: absolute;
-  left: 0;
-  color: var(--neon-mint);
-  font-weight: 600;
-}
-
-.descriptionSmall {
-  color: var(--text-muted);
-  font-size: 0.875rem;
-  line-height: 1.6;
-  max-width: 450px;
+  max-width: 520px;
   margin: 0 auto var(--space-lg);
 }
 
-.descriptionSmall a {
-  color: var(--neon-mint);
-  text-decoration: none;
+/* Proof section with screenshot */
+.proofSection {
+  margin-bottom: var(--space-lg);
 }
 
-.descriptionSmall a:hover {
+.proofCard {
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.browserFrame {
+  border: 1px solid var(--bg-elevated);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--bg-surface);
+}
+
+.browserBar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: var(--bg-elevated);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.browserDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--text-tertiary);
+}
+
+.browserUrl {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  margin-left: 8px;
+}
+
+.screenshot {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.proofCaption {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  margin-top: var(--space-sm);
+  line-height: 1.5;
+}
+
+.proofLink {
+  color: var(--neon-orange);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.proofLink:hover {
   text-decoration: underline;
+}
+
+/* Trust signals */
+.trustSignals {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-lg);
+  margin-bottom: var(--space-lg);
+  flex-wrap: wrap;
+}
+
+.trustItem {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  letter-spacing: 0.3px;
 }
 
 @media (max-width: 640px) {
   .section {
     padding: var(--space-lg) var(--space-md-lg);
+  }
+
+  .trustSignals {
+    flex-direction: column;
+    gap: var(--space-sm);
+    align-items: center;
   }
 }

@@ -87,22 +87,22 @@ export function Dice({ lastRoll, point, onRollingChange }: DiceProps) {
   const isCraps = total === 2 || total === 3 || total === 12;
   const isPointHit = total !== null && total === point;
 
+  const totalClass = [
+    styles.totalDisplay,
+    displayRoll && !rolling && styles.totalVisible,
+    isSevenOut && styles.totalSeven,
+    isYo && styles.totalYo,
+    isCraps && styles.totalCraps,
+    isPointHit && styles.totalPoint,
+  ].filter(Boolean).join(' ');
+
   return (
     <div className={styles.container}>
       <div className={`${styles.diceRow} ${rolling ? styles.diceRowRolling : ''}`}>
         <DieFace value={die1} rolling={rolling} />
         <DieFace value={die2} rolling={rolling} />
       </div>
-      <div
-        className={[
-          styles.totalDisplay,
-          displayRoll && !rolling ? styles.totalVisible : '',
-          isSevenOut ? styles.totalSeven : '',
-          isYo ? styles.totalYo : '',
-          isCraps ? styles.totalCraps : '',
-          isPointHit ? styles.totalPoint : '',
-        ].filter(Boolean).join(' ')}
-      >
+      <div className={totalClass}>
         <span className={styles.totalNumber}>{total ?? ''}</span>
         <span className={styles.totalLabel}>
           {isYo ? 'YO!' : isCraps ? 'CRAPS' : isSevenOut ? 'SEVEN' : isPointHit ? 'POINT!' : ''}
