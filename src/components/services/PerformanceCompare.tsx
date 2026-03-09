@@ -10,6 +10,7 @@ interface Scores {
 
 interface Props {
   portfolioAvg: Scores;
+  apiKey?: string;
 }
 
 type Status = 'idle' | 'loading' | 'done' | 'error';
@@ -50,7 +51,7 @@ function ScoreRing({ score, label, size = 72 }: { score: number; label: string; 
   );
 }
 
-export default function PerformanceCompare({ portfolioAvg }: Props) {
+export default function PerformanceCompare({ portfolioAvg, apiKey }: Props) {
   const [url, setUrl] = useState('');
   const [status, setStatus] = useState<Status>('idle');
   const [result, setResult] = useState<Scores | null>(null);
@@ -81,6 +82,9 @@ export default function PerformanceCompare({ portfolioAvg }: Props) {
       apiUrl.searchParams.append('category', 'ACCESSIBILITY');
       apiUrl.searchParams.append('category', 'BEST_PRACTICES');
       apiUrl.searchParams.append('category', 'SEO');
+      if (apiKey) {
+        apiUrl.searchParams.set('key', apiKey);
+      }
 
       const res = await fetch(apiUrl.toString());
       if (!res.ok) {

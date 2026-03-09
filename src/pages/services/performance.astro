@@ -3,6 +3,8 @@ import Layout from '../../layouts/Layout.astro';
 import PerformanceCompare from '../../components/services/PerformanceCompare';
 import styles from '../PerformancePage.module.css';
 
+const PSI_API_KEY = import.meta.env.PUBLIC_PSI_API_KEY || '';
+
 const sites = [
   {
     name: 'Bill Bergquist',
@@ -134,7 +136,7 @@ const jsonLd = JSON.stringify({
     <div class={styles.divider}></div>
 
     <section class={styles.compareSection}>
-      <PerformanceCompare client:visible portfolioAvg={portfolioAvg} />
+      <PerformanceCompare client:visible portfolioAvg={portfolioAvg} apiKey={PSI_API_KEY} />
     </section>
 
     <div class={styles.divider}></div>
