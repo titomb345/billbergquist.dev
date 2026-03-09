@@ -1,0 +1,171 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PerformanceCompare from '../../components/services/PerformanceCompare';
+import styles from '../PerformancePage.module.css';
+
+const sites = [
+  {
+    name: 'Bill Bergquist',
+    url: 'billbergquist.dev',
+    scores: { performance: 100, accessibility: 100, bestPractices: 100, seo: 100 },
+  },
+  {
+    name: 'Critter Care',
+    url: 'critter-care.com',
+    scores: { performance: 100, accessibility: 100, bestPractices: 100, seo: 100 },
+  },
+  {
+    name: 'CreatiCalc',
+    url: 'creaticalc.com',
+    scores: { performance: 96, accessibility: 96, bestPractices: 100, seo: 100 },
+  },
+];
+
+function avg(key: keyof (typeof sites)[0]['scores']) {
+  return Math.round(sites.reduce((sum, s) => sum + s.scores[key], 0) / sites.length);
+}
+
+const portfolioAvg = {
+  performance: avg('performance'),
+  accessibility: avg('accessibility'),
+  bestPractices: avg('bestPractices'),
+  seo: avg('seo'),
+};
+
+function scoreColor(score: number): string {
+  if (score >= 90) return '#0cce6b';
+  if (score >= 50) return '#ffa400';
+  return '#ff4e42';
+}
+
+const jsonLd = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: 'Site Performance — Bill Bergquist',
+  description:
+    'Real Lighthouse performance scores for websites built by Bill Bergquist. Test your own site and compare.',
+  url: 'https://billbergquist.dev/services/performance/',
+  author: { '@id': 'https://billbergquist.dev/#person' },
+});
+---
+
+<Layout
+  title="Site Performance — Bill Bergquist"
+  description="Real Lighthouse scores for websites I've built. See how billbergquist.dev, critter-care.com, and creaticalc.com perform, then test your own site."
+  canonical="/services/performance"
+  jsonLd={[jsonLd]}
+>
+  <div class={styles.page}>
+    <header class={styles.header}>
+      <span class={styles.badge}>Lighthouse Scores</span>
+      <h1 class={styles.title}>Performance That Speaks for Itself</h1>
+      <p class={styles.subtitle}>
+        Speed, accessibility, and SEO are not afterthoughts. Every site I build targets perfect
+        Lighthouse scores out of the gate. These are real results from Google's own auditing tool.
+      </p>
+    </header>
+
+    <section>
+      <h2 class={styles.sectionTitle}>Portfolio Scores</h2>
+      <p class={styles.sectionSubtitle}>
+        Each score is from a Google Lighthouse audit run on mobile. Scores range from 0 to 100.
+      </p>
+
+      <div class={styles.sitesGrid}>
+        {
+          sites.map((site) => (
+            <div class={styles.siteCard}>
+              <h3 class={styles.siteName}>{site.name}</h3>
+              <a href={`https://${site.url}`} target="_blank" rel="noopener noreferrer" class={styles.siteUrl}>{site.url}</a>
+              <div class={styles.scoresGrid}>
+                {(
+                  [
+                    { key: 'performance', label: 'Perf' },
+                    { key: 'accessibility', label: 'A11y' },
+                    { key: 'bestPractices', label: 'BP' },
+                    { key: 'seo', label: 'SEO' },
+                  ] as const
+                ).map((cat) => (
+                  <div class={styles.scoreItem}>
+                    <div
+                      class={styles.scoreRing}
+                      style={`--ring-color: ${scoreColor(site.scores[cat.key])}; --score: ${site.scores[cat.key]};`}
+                    >
+                      <span class={styles.scoreValue}>{site.scores[cat.key]}</span>
+                    </div>
+                    <span class={styles.scoreLabel}>{cat.label}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))
+        }
+      </div>
+      <p class={styles.scoreDate}>Scores recorded March 2026</p>
+    </section>
+
+    <div class={styles.divider}></div>
+
+    <section class={styles.averagesSection}>
+      <h2 class={styles.sectionTitle}>Portfolio Averages</h2>
+      <div class={styles.averagesBar}>
+        {
+          (
+            [
+              { key: 'performance', label: 'Performance' },
+              { key: 'accessibility', label: 'Accessibility' },
+              { key: 'bestPractices', label: 'Best Practices' },
+              { key: 'seo', label: 'SEO' },
+            ] as const
+          ).map((cat) => (
+            <div class={styles.averageItem}>
+              <span
+                class={styles.averageScore}
+                style={`color: ${scoreColor(portfolioAvg[cat.key])};`}
+              >
+                {portfolioAvg[cat.key]}
+              </span>
+              <span class={styles.averageLabel}>{cat.label}</span>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <div class={styles.divider}></div>
+
+    <section class={styles.compareSection}>
+      <PerformanceCompare client:visible portfolioAvg={portfolioAvg} />
+    </section>
+
+    <div class={styles.divider}></div>
+
+    <section class={styles.methodology}>
+      <h2 class={styles.sectionTitle}>How We Measure</h2>
+      <p class={styles.methodologyText}>
+        All scores come from{' '}
+        <a
+          href="https://developer.chrome.com/docs/lighthouse/overview"
+          target="_blank"
+          rel="noopener noreferrer"
+        >Google Lighthouse</a>, the industry standard for web performance auditing. Tests are run on mobile with a
+        simulated throttled connection, which is the same methodology Google uses for its{' '}
+        <a
+          href="https://pagespeed.web.dev/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          PageSpeed Insights
+        </a>{' '}
+        tool. Portfolio scores are averages from multiple runs to account for natural variance.
+      </p>
+    </section>
+
+    <div class={styles.divider}></div>
+
+    <section class={styles.cta}>
+      <p class={styles.ctaText}>Want scores like these for your business?</p>
+      <a href="/services/#contact" class={styles.ctaButton}>Get a Free Quote</a>
+    </section>
+  </div>
+</Layout>
