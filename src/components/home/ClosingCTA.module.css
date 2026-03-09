@@ -1,0 +1,127 @@
+.section {
+  padding: var(--space-xl) var(--space-lg);
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+}
+
+/* Atmospheric glow */
+.glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 600px;
+  height: 400px;
+  background: radial-gradient(
+    ellipse,
+    rgba(240, 100, 24, 0.08) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.heading {
+  font-family: var(--font-heading);
+  font-size: clamp(1.75rem, 5vw, 2.5rem);
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: var(--space-md);
+  letter-spacing: 1px;
+}
+
+.subtext {
+  font-size: 1.125rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  margin-bottom: var(--space-lg);
+}
+
+.ctaButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-md) var(--space-xl);
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-decoration: none;
+  background: var(--neon-orange);
+  color: var(--bg-void);
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: var(--space-lg);
+}
+
+.ctaButton::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: left 0.5s ease;
+}
+
+.ctaButton:hover::after {
+  left: 100%;
+}
+
+.ctaButton:hover {
+  box-shadow: 0 0 40px var(--neon-orange-glow);
+  transform: translateY(-2px);
+}
+
+.ctaButton:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  letter-spacing: 0.3px;
+}
+
+.metaDot {
+  color: var(--text-tertiary);
+}
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .section {
+    padding: var(--space-xl) var(--space-md-lg);
+  }
+
+  .meta {
+    flex-direction: column;
+    gap: var(--space-xs);
+  }
+
+  .metaDot {
+    display: none;
+  }
+}

@@ -66,6 +66,35 @@
   }
 }
 
+/* Konami code easter egg banner */
+.konamiBanner {
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  letter-spacing: 1.5px;
+  color: var(--neon-mint);
+  text-shadow: 0 0 10px var(--neon-mint-glow);
+  padding: var(--space-sm) var(--space-md);
+  margin-bottom: var(--space-lg);
+  border: 1px solid rgba(0, 201, 167, 0.25);
+  border-radius: var(--radius-sm);
+  background: rgba(0, 201, 167, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+}
+
+.konamiIcon {
+  color: var(--neon-mint);
+  font-size: 0.75rem;
+}
+
+.konamiDivider {
+  color: var(--text-tertiary);
+}
+
 .header {
   text-align: center;
   margin-bottom: var(--space-lg);

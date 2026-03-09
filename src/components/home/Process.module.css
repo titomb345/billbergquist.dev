@@ -1,0 +1,118 @@
+.section {
+  padding: var(--space-xl) var(--space-lg);
+  max-width: 1000px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.label {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--neon-orange);
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  margin-bottom: var(--space-sm);
+}
+
+.heading {
+  font-family: var(--font-heading);
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: var(--space-xl);
+  letter-spacing: 1px;
+}
+
+/* ── Steps layout ── */
+.steps {
+  display: flex;
+  align-items: flex-start;
+  gap: 0;
+  text-align: left;
+}
+
+.step {
+  flex: 1;
+  padding: var(--space-lg);
+  background: rgba(20, 20, 31, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: var(--radius-lg);
+  position: relative;
+  transition:
+    border-color 0.3s ease,
+    transform 0.3s ease;
+}
+
+.step:hover {
+  border-color: rgba(240, 100, 24, 0.2);
+  transform: translateY(-3px);
+}
+
+.stepNumber {
+  font-family: var(--font-heading);
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: rgba(240, 100, 24, 0.15);
+  line-height: 1;
+  margin-bottom: var(--space-sm);
+  letter-spacing: 2px;
+}
+
+.step:hover .stepNumber {
+  color: rgba(240, 100, 24, 0.3);
+}
+
+.stepTitle {
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: 0.5px;
+  margin-bottom: var(--space-sm);
+}
+
+.stepDesc {
+  font-size: 0.9375rem;
+  color: var(--text-secondary);
+  line-height: 1.65;
+}
+
+/* ── Connector line between steps ── */
+.connector {
+  width: 40px;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    rgba(240, 100, 24, 0.3),
+    rgba(240, 100, 24, 0.08)
+  );
+  align-self: center;
+  flex-shrink: 0;
+  margin-top: -10px;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .steps {
+    flex-direction: column;
+    gap: 0;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  .connector {
+    width: 1px;
+    height: 32px;
+    background: linear-gradient(
+      180deg,
+      rgba(240, 100, 24, 0.3),
+      rgba(240, 100, 24, 0.08)
+    );
+    align-self: center;
+    margin: 0;
+  }
+
+  .section {
+    padding: var(--space-xl) var(--space-md-lg);
+  }
+}

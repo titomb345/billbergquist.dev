@@ -7,7 +7,7 @@ const faqs = [
   {
     question: 'How much does a website cost for a Golden business?',
     answer:
-      "Most sites I build for small businesses cost between $2,000 and $8,000. Tourism and outdoor businesses sometimes need booking integrations or seasonal content, which can affect scope. I'll give you a clear estimate after we talk.",
+      "Most sites I build for small businesses cost between $2,000 and $8,000. Tourism and outdoor businesses sometimes need booking integrations or seasonal content, which can affect scope. Try the cost calculator to get a ballpark, or reach out and I'll give you a clear estimate.",
   },
   {
     question: 'Can you build a website that handles seasonal traffic for my Golden business?',
@@ -224,6 +224,10 @@ const bookingMonth = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleStr
         }
       </div>
     </section>
+
+    <p class={styles.perfLink}>
+      Want a quick ballpark? <a href="/services/estimate/">Try the cost calculator &rarr;</a>
+    </p>
 
     <div class={styles.divider}></div>
 

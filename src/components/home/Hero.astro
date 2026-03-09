@@ -4,37 +4,85 @@ import styles from './Hero.module.css';
 
 <section class={styles.hero}>
   <div class={styles.content}>
-    <p class={styles.greeting}>
-      <span class={styles.hello}>Hello</span>, I'm
-    </p>
-    <h1 class={styles.name}>
-      <span class={styles.firstName}>Bill</span>
-      <span class={styles.lastName}>Bergquist</span>
-    </h1>
-    <div class={styles.role}>
-      <span class={styles.roleText}>
-        <span id="hero-role-text">Staff Software Engineer</span><span class="blinking-cursor">_</span>
-      </span>
+    <div class={styles.textSide}>
+      <p class={styles.greeting}>
+        <span class={styles.hello}>Hello</span>, I'm
+      </p>
+      <h1 class={styles.name}>
+        <span class={styles.firstName}>Bill</span>
+        <span class={styles.lastName}>Bergquist</span>
+      </h1>
+      <div class={styles.role}>
+        <span class={styles.roleText}>
+          <span id="hero-role-text">Denver Web Developer</span><span class="blinking-cursor">_</span>
+        </span>
+      </div>
+      <p class={styles.tagline}>
+        Enterprise-grade engineering applied to small business websites.
+        Fast, modern, and built to convert visitors into customers.
+      </p>
+      <div class={styles.cta}>
+        <a href="/services/" class={styles.ctaPrimary}>
+          View Services
+        </a>
+        <a href="/services/#contact" class={styles.ctaSecondary}>
+          Get a Free Quote
+        </a>
+      </div>
+      <div class={styles.trustStrip}>
+        <span class={styles.trustBadge}>14+ years experience</span>
+        <span class={styles.trustDot}></span>
+        <span class={styles.trustBadge}>Denver, CO</span>
+        <span class={styles.trustDot}></span>
+        <span class={styles.trustBadge}>Free consultation</span>
+      </div>
     </div>
-    <p class={styles.tagline}>
-      14+ years building for the web. From enterprise software to small business sites and browser games.
-    </p>
-    <div class={styles.cta}>
-      <a href="/projects/" class={styles.ctaButton}>
-        View My Work
-      </a>
-      <a href="/services/" class={styles.ctaButtonSecondary}>
-        Get a Free Quote
-      </a>
+
+    <div class={styles.visualSide} aria-hidden="true">
+      <div class={styles.terminal}>
+        <div class={styles.terminalBar}>
+          <span class={styles.termDot} data-color="red"></span>
+          <span class={styles.termDot} data-color="yellow"></span>
+          <span class={styles.termDot} data-color="green"></span>
+          <span class={styles.termTitle}>~/client-project</span>
+        </div>
+        <div class={styles.terminalBody}>
+          <div class={`${styles.termLine} ${styles.termLine1}`}>
+            <span class={styles.termPrompt}>$</span> npm run build
+          </div>
+          <div class={`${styles.termLine} ${styles.termLine2}`}>
+            <span class={styles.termCheck}>&#10003;</span> Custom design finalized
+          </div>
+          <div class={`${styles.termLine} ${styles.termLine3}`}>
+            <span class={styles.termCheck}>&#10003;</span> Mobile-first responsive
+          </div>
+          <div class={`${styles.termLine} ${styles.termLine4}`}>
+            <span class={styles.termCheck}>&#10003;</span> SEO &amp; meta configured
+          </div>
+          <div class={`${styles.termLine} ${styles.termLine5}`}>
+            <span class={styles.termCheck}>&#10003;</span> Performance optimized
+          </div>
+          <div class={`${styles.termLine} ${styles.termLine6}`}>&nbsp;</div>
+          <div class={`${styles.termLine} ${styles.termLine7}`}>
+            <span class={styles.termSuccess}>Build complete</span> <span class={styles.termDim}>in 0.3s</span>
+          </div>
+          <div class={`${styles.termLine} ${styles.termLine8}`}>
+            <span class={styles.termDim}>Lighthouse:</span> <span class={styles.termScore}>100</span> <span class={styles.termDim}>/</span> <span class={styles.termScore}>100</span> <span class={styles.termDim}>/</span> <span class={styles.termScore}>100</span> <span class={styles.termDim}>/</span> <span class={styles.termScore}>100</span>
+          </div>
+          <div class={`${styles.termLine} ${styles.termLine9}`}>&nbsp;</div>
+          <div class={`${styles.termLine} ${styles.termLine10}`}>
+            <span class={styles.termLive}>&#9679;</span> Live at <span class={styles.termUrl}>your-site.com</span>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
 <script>
   const roles = [
-    'Staff Software Engineer',
     'Denver Web Developer',
-    'Browser Game Builder',
+    'Small Business Specialist',
   ];
 
   const el = document.getElementById('hero-role-text');

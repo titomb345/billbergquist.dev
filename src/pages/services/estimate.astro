@@ -1,0 +1,39 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import CostCalculator from '../../components/services/CostCalculator';
+import styles from '../ServicesPage.module.css';
+
+const jsonLd = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: 'Website Cost Calculator — Bill Bergquist',
+  description:
+    'Get an instant estimate for your website project. Answer a few questions about what you need and see a ballpark cost in under a minute.',
+  url: 'https://billbergquist.dev/services/estimate/',
+  author: { '@id': 'https://billbergquist.dev/#person' },
+  isPartOf: {
+    '@type': 'WebSite',
+    url: 'https://billbergquist.dev/',
+  },
+});
+---
+
+<Layout
+  title="Website Cost Calculator — Bill Bergquist"
+  description="Get an instant estimate for your website project. Answer 5 quick questions and see a ballpark cost for your Denver-area business website, landing page, or redesign."
+  canonical="/services/estimate"
+  jsonLd={[jsonLd]}
+>
+  <div class={styles.page}>
+    <header class={styles.header}>
+      <p class={styles.subtitle}>Cost Estimator</p>
+      <h1 class={styles.title}>How much will your website cost?</h1>
+      <p class={styles.intro}>
+        Answer 5 quick questions and get a ballpark estimate in under a minute.
+        No email required, no strings attached.
+      </p>
+    </header>
+
+    <CostCalculator client:load />
+  </div>
+</Layout>

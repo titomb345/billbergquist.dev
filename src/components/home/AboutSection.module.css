@@ -5,8 +5,14 @@
 }
 
 .sectionTitle {
+  font-family: var(--font-heading);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 2px;
   text-align: center;
-  margin-bottom: var(--space-lg);
+  margin: 0 0 var(--space-lg);
 }
 
 .content {
@@ -27,6 +33,15 @@
   margin-right: auto;
 }
 
+.link {
+  color: var(--neon-orange);
+  text-decoration: none;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
 .highlights {
   display: flex;
   justify-content: center;
@@ -44,8 +59,7 @@
 .highlightValue {
   font-family: var(--font-heading);
   font-size: 1.5rem;
-  color: var(--neon-purple);
-  text-shadow: 0 0 10px var(--neon-purple-glow);
+  color: var(--text-primary);
 }
 
 .highlightLabel {

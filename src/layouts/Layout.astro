@@ -43,6 +43,7 @@ const breadcrumbNames: Record<string, string> = {
   gridlock: 'Gridlock',
   retro: 'Retro',
   performance: 'Performance',
+  estimate: 'Cost Estimator',
 };
 
 function buildBreadcrumbs(path?: string, lastSegmentName?: string, absolute = false) {
@@ -264,6 +265,24 @@ const allJsonLd = breadcrumbLd ? [...jsonLd, breadcrumbLd] : jsonLd;
         }
       }
     </style>
+    <!-- Konami code easter egg -->
+    <script is:inline>
+      (function() {
+        var seq = [38,38,40,40,37,39,37,39,66,65];
+        var pos = 0;
+        document.addEventListener('keydown', function(e) {
+          if (e.keyCode === seq[pos]) {
+            pos++;
+            if (pos === seq.length) {
+              pos = 0;
+              window.location.href = '/arcade/?konami=1';
+            }
+          } else {
+            pos = 0;
+          }
+        });
+      })();
+    </script>
     <!-- Cloudflare Web Analytics -->
     <script is:inline defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "df38e71453b142fa930d170f559fe7bf"}'></script>
   </body>
