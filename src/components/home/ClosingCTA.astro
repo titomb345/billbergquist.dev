@@ -1,0 +1,26 @@
+---
+import styles from './ClosingCTA.module.css';
+
+const bookingMonth = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleString('en-US', {
+  month: 'long',
+});
+---
+
+<section class={`${styles.section} scroll-reveal`}>
+  <div class={styles.glow} aria-hidden="true"></div>
+  <div class={styles.content}>
+    <h2 class={styles.heading}>Ready to build something?</h2>
+    <p class={styles.subtext}>
+      I'm currently booking projects for {bookingMonth}.
+      Let's talk about what you need. Free consultation, no commitments.
+    </p>
+    <a href="/services/#contact" class={styles.ctaButton}>
+      Get Your Free Quote
+    </a>
+    <div class={styles.meta}>
+      <span>Response within 1 business day</span>
+      <span class={styles.metaDot}>&middot;</span>
+      <span>Denver &amp; Front Range</span>
+    </div>
+  </div>
+</section>

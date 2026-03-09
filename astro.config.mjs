@@ -41,7 +41,7 @@ export default defineConfig({
           '/services/golden/': '2026-03-07',
           '/services/littleton/': '2026-03-07',
           '/about/': '2026-02-15',
-          '/projects/': '2026-03-01',
+          '/portfolio/': '2026-03-09',
           '/blog/': '2026-03-07',
           '/arcade/': '2026-03-01',
           '/arcade/descent/': '2026-02-04',
@@ -65,7 +65,7 @@ export default defineConfig({
           '/services/golden/': 0.9,
           '/services/littleton/': 0.9,
           '/about/': 0.7,
-          '/projects/': 0.7,
+          '/portfolio/': 0.7,
           '/blog/': 0.7,
           '/arcade/': 0.3,
           '/arcade/descent/': 0.3,
@@ -82,4 +82,7 @@ export default defineConfig({
     }),
   ],
   output: 'static',
+  build: {
+    inlineStylesheets: 'always',
+  },
 });

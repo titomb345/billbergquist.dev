@@ -8,6 +8,17 @@
   to = "/sitemap-index.xml"
   status = 301
 
+# Redirect old /projects URL to /portfolio
+[[redirects]]
+  from = "/projects"
+  to = "/portfolio"
+  status = 301
+
+[[redirects]]
+  from = "/projects/"
+  to = "/portfolio/"
+  status = 301
+
 # Serve the retro page for /retro/<roomcode> paths (clean URLs)
 [[redirects]]
   from = "/retro/:code"
@@ -28,7 +39,7 @@
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "camera=(), microphone=(), geolocation=()"
     Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
-    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://www.google-analytics.com https://region1.google-analytics.com https://cloudflareinsights.com https://www.googleapis.com; frame-src 'none'"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://static.cloudflareinsights.com https://*.clerk.accounts.dev; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://www.google-analytics.com https://region1.google-analytics.com https://cloudflareinsights.com https://www.googleapis.com https://*.clerk.accounts.dev https://*.clerk.dev https://realtime-worker.billbergquist.workers.dev wss://realtime-worker.billbergquist.workers.dev; frame-src 'self' https://*.clerk.accounts.dev"
 
 [[headers]]
   for = "/_astro/*"

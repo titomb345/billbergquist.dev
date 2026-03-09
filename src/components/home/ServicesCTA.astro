@@ -1,6 +1,5 @@
 ---
 import { Image } from 'astro:assets';
-import GlowText from '../ui/GlowText.astro';
 import Button from '../ui/Button.astro';
 import crittercareImg from '../../assets/screenshots/crittercare.png';
 import styles from './ServicesCTA.module.css';
@@ -11,9 +10,7 @@ const bookingMonth = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleStr
 ---
 
 <section class={`${styles.section} scroll-reveal`}>
-  <GlowText as="h2" size="medium" color="orange" class={styles.title}>
-    NEED A WEBSITE?
-  </GlowText>
+  <h2 class={styles.title}>NEED A WEBSITE?</h2>
   <p class={styles.description}>
     I build fast, modern websites for small businesses in Denver, Lakewood, and across the Colorado
     Front Range. From custom business sites to landing pages and redesigns, built with the same

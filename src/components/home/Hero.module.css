@@ -1,34 +1,29 @@
 .hero {
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  text-align: center;
+  min-height: calc(100vh - 60px);
   padding: var(--space-xl) var(--space-lg);
   position: relative;
   overflow: hidden;
-  min-height: calc(100vh - 60px); /* Full viewport minus navbar */
 }
 
-/* Subtle grid background with orange tint */
+/* Enhanced grid background with orange tint */
 .hero::before {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
   background:
     linear-gradient(
       90deg,
       transparent 49%,
-      rgba(240, 100, 24, 0.03) 50%,
+      rgba(240, 100, 24, 0.04) 50%,
       transparent 51%
     ),
     linear-gradient(
       0deg,
       transparent 49%,
-      rgba(240, 100, 24, 0.03) 50%,
+      rgba(240, 100, 24, 0.04) 50%,
       transparent 51%
     );
   background-size: 60px 60px;
@@ -36,27 +31,38 @@
   pointer-events: none;
 }
 
-/* Radial gradient overlay */
+/* Radial glow behind text side */
 .hero::after {
   content: '';
   position: absolute;
-  top: 50%;
-  left: 50%;
+  top: 40%;
+  left: 30%;
   transform: translate(-50%, -50%);
-  width: 150%;
-  height: 150%;
+  width: 700px;
+  height: 700px;
   background: radial-gradient(
-    ellipse at center,
-    transparent 0%,
-    var(--bg-primary) 70%
+    circle,
+    rgba(240, 100, 24, 0.07) 0%,
+    transparent 65%
   );
   pointer-events: none;
 }
 
+/* ── Layout ── */
 .content {
   position: relative;
   z-index: 1;
-  max-width: 800px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-xl);
+  max-width: 1100px;
+  width: 100%;
+  align-items: center;
+}
+
+/* ── Text side ── */
+.textSide {
+  /* left-aligned by default */
 }
 
 .greeting {
@@ -77,26 +83,24 @@
   font-family: var(--font-heading);
   font-weight: 700;
   line-height: 1;
-  margin: 0 0 var(--space-md) 0;
+  margin: 0 0 var(--space-md);
   display: flex;
   flex-direction: column;
   gap: 0.1em;
   opacity: 0;
   animation: heroFadeIn 0.6s ease forwards;
-  animation-delay: 0.3s;
+  animation-delay: 0.2s;
 }
 
 .firstName {
-  font-size: 4rem;
+  font-size: clamp(3.5rem, 7vw, 5rem);
   color: var(--neon-orange);
-  text-shadow:
-    0 0 10px var(--neon-orange-glow),
-    0 0 25px var(--neon-orange-glow);
+  text-shadow: 0 0 30px var(--neon-orange-glow);
   letter-spacing: 4px;
 }
 
 .lastName {
-  font-size: 3rem;
+  font-size: clamp(2rem, 4.5vw, 3.5rem);
   color: var(--text-primary);
   letter-spacing: 6px;
   text-transform: uppercase;
@@ -113,12 +117,7 @@
   min-height: 2.5em;
   opacity: 0;
   animation: heroFadeIn 0.6s ease forwards;
-  animation-delay: 0.6s;
-}
-
-.typingCursor {
-  animation: none;
-  opacity: 1;
+  animation-delay: 0.4s;
 }
 
 .roleText {
@@ -129,128 +128,270 @@
 }
 
 .tagline {
-  font-family: var(--font-body);
   font-size: 1.125rem;
   color: var(--text-muted);
+  line-height: 1.7;
   margin-bottom: var(--space-lg);
-  max-width: 500px;
-  margin-left: auto;
-  margin-right: auto;
+  max-width: 440px;
   opacity: 0;
   animation: heroFadeIn 0.6s ease forwards;
-  animation-delay: 0.9s;
+  animation-delay: 0.6s;
 }
 
+/* ── CTAs ── */
 .cta {
   display: flex;
   gap: var(--space-md);
-  justify-content: center;
+  margin-bottom: var(--space-lg);
   opacity: 0;
   animation: heroFadeIn 0.6s ease forwards;
-  animation-delay: 1.2s;
+  animation-delay: 0.8s;
 }
 
-.ctaButton {
+.ctaPrimary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: var(--space-sm);
   padding: var(--space-md) var(--space-xl);
   font-family: var(--font-heading);
-  font-size: 1rem;
+  font-size: 0.9375rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 2px;
   text-decoration: none;
-  border: 2px solid var(--neon-orange);
+  background: var(--neon-orange);
+  color: var(--bg-void);
+  border: none;
   border-radius: var(--radius-sm);
   cursor: pointer;
-  transition: var(--transition-fast);
+  transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
-  background-color: transparent;
+}
+
+.ctaPrimary::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: left 0.5s ease;
+}
+
+.ctaPrimary:hover::after {
+  left: 100%;
+}
+
+.ctaPrimary:hover {
+  box-shadow: 0 0 30px var(--neon-orange-glow);
+  transform: translateY(-2px);
+}
+
+.ctaPrimary:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.ctaSecondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-md) var(--space-xl);
+  font-family: var(--font-heading);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-decoration: none;
+  border: 1px solid var(--bg-elevated);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: transparent;
+  color: var(--text-secondary);
+}
+
+.ctaSecondary:hover {
+  border-color: var(--neon-orange);
   color: var(--neon-orange);
-  box-shadow: 0 0 8px var(--neon-orange-glow);
+  transform: translateY(-2px);
 }
 
-.ctaButton::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
-  transition: var(--transition-normal);
+.ctaSecondary:active {
+  transform: translateY(0) scale(0.98);
 }
 
-.ctaButton:hover::before {
-  left: 100%;
-}
-
-.ctaButton:hover {
-  background-color: var(--neon-orange);
-  color: var(--bg-void);
-  box-shadow:
-    0 0 10px var(--neon-orange-glow),
-    0 0 20px var(--neon-orange-glow);
-}
-
-.ctaButton:active {
-  transform: scale(0.97);
-}
-
-.ctaButtonSecondary {
-  display: inline-flex;
+/* ── Trust strip ── */
+.trustStrip {
+  display: flex;
   align-items: center;
-  justify-content: center;
   gap: var(--space-sm);
-  padding: var(--space-md) var(--space-xl);
-  font-family: var(--font-heading);
-  font-size: 1rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  text-decoration: none;
-  border: 2px solid var(--neon-mint);
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  transition: var(--transition-fast);
-  position: relative;
+  opacity: 0;
+  animation: heroFadeIn 0.6s ease forwards;
+  animation-delay: 1s;
+}
+
+.trustBadge {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  letter-spacing: 0.3px;
+}
+
+.trustDot {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--text-tertiary);
+  flex-shrink: 0;
+}
+
+/* ── Terminal visual ── */
+.visualSide {
+  opacity: 0;
+  animation: heroFadeIn 0.8s ease forwards;
+  animation-delay: 0.4s;
+}
+
+.terminal {
+  background: rgba(14, 14, 22, 0.95);
+  border: 1px solid rgba(240, 100, 24, 0.12);
+  border-radius: var(--radius-lg);
   overflow: hidden;
-  background-color: transparent;
-  color: var(--neon-mint);
-  box-shadow: 0 0 8px var(--neon-mint-glow);
-}
-
-.ctaButtonSecondary::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
-  transition: var(--transition-normal);
-}
-
-.ctaButtonSecondary:hover::before {
-  left: 100%;
-}
-
-.ctaButtonSecondary:hover {
-  background-color: var(--neon-mint);
-  color: var(--bg-void);
   box-shadow:
-    0 0 10px var(--neon-mint-glow),
-    0 0 20px var(--neon-mint-glow);
+    0 0 80px rgba(240, 100, 24, 0.06),
+    0 25px 60px rgba(0, 0, 0, 0.5);
+  transform: perspective(1200px) rotateY(-3deg) rotateX(1deg);
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.ctaButtonSecondary:active {
-  transform: scale(0.97);
+.terminal:hover {
+  transform: perspective(1200px) rotateY(0deg) rotateX(0deg);
 }
 
-/* Local keyframes to ensure they work with CSS modules */
+.terminalBar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 16px;
+  background: rgba(26, 26, 46, 0.8);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.termDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  opacity: 0.8;
+}
+
+.termDot[data-color='red'] {
+  background: #ff5f57;
+}
+.termDot[data-color='yellow'] {
+  background: #febc2e;
+}
+.termDot[data-color='green'] {
+  background: #28c840;
+}
+
+.termTitle {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-left: 8px;
+}
+
+.terminalBody {
+  padding: 18px 20px;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  line-height: 1.9;
+  color: var(--text-secondary);
+}
+
+.termLine {
+  opacity: 0;
+  animation: termLineIn 0.4s ease forwards;
+}
+
+.termLine1 {
+  animation-delay: 1s;
+}
+.termLine2 {
+  animation-delay: 1.8s;
+}
+.termLine3 {
+  animation-delay: 2.2s;
+}
+.termLine4 {
+  animation-delay: 2.6s;
+}
+.termLine5 {
+  animation-delay: 3s;
+}
+.termLine6 {
+  animation-delay: 3.3s;
+}
+.termLine7 {
+  animation-delay: 3.6s;
+}
+.termLine8 {
+  animation-delay: 4s;
+}
+.termLine9 {
+  animation-delay: 4.2s;
+}
+.termLine10 {
+  animation-delay: 4.5s;
+}
+
+.termPrompt {
+  color: var(--neon-mint);
+  margin-right: 6px;
+}
+
+.termCheck {
+  color: var(--neon-mint);
+  margin-right: 6px;
+}
+
+.termDim {
+  color: var(--text-muted);
+}
+
+.termSuccess {
+  color: var(--neon-mint);
+  font-weight: 600;
+}
+
+.termScore {
+  color: var(--neon-mint);
+  font-weight: 700;
+}
+
+.termLive {
+  color: var(--neon-orange);
+  animation: livePulse 2s ease-in-out infinite;
+  margin-right: 4px;
+  font-size: 0.625rem;
+  vertical-align: middle;
+}
+
+.termUrl {
+  color: var(--neon-orange);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: rgba(240, 100, 24, 0.4);
+}
+
+/* ── Keyframes ── */
 @keyframes heroFadeIn {
   from {
     opacity: 0;
@@ -262,37 +403,64 @@
   }
 }
 
-
-@media (max-width: 768px) {
-  .hero {
-    padding: var(--space-lg) var(--space-md);
-    min-height: calc(100vh - 50px);
+@keyframes termLineIn {
+  from {
+    opacity: 0;
+    transform: translateX(-6px);
   }
-
-  .greeting {
-    font-size: 1rem;
+  to {
+    opacity: 1;
+    transform: translateX(0);
   }
+}
 
-  .firstName {
-    font-size: 3rem;
+@keyframes livePulse {
+  0%,
+  100% {
+    opacity: 1;
   }
-
-  .lastName {
-    font-size: 2rem;
+  50% {
+    opacity: 0.3;
   }
+}
 
-  .role {
-    font-size: 0.875rem;
+/* ── Responsive ── */
+@media (max-width: 960px) {
+  .content {
+    grid-template-columns: 1fr;
+    gap: var(--space-lg);
+    text-align: center;
   }
 
   .tagline {
-    font-size: 1rem;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .cta {
+    justify-content: center;
+  }
+
+  .trustStrip {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .terminal {
+    transform: none;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  .terminal:hover {
+    transform: none;
   }
 }
 
 @media (max-width: 640px) {
   .hero {
     padding: var(--space-lg) var(--space-md-lg);
+    min-height: calc(100vh - 50px);
   }
 
   .cta {
@@ -300,39 +468,46 @@
     align-items: stretch;
     width: 100%;
     max-width: 320px;
-    margin: 0 auto;
+    margin: 0 auto var(--space-lg);
   }
 
-  .ctaButton,
-  .ctaButtonSecondary {
+  .ctaPrimary,
+  .ctaSecondary {
     padding: var(--space-sm) var(--space-lg);
     font-size: 0.875rem;
     letter-spacing: 1px;
     text-align: center;
   }
+
+  .trustStrip {
+    gap: var(--space-xs);
+  }
+
+  .terminalBody {
+    font-size: 0.75rem;
+    padding: 14px 16px;
+  }
 }
 
 @media (max-width: 480px) {
   .firstName {
-    font-size: 2.5rem;
     letter-spacing: 2px;
   }
 
   .lastName {
-    font-size: 1.5rem;
     letter-spacing: 3px;
   }
 
   .role {
-    font-size: 0.75rem;
+    font-size: 0.875rem;
   }
 
   .tagline {
-    font-size: 0.875rem;
+    font-size: 1rem;
   }
 }
 
-/* Reduced motion */
+/* ── Reduced motion ── */
 @media (prefers-reduced-motion: reduce) {
   .hero::before {
     animation: none;
@@ -342,7 +517,25 @@
   .name,
   .role,
   .tagline,
-  .cta {
+  .cta,
+  .trustStrip,
+  .visualSide {
     animation: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .termLine {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .termLive {
+    animation: none;
+  }
+
+  .terminal {
+    transform: none;
   }
 }

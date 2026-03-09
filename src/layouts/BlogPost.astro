@@ -70,15 +70,9 @@ const jsonLdArticle = JSON.stringify({
   canonical={`/blog/${slug}`}
   jsonLd={[jsonLdArticle, jsonLdBreadcrumb]}
   ogImage={ogImage || '/og/blog.png'}
+  breadcrumbTitle={title}
 >
   <article class={styles.article}>
-    <nav class={styles.breadcrumbs} aria-label="Breadcrumb">
-      <a href="/" class={styles.breadcrumbLink}>Home</a>
-      <span class={styles.breadcrumbSep}>/</span>
-      <a href="/blog/" class={styles.breadcrumbLink}>Blog</a>
-      <span class={styles.breadcrumbSep}>/</span>
-      <span class={styles.breadcrumbCurrent}>{title}</span>
-    </nav>
     <header class={styles.header}>
       <GlowText as="h1" size="large" color="orange" class={styles.title}>
         {title}

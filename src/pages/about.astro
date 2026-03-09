@@ -1,10 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import Layout from '../layouts/Layout.astro';
-import GlowText from '../components/ui/GlowText.astro';
 import SectionDivider from '../components/ui/SectionDivider.astro';
-import ExperienceTimeline from '../components/about/ExperienceTimeline.astro';
-import SkillsSection from '../components/about/SkillsSection.astro';
 import headshot from '../assets/headshot.png';
 import styles from './AboutPage.module.css';
 
@@ -48,7 +45,7 @@ const jsonLdPerson = JSON.stringify({
 
 <Layout
   title="About Bill Bergquist — Staff Software Engineer"
-  description="14+ years of full-stack experience. Currently Staff Engineer at Kasa, building React applications and leading frontend architecture."
+  description="14+ years of full-stack experience. Currently Staff Engineer at Kasa, building React applications and leading frontend architecture. Web developer in Denver, CO."
   canonical="/about"
   jsonLd={[jsonLdPerson]}
   ogImage="/og/about.png"
@@ -58,74 +55,136 @@ const jsonLdPerson = JSON.stringify({
       <Image
         src={headshot}
         alt="Bill Bergquist — Staff Software Engineer"
-        width={200}
-        height={200}
+        width={160}
+        height={160}
         class={styles.headshot}
       />
-      <GlowText size="large" color="mint" class={styles.title}>ABOUT ME</GlowText>
-      <p class={styles.summary}>
-        I'm a Staff Software Engineer with over 14 years of experience building web applications.
-        While my roots are in frontend technologies, I've been diving deeper into full stack
-        development, working across the entire stack to build internal tooling and developer
-        experiences that help teams ship faster and more confidently.
-      </p>
-      <p class={styles.summary}>
-        Currently at Kasa, I lead frontend architecture initiatives and build tools that accelerate
-        development across the organization. I'm passionate about clean code, great user experiences,
-        and helping other engineers grow.
-      </p>
-      <p class={styles.aiHighlight}>
-        I embrace AI as a force multiplier in my workflow. Using Claude Code, I leverage agentic
-        workflows and prompt engineering to accelerate development, automate repetitive tasks, and
-        explore solutions faster than ever before.
-      </p>
+      <h1 class={styles.name}>Bill Bergquist</h1>
+      <p class={styles.role}>Staff Software Engineer &middot; Denver, CO</p>
     </header>
 
     <main class={styles.content}>
-      <ExperienceTimeline />
-      <SectionDivider color="mint" />
-      <SkillsSection />
-      <SectionDivider color="purple" />
-
-      <section class={styles.education}>
-        <GlowText as="h2" size="medium" color="purple" class={styles.sectionTitle}>
-          EDUCATION
-        </GlowText>
-        <div class={styles.educationCard}>
-          <h3 class={styles.school}>Purdue University</h3>
-          <p class={styles.degree}>BS Computer Engineering</p>
-          <p class={styles.years}>2006 - 2010</p>
-        </div>
+      <section class={styles.intro}>
+        <p class={styles.text}>
+          I put 14+ years of professional engineering experience to work building websites for
+          small businesses across Denver, Lakewood, and the Colorado Front Range. By day I'm a
+          Staff Engineer at Kasa, leading frontend architecture and building internal tools that
+          help teams ship faster. On the side, I help local businesses get online with sites that
+          are fast, look great on every device, and actually show up in search results.
+        </p>
+        <p class={styles.text}>
+          You get the same tools and standards I use in enterprise software, applied to your
+          business site. No templates, no page builders. Just clean, custom code built by someone
+          you can meet for coffee and talk to directly.
+        </p>
       </section>
 
       <SectionDivider color="orange" />
 
       <section class={styles.approach}>
-        <GlowText as="h2" size="medium" color="orange" class={styles.sectionTitle}>
-          MY APPROACH
-        </GlowText>
-        <p class={styles.approachText}>
-          I believe good software comes from understanding the problem before writing a single line of code.
-          Whether I'm building internal tooling for a product team or a website for a local business, I start
-          by listening. What does the user actually need? What does success look like? Then I choose the
-          simplest technology that gets the job done well.
+        <h2 class={styles.sectionTitle}>How I Work</h2>
+        <p class={styles.text}>
+          Every project starts with a conversation, not a sales pitch. I want to understand your
+          business, who your customers are, and what you need the website to do. A restaurant
+          needs online ordering and a menu that loads instantly on a phone. A contractor needs to
+          show up when someone searches "plumber near me." The right solution depends on the problem.
         </p>
-        <p class={styles.approachText}>
-          I'm opinionated about code quality: clean abstractions, meaningful tests, and documentation that
-          actually helps. But I'm not precious about tools. React, Vue, Astro, vanilla JavaScript... the right
-          choice depends on the project, not personal preference. I care about shipping things that work,
-          load fast, and are maintainable by whoever comes next.
+        <p class={styles.text}>
+          I'm opinionated about code quality, but not precious about tools. React, Astro, vanilla
+          JavaScript... the right choice depends on the project. I care about shipping things that
+          work, load fast, and are maintainable by whoever comes next. If I build your site and you
+          hire someone else to maintain it later, they should be able to pick it up without a manual.
         </p>
-        <p class={styles.approachText}>
-          I also build <a href="/arcade/">browser games</a> in my spare time as a way to explore new
-          technologies and keep building things that are just fun.
+        <p class={styles.text}>
+          I handle everything: design, development, SEO setup, hosting, and ongoing support. One
+          person, one point of contact, no handoffs. Whether you need a new site from scratch or
+          a redesign of something that isn't working, I'll give you an honest assessment of what
+          it takes and what it costs.
         </p>
+      </section>
+
+      <SectionDivider color="orange" />
+
+      <section class={styles.deliverables}>
+        <h2 class={styles.sectionTitle}>What You Get</h2>
+        <div class={styles.deliverableGrid}>
+          <div class={styles.deliverableCard}>
+            <span class={styles.deliverableIcon}>01</span>
+            <h3 class={styles.deliverableTitle}>Custom Code</h3>
+            <p class={styles.deliverableText}>
+              No templates, no page builders. Every site is built from scratch with clean,
+              hand-written code that loads fast and is easy to maintain.
+            </p>
+          </div>
+          <div class={styles.deliverableCard}>
+            <span class={styles.deliverableIcon}>02</span>
+            <h3 class={styles.deliverableTitle}>Local SEO</h3>
+            <p class={styles.deliverableText}>
+              Structured data, Google Business integration, and on-page optimization so your
+              site actually shows up when people search for your business.
+            </p>
+          </div>
+          <div class={styles.deliverableCard}>
+            <span class={styles.deliverableIcon}>03</span>
+            <h3 class={styles.deliverableTitle}>One Point of Contact</h3>
+            <p class={styles.deliverableText}>
+              I handle design, development, hosting, and support. No agency layers, no
+              handoffs. You talk to the person building your site.
+            </p>
+          </div>
+          <div class={styles.deliverableCard}>
+            <span class={styles.deliverableIcon}>04</span>
+            <h3 class={styles.deliverableTitle}>Enterprise Standards</h3>
+            <p class={styles.deliverableText}>
+              The same practices I use building software at scale: accessibility, performance
+              budgets, responsive design tested on real devices.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <SectionDivider color="orange" />
+
+      <section class={styles.background}>
+        <h2 class={styles.sectionTitle}>Background</h2>
+        <p class={styles.text}>
+          I'm a Staff Software Engineer at Kasa, where I lead frontend architecture and build
+          internal tooling. Before that, I spent over a decade at companies like Evite, GumGum,
+          RevCascade, and PriceGrabber, working across the full stack. I've built everything
+          from ad tech platforms and e-commerce systems to real-time collaboration tools and
+          hospitality management software.
+        </p>
+        <p class={styles.text}>
+          I studied Computer Engineering at Purdue University. Most of my career has been in
+          frontend and full-stack development, with a focus on React, TypeScript, and Node.js.
+          I also use AI tools like Claude Code to accelerate development, automate repetitive
+          work, and explore solutions faster.
+        </p>
+        <p class={styles.text}>
+          Building websites for local businesses started as a way to use the same skills I
+          apply at work on something more personal. I like helping people get their business
+          online without overpaying an agency or settling for a cookie-cutter template.
+        </p>
+        <div class={styles.credentialRow}>
+          <div class={styles.credential}>
+            <span class={styles.credentialValue}>14+</span>
+            <span class={styles.credentialLabel}>Years Experience</span>
+          </div>
+          <div class={styles.credential}>
+            <span class={styles.credentialValue}>Denver, CO</span>
+            <span class={styles.credentialLabel}>Based Locally</span>
+          </div>
+          <div class={styles.credential}>
+            <span class={styles.credentialValue}>Purdue</span>
+            <span class={styles.credentialLabel}>BS Computer Engineering</span>
+          </div>
+        </div>
       </section>
 
       <section class={styles.servicesCta}>
         <p class={styles.servicesCtaText}>
-          If you're a small business in Denver or the Colorado Front Range looking for a website, I'd love to help.
-          I bring the same engineering standards from my enterprise work to every client project.
+          If you're a small business in Denver or the Colorado Front Range looking for a
+          website, I'd love to help.
         </p>
         <a href="/services/" class={styles.servicesCtaLink}>View My Services &rarr;</a>
       </section>

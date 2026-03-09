@@ -2,6 +2,7 @@
 import ScrollProgress from '../components/layout/ScrollProgress.astro';
 import Navbar from '../components/layout/Navbar.astro';
 import Footer from '../components/layout/Footer.astro';
+import Breadcrumbs from '../components/ui/Breadcrumbs.astro';
 import '../styles/global.css';
 
 interface Props {
@@ -13,9 +14,11 @@ interface Props {
   geoRegion?: string;
   geoPlacename?: string;
   ogImage?: string;
+  hideBreadcrumbs?: boolean;
+  breadcrumbTitle?: string;
 }
 
-const { title, description, canonical, noindex = false, jsonLd = [], geoRegion, geoPlacename, ogImage } = Astro.props;
+const { title, description, canonical, noindex = false, jsonLd = [], geoRegion, geoPlacename, ogImage, hideBreadcrumbs = false, breadcrumbTitle } = Astro.props;
 const BASE_URL = 'https://billbergquist.dev';
 const OG_IMAGE = ogImage ? `${BASE_URL}${ogImage}` : `${BASE_URL}/og-image.png`;
 // Ensure canonical URL always has a trailing slash (matches Netlify's enforced trailing slashes)
@@ -37,28 +40,35 @@ const breadcrumbNames: Record<string, string> = {
   privacy: 'Privacy Policy',
   arcade: 'Arcade',
   descent: 'Minesweeper: Descent',
+  gridlock: 'Gridlock',
   retro: 'Retro',
   performance: 'Performance',
+  estimate: 'Cost Estimator',
 };
 
-function buildBreadcrumbs(path?: string) {
-  const items: { name: string; url: string }[] = [{ name: 'Home', url: `${BASE_URL}/` }];
+function buildBreadcrumbs(path?: string, lastSegmentName?: string, absolute = false) {
+  const prefix = absolute ? BASE_URL : '';
+  const items: { name: string; url: string }[] = [{ name: 'Home', url: `${prefix}/` }];
   if (path && path !== '/') {
     const segments = path.replace(/^\//, '').replace(/\/$/, '').split('/');
     let accumulated = '';
-    for (const seg of segments) {
+    for (let i = 0; i < segments.length; i++) {
+      const seg = segments[i];
       accumulated += `/${seg}`;
-      items.push({ name: breadcrumbNames[seg] || seg, url: `${BASE_URL}${accumulated}/` });
+      const isLast = i === segments.length - 1;
+      const name = isLast && lastSegmentName ? lastSegmentName : breadcrumbNames[seg] || seg;
+      items.push({ name, url: `${prefix}${accumulated}/` });
     }
   }
   return items;
 }
 
-const breadcrumbs = buildBreadcrumbs(canonical);
-const breadcrumbLd = breadcrumbs.length > 1 ? JSON.stringify({
+const breadcrumbs = buildBreadcrumbs(canonical, breadcrumbTitle);
+const breadcrumbsAbsolute = buildBreadcrumbs(canonical, breadcrumbTitle, true);
+const breadcrumbLd = breadcrumbsAbsolute.length > 1 ? JSON.stringify({
   '@context': 'https://schema.org',
   '@type': 'BreadcrumbList',
-  itemListElement: breadcrumbs.map((item, i) => ({
+  itemListElement: breadcrumbsAbsolute.map((item, i) => ({
     '@type': 'ListItem',
     position: i + 1,
     name: item.name,
@@ -138,6 +148,11 @@ const allJsonLd = breadcrumbLd ? [...jsonLd, breadcrumbLd] : jsonLd;
 
       <Navbar />
       <main class="main">
+        {!hideBreadcrumbs && breadcrumbs.length > 2 && (
+          <div class="breadcrumbs-wrapper">
+            <Breadcrumbs items={breadcrumbs} />
+          </div>
+        )}
         <slot />
       </main>
       <Footer />
@@ -188,6 +203,12 @@ const allJsonLd = breadcrumbLd ? [...jsonLd, breadcrumbLd] : jsonLd;
         flex: 1;
         position: relative;
         z-index: 1;
+      }
+
+      .breadcrumbs-wrapper {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: var(--space-md) var(--space-lg) 0;
       }
 
       /* Noise texture overlay */
@@ -244,6 +265,24 @@ const allJsonLd = breadcrumbLd ? [...jsonLd, breadcrumbLd] : jsonLd;
         }
       }
     </style>
+    <!-- Konami code easter egg -->
+    <script is:inline>
+      (function() {
+        var seq = [38,38,40,40,37,39,37,39,66,65];
+        var pos = 0;
+        document.addEventListener('keydown', function(e) {
+          if (e.keyCode === seq[pos]) {
+            pos++;
+            if (pos === seq.length) {
+              pos = 0;
+              window.location.href = '/arcade/?konami=1';
+            }
+          } else {
+            pos = 0;
+          }
+        });
+      })();
+    </script>
     <!-- Cloudflare Web Analytics -->
     <script is:inline defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "df38e71453b142fa930d170f559fe7bf"}'></script>
   </body>

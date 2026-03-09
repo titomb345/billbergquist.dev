@@ -90,6 +90,14 @@ const jsonLdArcade = JSON.stringify({
       </div>
     </div>
 
+    <div id="konami-banner" class={styles.konamiBanner} style="display: none;" aria-hidden="true">
+      <span class={styles.konamiIcon}>&#9733;</span>
+      <span>&#8593;&#8593;&#8595;&#8595;&#8592;&#8594;&#8592;&#8594; B A</span>
+      <span class={styles.konamiDivider}>/</span>
+      <span>Cheat code accepted. Welcome to the secret level.</span>
+      <span class={styles.konamiIcon}>&#9733;</span>
+    </div>
+
     <header class={styles.header}>
       <h1 class="glitch-text" data-text="ARCADE">ARCADE</h1>
       <p class={styles.subtitle}>
@@ -115,4 +123,17 @@ const jsonLdArcade = JSON.stringify({
       </div>
     </section>
   </div>
+
+  <script is:inline>
+    (function() {
+      if (new URLSearchParams(window.location.search).has('konami')) {
+        var banner = document.getElementById('konami-banner');
+        if (banner) {
+          banner.style.display = '';
+          banner.removeAttribute('aria-hidden');
+        }
+        history.replaceState(null, '', window.location.pathname);
+      }
+    })();
+  </script>
 </Layout>
