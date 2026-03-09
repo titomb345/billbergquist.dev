@@ -76,7 +76,7 @@ const jsonLd = JSON.stringify({
           sites.map((site) => (
             <div class={styles.siteCard}>
               <h3 class={styles.siteName}>{site.name}</h3>
-              <p class={styles.siteUrl}>{site.url}</p>
+              <a href={`https://${site.url}`} target="_blank" rel="noopener noreferrer" class={styles.siteUrl}>{site.url}</a>
               <div class={styles.scoresGrid}>
                 {(
                   [
@@ -148,9 +148,7 @@ const jsonLd = JSON.stringify({
           href="https://developer.chrome.com/docs/lighthouse/overview"
           target="_blank"
           rel="noopener noreferrer"
-        >
-          Google Lighthouse
-        </a>, the industry standard for web performance auditing. Tests are run on mobile with a
+        >Google Lighthouse</a>, the industry standard for web performance auditing. Tests are run on mobile with a
         simulated throttled connection, which is the same methodology Google uses for its{' '}
         <a
           href="https://pagespeed.web.dev/"
