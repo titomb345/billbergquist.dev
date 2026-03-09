@@ -45,8 +45,9 @@ const breadcrumbNames: Record<string, string> = {
   performance: 'Performance',
 };
 
-function buildBreadcrumbs(path?: string, lastSegmentName?: string) {
-  const items: { name: string; url: string }[] = [{ name: 'Home', url: `${BASE_URL}/` }];
+function buildBreadcrumbs(path?: string, lastSegmentName?: string, absolute = false) {
+  const prefix = absolute ? BASE_URL : '';
+  const items: { name: string; url: string }[] = [{ name: 'Home', url: `${prefix}/` }];
   if (path && path !== '/') {
     const segments = path.replace(/^\//, '').replace(/\/$/, '').split('/');
     let accumulated = '';
@@ -55,17 +56,18 @@ function buildBreadcrumbs(path?: string, lastSegmentName?: string) {
       accumulated += `/${seg}`;
       const isLast = i === segments.length - 1;
       const name = isLast && lastSegmentName ? lastSegmentName : breadcrumbNames[seg] || seg;
-      items.push({ name, url: `${BASE_URL}${accumulated}/` });
+      items.push({ name, url: `${prefix}${accumulated}/` });
     }
   }
   return items;
 }
 
 const breadcrumbs = buildBreadcrumbs(canonical, breadcrumbTitle);
-const breadcrumbLd = breadcrumbs.length > 1 ? JSON.stringify({
+const breadcrumbsAbsolute = buildBreadcrumbs(canonical, breadcrumbTitle, true);
+const breadcrumbLd = breadcrumbsAbsolute.length > 1 ? JSON.stringify({
   '@context': 'https://schema.org',
   '@type': 'BreadcrumbList',
-  itemListElement: breadcrumbs.map((item, i) => ({
+  itemListElement: breadcrumbsAbsolute.map((item, i) => ({
     '@type': 'ListItem',
     position: i + 1,
     name: item.name,
