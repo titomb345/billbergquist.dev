@@ -7,7 +7,7 @@ const PSI_API_KEY = import.meta.env.PUBLIC_PSI_API_KEY || '';
 
 const sites = [
   {
-    name: 'Bill Bergquist',
+    name: 'This Site',
     url: 'billbergquist.dev',
     scores: { performance: 99, accessibility: 100, bestPractices: 100, seo: 100 },
   },
@@ -59,10 +59,10 @@ const jsonLd = JSON.stringify({
 >
   <div class={styles.page}>
     <header class={styles.header}>
-      <h1 class={styles.title}>Performance That Speaks for Itself</h1>
+      <p class={styles.eyebrow}>Most small business sites score 40 to 60 on Google's performance audit.</p>
+      <h1 class={styles.title}>Mine Score 95+.</h1>
       <p class={styles.subtitle}>
-        Speed, accessibility, and SEO are not afterthoughts. Every site I build targets perfect
-        Lighthouse scores out of the gate. These are real results from Google's own auditing tool.
+        Real results from Google's own auditing tool, not cherry-picked screenshots.
       </p>
     </header>
 
@@ -107,34 +107,6 @@ const jsonLd = JSON.stringify({
 
     <div class={styles.divider}></div>
 
-    <section class={styles.averagesSection}>
-      <h2 class={styles.sectionTitle}>Portfolio Averages</h2>
-      <div class={styles.averagesBar}>
-        {
-          (
-            [
-              { key: 'performance', label: 'Performance' },
-              { key: 'accessibility', label: 'Accessibility' },
-              { key: 'bestPractices', label: 'Best Practices' },
-              { key: 'seo', label: 'SEO' },
-            ] as const
-          ).map((cat) => (
-            <div class={styles.averageItem}>
-              <span
-                class={styles.averageScore}
-                style={`color: ${scoreColor(portfolioAvg[cat.key])};`}
-              >
-                {portfolioAvg[cat.key]}
-              </span>
-              <span class={styles.averageLabel}>{cat.label}</span>
-            </div>
-          ))
-        }
-      </div>
-    </section>
-
-    <div class={styles.divider}></div>
-
     <section class={styles.compareSection}>
       <PerformanceCompare client:visible portfolioAvg={portfolioAvg} apiKey={PSI_API_KEY} />
     </section>
@@ -142,7 +114,7 @@ const jsonLd = JSON.stringify({
     <div class={styles.divider}></div>
 
     <section class={styles.methodology}>
-      <h2 class={styles.sectionTitle}>How We Measure</h2>
+      <h2 class={styles.sectionTitle}>How I Measure</h2>
       <p class={styles.methodologyText}>
         All scores come from{' '}
         <a

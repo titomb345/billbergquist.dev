@@ -28,9 +28,19 @@ function scoreColor(score: number): string {
   return '#ff4e42';
 }
 
-function ScoreRing({ score, label, size = 72 }: { score: number; label: string; size?: number }) {
+function ScoreRing({
+  score,
+  label,
+  size = 72,
+  highlight,
+}: {
+  score: number;
+  label: string;
+  size?: number;
+  highlight?: 'win' | 'lose' | 'tie';
+}) {
   return (
-    <div className={styles.scoreItem}>
+    <div className={`${styles.scoreItem} ${highlight === 'win' ? styles.scoreWin : ''}`}>
       <div
         className={styles.scoreRing}
         style={
@@ -42,7 +52,7 @@ function ScoreRing({ score, label, size = 72 }: { score: number; label: string; 
           } as React.CSSProperties
         }
       >
-        <span className={styles.scoreValue} style={{ fontSize: size * 0.3 + 'px' }}>
+        <span className={styles.scoreValue} style={{ fontSize: size * 0.018 + 'rem' }}>
           {score}
         </span>
       </div>
@@ -113,8 +123,8 @@ export default function PerformanceCompare({ portfolioAvg, apiKey }: Props) {
     <div className={styles.compare}>
       <h2 className={styles.heading}>Test Your Site</h2>
       <p className={styles.description}>
-        Enter your website URL below and we'll run a real Google Lighthouse audit. See how your site
-        stacks up against our portfolio.
+        Enter your website URL below and I'll run a real Google Lighthouse audit. See how your site
+        stacks up against my portfolio.
       </p>
 
       <form onSubmit={handleSubmit} className={styles.form}>
@@ -127,7 +137,7 @@ export default function PerformanceCompare({ portfolioAvg, apiKey }: Props) {
           disabled={status === 'loading'}
           aria-label="Website URL to test"
         />
-        <button type="submit" className={styles.button} disabled={status === 'loading' || !url.trim()}>
+        <button type="submit" className={styles.button} disabled={status === 'loading'}>
           {status === 'loading' ? 'Running...' : 'Run Test'}
         </button>
       </form>
@@ -158,29 +168,89 @@ export default function PerformanceCompare({ portfolioAvg, apiKey }: Props) {
               <h3 className={styles.columnTitle}>Your Site</h3>
               <p className={styles.columnUrl}>{testedUrl.replace(/^https?:\/\//, '')}</p>
               <div className={styles.resultsGrid}>
-                {CATEGORIES.map((cat) => (
-                  <ScoreRing key={cat.key} score={result[cat.key]} label={cat.label} size={64} />
-                ))}
+                {CATEGORIES.map((cat) => {
+                  const yours = result[cat.key];
+                  const ours = portfolioAvg[cat.key];
+                  const highlight =
+                    yours > ours ? 'win' : yours < ours ? 'lose' : ('tie' as const);
+                  return (
+                    <ScoreRing
+                      key={cat.key}
+                      score={yours}
+                      label={cat.label}
+                      size={64}
+                      highlight={highlight}
+                    />
+                  );
+                })}
               </div>
             </div>
             <div className={styles.vsDivider}>
               <span className={styles.vsText}>vs</span>
             </div>
             <div className={styles.resultsColumn}>
-              <h3 className={styles.columnTitle}>Our Portfolio Avg</h3>
+              <h3 className={styles.columnTitle}>My Portfolio Avg</h3>
               <p className={styles.columnUrl}>3 sites</p>
               <div className={styles.resultsGrid}>
-                {CATEGORIES.map((cat) => (
-                  <ScoreRing
-                    key={cat.key}
-                    score={portfolioAvg[cat.key]}
-                    label={cat.label}
-                    size={64}
-                  />
-                ))}
+                {CATEGORIES.map((cat) => {
+                  const yours = result[cat.key];
+                  const ours = portfolioAvg[cat.key];
+                  const highlight =
+                    ours > yours ? 'win' : ours < yours ? 'lose' : ('tie' as const);
+                  return (
+                    <ScoreRing
+                      key={cat.key}
+                      score={ours}
+                      label={cat.label}
+                      size={64}
+                      highlight={highlight}
+                    />
+                  );
+                })}
               </div>
             </div>
           </div>
+
+          {(() => {
+            const userAvg = Math.round(
+              (result.performance + result.accessibility + result.bestPractices + result.seo) / 4,
+            );
+            const portfolioAvgScore = Math.round(
+              (portfolioAvg.performance +
+                portfolioAvg.accessibility +
+                portfolioAvg.bestPractices +
+                portfolioAvg.seo) /
+                4,
+            );
+            const diff = portfolioAvgScore - userAvg;
+            if (diff > 0) {
+              return (
+                <p className={styles.verdictText}>
+                  My portfolio scores <strong>{diff} points higher</strong> on average.{' '}
+                  <a href="/services/#contact">Let's close that gap.</a>
+                </p>
+              );
+            }
+            if (diff === 0) {
+              return (
+                <p className={styles.verdictText}>
+                  Dead even. Your site is in great shape. If you ever need help keeping it there,{' '}
+                  <a href="/services/#contact">let me know</a>.
+                </p>
+              );
+            }
+            return (
+              <p className={styles.verdictText}>
+                Nice work, your site is performing well! If you ever want a second pair of eyes on
+                it, <a href="/services/#contact">I'm happy to chat</a>.
+              </p>
+            );
+          })()}
+
+          <p className={styles.scoreDisclaimer}>
+            Scores can vary between runs due to network and server conditions.
+          </p>
+
           <button
             type="button"
             className={styles.retestButton}
