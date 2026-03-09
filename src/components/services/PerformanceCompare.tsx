@@ -42,7 +42,7 @@ function ScoreRing({ score, label, size = 72 }: { score: number; label: string; 
           } as React.CSSProperties
         }
       >
-        <span className={styles.scoreValue} style={{ fontSize: size * 0.17 + 'rem' }}>
+        <span className={styles.scoreValue} style={{ fontSize: size * 0.3 + 'px' }}>
           {score}
         </span>
       </div>
