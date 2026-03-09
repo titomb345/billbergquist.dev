@@ -36,11 +36,12 @@
   border-radius: var(--radius-md);
   padding: 0.7rem 1rem;
   outline: none;
-  transition: border-color var(--transition-fast);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .input:focus {
   border-color: var(--neon-mint);
+  box-shadow: 0 0 0 3px rgba(0, 201, 167, 0.1);
 }
 
 .input::placeholder {
@@ -61,13 +62,14 @@
   border-radius: var(--radius-md);
   padding: 0.7rem 1.5rem;
   cursor: pointer;
-  transition: opacity var(--transition-fast);
+  transition: opacity var(--transition-fast), box-shadow var(--transition-fast);
   white-space: nowrap;
   letter-spacing: 0.02em;
 }
 
 .button:hover:not(:disabled) {
   opacity: 0.9;
+  box-shadow: 0 0 16px rgba(0, 201, 167, 0.3);
 }
 
 .button:disabled {
@@ -87,8 +89,8 @@
 }
 
 .spinner {
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
   border: 3px solid var(--bg-elevated);
   border-top-color: var(--neon-mint);
   border-radius: 50%;
@@ -137,11 +139,23 @@
 /* ── Results ── */
 .results {
   margin-top: var(--space-lg);
+  animation: fadeInUp 0.5s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .resultsColumns {
   display: flex;
-  align-items: flex-start;
+  align-items: stretch;
   justify-content: center;
   gap: var(--space-lg);
   flex-wrap: wrap;
@@ -153,6 +167,7 @@
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
   padding: var(--space-lg);
+  transition: border-color var(--transition-normal);
 }
 
 .columnTitle {
@@ -179,15 +194,16 @@
 .vsDivider {
   display: flex;
   align-items: center;
-  padding-top: 4rem;
+  padding-top: 3rem;
 }
 
 .vsText {
   font-family: var(--font-heading);
-  font-size: 1rem;
+  font-size: 0.9rem;
   color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 0.1em;
+  opacity: 0.6;
 }
 
 @media (max-width: 680px) {
@@ -206,6 +222,37 @@
   }
 }
 
+/* ── Verdict text ── */
+.verdictText {
+  margin-top: var(--space-lg);
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.verdictText strong {
+  color: var(--neon-mint);
+}
+
+.verdictText a {
+  color: var(--neon-mint);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.verdictText a:hover {
+  text-decoration: underline;
+}
+
+/* ── Score disclaimer ── */
+.scoreDisclaimer {
+  margin-top: var(--space-md);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  opacity: 0.7;
+}
+
+/* ── Retest button ── */
 .retestButton {
   margin-top: var(--space-lg);
   font-family: var(--font-body);
@@ -216,19 +263,25 @@
   border-radius: var(--radius-md);
   padding: 0.5rem 1.25rem;
   cursor: pointer;
-  transition: background var(--transition-fast);
+  transition: background var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .retestButton:hover {
   background: rgba(0, 201, 167, 0.08);
+  box-shadow: 0 0 12px rgba(0, 201, 167, 0.1);
 }
 
-/* ── Score ring (reused from page styles) ── */
+/* ── Score ring ── */
 .scoreItem {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: var(--space-xs);
+  transition: transform var(--transition-fast);
+}
+
+.scoreWin .scoreRing {
+  box-shadow: 0 0 12px rgba(0, 201, 167, 0.2);
 }
 
 .scoreRing {
@@ -238,6 +291,18 @@
   align-items: center;
   justify-content: center;
   background: var(--bg-elevated);
+  animation: ringReveal 0.6s ease-out both;
+}
+
+@keyframes ringReveal {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .scoreRing::before {
@@ -269,7 +334,7 @@
 
 /* ── API note ── */
 .apiNote {
-  margin-top: var(--space-lg);
+  margin-top: var(--space-xl);
   font-size: 0.8rem;
   color: var(--text-muted);
 }
