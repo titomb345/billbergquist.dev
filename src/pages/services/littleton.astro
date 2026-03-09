@@ -7,7 +7,7 @@ const faqs = [
   {
     question: 'How much does a website cost for a Littleton business?',
     answer:
-      "Most small business sites I build cost between $2,000 and $8,000. Main Street boutiques and restaurants usually land in the middle of that range. More complex projects with e-commerce or booking systems cost more. I'll give you a straight answer after we talk.",
+      "Most small business sites I build cost between $2,000 and $8,000. Main Street boutiques and restaurants usually land in the middle of that range. More complex projects with e-commerce or booking systems cost more. Try the cost calculator to get a ballpark, or reach out and I'll give you a straight answer.",
   },
   {
     question: 'Do you know the Littleton area?',
@@ -225,6 +225,10 @@ const bookingMonth = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleStr
         }
       </div>
     </section>
+
+    <p class={styles.perfLink}>
+      Want a quick ballpark? <a href="/services/estimate/">Try the cost calculator &rarr;</a>
+    </p>
 
     <div class={styles.divider}></div>
 

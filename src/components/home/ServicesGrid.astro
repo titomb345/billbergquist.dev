@@ -1,0 +1,62 @@
+---
+import styles from './ServicesGrid.module.css';
+---
+
+<section class={`${styles.section} scroll-reveal`}>
+  <p class={styles.label}>What I Do</p>
+  <h2 class={styles.heading}>Websites that work as hard as you do</h2>
+
+  <div class={styles.grid}>
+    <div class={`${styles.card} scroll-reveal-child`}>
+      <div class={styles.cardIcon}>
+        <span class={styles.iconText}>&lt;/&gt;</span>
+      </div>
+      <h3 class={styles.cardTitle}>Custom Websites</h3>
+      <p class={styles.cardDesc}>
+        Hand-coded sites built from scratch. No templates, no WordPress, no page builders.
+        Fast load times, clean code, and a design that fits your brand.
+      </p>
+      <ul class={styles.cardFeatures}>
+        <li>Business websites &amp; landing pages</li>
+        <li>Mobile-first responsive design</li>
+        <li>Content management built in</li>
+      </ul>
+    </div>
+
+    <div class={`${styles.card} ${styles.cardFeatured} scroll-reveal-child`}>
+      <div class={styles.cardIcon}>
+        <span class={styles.iconText}>&#9889;</span>
+      </div>
+      <h3 class={styles.cardTitle}>Redesigns &amp; Speed</h3>
+      <p class={styles.cardDesc}>
+        Your existing site, transformed. Faster load times, modern design,
+        better mobile experience. Keep what works, fix what doesn't.
+      </p>
+      <ul class={styles.cardFeatures}>
+        <li>Performance optimization</li>
+        <li>Modern visual redesigns</li>
+        <li>Accessibility improvements</li>
+      </ul>
+    </div>
+
+    <div class={`${styles.card} scroll-reveal-child`}>
+      <div class={styles.cardIcon}>
+        <span class={styles.iconText}>&#9678;</span>
+      </div>
+      <h3 class={styles.cardTitle}>SEO &amp; Support</h3>
+      <p class={styles.cardDesc}>
+        Get found on Google. Local SEO setup, Google Business Profile integration,
+        and ongoing support so your site keeps performing after launch.
+      </p>
+      <ul class={styles.cardFeatures}>
+        <li>Local SEO optimization</li>
+        <li>Google Business Profile</li>
+        <li>Ongoing maintenance</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class={styles.sectionCta}>
+    <a href="/services/" class={styles.sectionLink}>Explore all services &rarr;</a>
+  </div>
+</section>

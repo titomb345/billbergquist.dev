@@ -1,13 +1,10 @@
 ---
-import GlowText from '../ui/GlowText.astro';
 import Button from '../ui/Button.astro';
 import styles from './AboutSection.module.css';
 ---
 
 <section id="about" class={`${styles.section} scroll-reveal`}>
-  <GlowText as="h2" size="medium" color="purple" class={styles.sectionTitle}>
-    ABOUT ME
-  </GlowText>
+  <h2 class={styles.sectionTitle}>ABOUT ME</h2>
   <div class={styles.content}>
     <p class={styles.summary}>
       I put 14+ years of professional engineering experience to work building websites for small
@@ -18,7 +15,7 @@ import styles from './AboutSection.module.css';
     <p class={styles.summary}>
       You get the same tools and standards I use in enterprise software, applied to your
       business site. No templates, no page builders. Just clean, custom code built by someone
-      you can <a href="/services/" class="neon-text-orange">meet for coffee</a> and talk to directly.
+      you can <a href="/services/" class={styles.link}>meet for coffee</a> and talk to directly.
     </p>
     <p class={styles.summary}>
       I handle everything: design, development, SEO setup, hosting, and ongoing support.

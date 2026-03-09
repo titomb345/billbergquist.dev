@@ -1,0 +1,41 @@
+---
+import styles from './Process.module.css';
+---
+
+<section class={`${styles.section} scroll-reveal`}>
+  <p class={styles.label}>How It Works</p>
+  <h2 class={styles.heading}>From first call to live site</h2>
+
+  <div class={styles.steps}>
+    <div class={`${styles.step} scroll-reveal-child`}>
+      <div class={styles.stepNumber}>01</div>
+      <h3 class={styles.stepTitle}>Discovery</h3>
+      <p class={styles.stepDesc}>
+        We talk about your business, your goals, and what you need.
+        I'll give you an honest assessment and a clear quote. No pressure, no jargon.
+      </p>
+    </div>
+
+    <div class={styles.connector} aria-hidden="true"></div>
+
+    <div class={`${styles.step} scroll-reveal-child`}>
+      <div class={styles.stepNumber}>02</div>
+      <h3 class={styles.stepTitle}>Build</h3>
+      <p class={styles.stepDesc}>
+        I design and code your site with regular check-ins. You see progress
+        in real time, give feedback, and nothing goes live until you approve it.
+      </p>
+    </div>
+
+    <div class={styles.connector} aria-hidden="true"></div>
+
+    <div class={`${styles.step} scroll-reveal-child`}>
+      <div class={styles.stepNumber}>03</div>
+      <h3 class={styles.stepTitle}>Launch &amp; Support</h3>
+      <p class={styles.stepDesc}>
+        Your site goes live with SEO, analytics, and performance monitoring
+        baked in. I stick around after launch to handle updates and keep things running.
+      </p>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,202 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { Image } from 'astro:assets';
+import ProjectCard from '../components/projects/ProjectCard.astro';
+import creaticalcImg from '../assets/screenshots/creaticalc.png';
+import sportsshortcutsImg from '../assets/screenshots/sportsshortcuts.png';
+import retroretroImg from '../assets/screenshots/retroretro.png';
+import styles from './ProjectsPage.module.css';
+
+const projects = [
+  {
+    title: 'Sports Shortcuts',
+    description:
+      'A friend who works at a sports reporting company needed a faster way to publish injury updates during live games. I built this tool for him. It generates standardized NFL and NBA game-day messages with autocomplete player search, team formatting, and one-click copy. What used to take minutes now takes seconds.',
+    techStack: ['React', 'TypeScript', 'Material UI', 'Vite'],
+    url: 'https://sportsshortcuts.com',
+    color: 'purple' as const,
+    screenshot: sportsshortcutsImg,
+  },
+  {
+    title: 'CreatiCalc',
+    description:
+      'My experiment in learning SEO from the ground up. I wanted to understand how search rankings actually work, so I built a calculator suite for content creators and tried to get it ranking. It covers YouTube ad revenue estimates, engagement rates, and sponsorship pricing across major platforms. The site itself is the real project: figuring out what it takes to show up in search results.',
+    techStack: ['Next.js', 'React', 'TypeScript', 'Tailwind CSS'],
+    url: 'https://creaticalc.com',
+    color: 'mint' as const,
+    screenshot: creaticalcImg,
+  },
+  {
+    title: 'RetroRetro',
+    description:
+      'My team at Kasa liked our paid retro tool, but there were little things we wanted to do better. So I built our own on an entirely free stack. Real-time rooms, sticky notes, voting, drag-and-drop grouping, a built-in timer, and CSV export. It\'s open to anyone, but it started as a "can I build something better for my team" project.',
+    techStack: ['React', 'TypeScript', 'Cloudflare Workers', 'WebSocket'],
+    url: 'https://billbergquist.dev/retro',
+    color: 'mint' as const,
+    screenshot: retroretroImg,
+  },
+];
+
+const jsonLdProjects = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: 'Portfolio — Bill Bergquist',
+  url: 'https://billbergquist.dev/portfolio',
+  mainEntity: {
+    '@type': 'ItemList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        item: {
+          '@type': 'WebApplication',
+          name: 'Critter Care',
+          description:
+            'Pet sitting business website rebuilt from an outdated IONOS template into a fast, modern Astro site with CMS, SEO, and booking flow.',
+          url: 'https://critter-care.com',
+          applicationCategory: 'WebApplication',
+          author: {
+            '@type': 'Person',
+            name: 'Bill Bergquist',
+            url: 'https://billbergquist.dev',
+          },
+        },
+      },
+      ...projects.map((project, i) => ({
+        '@type': 'ListItem',
+        position: i + 2,
+        item: {
+          '@type': 'WebApplication',
+          name: project.title,
+          description: project.description,
+          url: project.url,
+          applicationCategory: 'WebApplication',
+          author: {
+            '@type': 'Person',
+            name: 'Bill Bergquist',
+            url: 'https://billbergquist.dev',
+          },
+        },
+      })),
+    ],
+  },
+});
+---
+
+<Layout
+  title="Portfolio — Web Projects by Bill Bergquist"
+  description="Websites and web applications built by Bill Bergquist. Client work, tools, and applications built with React, Astro, TypeScript, and modern web technologies."
+  canonical="/portfolio"
+  jsonLd={[jsonLdProjects]}
+  ogImage="/og/projects.png"
+>
+  <div class={styles.page}>
+    <header class={styles.header}>
+      <p class={styles.label}>Portfolio</p>
+      <h1 class={styles.title}>Things I've built and why</h1>
+      <p class={styles.intro}>
+        Client work, tools for friends, and experiments I couldn't resist.
+        Every project here has a story behind it.
+      </p>
+    </header>
+
+    <!-- Featured Case Study: Critter Care -->
+    <section class={styles.featured}>
+      <div class={styles.featuredLabel}>
+        <span class={styles.labelTag}>Case Study</span>
+      </div>
+      <div class={styles.featuredLayout}>
+        <div class={styles.featuredVisual}>
+          <before-after
+            before="/blog/critter-care-rebuild/old-home.webp"
+            after="/blog/critter-care-rebuild/new-home.webp"
+            alt="Critter Care homepage before and after redesign"
+          ></before-after>
+          <before-after
+            before="/blog/critter-care-rebuild/old-hire-us.webp"
+            after="/blog/critter-care-rebuild/new-hire-us.webp"
+            alt="Critter Care hire page before and after redesign"
+          ></before-after>
+        </div>
+        <div class={styles.featuredContent}>
+          <h2 class={styles.featuredTitle}>Critter Care</h2>
+          <p class={styles.featuredDesc}>
+            My friend Laurie has run a pet sitting and dog walking business in the
+            South Bay area of Los Angeles since 1999. For years she was paying $53/month
+            for an outdated IONOS site builder and an SEO package that wasn't doing
+            anything. I'd been her unofficial webmaster for a while, making small edits
+            in their clunky drag-and-drop editor.
+          </p>
+          <p class={styles.featuredDesc}>
+            Over Super Bowl weekend, I rebuilt it from scratch. The new site
+            has service listings, a photo gallery, customer testimonials, and a CMS
+            so Laurie can update content herself. It loads in under a second and
+            actually shows up in local search results now.
+          </p>
+          <div class={styles.featuredStats}>
+            <div class={styles.stat}>
+              <span class={styles.statValue}>$53</span>
+              <span class={styles.statLabel}>/ month saved</span>
+            </div>
+            <div class={styles.stat}>
+              <span class={styles.statValue}>&lt;1s</span>
+              <span class={styles.statLabel}>load time</span>
+            </div>
+            <div class={styles.stat}>
+              <span class={styles.statValue}>100</span>
+              <span class={styles.statLabel}>Lighthouse score</span>
+            </div>
+          </div>
+          <blockquote class={styles.testimonial}>
+            <p class={styles.testimonialText}>
+              "That's fabulous! I love it! I really appreciate you and the time
+              you're spending on this and saving me money. Please move forward
+              with it ASAP!"
+            </p>
+            <cite class={styles.testimonialAuthor}>Laurie, Critter Care owner</cite>
+          </blockquote>
+          <div class={styles.featuredTech}>
+            <span class={styles.techTag}>Astro</span>
+            <span class={styles.techTag}>Tailwind CSS</span>
+            <span class={styles.techTag}>Decap CMS</span>
+          </div>
+          <div class={styles.featuredLinks}>
+            <a
+              href="https://critter-care.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              class={styles.featuredLink}
+            >
+              View Live Site &#8599;
+            </a>
+            <a href="/blog/rebuilding-critter-care-website/" class={styles.caseStudyLink}>
+              Read the Full Story &rarr;
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Other Projects -->
+    <section class={styles.projectsSection}>
+      <p class={styles.projectsSectionLabel}>Tools &amp; Experiments</p>
+      <div class={styles.grid}>
+        {projects.map((project) => (
+          <ProjectCard {...project} />
+        ))}
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class={styles.cta}>
+      <h2 class={styles.ctaText}>Have a project in mind?</h2>
+      <p class={styles.ctaSubtext}>
+        Whether it's a new website, a redesign, or a custom tool, I'd like to
+        hear about it. Every project on this page started with a simple conversation.
+      </p>
+      <a href="/services/#contact" class={styles.ctaLink}>Get a Free Quote &rarr;</a>
+    </section>
+  </div>
+
+  <script is:inline src="/blog/critter-care-rebuild/before-after.js" defer></script>
+</Layout>

@@ -11,39 +11,28 @@
 
 .headshot {
   display: block;
-  width: 200px;
-  height: 200px;
+  width: 160px;
+  height: 160px;
   border-radius: 50%;
   object-fit: cover;
-  border: 3px solid var(--neon-mint);
-  box-shadow: 0 0 20px var(--neon-mint-glow), 0 0 40px rgba(0, 201, 167, 0.15);
+  border: 2px solid var(--bg-elevated);
   margin: 0 auto var(--space-lg);
 }
 
-.title {
-  margin-bottom: var(--space-lg);
+.name {
+  font-family: var(--font-heading);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 var(--space-xs);
+  letter-spacing: 1px;
 }
 
-.summary {
-  font-size: 1.125rem;
-  line-height: 1.8;
-  color: var(--text-secondary);
-  max-width: 700px;
-  margin: 0 auto var(--space-md);
-}
-
-.aiHighlight {
-  font-size: 1.125rem;
-  line-height: 1.8;
-  color: var(--text-secondary);
-  max-width: 700px;
-  margin: var(--space-lg) auto 0;
-  padding: var(--space-md) var(--space-lg);
-  background: rgba(240, 100, 24, 0.08);
-  border: 1px solid rgba(240, 100, 24, 0.25);
-  border-left: 3px solid var(--neon-orange);
-  border-radius: var(--radius-sm);
-  box-shadow: 0 0 20px rgba(240, 100, 24, 0.1);
+.role {
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  margin: 0;
 }
 
 .content {
@@ -53,48 +42,17 @@
 }
 
 .sectionTitle {
-  margin-bottom: var(--space-lg);
-}
-
-.education {
-  padding: var(--space-lg) 0;
-}
-
-.educationCard {
-  background: var(--bg-surface);
-  border: 1px solid rgba(168, 85, 247, 0.25);
-  border-radius: var(--radius-md);
-  padding: var(--space-lg);
-  text-align: center;
-  box-shadow: 0 0 20px rgba(168, 85, 247, 0.08);
-}
-
-.school {
   font-family: var(--font-heading);
-  font-size: 1.25rem;
-  color: var(--neon-purple);
-  margin: 0 0 var(--space-sm);
-}
-
-.degree {
-  font-size: 1rem;
-  color: var(--text-primary);
-  margin: 0 0 var(--space-xs);
-}
-
-.years {
-  font-family: var(--font-mono);
   font-size: 0.875rem;
+  font-weight: 600;
   color: var(--text-muted);
-  margin: 0;
-}
-
-.approach {
-  padding: var(--space-lg) 0;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin: 0 0 var(--space-lg);
   text-align: center;
 }
 
-.approachText {
+.text {
   font-size: 1rem;
   line-height: 1.8;
   color: var(--text-secondary);
@@ -102,21 +60,112 @@
   margin: 0 auto var(--space-md);
 }
 
-.approachText a {
-  color: var(--neon-mint);
-  text-decoration: none;
+.text:last-child {
+  margin-bottom: 0;
 }
 
-.approachText a:hover {
-  text-decoration: underline;
+/* ── Intro ── */
+
+.intro {
+  text-align: center;
 }
+
+/* ── Approach ── */
+
+.approach {
+  padding: var(--space-lg) 0;
+  text-align: center;
+}
+
+/* ── Deliverables ── */
+
+.deliverables {
+  padding: var(--space-lg) 0;
+}
+
+.deliverableGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-lg);
+}
+
+.deliverableCard {
+  padding: var(--space-lg);
+  background: var(--bg-surface);
+  border: 1px solid var(--bg-elevated);
+  border-radius: var(--radius-md);
+}
+
+.deliverableIcon {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--neon-orange);
+  margin-bottom: var(--space-md);
+  letter-spacing: 1px;
+}
+
+.deliverableTitle {
+  font-family: var(--font-heading);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 var(--space-sm);
+  letter-spacing: 0.5px;
+}
+
+.deliverableText {
+  font-size: 0.875rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/* ── Background ── */
+
+.background {
+  padding: var(--space-lg) 0;
+  text-align: center;
+}
+
+.credentialRow {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-xl);
+  margin-top: var(--space-lg);
+  padding-top: var(--space-lg);
+  border-top: 1px solid var(--bg-elevated);
+}
+
+.credential {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.credentialValue {
+  font-family: var(--font-heading);
+  font-size: 1.125rem;
+  color: var(--text-primary);
+  letter-spacing: 0.5px;
+}
+
+.credentialLabel {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ── Services CTA ── */
 
 .servicesCta {
   text-align: center;
   margin-top: var(--space-lg);
   padding: var(--space-lg);
   background: var(--bg-surface);
-  border: 1px solid rgba(0, 201, 167, 0.15);
+  border: 1px solid var(--bg-elevated);
   border-radius: var(--radius-md);
 }
 
@@ -131,20 +180,20 @@
 .servicesCtaLink {
   display: inline-block;
   font-family: var(--font-heading);
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 2px;
-  color: var(--neon-mint);
+  color: var(--neon-orange);
   text-decoration: none;
-  border: 2px solid var(--neon-mint);
+  border: 1px solid var(--neon-orange);
   border-radius: var(--radius-sm);
   padding: var(--space-sm) var(--space-lg);
   transition: var(--transition-fast);
 }
 
 .servicesCtaLink:hover {
-  background-color: var(--neon-mint);
+  background-color: var(--neon-orange);
   color: var(--bg-void);
 }
 
@@ -153,8 +202,12 @@
     padding: var(--space-lg) var(--space-md);
   }
 
-  .summary {
-    font-size: 1rem;
+  .deliverableGrid {
+    gap: var(--space-md);
+  }
+
+  .credentialRow {
+    gap: var(--space-lg);
   }
 }
 
@@ -164,17 +217,21 @@
   }
 
   .headshot {
-    width: 150px;
-    height: 150px;
+    width: 120px;
+    height: 120px;
   }
 
-  .summary {
-    font-size: 0.9375rem;
+  .name {
+    font-size: 1.5rem;
   }
 
-  .aiHighlight {
-    font-size: 0.9375rem;
-    padding: var(--space-sm) var(--space-md);
+  .deliverableGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .credentialRow {
+    flex-direction: column;
+    gap: var(--space-md);
   }
 
   .servicesCta {
