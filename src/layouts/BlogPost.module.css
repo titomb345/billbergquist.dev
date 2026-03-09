@@ -4,35 +4,6 @@
   padding: var(--space-xl) var(--space-lg);
 }
 
-
-/* ── Breadcrumbs ── */
-
-.breadcrumbs {
-  font-family: var(--font-mono);
-  font-size: 0.8125rem;
-  margin-bottom: var(--space-lg);
-  color: var(--text-muted);
-}
-
-.breadcrumbLink {
-  color: var(--text-muted);
-  text-decoration: none;
-  transition: var(--transition-fast);
-}
-
-.breadcrumbLink:hover {
-  color: var(--neon-mint);
-}
-
-.breadcrumbSep {
-  margin: 0 var(--space-xs);
-  opacity: 0.4;
-}
-
-.breadcrumbCurrent {
-  color: var(--text-secondary);
-}
-
 /* ── Header ── */
 
 .header {

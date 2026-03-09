@@ -3,11 +3,13 @@ import Layout from '../../layouts/Layout.astro';
 import PerformanceCompare from '../../components/services/PerformanceCompare';
 import styles from '../PerformancePage.module.css';
 
+const PSI_API_KEY = import.meta.env.PUBLIC_PSI_API_KEY || '';
+
 const sites = [
   {
     name: 'Bill Bergquist',
     url: 'billbergquist.dev',
-    scores: { performance: 100, accessibility: 100, bestPractices: 100, seo: 100 },
+    scores: { performance: 99, accessibility: 100, bestPractices: 100, seo: 100 },
   },
   {
     name: 'Critter Care',
@@ -17,7 +19,7 @@ const sites = [
   {
     name: 'CreatiCalc',
     url: 'creaticalc.com',
-    scores: { performance: 96, accessibility: 96, bestPractices: 100, seo: 100 },
+    scores: { performance: 99, accessibility: 100, bestPractices: 100, seo: 100 },
   },
 ];
 
@@ -57,7 +59,6 @@ const jsonLd = JSON.stringify({
 >
   <div class={styles.page}>
     <header class={styles.header}>
-      <span class={styles.badge}>Lighthouse Scores</span>
       <h1 class={styles.title}>Performance That Speaks for Itself</h1>
       <p class={styles.subtitle}>
         Speed, accessibility, and SEO are not afterthoughts. Every site I build targets perfect
@@ -135,7 +136,7 @@ const jsonLd = JSON.stringify({
     <div class={styles.divider}></div>
 
     <section class={styles.compareSection}>
-      <PerformanceCompare client:visible portfolioAvg={portfolioAvg} />
+      <PerformanceCompare client:visible portfolioAvg={portfolioAvg} apiKey={PSI_API_KEY} />
     </section>
 
     <div class={styles.divider}></div>
@@ -148,16 +149,50 @@ const jsonLd = JSON.stringify({
           href="https://developer.chrome.com/docs/lighthouse/overview"
           target="_blank"
           rel="noopener noreferrer"
-        >Google Lighthouse</a>, the industry standard for web performance auditing. Tests are run on mobile with a
-        simulated throttled connection, which is the same methodology Google uses for its{' '}
+        >Google Lighthouse</a>, the industry standard for web performance auditing and the same
+        tool Google uses to evaluate sites for search ranking. You can verify these scores yourself
+        using the "Test Your Site" tool above or by visiting{' '}
         <a
           href="https://pagespeed.web.dev/"
           target="_blank"
           rel="noopener noreferrer"
-        >
-          PageSpeed Insights
-        </a>{' '}
-        tool. Portfolio scores are averages from multiple runs to account for natural variance.
+        >pagespeed.web.dev</a> directly.
+      </p>
+
+      <div class={styles.methodologyGrid}>
+        <div class={styles.methodologyCard}>
+          <h3 class={styles.methodologyCardTitle}>Testing Conditions</h3>
+          <ul class={styles.methodologyList}>
+            <li>Mobile device emulation (Moto G Power)</li>
+            <li>Simulated slow 4G throttling</li>
+            <li>5 runs per site, averaged</li>
+            <li>Scores recorded March 2026</li>
+          </ul>
+        </div>
+        <div class={styles.methodologyCard}>
+          <h3 class={styles.methodologyCardTitle}>What Each Score Means</h3>
+          <ul class={styles.methodologyList}>
+            <li><strong>Performance:</strong> Page load speed, interactivity, visual stability</li>
+            <li><strong>Accessibility:</strong> WCAG compliance, screen reader support, color contrast</li>
+            <li><strong>Best Practices:</strong> Security headers, HTTPS, modern APIs, no console errors</li>
+            <li><strong>SEO:</strong> Crawlability, meta tags, structured data, mobile-friendliness</li>
+          </ul>
+        </div>
+        <div class={styles.methodologyCard}>
+          <h3 class={styles.methodologyCardTitle}>Why It Matters</h3>
+          <ul class={styles.methodologyList}>
+            <li>Google uses these metrics as ranking signals</li>
+            <li>Faster sites convert more visitors into customers</li>
+            <li>Accessible sites reach a wider audience</li>
+            <li>Most small business sites score 40 to 60 on mobile</li>
+          </ul>
+        </div>
+      </div>
+
+      <p class={styles.methodologyNote}>
+        Performance scores can vary slightly between runs due to network conditions and server
+        response times. The scores shown here are rounded averages. Accessibility, Best Practices,
+        and SEO scores are deterministic and consistent across runs.
       </p>
     </section>
 
