@@ -49,6 +49,9 @@ const breadcrumbNames: Record<string, string> = {
   estimate: 'Cost Estimator',
 };
 
+// Segments to skip in breadcrumb display (no landing page exists)
+const breadcrumbSkip = new Set(['tag']);
+
 function buildBreadcrumbs(path?: string, lastSegmentName?: string, absolute = false) {
   const prefix = absolute ? BASE_URL : '';
   const items: { name: string; url: string }[] = [{ name: 'Home', url: `${prefix}/` }];
@@ -58,6 +61,7 @@ function buildBreadcrumbs(path?: string, lastSegmentName?: string, absolute = fa
     for (let i = 0; i < segments.length; i++) {
       const seg = segments[i];
       accumulated += `/${seg}`;
+      if (breadcrumbSkip.has(seg)) continue;
       const isLast = i === segments.length - 1;
       const name = isLast && lastSegmentName ? lastSegmentName : breadcrumbNames[seg] || seg;
       items.push({ name, url: `${prefix}${accumulated}/` });
