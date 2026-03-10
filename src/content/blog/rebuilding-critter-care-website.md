@@ -1,6 +1,6 @@
 ---
 title: "How I Rebuilt Critter Care's Website from Scratch"
-description: "A real case study of rebuilding a pet sitting website from a dated IONOS template to a fast, modern Astro site. Before and after screenshots, technical details, and what the process actually looked like."
+description: "A case study of rebuilding a pet sitting website from a dated IONOS template to a fast, modern Astro site. Before/after screenshots and technical details."
 publishDate: 2026-02-20
 updatedDate: 2026-03-09
 tags: ["web design", "case study", "astro", "small business"]

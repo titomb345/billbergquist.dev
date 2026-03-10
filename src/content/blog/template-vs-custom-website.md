@@ -1,6 +1,6 @@
 ---
 title: "Why Your Denver Business Needs More Than a Wix Template"
-description: "Template website builders are convenient, but they come with real trade-offs in speed, SEO, and flexibility. Here's what small business owners should know before choosing."
+description: "Template builders are convenient but come with real trade-offs in speed, SEO, and flexibility. What small business owners should know before choosing."
 publishDate: 2026-02-15
 updatedDate: 2026-03-09
 tags: ["web design", "small business", "denver", "seo"]

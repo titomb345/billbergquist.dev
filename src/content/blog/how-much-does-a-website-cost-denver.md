@@ -1,6 +1,6 @@
 ---
 title: "How Much Does a Website Cost for a Small Business in Denver?"
-description: "A straightforward breakdown of website costs for small businesses in Denver, Lakewood, and the Colorado Front Range. What to expect, what affects pricing, and how to get the most value."
+description: "A straightforward breakdown of website costs for small businesses in Denver and the Front Range. What to expect, what affects pricing, and how to get value."
 publishDate: 2026-03-01
 updatedDate: 2026-03-09
 tags: ["web design", "denver", "small business", "pricing"]
