@@ -2,6 +2,7 @@
 title: "An AI Bot Tried to Hire Me (It Didn't Go Well)"
 description: "A scam bot posing as a potential client emailed me about building a website. I decided to play along and see how far it would go."
 publishDate: 2026-03-07
+updatedDate: 2026-03-10
 tags: ["freelancing", "AI", "web design", "scams"]
 ogImage: "/og/blog/ai-scam-bot-freelance-inquiry.png"
 draft: false
@@ -72,7 +73,15 @@ But I also did something else. I'd been using ChatGPT to help draft my replies, 
 
 Two bots, both leaving their instructions in the email. Just a beautiful moment in modern communication. I wish I could say I planned it, but honestly I just forgot to delete the note before hitting send. Happy accident.
 
-No response after that. Either the bot broke trying to process a drafting note it wasn't expecting, or whoever was running this thing saw it and realized they'd been made. I like to think someone on the other end read "[Drafting Note: Does this response seem human enough to elicit a reply?]" and had a moment of self-reflection about their life choices.
+**Update (March 10):** A few days later, Halton actually replied:
+
+> Hi Bill,
+>
+> Yes, still here. And yes, Lucian Teodor is indeed still the primary director.
+>
+> Halton Portnoy
+
+So to recap: the bot confirmed that a completely made-up person is the "primary director" of a dissolved freight transport company in Rugby. Lucian Teodor does not exist. I invented that name specifically to see if the bot would agree. It did, without hesitation. The bot has no idea what's true. It just agrees with whatever you say, because that's what keeps the conversation going. If I'd said the director was Mickey Mouse, it probably would have confirmed that too.
 
 ## What's the Point of a Scam Like This?
 

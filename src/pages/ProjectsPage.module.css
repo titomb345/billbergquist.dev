@@ -238,6 +238,7 @@
 .perfLink {
   text-align: center;
   margin-top: var(--space-md);
+  margin-bottom: var(--space-lg);
   font-size: 0.95rem;
   color: var(--text-secondary);
 }

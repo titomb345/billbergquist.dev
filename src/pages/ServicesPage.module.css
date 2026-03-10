@@ -50,7 +50,6 @@
   line-height: 1.15;
   letter-spacing: 1px;
   margin-bottom: var(--space-sm);
-  text-transform: uppercase;
 }
 
 .subtitle {
