@@ -4,27 +4,28 @@ import Layout from '../layouts/Layout.astro';
 import SectionDivider from '../components/ui/SectionDivider.astro';
 import headshot from '../assets/headshot.png';
 import styles from './AboutPage.module.css';
+import { BASE_URL, CONTACT_PHONE, GBP_URL, PERSON_ID } from '../shared/site';
 
 const jsonLdPerson = JSON.stringify({
   '@context': 'https://schema.org',
   '@type': 'Person',
-  '@id': 'https://billbergquist.dev/#person',
+  '@id': PERSON_ID,
   name: 'Bill Bergquist',
   jobTitle: 'Web Developer',
   description: 'Web developer in Denver, CO with 14+ years of experience specializing in React, TypeScript, and modern web applications for small businesses.',
-  url: 'https://billbergquist.dev',
-  image: 'https://billbergquist.dev/og/about.png',
+  url: BASE_URL,
+  image: `${BASE_URL}/og/about.png`,
   address: {
     '@type': 'PostalAddress',
     addressLocality: 'Denver',
     addressRegion: 'CO',
     addressCountry: 'US',
   },
-  telephone: '+1-847-280-0729',
+  telephone: CONTACT_PHONE,
   sameAs: [
     'https://github.com/titomb345',
     'https://www.linkedin.com/in/bill-bergquist/',
-    'https://share.google/AN9wq1GbXPqjeQwEf',
+    GBP_URL,
   ],
   worksFor: {
     '@type': 'Organization',

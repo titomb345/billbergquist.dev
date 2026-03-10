@@ -1,5 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import { BASE_URL, PERSON_REF } from '../../shared/site';
 import DescentGameCard from '../../components/games/DescentGameCard.astro';
 import GridlockGameCard from '../../components/games/GridlockGameCard.astro';
 import CrapsGameCard from '../../components/games/CrapsGameCard.astro';
@@ -10,7 +11,7 @@ const jsonLdArcade = JSON.stringify({
   '@type': 'CollectionPage',
   name: 'Arcade — Browser Games by Bill Bergquist',
   description: 'Browser-based games built through AI-assisted development. Play free in your browser.',
-  url: 'https://billbergquist.dev/arcade/',
+  url: `${BASE_URL}/arcade/`,
   mainEntity: {
     '@type': 'ItemList',
     itemListElement: [
@@ -22,10 +23,10 @@ const jsonLdArcade = JSON.stringify({
           name: 'Minesweeper: Descent',
           applicationCategory: 'Game',
           operatingSystem: 'Web Browser',
-          url: 'https://billbergquist.dev/arcade/descent/',
+          url: `${BASE_URL}/arcade/descent/`,
           description: 'Roguelike minesweeper. Descend 10 floors of escalating danger. Collect power-ups to survive.',
           offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
-          author: { '@id': 'https://billbergquist.dev/#person' },
+          author: PERSON_REF,
         },
       },
       {
@@ -36,10 +37,10 @@ const jsonLdArcade = JSON.stringify({
           name: 'Gridlock: Showdown',
           applicationCategory: 'Game',
           operatingSystem: 'Web Browser',
-          url: 'https://billbergquist.dev/arcade/gridlock/',
+          url: `${BASE_URL}/arcade/gridlock/`,
           description: 'Classic falling-blocks puzzle. Stack blocks, clear lines, and compete on the global leaderboard.',
           offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
-          author: { '@id': 'https://billbergquist.dev/#person' },
+          author: PERSON_REF,
         },
       },
       {
@@ -50,10 +51,10 @@ const jsonLdArcade = JSON.stringify({
           name: 'Craps: High Roller',
           applicationCategory: 'Game',
           operatingSystem: 'Web Browser',
-          url: 'https://billbergquist.dev/craps/',
+          url: `${BASE_URL}/craps/`,
           description: 'Roll the bones with up to 4 friends. Real-time multiplayer craps with full betting.',
           offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
-          author: { '@id': 'https://billbergquist.dev/#person' },
+          author: PERSON_REF,
         },
       },
     ],

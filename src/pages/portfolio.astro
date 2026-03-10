@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { BASE_URL, PERSON_AUTHOR } from '../shared/site';
 import { Image } from 'astro:assets';
 import ProjectCard from '../components/projects/ProjectCard.astro';
 import creaticalcImg from '../assets/screenshots/creaticalc.png';
@@ -31,7 +32,7 @@ const projects = [
     description:
       'My team at Kasa liked our paid retro tool, but there were little things we wanted to do better. So I built our own on an entirely free stack. Real-time rooms, sticky notes, voting, drag-and-drop grouping, a built-in timer, and CSV export. It\'s open to anyone, but it started as a "can I build something better for my team" project.',
     techStack: ['React', 'TypeScript', 'Cloudflare Workers', 'WebSocket'],
-    url: 'https://billbergquist.dev/retro/',
+    url: `${BASE_URL}/retro/`,
     color: 'mint' as const,
     screenshot: retroretroImg,
   },
@@ -41,7 +42,7 @@ const jsonLdProjects = JSON.stringify({
   '@context': 'https://schema.org',
   '@type': 'CollectionPage',
   name: 'Portfolio — Bill Bergquist',
-  url: 'https://billbergquist.dev/portfolio/',
+  url: `${BASE_URL}/portfolio/`,
   mainEntity: {
     '@type': 'ItemList',
     itemListElement: [
@@ -55,11 +56,7 @@ const jsonLdProjects = JSON.stringify({
             'Pet sitting business website rebuilt from an outdated IONOS template into a fast, modern Astro site with CMS, SEO, and booking flow.',
           url: 'https://critter-care.com',
           applicationCategory: 'WebApplication',
-          author: {
-            '@type': 'Person',
-            name: 'Bill Bergquist',
-            url: 'https://billbergquist.dev',
-          },
+          author: PERSON_AUTHOR,
         },
       },
       ...projects.map((project, i) => ({
@@ -71,11 +68,7 @@ const jsonLdProjects = JSON.stringify({
           description: project.description,
           url: project.url,
           applicationCategory: 'WebApplication',
-          author: {
-            '@type': 'Person',
-            name: 'Bill Bergquist',
-            url: 'https://billbergquist.dev',
-          },
+          author: PERSON_AUTHOR,
         },
       })),
     ],

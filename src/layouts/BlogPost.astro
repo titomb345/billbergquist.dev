@@ -1,6 +1,9 @@
 ---
 import Layout from './Layout.astro';
 import styles from './BlogPost.module.css';
+import { BASE_URL, PERSON_REF } from '../shared/site';
+import { tagSlug } from '../shared/utils/slugify';
+import { formatDate } from '../shared/utils/content';
 
 interface Props {
   title: string;
@@ -14,21 +17,10 @@ interface Props {
 
 const { title, description, publishDate, updatedDate, tags, ogImage, slug } = Astro.props;
 
-const formattedDate = publishDate.toLocaleDateString('en-US', {
-  year: 'numeric',
-  month: 'long',
-  day: 'numeric',
-  timeZone: 'UTC',
-});
+const formattedDate = formatDate(publishDate);
+const formattedUpdated = updatedDate ? formatDate(updatedDate) : undefined;
 
-const formattedUpdated = updatedDate?.toLocaleDateString('en-US', {
-  year: 'numeric',
-  month: 'long',
-  day: 'numeric',
-  timeZone: 'UTC',
-});
-
-const articleImage = ogImage ? `https://billbergquist.dev${ogImage}` : 'https://billbergquist.dev/og/blog.png';
+const articleImage = ogImage ? `${BASE_URL}${ogImage}` : `${BASE_URL}/og/blog.png`;
 
 const jsonLdArticle = JSON.stringify({
   '@context': 'https://schema.org',
@@ -38,9 +30,9 @@ const jsonLdArticle = JSON.stringify({
   image: articleImage,
   datePublished: publishDate.toISOString(),
   ...(updatedDate && { dateModified: updatedDate.toISOString() }),
-  author: { '@id': 'https://billbergquist.dev/#person' },
-  publisher: { '@id': 'https://billbergquist.dev/#person' },
-  mainEntityOfPage: `https://billbergquist.dev/blog/${slug}/`,
+  author: PERSON_REF,
+  publisher: PERSON_REF,
+  mainEntityOfPage: `${BASE_URL}/blog/${slug}/`,
 });
 ---
 
@@ -53,7 +45,7 @@ const jsonLdArticle = JSON.stringify({
   breadcrumbTitle={title}
   ogType="article"
   articlePublishedTime={publishDate.toISOString()}
-  articleAuthor="https://billbergquist.dev/about/"
+  articleAuthor={`${BASE_URL}/about/`}
 >
   <article class={styles.article}>
     <header class={styles.header}>
@@ -66,7 +58,7 @@ const jsonLdArticle = JSON.stringify({
       </div>
       <div class={styles.tags}>
         {tags.map((tag) => (
-          <a href={`/blog/tag/${tag.toLowerCase().replace(/\s+/g, '-')}/`} class={styles.tag}>{tag}</a>
+          <a href={`/blog/tag/${tagSlug(tag)}/`} class={styles.tag}>{tag}</a>
         ))}
       </div>
     </header>

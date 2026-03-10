@@ -1,5 +1,6 @@
 ---
 import styles from './Footer.module.css';
+import { CONTACT_EMAIL, CONTACT_PHONE_DISPLAY, CONTACT_PHONE_TEL, GBP_URL } from '../../shared/site';
 ---
 
 <footer class={styles.footer}>
@@ -39,9 +40,9 @@ import styles from './Footer.module.css';
         <a href="/services/highlands-ranch/" class={styles.serviceLink}>Highlands Ranch</a>
       </div>
       <div class={styles.contactLinks}>
-        <a href="tel:+18472800729" class={styles.emailLink}>(847) 280-0729</a>
+        <a href={`tel:${CONTACT_PHONE_TEL}`} class={styles.emailLink}>{CONTACT_PHONE_DISPLAY}</a>
         <span class={styles.dot}>&middot;</span>
-        <a href="mailto:services@billbergquist.dev" class={styles.emailLink}>services@billbergquist.dev</a>
+        <a href={`mailto:${CONTACT_EMAIL}`} class={styles.emailLink}>{CONTACT_EMAIL}</a>
       </div>
     </div>
 
@@ -73,7 +74,7 @@ import styles from './Footer.module.css';
         </svg>
       </a>
       <a
-        href="https://share.google/AN9wq1GbXPqjeQwEf"
+        href={GBP_URL}
         target="_blank"
         rel="noopener noreferrer"
         class={styles.socialLink}

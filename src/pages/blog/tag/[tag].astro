@@ -2,10 +2,9 @@
 import { getCollection } from 'astro:content';
 import Layout from '../../../layouts/Layout.astro';
 import styles from '../BlogPage.module.css';
-
-function stripExt(id: string) {
-  return id.replace(/\.mdx?$/, '');
-}
+import { tagSlug } from '../../../shared/utils/slugify';
+import { stripExt, formatDate } from '../../../shared/utils/content';
+import { BASE_URL } from '../../../shared/site';
 
 const TAG_LABELS: Record<string, string> = {
   seo: 'SEO',
@@ -19,10 +18,6 @@ function formatTagLabel(tag: string): string {
     .join(' ');
 }
 
-function slugifyTag(tag: string): string {
-  return tag.toLowerCase().replace(/\s+/g, '-');
-}
-
 export async function getStaticPaths() {
   const posts = await getCollection('blog', ({ data }) => !data.draft);
   const tagSet = new Set<string>();
@@ -33,7 +28,7 @@ export async function getStaticPaths() {
   }
 
   return Array.from(tagSet).map((tag) => ({
-    params: { tag: tag.toLowerCase().replace(/\s+/g, '-') },
+    params: { tag: tagSlug(tag) },
     props: { originalTag: tag },
   }));
 }
@@ -52,13 +47,13 @@ const jsonLdTag = JSON.stringify({
   '@type': 'CollectionPage',
   name: `${label} — Blog — Bill Bergquist`,
   description: `Blog posts tagged "${label}" by Bill Bergquist.`,
-  url: `https://billbergquist.dev/blog/tag/${tag}/`,
+  url: `${BASE_URL}/blog/tag/${tag}/`,
   mainEntity: {
     '@type': 'ItemList',
     itemListElement: posts.map((post, i) => ({
       '@type': 'ListItem',
       position: i + 1,
-      url: `https://billbergquist.dev/blog/${stripExt(post.id)}/`,
+      url: `${BASE_URL}/blog/${stripExt(post.id)}/`,
       name: post.data.title,
     })),
   },
@@ -89,12 +84,7 @@ const jsonLdTag = JSON.stringify({
         <a href={`/blog/${stripExt(post.id)}/`} class={styles.card}>
           <div class={styles.cardMeta}>
             <time datetime={post.data.publishDate.toISOString()} class={styles.cardDate}>
-              {post.data.publishDate.toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric',
-                timeZone: 'UTC',
-              })}
+              {formatDate(post.data.publishDate, 'short')}
             </time>
             <div class={styles.cardTags}>
               {post.data.tags.slice(0, 3).map((t) => (

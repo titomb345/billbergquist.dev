@@ -3,6 +3,7 @@ import ScrollProgress from '../components/layout/ScrollProgress.astro';
 import Navbar from '../components/layout/Navbar.astro';
 import Footer from '../components/layout/Footer.astro';
 import Breadcrumbs from '../components/ui/Breadcrumbs.astro';
+import { BASE_URL } from '../shared/site';
 import '../styles/global.css';
 
 interface Props {
@@ -22,7 +23,7 @@ interface Props {
 }
 
 const { title, description, canonical, noindex = false, jsonLd = [], geoRegion, geoPlacename, ogImage, hideBreadcrumbs = false, breadcrumbTitle, ogType = 'website', articlePublishedTime, articleAuthor } = Astro.props;
-const BASE_URL = 'https://billbergquist.dev';
+
 const OG_IMAGE = ogImage ? `${BASE_URL}${ogImage}` : `${BASE_URL}/og-image.png`;
 // Ensure canonical URL always has a trailing slash (matches Netlify's enforced trailing slashes)
 const normalizedCanonical = canonical && canonical !== '/' && !canonical.endsWith('/') ? `${canonical}/` : canonical;

@@ -2,6 +2,7 @@
 import Layout from '../../layouts/Layout.astro';
 import PerformanceCompare from '../../components/services/PerformanceCompare';
 import styles from '../PerformancePage.module.css';
+import { BASE_URL, PERSON_REF } from '../../shared/site';
 
 const PSI_API_KEY = import.meta.env.PUBLIC_PSI_API_KEY || '';
 
@@ -51,8 +52,8 @@ const jsonLd = JSON.stringify({
   name: 'Site Performance — Bill Bergquist',
   description:
     'Real Lighthouse performance scores for websites built by Bill Bergquist. Test your own site and compare.',
-  url: 'https://billbergquist.dev/services/performance/',
-  author: { '@id': 'https://billbergquist.dev/#person' },
+  url: `${BASE_URL}/services/performance/`,
+  author: PERSON_REF,
 });
 ---
 

@@ -1,41 +1,6 @@
-import { useRef, useCallback, useState } from 'react';
-import { ArcadeCabinet } from '../../components/arcade';
-import { ErrorBoundary } from '../../components/ui/ErrorBoundary';
+import GamePage from '../../components/arcade/GamePage';
 import Gridlock from './Gridlock';
 
-function GridlockPage() {
-  const resetRef = useRef<(() => void) | null>(null);
-  const [isPaused, setIsPaused] = useState(false);
-
-  const handleReset = useCallback(() => {
-    if (resetRef.current) {
-      resetRef.current();
-    }
-  }, []);
-
-  return (
-    <ArcadeCabinet
-      title="GRIDLOCK: SHOWDOWN"
-      color="purple"
-      onPause={() => setIsPaused(true)}
-      isPaused={isPaused}
-      onReset={handleReset}
-    >
-      <Gridlock
-        resetRef={resetRef}
-        isPaused={isPaused}
-        onResume={() => setIsPaused(false)}
-      />
-    </ArcadeCabinet>
-  );
+export default function GridlockPageEntry() {
+  return <GamePage title="GRIDLOCK: SHOWDOWN" color="purple" Game={Gridlock} />;
 }
-
-function GridlockPageWithBoundary() {
-  return (
-    <ErrorBoundary>
-      <GridlockPage />
-    </ErrorBoundary>
-  );
-}
-
-export default GridlockPageWithBoundary;

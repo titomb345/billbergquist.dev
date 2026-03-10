@@ -2,6 +2,7 @@
 import Layout from '../../layouts/Layout.astro';
 import CostCalculator from '../../components/services/CostCalculator';
 import styles from '../ServicesPage.module.css';
+import { BASE_URL, PERSON_REF } from '../../shared/site';
 
 const jsonLd = JSON.stringify({
   '@context': 'https://schema.org',
@@ -9,11 +10,11 @@ const jsonLd = JSON.stringify({
   name: 'Website Cost Calculator — Bill Bergquist',
   description:
     'Get an instant estimate for your website project. Answer a few questions about what you need and see a ballpark cost in under a minute.',
-  url: 'https://billbergquist.dev/services/estimate/',
-  author: { '@id': 'https://billbergquist.dev/#person' },
+  url: `${BASE_URL}/services/estimate/`,
+  author: PERSON_REF,
   isPartOf: {
     '@type': 'WebSite',
-    url: 'https://billbergquist.dev/',
+    url: `${BASE_URL}/`,
   },
 });
 ---

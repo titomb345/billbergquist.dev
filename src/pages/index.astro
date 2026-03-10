@@ -6,36 +6,37 @@ import ServicesGrid from '../components/home/ServicesGrid.astro';
 import FeaturedWork from '../components/home/FeaturedWork.astro';
 import Process from '../components/home/Process.astro';
 import ClosingCTA from '../components/home/ClosingCTA.astro';
+import { BASE_URL, CONTACT_PHONE, GBP_URL, PERSON_ID, PERSON_REF } from '../shared/site';
 
 const jsonLdPerson = JSON.stringify({
   '@context': 'https://schema.org',
   '@type': 'Person',
-  '@id': 'https://billbergquist.dev/#person',
+  '@id': PERSON_ID,
   name: 'Bill Bergquist',
   jobTitle: 'Web Developer',
   description: 'Web developer in Denver, CO building fast, modern websites for small businesses. 14+ years of experience with React, TypeScript, and modern web technologies.',
-  url: 'https://billbergquist.dev',
-  image: 'https://billbergquist.dev/og/home.png',
+  url: BASE_URL,
+  image: `${BASE_URL}/og/home.png`,
   address: {
     '@type': 'PostalAddress',
     addressLocality: 'Denver',
     addressRegion: 'CO',
     addressCountry: 'US',
   },
-  telephone: '+1-847-280-0729',
+  telephone: CONTACT_PHONE,
   sameAs: [
     'https://github.com/titomb345',
     'https://www.linkedin.com/in/bill-bergquist/',
-    'https://share.google/AN9wq1GbXPqjeQwEf',
+    GBP_URL,
   ],
 });
 
 const jsonLdWebsite = JSON.stringify({
   '@context': 'https://schema.org',
   '@type': 'WebSite',
-  '@id': 'https://billbergquist.dev/#website',
+  '@id': `${BASE_URL}/#website`,
   name: 'Bill Bergquist',
-  url: 'https://billbergquist.dev',
+  url: BASE_URL,
 });
 ---
 

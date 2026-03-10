@@ -1,0 +1,9 @@
+export const BASE_URL = 'https://billbergquist.dev';
+export const CONTACT_EMAIL = 'services@billbergquist.dev';
+export const CONTACT_PHONE = '+1-847-280-0729';
+export const CONTACT_PHONE_DISPLAY = '(847) 280-0729';
+export const CONTACT_PHONE_TEL = '+18472800729';
+export const GBP_URL = 'https://share.google/AN9wq1GbXPqjeQwEf';
+export const PERSON_ID = `${BASE_URL}/#person`;
+export const PERSON_REF = { '@id': PERSON_ID } as const;
+export const PERSON_AUTHOR = { '@type': 'Person', name: 'Bill Bergquist', url: BASE_URL } as const;

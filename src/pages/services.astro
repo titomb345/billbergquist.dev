@@ -7,10 +7,11 @@ import RecentWork from '../components/services/RecentWork.astro';
 import FaqAccordion from '../components/ui/FaqAccordion.astro';
 import headshot from '../assets/headshot.png';
 import styles from './ServicesPage.module.css';
+import { BASE_URL, CONTACT_EMAIL, CONTACT_PHONE, CONTACT_PHONE_DISPLAY, CONTACT_PHONE_TEL, GBP_URL, PERSON_REF } from '../shared/site';
 
-const bookingMonth = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleString('en-US', {
-  month: 'long',
-});
+import { getBookingMonth } from '../shared/utils/content';
+
+const bookingMonth = getBookingMonth();
 
 const services = [
   {
@@ -142,9 +143,9 @@ const jsonLdService = JSON.stringify({
   name: 'Bill Bergquist — Web Development Services',
   description:
     'Professional web design and development services for small businesses in Denver, Lakewood, and the Colorado Front Range.',
-  url: 'https://billbergquist.dev/services/',
-  email: 'services@billbergquist.dev',
-  telephone: '+1-847-280-0729',
+  url: `${BASE_URL}/services/`,
+  email: CONTACT_EMAIL,
+  telephone: CONTACT_PHONE,
   address: {
     '@type': 'PostalAddress',
     addressLocality: 'Denver',
@@ -171,12 +172,10 @@ const jsonLdService = JSON.stringify({
     { '@type': 'City', name: 'Edgewater', containedInPlace: { '@type': 'State', name: 'Colorado' } },
     { '@type': 'City', name: 'Commerce City', containedInPlace: { '@type': 'State', name: 'Colorado' } },
   ],
-  provider: {
-    '@id': 'https://billbergquist.dev/#person',
-  },
+  provider: PERSON_REF,
   serviceType: ['Web Design', 'Web Development', 'Website Redesign', 'Landing Page Design'],
   priceRange: '$$',
-  image: 'https://billbergquist.dev/og/services.png',
+  image: `${BASE_URL}/og/services.png`,
   foundingDate: '2026-02-01',
   dateModified: '2026-03-09',
   hasOfferCatalog: {
@@ -229,7 +228,7 @@ const jsonLdReview = JSON.stringify({
   itemReviewed: {
     '@type': 'ProfessionalService',
     name: 'Bill Bergquist — Web Development Services',
-    url: 'https://billbergquist.dev/services/',
+    url: `${BASE_URL}/services/`,
   },
   author: {
     '@type': 'Person',
@@ -432,7 +431,7 @@ const jsonLdFaq = JSON.stringify({
         <span class={styles.trustItem}>&#10003; Currently booking for {bookingMonth}</span>
         <span class={styles.trustItem}>&#10003; Free consultation, no obligation</span>
         <span class={styles.trustItem}>&#10003; Response within 1 business day</span>
-        <a href="https://share.google/AN9wq1GbXPqjeQwEf" target="_blank" rel="noopener noreferrer" class={styles.trustItem}>
+        <a href={GBP_URL} target="_blank" rel="noopener noreferrer" class={styles.trustItem}>
           &#10003; View my Google Business Profile
         </a>
       </div>
@@ -442,10 +441,10 @@ const jsonLdFaq = JSON.stringify({
       <div class={styles.emailAlt}>
         <p>
           Prefer to reach out directly?{' '}
-          <a href="tel:+18472800729" class={styles.emailLink}>(847) 280-0729</a>{' '}
+          <a href={`tel:${CONTACT_PHONE_TEL}`} class={styles.emailLink}>{CONTACT_PHONE_DISPLAY}</a>{' '}
           or{' '}
-          <a href="mailto:services@billbergquist.dev" class={styles.emailLink}>
-            services@billbergquist.dev
+          <a href={`mailto:${CONTACT_EMAIL}`} class={styles.emailLink}>
+            {CONTACT_EMAIL}
           </a>
         </p>
       </div>
