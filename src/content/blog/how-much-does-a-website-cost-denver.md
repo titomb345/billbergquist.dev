@@ -95,7 +95,7 @@ The biggest variable is content. If you have your copy and photos ready, we can 
 
 ## Why an Independent Developer Often Beats an Agency
 
-Agencies in Denver typically charge $8,000-$25,000+ for a small business site. You're paying for their office, project managers, and overhead. The actual developer building your site might be an entry-level employee or a contractor.
+Agencies in Denver typically charge $8,000-$25,000+ for a small business site. You're paying for their office on 16th Street, their project managers, their account executives, and their overhead. The actual developer building your site might be an entry-level employee or a contractor they found on Upwork. You're not paying for better work. You're paying for the infrastructure between you and the person doing the work.
 
 With an independent developer like me, you get:
 

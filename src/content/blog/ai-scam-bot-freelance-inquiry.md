@@ -58,7 +58,7 @@ Now I was just having fun. I asked for three things: his domain, his logo file, 
 
 > The domain is hp-connect.co.uk. I will email you the logo separately. The company number is 12345678.
 
-12345678\. The bot gave me a placeholder as a company number.
+12345678\. The bot gave me a placeholder as a company number. Not even a realistic-looking one. Not a random string of digits that might pass a glance. The literal sequence 1-2-3-4-5-6-7-8. This is the part where I realized whoever built this thing either didn't test it with real freelancers or didn't care enough to seed it with a valid company number. Either way, not inspiring confidence in the operation.
 
 I looked it up anyway, because why not. Company 12345678 is BOCIOC M LIMITED, a dissolved freight transport company in Rugby. So unless Halton pivoted hard from trucking logistics, not a match.
 
@@ -70,9 +70,9 @@ But I also did something else. I'd been using ChatGPT to help draft my replies, 
 
 > [Drafting Note: Ensure the tone sounds professional but helpful. Does this response seem human enough to elicit a reply?]
 
-Two bots, both leaving their instructions in the email. Just a beautiful moment in modern communication.
+Two bots, both leaving their instructions in the email. Just a beautiful moment in modern communication. I wish I could say I planned it, but honestly I just forgot to delete the note before hitting send. Happy accident.
 
-No response. Either the bot broke, or whoever was running this thing saw the drafting note and realized they'd been made.
+No response after that. Either the bot broke trying to process a drafting note it wasn't expecting, or whoever was running this thing saw it and realized they'd been made. I like to think someone on the other end read "[Drafting Note: Does this response seem human enough to elicit a reply?]" and had a moment of self-reflection about their life choices.
 
 ## What's the Point of a Scam Like This?
 
