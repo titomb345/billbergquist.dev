@@ -60,6 +60,9 @@ const jsonLdArticle = JSON.stringify({
   jsonLd={[jsonLdArticle]}
   ogImage={ogImage || '/og/blog.png'}
   breadcrumbTitle={title}
+  ogType="article"
+  articlePublishedTime={publishDate.toISOString()}
+  articleAuthor="https://billbergquist.dev/about/"
 >
   <article class={styles.article}>
     <header class={styles.header}>
