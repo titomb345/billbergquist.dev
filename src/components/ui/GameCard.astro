@@ -15,7 +15,7 @@ const { title, description, locked = false } = Astro.props;
   <div class={styles.preview}>
     <slot name="preview"><span class={styles.previewImage}>?</span></slot>
   </div>
-  <h3 class={styles.title}>{title}</h3>
+  <h2 class={styles.title}>{title}</h2>
   <p class={styles.description}>{description}</p>
   <div class={styles.action}>
     {locked ? <span class={styles.lockedBadge}>Coming Soon</span> : <slot name="action" />}
