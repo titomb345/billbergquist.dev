@@ -112,6 +112,12 @@ The new Critter Care site:
 
 If you want to see it live, check out [critter-care.com](https://critter-care.com).
 
+When I showed Laurie the new site, her reaction said it all:
+
+> "That's fabulous! I love it! I really appreciate you and the time you're spending on this and saving me money. Please move forward with it ASAP!"
+>
+> -- Laurie, Critter Care owner
+
 ## Sound Familiar?
 
 Laurie's situation isn't unusual. A lot of small business owners are paying $40-75 a month for a website builder and maybe an SEO package on top of that, and the site hasn't been updated in years. It technically exists, but it's not doing anything for them. Worse, they might be paying for services that aren't delivering any value at all.
