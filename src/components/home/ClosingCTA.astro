@@ -1,9 +1,8 @@
 ---
 import styles from './ClosingCTA.module.css';
+import { getBookingMonth } from '../../shared/utils/content';
 
-const bookingMonth = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleString('en-US', {
-  month: 'long',
-});
+const bookingMonth = getBookingMonth();
 ---
 
 <section class={`${styles.section} scroll-reveal`}>

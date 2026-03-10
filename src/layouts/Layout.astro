@@ -3,6 +3,7 @@ import ScrollProgress from '../components/layout/ScrollProgress.astro';
 import Navbar from '../components/layout/Navbar.astro';
 import Footer from '../components/layout/Footer.astro';
 import Breadcrumbs from '../components/ui/Breadcrumbs.astro';
+import { BASE_URL } from '../shared/site';
 import '../styles/global.css';
 
 interface Props {
@@ -16,10 +17,13 @@ interface Props {
   ogImage?: string;
   hideBreadcrumbs?: boolean;
   breadcrumbTitle?: string;
+  ogType?: string;
+  articlePublishedTime?: string;
+  articleAuthor?: string;
 }
 
-const { title, description, canonical, noindex = false, jsonLd = [], geoRegion, geoPlacename, ogImage, hideBreadcrumbs = false, breadcrumbTitle } = Astro.props;
-const BASE_URL = 'https://billbergquist.dev';
+const { title, description, canonical, noindex = false, jsonLd = [], geoRegion, geoPlacename, ogImage, hideBreadcrumbs = false, breadcrumbTitle, ogType = 'website', articlePublishedTime, articleAuthor } = Astro.props;
+
 const OG_IMAGE = ogImage ? `${BASE_URL}${ogImage}` : `${BASE_URL}/og-image.png`;
 // Ensure canonical URL always has a trailing slash (matches Netlify's enforced trailing slashes)
 const normalizedCanonical = canonical && canonical !== '/' && !canonical.endsWith('/') ? `${canonical}/` : canonical;
@@ -27,7 +31,7 @@ const url = normalizedCanonical ? `${BASE_URL}${normalizedCanonical}` : `${BASE_
 
 const breadcrumbNames: Record<string, string> = {
   about: 'About',
-  projects: 'Projects',
+  portfolio: 'Portfolio',
   services: 'Services',
   denver: 'Denver',
   lakewood: 'Lakewood',
@@ -35,6 +39,9 @@ const breadcrumbNames: Record<string, string> = {
   arvada: 'Arvada',
   golden: 'Golden',
   littleton: 'Littleton',
+  aurora: 'Aurora',
+  westminster: 'Westminster',
+  'highlands-ranch': 'Highlands Ranch',
   blog: 'Blog',
   tag: 'Tag',
   privacy: 'Privacy Policy',
@@ -46,6 +53,9 @@ const breadcrumbNames: Record<string, string> = {
   estimate: 'Cost Estimator',
 };
 
+// Segments to skip in breadcrumb display (no landing page exists)
+const breadcrumbSkip = new Set(['tag']);
+
 function buildBreadcrumbs(path?: string, lastSegmentName?: string, absolute = false) {
   const prefix = absolute ? BASE_URL : '';
   const items: { name: string; url: string }[] = [{ name: 'Home', url: `${prefix}/` }];
@@ -55,6 +65,7 @@ function buildBreadcrumbs(path?: string, lastSegmentName?: string, absolute = fa
     for (let i = 0; i < segments.length; i++) {
       const seg = segments[i];
       accumulated += `/${seg}`;
+      if (breadcrumbSkip.has(seg)) continue;
       const isLast = i === segments.length - 1;
       const name = isLast && lastSegmentName ? lastSegmentName : breadcrumbNames[seg] || seg;
       items.push({ name, url: `${prefix}${accumulated}/` });
@@ -102,10 +113,12 @@ const allJsonLd = breadcrumbLd ? [...jsonLd, breadcrumbLd] : jsonLd;
     <!-- Open Graph -->
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={ogType} />
     <meta property="og:site_name" content="Bill Bergquist" />
     <meta property="og:image" content={OG_IMAGE} />
     <meta property="og:url" content={url} />
+    {articlePublishedTime && <meta property="article:published_time" content={articlePublishedTime} />}
+    {articleAuthor && <meta property="article:author" content={articleAuthor} />}
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />

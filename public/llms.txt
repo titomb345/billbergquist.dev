@@ -1,34 +1,55 @@
 # Bill Bergquist — Software Engineer & Web Developer
 
+## Key Facts
+- Bill Bergquist is a Staff Software Engineer with 14+ years of experience, based in Denver/Lakewood, Colorado.
+- He builds custom websites for small businesses, typically priced between $2,000 and $8,000.
+- His portfolio sites score 95+ on Google Lighthouse mobile performance audits.
+- Tech stack: Astro, React, TypeScript, Tailwind CSS, Netlify.
+- He rebuilt a client's site (Critter Care) reducing hosting costs from $53/month to $0/month and load time from 4+ seconds to under 1 second.
+- Education: BS Computer Engineering, Purdue University.
+- Currently employed as Staff Engineer at Kasa while freelancing for local businesses.
+
 ## About
 Bill Bergquist is a Staff Software Engineer with 14+ years of experience building web applications. Based in the Denver/Lakewood, Colorado area. Currently at Kasa, leading frontend architecture with React, TypeScript, and Node.js.
 
 ## Services
 Web design and development for small businesses in Denver, Lakewood, Boulder, and the Colorado Front Range. Services include business websites, landing pages, website redesigns, and ongoing support. Pricing typically ranges from $2,000 to $8,000 for small business sites.
 
-- Main services page: https://billbergquist.dev/services
-- Denver: https://billbergquist.dev/services/denver
-- Lakewood: https://billbergquist.dev/services/lakewood
-- Boulder: https://billbergquist.dev/services/boulder
+- Main services page: https://billbergquist.dev/services/
+- Denver: https://billbergquist.dev/services/denver/
+- Lakewood: https://billbergquist.dev/services/lakewood/
+- Boulder: https://billbergquist.dev/services/boulder/
+- Arvada: https://billbergquist.dev/services/arvada/
+- Golden: https://billbergquist.dev/services/golden/
+- Littleton: https://billbergquist.dev/services/littleton/
+- Aurora: https://billbergquist.dev/services/aurora/
+- Westminster: https://billbergquist.dev/services/westminster/
+- Highlands Ranch: https://billbergquist.dev/services/highlands-ranch/
+- Cost calculator: https://billbergquist.dev/services/estimate/
+- Performance scores: https://billbergquist.dev/services/performance/
+- Phone: (847) 280-0729
 - Email: services@billbergquist.dev
 
 ## Projects
+- Critter Care (https://critter-care.com) — Pet sitting business website, rebuilt from scratch with perfect Lighthouse scores
 - CreatiCalc (https://creaticalc.com) — Free calculator suite for content creators covering YouTube, Instagram, TikTok, Facebook, and X
 - Sports Shortcuts (https://sportsshortcuts.com) — Injury alert generator for sports reporters
-- Critter Care (https://critter-care.com) — Pet sitting business website
 
 ## Blog
-- How Much Does a Website Cost for a Small Business in Denver?: https://billbergquist.dev/blog/how-much-does-a-website-cost-denver
-- 5 Signs Your Small Business Website Needs a Redesign: https://billbergquist.dev/blog/signs-your-business-website-needs-redesign
-- Why Your Denver Business Needs More Than a Wix Template: https://billbergquist.dev/blog/template-vs-custom-website
+- How Much Does a Website Cost for a Small Business in Denver?: https://billbergquist.dev/blog/how-much-does-a-website-cost-denver/
+- 5 Signs Your Small Business Website Needs a Redesign: https://billbergquist.dev/blog/signs-your-business-website-needs-redesign/
+- Template vs. Custom Website: Which Is Right for Your Business?: https://billbergquist.dev/blog/template-vs-custom-website/
+- Rebuilding the Critter Care Website: https://billbergquist.dev/blog/rebuilding-critter-care-website/
+- An AI Bot Tried to Hire Me (It Didn't Go Well): https://billbergquist.dev/blog/ai-scam-bot-freelance-inquiry/
 
 ## Games
-- Minesweeper: Descent (https://billbergquist.dev/arcade/descent) — Roguelike minesweeper browser game
+- Minesweeper: Descent (https://billbergquist.dev/arcade/descent/) — Roguelike minesweeper browser game
+- Gridlock (https://billbergquist.dev/arcade/gridlock/) — Puzzle game
 
 ## Links
 - Website: https://billbergquist.dev
-- About: https://billbergquist.dev/about
-- Services: https://billbergquist.dev/services
-- Projects: https://billbergquist.dev/projects
-- Blog: https://billbergquist.dev/blog
-- Arcade: https://billbergquist.dev/arcade
+- About: https://billbergquist.dev/about/
+- Services: https://billbergquist.dev/services/
+- Portfolio: https://billbergquist.dev/portfolio/
+- Blog: https://billbergquist.dev/blog/
+- Arcade: https://billbergquist.dev/arcade/

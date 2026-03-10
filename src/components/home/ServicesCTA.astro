@@ -3,10 +3,9 @@ import { Image } from 'astro:assets';
 import Button from '../ui/Button.astro';
 import crittercareImg from '../../assets/screenshots/crittercare.png';
 import styles from './ServicesCTA.module.css';
+import { getBookingMonth } from '../../shared/utils/content';
 
-const bookingMonth = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleString('en-US', {
-  month: 'long',
-});
+const bookingMonth = getBookingMonth();
 ---
 
 <section class={`${styles.section} scroll-reveal`}>

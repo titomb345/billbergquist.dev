@@ -1,7 +1,8 @@
 ---
 title: "How Much Does a Website Cost for a Small Business in Denver?"
-description: "A straightforward breakdown of website costs for small businesses in Denver, Lakewood, and the Colorado Front Range. What to expect, what affects pricing, and how to get the most value."
+description: "A straightforward breakdown of website costs for small businesses in Denver and the Front Range. What to expect, what affects pricing, and how to get value."
 publishDate: 2026-03-01
+updatedDate: 2026-03-09
 tags: ["web design", "denver", "small business", "pricing"]
 ogImage: "/og/blog/how-much-does-a-website-cost-denver.png"
 ---
@@ -34,7 +35,7 @@ I've seen this play out locally. Two coffee shops on Tennyson using the same Squ
 
 If you have your own photos and know what you want to say, the project moves faster and costs less. If you need help with copywriting or sourcing images, that adds time. I work with clients on content as part of the process. It's not an extra charge, but it does affect the timeline.
 
-One thing I always recommend: get real photos of your business, your team, and your work. Stock photos are obvious and they undermine trust. A phone photo of your actual shop beats a professional stock image of a generic storefront every time.
+One thing I always recommend: get real photos of your business, your team, and your work. Stock photos are obvious and they undermine trust. A phone photo of your actual shop beats a professional stock image of a generic storefront every time. Customers want to see the real place and the real people. If you're a salon, take photos of actual haircuts you're proud of. If you're a restaurant, shoot the food. It doesn't need to be fancy. It just needs to be real.
 
 ### Functionality
 
@@ -68,7 +69,7 @@ The most common project for Denver small businesses. A multi-page site with:
 - Google Business Profile integration
 - Basic analytics setup
 
-This is what I built for [Critter Care](https://critter-care.com), a pet sitting business. It covers restaurants, coffee shops, salons, professional services, home services, and most other local businesses in the Front Range.
+This is what I built for [Critter Care](https://critter-care.com), a pet sitting business that was paying $53/month for a dated template and an SEO package that wasn't doing anything. The rebuild cut their hosting to $0/month and brought load times from 4+ seconds to under 1. You can read the [full case study here](/blog/rebuilding-critter-care-website/). This tier covers restaurants, coffee shops, salons, professional services, home services, and most other local businesses in the Front Range.
 
 ### $6,000 - $10,000+: Complex Sites
 
@@ -90,11 +91,11 @@ Most small business sites take 3 to 6 weeks from kickoff to launch. Here's what 
 - **Week 4:** Content integration, revisions, testing
 - **Week 5-6:** Final review, SEO setup, launch
 
-The biggest variable is content. If you have your copy and photos ready, we can move faster. If we're writing everything from scratch, add a week or two. Start on content early. It's always the thing that holds up a project.
+The biggest variable is content. If you have your copy and photos ready, we can move faster. If we're writing everything from scratch, add a week or two. Start on content early. It's always the thing that holds up a project. I've had projects where the build was done in ten days but we didn't launch for six weeks because photos and copy weren't ready. Not a complaint, just reality. If you want to move fast, have your content ready before the build starts.
 
 ## Why an Independent Developer Often Beats an Agency
 
-Agencies in Denver typically charge $8,000-$25,000+ for a small business site. You're paying for their office, project managers, and overhead. The actual developer building your site might be an entry-level employee or a contractor.
+Agencies in Denver typically charge $8,000-$25,000+ for a small business site. You're paying for their office on 16th Street, their project managers, their account executives, and their overhead. The actual developer building your site might be an entry-level employee or a contractor they found on Upwork. You're not paying for better work. You're paying for the infrastructure between you and the person doing the work.
 
 With an independent developer like me, you get:
 
@@ -103,7 +104,7 @@ With an independent developer like me, you get:
 - **Senior-level work.** I have 14+ years of experience, not 2.
 - **Accountability.** One person is responsible for the entire project.
 
-I build production software at my day job. Same standards, same tools, same attention to detail on every business site I take on. You're not getting a WordPress theme with your logo swapped in.
+I build production software at my day job. Same standards, same tools, same attention to detail on every business site I take on. You're not getting a WordPress theme with your logo swapped in. You can [see the performance scores on my sites here](/services/performance/) if you want proof.
 
 ## What to Watch Out For
 
@@ -123,10 +124,16 @@ Websites need updates. Ask what happens after launch. Some developers disappear.
 
 Some agencies lock you into 12-month contracts with mandatory hosting and maintenance fees baked in. Before you sign anything, ask what happens if you want to leave. Can you take your site with you? Do you own the code? If the answer is no, keep looking.
 
+### "SEO Packages" That Don't Do Anything
+
+This one comes up a lot. A developer or agency builds your site, then sells you a $200-500/month "SEO package" on top of it. What does that package include? Usually: submitting your site to Google (free and takes 30 seconds), tweaking a meta description, and sending you a report full of metrics that don't matter. Real SEO is built into the site from day one. The technical foundations, the structured data, the page speed, the content structure. If those aren't there when the site launches, no monthly package is going to fix it.
+
 ## How to Get Started
 
-If you're a small business in Denver, Lakewood, or anywhere in the Front Range, I'd love to chat about your project. I offer a free consultation where I'll look at your current site (if you have one), discuss your goals, and give you an honest estimate.
+If you're a small business in Denver, Lakewood, or anywhere in the Front Range, I'd love to chat about your project. I offer a free consultation where I'll look at your current site (if you have one), discuss your goals, and give you an honest estimate. You can also [try the cost calculator](/services/estimate/) to get a quick ballpark.
 
 No sales pitch, no pressure. Just a conversation about what makes sense for your business. And if you're not sure whether you need a new site or just a refresh, I wrote about [the signs that it's time for a redesign](/blog/signs-your-business-website-needs-redesign/).
 
 [Get in touch &rarr;](/services/)
+
+I serve businesses across the Front Range: [Denver](/services/denver/), [Lakewood](/services/lakewood/), [Boulder](/services/boulder/), [Arvada](/services/arvada/), [Golden](/services/golden/), [Littleton](/services/littleton/), [Aurora](/services/aurora/), [Westminster](/services/westminster/), and [Highlands Ranch](/services/highlands-ranch/).

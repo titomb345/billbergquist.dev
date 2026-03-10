@@ -1,31 +1,28 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import GlowText from '../components/ui/GlowText.astro';
 import styles from './PrivacyPage.module.css';
+import { CONTACT_EMAIL } from '../shared/site';
 ---
 
 <Layout
   title="Privacy Policy — Bill Bergquist"
   description="Privacy policy for billbergquist.dev. How your data is collected, used, and protected."
   canonical="/privacy"
-  noindex={true}
 >
   <div class={styles.page}>
     <header class={styles.header}>
-      <GlowText as="h1" size="large" color="mint" class={styles.title}>
-        PRIVACY POLICY
-      </GlowText>
-      <p class={styles.updated}>Last updated: February 28, 2026</p>
+      <h1 class={styles.title}>Privacy Policy</h1>
+      <p class={styles.updated}>Last updated: March 9, 2026</p>
     </header>
 
     <div class={styles.content}>
       <section>
         <h2 class={styles.sectionTitle}>What This Site Collects</h2>
         <p>
-          This website uses Google Analytics to understand how visitors find and use the site.
-          Google Analytics collects anonymous data like which pages are visited, how long people
-          stay, and what device they're using. It does not collect your name, email, or any
-          personal information unless you provide it through the contact form.
+          This website uses Cloudflare Web Analytics to understand how visitors find and use the
+          site. Cloudflare Analytics is privacy-first: it doesn't use cookies, doesn't track
+          individual users, and doesn't collect personal information. It measures things like page
+          views, referrers, and device types in aggregate. No data is sold to advertisers.
         </p>
       </section>
 
@@ -41,9 +38,19 @@ import styles from './PrivacyPage.module.css';
       <section>
         <h2 class={styles.sectionTitle}>Cookies</h2>
         <p>
-          Google Analytics uses cookies to distinguish unique visitors. These are small text files
-          stored in your browser. You can disable cookies in your browser settings or use an ad
-          blocker to prevent analytics tracking entirely.
+          This site does not use cookies for analytics. Cloudflare Web Analytics is cookieless.
+          Clerk, which handles authentication for RetroRetro and Craps, may set its own cookies
+          as needed to manage your login session.
+        </p>
+      </section>
+
+      <section>
+        <h2 class={styles.sectionTitle}>Authentication (Clerk)</h2>
+        <p>
+          The arcade section of this site uses <a href="https://clerk.com" target="_blank" rel="noopener noreferrer" class={styles.link}>Clerk</a> for
+          user authentication. If you create an account for RetroRetro or Craps, Clerk
+          stores your login credentials and session data. You can review Clerk's privacy policy
+          on their website. I don't have access to your password or authentication tokens.
         </p>
       </section>
 
@@ -58,8 +65,8 @@ import styles from './PrivacyPage.module.css';
         <h2 class={styles.sectionTitle}>Questions</h2>
         <p>
           If you have any questions about this privacy policy, you can reach me at{' '}
-          <a href="mailto:services@billbergquist.dev" class={styles.link}>
-            services@billbergquist.dev
+          <a href={`mailto:${CONTACT_EMAIL}`} class={styles.link}>
+            {CONTACT_EMAIL}
           </a>.
         </p>
       </section>

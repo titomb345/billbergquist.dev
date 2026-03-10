@@ -33,13 +33,13 @@ export default defineConfig({
         // Use git-based lastmod dates (when content actually changed)
         const lastmodDates = {
           '/': '2026-03-08',
-          '/services/': '2026-03-07',
-          '/services/denver/': '2026-03-07',
-          '/services/lakewood/': '2026-03-07',
-          '/services/boulder/': '2026-03-07',
-          '/services/arvada/': '2026-03-07',
-          '/services/golden/': '2026-03-07',
-          '/services/littleton/': '2026-03-07',
+          '/services/': '2026-03-09',
+          '/services/denver/': '2026-03-09',
+          '/services/lakewood/': '2026-03-09',
+          '/services/boulder/': '2026-03-09',
+          '/services/arvada/': '2026-03-09',
+          '/services/golden/': '2026-03-09',
+          '/services/littleton/': '2026-03-09',
           '/about/': '2026-02-15',
           '/portfolio/': '2026-03-09',
           '/blog/': '2026-03-07',
@@ -48,10 +48,10 @@ export default defineConfig({
           '/arcade/gridlock/': '2026-03-01',
           '/privacy/': '2026-02-28',
           '/blog/ai-scam-bot-freelance-inquiry/': '2026-03-07',
-          '/blog/how-much-does-a-website-cost-denver/': '2026-03-01',
-          '/blog/template-vs-custom-website/': '2026-02-15',
-          '/blog/signs-your-business-website-needs-redesign/': '2026-02-25',
-          '/blog/rebuilding-critter-care-website/': '2026-02-20',
+          '/blog/how-much-does-a-website-cost-denver/': '2026-03-09',
+          '/blog/template-vs-custom-website/': '2026-03-09',
+          '/blog/signs-your-business-website-needs-redesign/': '2026-03-09',
+          '/blog/rebuilding-critter-care-website/': '2026-03-09',
         };
         item.lastmod = lastmodDates[path] || '2026-02-28';
 

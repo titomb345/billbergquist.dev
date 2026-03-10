@@ -2,6 +2,7 @@
 import Layout from '../../layouts/Layout.astro';
 import PerformanceCompare from '../../components/services/PerformanceCompare';
 import styles from '../PerformancePage.module.css';
+import { BASE_URL, PERSON_REF } from '../../shared/site';
 
 const PSI_API_KEY = import.meta.env.PUBLIC_PSI_API_KEY || '';
 
@@ -19,6 +20,11 @@ const sites = [
   {
     name: 'CreatiCalc',
     url: 'creaticalc.com',
+    scores: { performance: 99, accessibility: 100, bestPractices: 100, seo: 100 },
+  },
+  {
+    name: 'Sports Shortcuts',
+    url: 'sportsshortcuts.com',
     scores: { performance: 99, accessibility: 100, bestPractices: 100, seo: 100 },
   },
 ];
@@ -46,14 +52,14 @@ const jsonLd = JSON.stringify({
   name: 'Site Performance — Bill Bergquist',
   description:
     'Real Lighthouse performance scores for websites built by Bill Bergquist. Test your own site and compare.',
-  url: 'https://billbergquist.dev/services/performance/',
-  author: { '@id': 'https://billbergquist.dev/#person' },
+  url: `${BASE_URL}/services/performance/`,
+  author: PERSON_REF,
 });
 ---
 
 <Layout
   title="Site Performance — Bill Bergquist"
-  description="Real Lighthouse scores for websites I've built. See how billbergquist.dev, critter-care.com, and creaticalc.com perform, then test your own site."
+  description="Real Lighthouse scores for websites I've built. See how billbergquist.dev, critter-care.com, creaticalc.com, and sportsshortcuts.com perform, then test your own site."
   canonical="/services/performance"
   jsonLd={[jsonLd]}
 >
@@ -98,6 +104,7 @@ const jsonLd = JSON.stringify({
                   </div>
                 ))}
               </div>
+              <a href="#test" class={styles.verifyLink} data-verify-url={site.url}>Verify this score &darr;</a>
             </div>
           ))
         }
@@ -107,7 +114,7 @@ const jsonLd = JSON.stringify({
 
     <div class={styles.divider}></div>
 
-    <section class={styles.compareSection}>
+    <section id="test" class={styles.compareSection}>
       <PerformanceCompare client:visible portfolioAvg={portfolioAvg} apiKey={PSI_API_KEY} />
     </section>
 
@@ -173,6 +180,23 @@ const jsonLd = JSON.stringify({
     <section class={styles.cta}>
       <p class={styles.ctaText}>Want scores like these for your business?</p>
       <a href="/services/#contact" class={styles.ctaButton}>Get a Free Quote</a>
+      <p style="margin-top: var(--space-md); font-size: 0.9rem; color: var(--text-secondary);">
+        Read more: <a href="/blog/signs-your-business-website-needs-redesign/">Signs Your Website Needs a Redesign</a> &middot;
+        <a href="/blog/rebuilding-critter-care-website/">Critter Care Case Study</a>
+      </p>
     </section>
   </div>
+
+  <script is:inline>
+    document.querySelectorAll('[data-verify-url]').forEach(function(link) {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        var url = this.getAttribute('data-verify-url');
+        document.getElementById('test').scrollIntoView({ behavior: 'smooth' });
+        setTimeout(function() {
+          window.dispatchEvent(new CustomEvent('verify-score', { detail: url }));
+        }, 400);
+      });
+    });
+  </script>
 </Layout>

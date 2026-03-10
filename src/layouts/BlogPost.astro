@@ -1,7 +1,9 @@
 ---
 import Layout from './Layout.astro';
-import GlowText from '../components/ui/GlowText.astro';
 import styles from './BlogPost.module.css';
+import { BASE_URL, PERSON_REF } from '../shared/site';
+import { tagSlug } from '../shared/utils/slugify';
+import { formatDate } from '../shared/utils/content';
 
 interface Props {
   title: string;
@@ -15,31 +17,10 @@ interface Props {
 
 const { title, description, publishDate, updatedDate, tags, ogImage, slug } = Astro.props;
 
-const formattedDate = publishDate.toLocaleDateString('en-US', {
-  year: 'numeric',
-  month: 'long',
-  day: 'numeric',
-  timeZone: 'UTC',
-});
+const formattedDate = formatDate(publishDate);
+const formattedUpdated = updatedDate ? formatDate(updatedDate) : undefined;
 
-const formattedUpdated = updatedDate?.toLocaleDateString('en-US', {
-  year: 'numeric',
-  month: 'long',
-  day: 'numeric',
-  timeZone: 'UTC',
-});
-
-const articleImage = ogImage ? `https://billbergquist.dev${ogImage}` : 'https://billbergquist.dev/og/blog.png';
-
-const jsonLdBreadcrumb = JSON.stringify({
-  '@context': 'https://schema.org',
-  '@type': 'BreadcrumbList',
-  itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://billbergquist.dev/' },
-    { '@type': 'ListItem', position: 2, name: 'Blog', item: 'https://billbergquist.dev/blog/' },
-    { '@type': 'ListItem', position: 3, name: title },
-  ],
-});
+const articleImage = ogImage ? `${BASE_URL}${ogImage}` : `${BASE_URL}/og/blog.png`;
 
 const jsonLdArticle = JSON.stringify({
   '@context': 'https://schema.org',
@@ -49,34 +30,26 @@ const jsonLdArticle = JSON.stringify({
   image: articleImage,
   datePublished: publishDate.toISOString(),
   ...(updatedDate && { dateModified: updatedDate.toISOString() }),
-  author: {
-    '@type': 'Person',
-    name: 'Bill Bergquist',
-    url: 'https://billbergquist.dev',
-    jobTitle: 'Staff Software Engineer',
-  },
-  publisher: {
-    '@type': 'Person',
-    name: 'Bill Bergquist',
-    url: 'https://billbergquist.dev',
-  },
-  mainEntityOfPage: `https://billbergquist.dev/blog/${slug}/`,
+  author: PERSON_REF,
+  publisher: PERSON_REF,
+  mainEntityOfPage: `${BASE_URL}/blog/${slug}/`,
 });
 ---
 
 <Layout
-  title={`${title} — Bill Bergquist`}
+  title={title}
   description={description}
   canonical={`/blog/${slug}`}
-  jsonLd={[jsonLdArticle, jsonLdBreadcrumb]}
+  jsonLd={[jsonLdArticle]}
   ogImage={ogImage || '/og/blog.png'}
   breadcrumbTitle={title}
+  ogType="article"
+  articlePublishedTime={publishDate.toISOString()}
+  articleAuthor={`${BASE_URL}/about/`}
 >
   <article class={styles.article}>
     <header class={styles.header}>
-      <GlowText as="h1" size="large" color="orange" class={styles.title}>
-        {title}
-      </GlowText>
+      <h1 class={styles.title}>{title}</h1>
       <div class={styles.meta}>
         <time datetime={publishDate.toISOString()} class={styles.date}>{formattedDate}</time>
         {formattedUpdated && (
@@ -85,7 +58,7 @@ const jsonLdArticle = JSON.stringify({
       </div>
       <div class={styles.tags}>
         {tags.map((tag) => (
-          <a href={`/blog/tag/${tag.toLowerCase().replace(/\s+/g, '-')}/`} class={styles.tag}>{tag}</a>
+          <a href={`/blog/tag/${tagSlug(tag)}/`} class={styles.tag}>{tag}</a>
         ))}
       </div>
     </header>
@@ -94,19 +67,24 @@ const jsonLdArticle = JSON.stringify({
       <slot />
     </div>
 
+    <div class={styles.divider}></div>
+
     <aside class={styles.ctaBox}>
       <p class={styles.ctaHeading}>Need a website for your business?</p>
       <p class={styles.ctaText}>
         I build fast, custom websites for small businesses in Denver and the Colorado Front Range.
         Free consultation, no obligation.
       </p>
-      <a href="/services/" class={styles.ctaLink}>View Services &rarr;</a>
+      <div class={styles.ctaLinks}>
+        <a href="/services/" class={styles.ctaLink}>View Services &rarr;</a>
+        <a href="/services/estimate/" class={styles.ctaLinkSecondary}>Try the Cost Calculator &rarr;</a>
+      </div>
     </aside>
 
     <div class={styles.authorBox}>
       <div class={styles.authorInfo}>
         <p class={styles.authorName}>Bill Bergquist</p>
-        <p class={styles.authorRole}>Staff Software Engineer with 14+ years of experience building for the web.</p>
+        <p class={styles.authorRole}>Web developer in Denver with 14+ years of experience building for the web.</p>
         <a href="/about/" class={styles.authorLink}>More about me &rarr;</a>
       </div>
     </div>
