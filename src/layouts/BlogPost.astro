@@ -38,17 +38,8 @@ const jsonLdArticle = JSON.stringify({
   image: articleImage,
   datePublished: publishDate.toISOString(),
   ...(updatedDate && { dateModified: updatedDate.toISOString() }),
-  author: {
-    '@type': 'Person',
-    name: 'Bill Bergquist',
-    url: 'https://billbergquist.dev',
-    jobTitle: 'Web Developer',
-  },
-  publisher: {
-    '@type': 'Person',
-    name: 'Bill Bergquist',
-    url: 'https://billbergquist.dev',
-  },
+  author: { '@id': 'https://billbergquist.dev/#person' },
+  publisher: { '@id': 'https://billbergquist.dev/#person' },
   mainEntityOfPage: `https://billbergquist.dev/blog/${slug}/`,
 });
 ---
