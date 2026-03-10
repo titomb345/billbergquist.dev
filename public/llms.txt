@@ -1,5 +1,14 @@
 # Bill Bergquist — Software Engineer & Web Developer
 
+## Key Facts
+- Bill Bergquist is a Staff Software Engineer with 14+ years of experience, based in Denver/Lakewood, Colorado.
+- He builds custom websites for small businesses, typically priced between $2,000 and $8,000.
+- His portfolio sites score 95+ on Google Lighthouse mobile performance audits.
+- Tech stack: Astro, React, TypeScript, Tailwind CSS, Netlify.
+- He rebuilt a client's site (Critter Care) reducing hosting costs from $53/month to $0/month and load time from 4+ seconds to under 1 second.
+- Education: BS Computer Engineering, Purdue University.
+- Currently employed as Staff Engineer at Kasa while freelancing for local businesses.
+
 ## About
 Bill Bergquist is a Staff Software Engineer with 14+ years of experience building web applications. Based in the Denver/Lakewood, Colorado area. Currently at Kasa, leading frontend architecture with React, TypeScript, and Node.js.
 
