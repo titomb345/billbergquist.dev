@@ -92,7 +92,7 @@ const pages = [
       <text x="88" y="430" font-family="'Trebuchet MS', 'Arial Black', sans-serif" font-size="72" font-weight="900" fill="${TEXT}" letter-spacing="2">Bill Bergquist</text>
 
       <!-- Role -->
-      <text x="92" y="476" font-family="'Segoe UI', Arial, sans-serif" font-size="26" font-weight="300" fill="${MINT}" letter-spacing="3" opacity="0.9">STAFF SOFTWARE ENGINEER</text>
+      <text x="92" y="476" font-family="'Segoe UI', Arial, sans-serif" font-size="26" font-weight="300" fill="${MINT}" letter-spacing="3" opacity="0.9">WEB DESIGN FOR SMALL BUSINESSES</text>
 
       ${siteBadge()}
       ${bottomBar(MINT)}
@@ -127,7 +127,7 @@ const pages = [
       <text x="88" y="280" font-family="'Trebuchet MS', 'Arial Black', sans-serif" font-size="80" font-weight="900" fill="${TEXT}" letter-spacing="1">About</text>
 
       <!-- Subtitle -->
-      <text x="92" y="340" font-family="'Segoe UI', Arial, sans-serif" font-size="28" fill="${TEXT_MUTED}" letter-spacing="1">Staff Software Engineer</text>
+      <text x="92" y="340" font-family="'Segoe UI', Arial, sans-serif" font-size="28" fill="${TEXT_MUTED}" letter-spacing="1">Web Developer &amp; Designer</text>
       <text x="92" y="380" font-family="'Segoe UI', Arial, sans-serif" font-size="22" fill="${TEXT_DIM}" letter-spacing="1">14+ years building for the web</text>
 
       <!-- Skill dots -->
@@ -448,21 +448,21 @@ const pages = [
       </g>
 
       <!-- Title -->
-      <text x="88" y="280" font-family="'Trebuchet MS', 'Arial Black', sans-serif" font-size="80" font-weight="900" fill="${TEXT}" letter-spacing="1">Projects</text>
+      <text x="88" y="280" font-family="'Trebuchet MS', 'Arial Black', sans-serif" font-size="80" font-weight="900" fill="${TEXT}" letter-spacing="1">Portfolio</text>
 
       <!-- Subtitle -->
-      <text x="92" y="340" font-family="'Segoe UI', Arial, sans-serif" font-size="26" fill="${TEXT_MUTED}" letter-spacing="1">Web apps built with React, TypeScript &amp; Astro</text>
+      <text x="92" y="340" font-family="'Segoe UI', Arial, sans-serif" font-size="26" fill="${TEXT_MUTED}" letter-spacing="1">Web apps &amp; sites built with React, TypeScript &amp; Astro</text>
 
       <!-- Project name pills -->
       <g transform="translate(88, 380)">
-        <rect x="0" y="0" width="110" height="30" rx="4" fill="${BG_ELEVATED}" stroke="${ORANGE}" stroke-width="1" opacity="0.6"/>
-        <text x="55" y="20" font-family="'Courier New', monospace" font-size="13" fill="${ORANGE}" text-anchor="middle">CreatiCalc</text>
-        <rect x="124" y="0" width="120" height="30" rx="4" fill="${BG_ELEVATED}" stroke="${MAGENTA}" stroke-width="1" opacity="0.6"/>
-        <text x="184" y="20" font-family="'Courier New', monospace" font-size="13" fill="${MAGENTA}" text-anchor="middle">RetroRetro</text>
-        <rect x="258" y="0" width="100" height="30" rx="4" fill="${BG_ELEVATED}" stroke="${MINT}" stroke-width="1" opacity="0.6"/>
-        <text x="308" y="20" font-family="'Courier New', monospace" font-size="13" fill="${MINT}" text-anchor="middle">DartForge</text>
-        <rect x="372" y="0" width="110" height="30" rx="4" fill="${BG_ELEVATED}" stroke="${YELLOW}" stroke-width="1" opacity="0.6"/>
-        <text x="427" y="20" font-family="'Courier New', monospace" font-size="13" fill="${YELLOW}" text-anchor="middle">Critter Care</text>
+        <rect x="0" y="0" width="150" height="30" rx="4" fill="${BG_ELEVATED}" stroke="${ORANGE}" stroke-width="1" opacity="0.6"/>
+        <text x="75" y="20" font-family="'Courier New', monospace" font-size="13" fill="${ORANGE}" text-anchor="middle">Sports Shortcuts</text>
+        <rect x="164" y="0" width="110" height="30" rx="4" fill="${BG_ELEVATED}" stroke="${MAGENTA}" stroke-width="1" opacity="0.6"/>
+        <text x="219" y="20" font-family="'Courier New', monospace" font-size="13" fill="${MAGENTA}" text-anchor="middle">CreatiCalc</text>
+        <rect x="288" y="0" width="120" height="30" rx="4" fill="${BG_ELEVATED}" stroke="${MINT}" stroke-width="1" opacity="0.6"/>
+        <text x="348" y="20" font-family="'Courier New', monospace" font-size="13" fill="${MINT}" text-anchor="middle">RetroRetro</text>
+        <rect x="422" y="0" width="110" height="30" rx="4" fill="${BG_ELEVATED}" stroke="${YELLOW}" stroke-width="1" opacity="0.6"/>
+        <text x="477" y="20" font-family="'Courier New', monospace" font-size="13" fill="${YELLOW}" text-anchor="middle">Critter Care</text>
       </g>
 
       ${siteBadge()}

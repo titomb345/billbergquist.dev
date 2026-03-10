@@ -2,6 +2,7 @@
 title: "Why Your Denver Business Needs More Than a Wix Template"
 description: "Template website builders are convenient, but they come with real trade-offs in speed, SEO, and flexibility. Here's what small business owners should know before choosing."
 publishDate: 2026-02-15
+updatedDate: 2026-03-09
 tags: ["web design", "small business", "denver", "seo"]
 ogImage: "/og/blog/template-vs-custom-website.png"
 ---
@@ -112,3 +113,5 @@ Templates are fine for getting started. But if your website is supposed to bring
 I build websites for small businesses in Denver, Lakewood, and the Colorado Front Range. If you're wondering whether your template site is holding you back, I'm happy to take a look and give you an honest opinion. Free, no obligation.
 
 [Let's talk about your project &rarr;](/services/)
+
+I serve businesses in [Denver](/services/denver/), [Lakewood](/services/lakewood/), [Boulder](/services/boulder/), [Arvada](/services/arvada/), [Golden](/services/golden/), and [Littleton](/services/littleton/).

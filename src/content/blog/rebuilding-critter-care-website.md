@@ -2,8 +2,10 @@
 title: "How I Rebuilt Critter Care's Website from Scratch"
 description: "A real case study of rebuilding a pet sitting website from a dated IONOS template to a fast, modern Astro site. Before and after screenshots, technical details, and what the process actually looked like."
 publishDate: 2026-02-20
+updatedDate: 2026-03-09
 tags: ["web design", "case study", "astro", "small business"]
 ogImage: "/og/blog/rebuilding-critter-care-website.png"
+featured: true
 ---
 
 <script src="/blog/critter-care-rebuild/before-after.js" defer></script>
@@ -112,8 +114,10 @@ If you want to see it live, check out [critter-care.com](https://critter-care.co
 
 ## Sound Familiar?
 
-Laurie's situation isn't unusual. A lot of small business owners are paying $15-50 a month for a website builder and maybe an SEO package on top of that, and the site hasn't been updated in years. It technically exists, but it's not doing anything for them. Worse, they might be paying for services that aren't delivering any value at all.
+Laurie's situation isn't unusual. A lot of small business owners are paying $40-75 a month for a website builder and maybe an SEO package on top of that, and the site hasn't been updated in years. It technically exists, but it's not doing anything for them. Worse, they might be paying for services that aren't delivering any value at all.
 
 If that sounds like you, it's probably worth a conversation. I build websites for small businesses in Denver, Lakewood, and the Colorado Front Range. I'll look at your current site for free and tell you honestly what it would take to fix. If you're not sure whether your site needs work, I wrote about [the signs that it's time for a redesign](/blog/signs-your-business-website-needs-redesign/).
 
 [Let's talk about your project &rarr;](/services/)
+
+I serve businesses in [Denver](/services/denver/), [Lakewood](/services/lakewood/), [Boulder](/services/boulder/), [Arvada](/services/arvada/), [Golden](/services/golden/), and [Littleton](/services/littleton/).

@@ -2,6 +2,7 @@
 title: "5 Signs Your Small Business Website Needs a Redesign"
 description: "How to tell if your website is hurting your business instead of helping it. Five clear signals that it's time for a redesign, from load times to mobile experience."
 publishDate: 2026-02-25
+updatedDate: 2026-03-09
 tags: ["web design", "small business", "redesign"]
 ogImage: "/og/blog/signs-your-business-website-needs-redesign.png"
 ---
@@ -99,3 +100,5 @@ The result is a site that loads fast, looks professional, shows up in search res
 If you recognized your business in any of these signs, it's probably time for a conversation. I build websites for small businesses in Denver, Lakewood, and the Colorado Front Range. I'll take a look at your current site for free and tell you honestly what it would take to fix. If you're curious about what a rebuild costs, I wrote a [full pricing breakdown here](/blog/how-much-does-a-website-cost-denver/).
 
 [Let's talk &rarr;](/services/)
+
+I work with businesses in [Denver](/services/denver/), [Lakewood](/services/lakewood/), [Boulder](/services/boulder/), [Arvada](/services/arvada/), [Golden](/services/golden/), and [Littleton](/services/littleton/).

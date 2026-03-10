@@ -46,6 +46,8 @@ const jsonLdService = JSON.stringify({
   serviceType: ['Web Design', 'Web Development', 'Website Redesign', 'Landing Page Design'],
   priceRange: '$$',
   image: 'https://billbergquist.dev/og/services-boulder.png',
+  foundingDate: '2026-02-20',
+  dateModified: '2026-03-09',
   hasOfferCatalog: {
     '@type': 'OfferCatalog',
     name: 'Web Development Services in Boulder',
@@ -228,6 +230,26 @@ const bookingMonth = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleStr
     <p class={styles.perfLink}>
       Want a quick ballpark? <a href="/services/estimate/">Try the cost calculator &rarr;</a>
     </p>
+
+    <div class={styles.divider}></div>
+
+    <section class={styles.whySection}>
+      <h2 class={styles.sectionTitle}>Related Reading</h2>
+      <div class={styles.faqList}>
+        <div class={styles.faqItem}>
+          <a href="/blog/how-much-does-a-website-cost-denver/">How Much Does a Website Cost in Denver?</a>
+          <p class={styles.faqAnswer}>Pricing applies across the Front Range. A detailed breakdown of what to expect.</p>
+        </div>
+        <div class={styles.faqItem}>
+          <a href="/blog/template-vs-custom-website/">Template vs. Custom Website: Which Is Right for Your Business?</a>
+          <p class={styles.faqAnswer}>Boulder businesses often debate this. Here's how to decide.</p>
+        </div>
+        <div class={styles.faqItem}>
+          <a href="/blog/signs-your-business-website-needs-redesign/">Signs Your Business Website Needs a Redesign</a>
+          <p class={styles.faqAnswer}>Not sure if your current site is holding you back? Here are the telltale signs.</p>
+        </div>
+      </div>
+    </section>
 
     <div class={styles.divider}></div>
 

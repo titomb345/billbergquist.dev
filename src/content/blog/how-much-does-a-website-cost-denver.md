@@ -2,6 +2,7 @@
 title: "How Much Does a Website Cost for a Small Business in Denver?"
 description: "A straightforward breakdown of website costs for small businesses in Denver, Lakewood, and the Colorado Front Range. What to expect, what affects pricing, and how to get the most value."
 publishDate: 2026-03-01
+updatedDate: 2026-03-09
 tags: ["web design", "denver", "small business", "pricing"]
 ogImage: "/og/blog/how-much-does-a-website-cost-denver.png"
 ---
@@ -125,8 +126,10 @@ Some agencies lock you into 12-month contracts with mandatory hosting and mainte
 
 ## How to Get Started
 
-If you're a small business in Denver, Lakewood, or anywhere in the Front Range, I'd love to chat about your project. I offer a free consultation where I'll look at your current site (if you have one), discuss your goals, and give you an honest estimate.
+If you're a small business in Denver, Lakewood, or anywhere in the Front Range, I'd love to chat about your project. I offer a free consultation where I'll look at your current site (if you have one), discuss your goals, and give you an honest estimate. You can also [try the cost calculator](/services/estimate/) to get a quick ballpark.
 
 No sales pitch, no pressure. Just a conversation about what makes sense for your business. And if you're not sure whether you need a new site or just a refresh, I wrote about [the signs that it's time for a redesign](/blog/signs-your-business-website-needs-redesign/).
 
 [Get in touch &rarr;](/services/)
+
+I serve businesses across the Front Range: [Denver](/services/denver/), [Lakewood](/services/lakewood/), [Boulder](/services/boulder/), [Arvada](/services/arvada/), [Golden](/services/golden/), and [Littleton](/services/littleton/).

@@ -1,7 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
 import Layout from '../../../layouts/Layout.astro';
-import GlowText from '../../../components/ui/GlowText.astro';
 import styles from '../BlogPage.module.css';
 
 function stripExt(id: string) {
@@ -76,16 +75,13 @@ const jsonLdTag = JSON.stringify({
 >
   <div class={styles.page}>
     <header class={styles.header}>
-      <GlowText size="large" color="orange" class={styles.title}>
-        {label}
-      </GlowText>
+      <h1 class={styles.title}>{label}</h1>
       <p class={styles.intro}>
         {posts.length} {posts.length === 1 ? 'post' : 'posts'} tagged "{label}"
       </p>
       <p class={styles.backLink}>
         <a href="/blog/">&larr; All posts</a>
       </p>
-      <div class="accent-line-orange"></div>
     </header>
 
     <div class={styles.grid}>

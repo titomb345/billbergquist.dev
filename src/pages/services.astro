@@ -175,6 +175,8 @@ const jsonLdService = JSON.stringify({
   serviceType: ['Web Design', 'Web Development', 'Website Redesign', 'Landing Page Design'],
   priceRange: '$$',
   image: 'https://billbergquist.dev/og/services.png',
+  foundingDate: '2026-02-01',
+  dateModified: '2026-03-09',
   hasOfferCatalog: {
     '@type': 'OfferCatalog',
     name: 'Web Development Services',
@@ -344,6 +346,30 @@ const jsonLdFaq = JSON.stringify({
             </div>
           ))
         }
+      </div>
+    </section>
+
+    <div class={styles.divider}></div>
+
+    <section class={styles.whySection}>
+      <h2 class={styles.sectionTitle}>From the Blog</h2>
+      <div class={styles.faqList}>
+        <div class={styles.faqItem}>
+          <a href="/blog/how-much-does-a-website-cost-denver/">How Much Does a Website Cost in Denver?</a>
+          <p class={styles.faqAnswer}>A detailed breakdown of what small businesses can expect to pay for a professional website in the Denver metro area.</p>
+        </div>
+        <div class={styles.faqItem}>
+          <a href="/blog/signs-your-business-website-needs-redesign/">Signs Your Business Website Needs a Redesign</a>
+          <p class={styles.faqAnswer}>Not sure if your current site is costing you customers? Here are the telltale signs it's time for an upgrade.</p>
+        </div>
+        <div class={styles.faqItem}>
+          <a href="/blog/template-vs-custom-website/">Template vs. Custom Website: Which Is Right for Your Business?</a>
+          <p class={styles.faqAnswer}>Squarespace, Wix, or custom-built? Understand the real trade-offs before you decide.</p>
+        </div>
+        <div class={styles.faqItem}>
+          <a href="/blog/rebuilding-critter-care-website/">Rebuilding the Critter Care Website</a>
+          <p class={styles.faqAnswer}>A real case study: how I turned an outdated $53/month template site into a perfect-scoring custom build.</p>
+        </div>
       </div>
     </section>
 
