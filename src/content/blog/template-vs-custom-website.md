@@ -54,7 +54,7 @@ A custom-built site is yours. The code, the design, the content. You can host it
 
 Templates look cheap until you do the math. [Squarespace's Plus plan is $39/month](https://www.squarespace.com/pricing). That's $1,404 over three years. $2,340 over five. And you still don't own the site. Add a premium template, some plugins, and e-commerce fees, and you've quietly spent more than a custom site would have cost.
 
-A custom site's hosting runs under $20/month. No platform lock-in, no surprise price hikes. Once you think past year one, custom wins on cost every time.
+A custom site's hosting runs under $20/month. Some of my sites cost literally $0/month to host. No platform lock-in, no surprise price hikes. Once you think past year one, custom wins on cost every time. And unlike a template subscription, you're not paying rent on something you'll never own.
 
 ### Local Search Performance
 
