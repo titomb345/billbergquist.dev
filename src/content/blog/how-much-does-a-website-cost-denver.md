@@ -136,4 +136,4 @@ No sales pitch, no pressure. Just a conversation about what makes sense for your
 
 [Get in touch &rarr;](/services/)
 
-I serve businesses across the Front Range: [Denver](/services/denver/), [Lakewood](/services/lakewood/), [Boulder](/services/boulder/), [Arvada](/services/arvada/), [Golden](/services/golden/), and [Littleton](/services/littleton/).
+I serve businesses across the Front Range: [Denver](/services/denver/), [Lakewood](/services/lakewood/), [Boulder](/services/boulder/), [Arvada](/services/arvada/), [Golden](/services/golden/), [Littleton](/services/littleton/), [Aurora](/services/aurora/), [Westminster](/services/westminster/), and [Highlands Ranch](/services/highlands-ranch/).

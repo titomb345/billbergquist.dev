@@ -2,22 +2,28 @@
 import Layout from '../../layouts/Layout.astro';
 import ContactForm from '../../components/services/ContactForm';
 import styles from '../ServicesPage.module.css';
+import FaqAccordion from '../../components/ui/FaqAccordion.astro';
 
 const faqs = [
   {
-    question: 'How much does a website cost for an Arvada business?',
+    question: 'Olde Town Arvada is getting more competitive. How do I get my business to show up online?',
     answer:
-      "Most small business sites I build run between $2,000 and $8,000. A simple landing page costs less, while a full site with custom features or e-commerce runs higher. Try the cost calculator to get a ballpark, or reach out and I'll give you a clear number.",
+      "Olde Town has become one of the best walkable districts on the Front Range, and that means more businesses competing for the same searches. The key is specificity. A generic website that says 'we serve the Denver area' won't rank for Olde Town searches. I build content and schema markup that targets the actual searches people use: 'restaurants in Olde Town Arvada,' 'shops near Olde Town,' and neighborhood-level queries that the big Denver sites don't bother with.",
   },
   {
-    question: 'Can you help my Olde Town Arvada business stand out online?',
+    question: 'My Arvada business keeps getting buried under Denver results in Google. Can you fix that?',
     answer:
-      "Absolutely. Olde Town businesses have a unique character that deserves a website to match. I build sites that capture the feel of your brick-and-mortar space and help you show up when people search for businesses in the Olde Town area.",
+      "This is the most common complaint I hear from Arvada business owners. It happens because most websites aren't optimized for Arvada-specific searches. I fix it by building your site with local schema markup that tells Google exactly where you're located, writing content that naturally includes Arvada neighborhoods and landmarks, and connecting your site to your Google Business Profile so Google treats you as a verified Arvada business, not just another Denver metro listing.",
   },
   {
-    question: 'Do you help with Google Maps and local search for Arvada?',
+    question: 'I run a service business (plumber, electrician, etc.) in Arvada. What should my website focus on?',
     answer:
-      "Yes. Local search is critical for Arvada businesses, especially with Denver right next door pulling search traffic. I set up local schema markup, optimize your Google Business Profile connection, and make sure your site targets Arvada-specific searches so you show up for customers in your area.",
+      "Service businesses in Arvada need three things from a website: trust, speed, and easy contact. Trust means showing your work, your reviews, and your service areas clearly. Speed means the site loads fast on a phone, because someone with a burst pipe isn't waiting 5 seconds for your page to load. Easy contact means a phone number in the header, a simple form, and click-to-call on mobile. I also target the specific neighborhoods you serve so you get calls from your actual coverage area, not from someone 30 miles away.",
+  },
+  {
+    question: 'Arvada is growing fast with new neighborhoods. How do I reach those new residents?',
+    answer:
+      "New residents in areas like Leyden Rock and Candelas don't have established relationships with local businesses yet. They're Googling everything: dentists, restaurants, hair salons, contractors. This is a huge opportunity. A website that shows up for these searches captures customers at the exact moment they're choosing their go-to providers. I build content targeting these newer communities specifically, because they're underserved in search results and easier to rank for.",
   },
 ];
 
@@ -29,6 +35,7 @@ const jsonLdService = JSON.stringify({
     'Custom web design and development for small businesses in Arvada, Colorado. Fast, modern websites built by a local Front Range developer.',
   url: 'https://billbergquist.dev/services/arvada/',
   email: 'services@billbergquist.dev',
+  telephone: '+1-847-280-0729',
   address: {
     '@type': 'PostalAddress',
     addressLocality: 'Arvada',
@@ -214,16 +221,7 @@ const bookingMonth = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleStr
       <h2 class={styles.sectionTitle}>
         Frequently Asked Questions
       </h2>
-      <div class={styles.faqList}>
-        {
-          faqs.map((faq) => (
-            <div class={styles.faqItem}>
-              <h3 class={styles.faqQuestion}>{faq.question}</h3>
-              <p class={styles.faqAnswer}>{faq.answer}</p>
-            </div>
-          ))
-        }
-      </div>
+      <FaqAccordion faqs={faqs} />
     </section>
 
     <p class={styles.perfLink}>
@@ -258,12 +256,11 @@ const bookingMonth = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleStr
       </h2>
       <div class={styles.areasGrid}>
         <a href="/services/denver/" class={styles.areaLink}>Denver</a>
-        <a href="/services/lakewood/" class={styles.areaLink}>Lakewood</a>
+        <a href="/services/westminster/" class={styles.areaLink}>Westminster</a>
         <a href="/services/golden/" class={styles.areaLink}>Golden</a>
+        <a href="/services/lakewood/" class={styles.areaLink}>Lakewood</a>
         <a href="/services/boulder/" class={styles.areaLink}>Boulder</a>
-        <a href="/services/littleton/" class={styles.areaLink}>Littleton</a>
         <span class={styles.areaText}>Wheat Ridge</span>
-        <span class={styles.areaText}>Westminster</span>
         <span class={styles.areaText}>Broomfield</span>
       </div>
     </section>
@@ -283,13 +280,18 @@ const bookingMonth = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleStr
         <span class={styles.trustItem}>&#10003; Currently booking for {bookingMonth}</span>
         <span class={styles.trustItem}>&#10003; Free consultation, no obligation</span>
         <span class={styles.trustItem}>&#10003; Response within 1 business day</span>
+        <a href="https://share.google/AN9wq1GbXPqjeQwEf" target="_blank" rel="noopener noreferrer" class={styles.trustItem}>
+          &#10003; View my Google Business Profile
+        </a>
       </div>
 
       <ContactForm client:visible />
 
       <div class={styles.emailAlt}>
         <p>
-          Prefer email?{' '}
+          Prefer to reach out directly?{' '}
+          <a href="tel:+18472800729" class={styles.emailLink}>(847) 280-0729</a>{' '}
+          or{' '}
           <a href="mailto:services@billbergquist.dev" class={styles.emailLink}>
             services@billbergquist.dev
           </a>

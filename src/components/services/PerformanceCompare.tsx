@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react';
+import { useState, useEffect, useRef, type FormEvent } from 'react';
 import styles from './PerformanceCompare.module.css';
 
 interface Scores {
@@ -67,13 +67,33 @@ export default function PerformanceCompare({ portfolioAvg, apiKey }: Props) {
   const [result, setResult] = useState<Scores | null>(null);
   const [testedUrl, setTestedUrl] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
+  const pendingUrl = useRef<string | null>(null);
 
-  async function handleSubmit(e: FormEvent) {
-    e.preventDefault();
-    const trimmed = url.trim();
+  useEffect(() => {
+    function handleVerify(e: Event) {
+      const detail = (e as CustomEvent<string>).detail;
+      if (detail) {
+        setUrl(detail);
+        setResult(null);
+        setStatus('idle');
+        pendingUrl.current = detail;
+      }
+    }
+    window.addEventListener('verify-score', handleVerify);
+    return () => window.removeEventListener('verify-score', handleVerify);
+  }, []);
+
+  useEffect(() => {
+    if (pendingUrl.current && url === pendingUrl.current && status === 'idle') {
+      pendingUrl.current = null;
+      runTest(url);
+    }
+  }, [url, status]);
+
+  function runTest(input: string) {
+    const trimmed = input.trim();
     if (!trimmed) return;
 
-    // Normalize URL
     let testUrl = trimmed;
     if (!/^https?:\/\//i.test(testUrl)) {
       testUrl = 'https://' + testUrl;
@@ -83,6 +103,16 @@ export default function PerformanceCompare({ portfolioAvg, apiKey }: Props) {
     setResult(null);
     setErrorMsg('');
     setTestedUrl(testUrl);
+
+    fetchScores(testUrl);
+  }
+
+  async function handleSubmit(e: FormEvent) {
+    e.preventDefault();
+    runTest(url);
+  }
+
+  async function fetchScores(testUrl: string) {
 
     try {
       const apiUrl = new URL('https://www.googleapis.com/pagespeedonline/v5/runPagespeed');
@@ -190,7 +220,7 @@ export default function PerformanceCompare({ portfolioAvg, apiKey }: Props) {
             </div>
             <div className={styles.resultsColumn}>
               <h3 className={styles.columnTitle}>My Portfolio Avg</h3>
-              <p className={styles.columnUrl}>3 sites</p>
+              <p className={styles.columnUrl}>4 sites</p>
               <div className={styles.resultsGrid}>
                 {CATEGORIES.map((cat) => {
                   const yours = result[cat.key];

@@ -22,8 +22,12 @@ Web design and development for small businesses in Denver, Lakewood, Boulder, an
 - Arvada: https://billbergquist.dev/services/arvada/
 - Golden: https://billbergquist.dev/services/golden/
 - Littleton: https://billbergquist.dev/services/littleton/
+- Aurora: https://billbergquist.dev/services/aurora/
+- Westminster: https://billbergquist.dev/services/westminster/
+- Highlands Ranch: https://billbergquist.dev/services/highlands-ranch/
 - Cost calculator: https://billbergquist.dev/services/estimate/
 - Performance scores: https://billbergquist.dev/services/performance/
+- Phone: (847) 280-0729
 - Email: services@billbergquist.dev
 
 ## Projects

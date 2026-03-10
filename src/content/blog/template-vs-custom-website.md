@@ -126,4 +126,4 @@ I build websites for small businesses in Denver, Lakewood, and the Colorado Fron
 
 [Let's talk about your project &rarr;](/services/)
 
-I serve businesses in [Denver](/services/denver/), [Lakewood](/services/lakewood/), [Boulder](/services/boulder/), [Arvada](/services/arvada/), [Golden](/services/golden/), and [Littleton](/services/littleton/).
+I serve businesses in [Denver](/services/denver/), [Lakewood](/services/lakewood/), [Boulder](/services/boulder/), [Arvada](/services/arvada/), [Golden](/services/golden/), [Littleton](/services/littleton/), [Aurora](/services/aurora/), [Westminster](/services/westminster/), and [Highlands Ranch](/services/highlands-ranch/).

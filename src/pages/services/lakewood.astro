@@ -2,22 +2,33 @@
 import Layout from '../../layouts/Layout.astro';
 import ContactForm from '../../components/services/ContactForm';
 import styles from '../ServicesPage.module.css';
+import FaqAccordion from '../../components/ui/FaqAccordion.astro';
 
 const faqs = [
   {
-    question: 'How much does a website cost for a Lakewood business?',
+    question: 'People always search for Denver businesses instead of Lakewood. Can a website fix that?',
     answer:
-      "Most sites I build for Lakewood businesses cost between $2,000 and $8,000. It depends on the scope. A simple landing page runs less, while a multi-page site with custom features costs more. Try the cost calculator to get a ballpark, or reach out and I'll give you a straight answer.",
+      "This is the #1 problem Lakewood businesses face online. When someone on the west side searches for a plumber or a restaurant, Google often serves Denver results first. A custom website with Lakewood-specific content, local schema markup, and proper geo-targeting tells Google your business is in Lakewood and should show up for Lakewood searches. It won't happen overnight, but the right technical foundation makes a real difference over time.",
   },
   {
-    question: 'Are you actually local to Lakewood?',
+    question: 'I run a home services business out of Lakewood. What kind of website do I need?',
     answer:
-      "Yes. I live in the Lakewood area and know the local business landscape well. I'm happy to meet in person, whether that's at your business, a coffee shop on Wadsworth, or over at Belmar.",
+      "Home services businesses (plumbers, HVAC, electricians, landscapers) need a few specific things: clear service area information so customers know you cover their neighborhood, a fast-loading site because people searching for emergency services won't wait, easy-to-find phone numbers and contact forms, and photos of real work you've done. I also set up your site to target the specific zip codes and neighborhoods you serve so you're not getting calls from areas you don't cover.",
   },
   {
-    question: 'Will my website help me compete with Denver businesses?',
+    question: 'What makes Belmar and Wadsworth businesses different from downtown Denver in terms of web presence?',
     answer:
-      "Absolutely. With the right SEO setup, your Lakewood business can rank for both Lakewood-specific searches and broader Denver metro searches. I build local schema markup, Google Business Profile integration, and geo-targeted content into every project.",
+      "The customer mindset is different. People shopping at Belmar or along Wadsworth are usually Lakewood residents looking for something close to home, not tourists or commuters. Your website should speak to that local, community-oriented audience. That means emphasizing convenience, local roots, and neighborhood familiarity rather than trying to compete with flashy downtown Denver businesses. The content strategy and keywords are completely different.",
+  },
+  {
+    question: 'My business has been doing fine without a website. Why would I need one now?',
+    answer:
+      "If you're getting enough business from word of mouth, that's great. But consider what happens when someone gets a referral and then Googles you. If they find nothing, or they find a bare Facebook page, some of those referrals are going to a competitor who does have a professional site. A website doesn't replace word of mouth. It reinforces it. It's the thing that makes people feel confident enough to call after a friend mentioned your name.",
+  },
+  {
+    question: 'How long does it take to get a Lakewood business website up and running?',
+    answer:
+      "Most projects go from first conversation to live site in 3 to 6 weeks. A simple landing page can be done in a week or two. Bigger sites with custom features take longer, but I keep you in the loop the whole time with regular check-ins. I don't disappear for a month and then show you something you didn't ask for.",
   },
 ];
 
@@ -29,6 +40,7 @@ const jsonLdService = JSON.stringify({
     'Custom web design and development for small businesses in Lakewood, Colorado. Fast, modern websites built by a local developer.',
   url: 'https://billbergquist.dev/services/lakewood/',
   email: 'services@billbergquist.dev',
+  telephone: '+1-847-280-0729',
   address: {
     '@type': 'PostalAddress',
     addressLocality: 'Lakewood',
@@ -214,16 +226,7 @@ const bookingMonth = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleStr
       <h2 class={styles.sectionTitle}>
         Frequently Asked Questions
       </h2>
-      <div class={styles.faqList}>
-        {
-          faqs.map((faq) => (
-            <div class={styles.faqItem}>
-              <h3 class={styles.faqQuestion}>{faq.question}</h3>
-              <p class={styles.faqAnswer}>{faq.answer}</p>
-            </div>
-          ))
-        }
-      </div>
+      <FaqAccordion faqs={faqs} />
     </section>
 
     <p class={styles.perfLink}>
@@ -258,13 +261,13 @@ const bookingMonth = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleStr
       </h2>
       <div class={styles.areasGrid}>
         <a href="/services/denver/" class={styles.areaLink}>Denver</a>
-        <a href="/services/arvada/" class={styles.areaLink}>Arvada</a>
         <a href="/services/golden/" class={styles.areaLink}>Golden</a>
+        <a href="/services/arvada/" class={styles.areaLink}>Arvada</a>
         <a href="/services/littleton/" class={styles.areaLink}>Littleton</a>
+        <a href="/services/highlands-ranch/" class={styles.areaLink}>Highlands Ranch</a>
         <a href="/services/boulder/" class={styles.areaLink}>Boulder</a>
         <span class={styles.areaText}>Wheat Ridge</span>
         <span class={styles.areaText}>Edgewater</span>
-        <span class={styles.areaText}>Englewood</span>
       </div>
     </section>
 
@@ -283,13 +286,18 @@ const bookingMonth = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleStr
         <span class={styles.trustItem}>&#10003; Currently booking for {bookingMonth}</span>
         <span class={styles.trustItem}>&#10003; Free consultation, no obligation</span>
         <span class={styles.trustItem}>&#10003; Response within 1 business day</span>
+        <a href="https://share.google/AN9wq1GbXPqjeQwEf" target="_blank" rel="noopener noreferrer" class={styles.trustItem}>
+          &#10003; View my Google Business Profile
+        </a>
       </div>
 
       <ContactForm client:visible />
 
       <div class={styles.emailAlt}>
         <p>
-          Prefer email?{' '}
+          Prefer to reach out directly?{' '}
+          <a href="tel:+18472800729" class={styles.emailLink}>(847) 280-0729</a>{' '}
+          or{' '}
           <a href="mailto:services@billbergquist.dev" class={styles.emailLink}>
             services@billbergquist.dev
           </a>

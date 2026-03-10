@@ -109,4 +109,4 @@ If you recognized your business in any of these signs, it's probably time for a 
 
 [Let's talk &rarr;](/services/)
 
-I work with businesses in [Denver](/services/denver/), [Lakewood](/services/lakewood/), [Boulder](/services/boulder/), [Arvada](/services/arvada/), [Golden](/services/golden/), and [Littleton](/services/littleton/).
+I work with businesses in [Denver](/services/denver/), [Lakewood](/services/lakewood/), [Boulder](/services/boulder/), [Arvada](/services/arvada/), [Golden](/services/golden/), [Littleton](/services/littleton/), [Aurora](/services/aurora/), [Westminster](/services/westminster/), and [Highlands Ranch](/services/highlands-ranch/).

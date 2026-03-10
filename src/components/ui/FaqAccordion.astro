@@ -1,0 +1,166 @@
+---
+interface FaqItem {
+  question: string;
+  answer: string;
+}
+
+interface Props {
+  faqs: FaqItem[];
+}
+
+const { faqs } = Astro.props;
+---
+
+<div class="faq-accordion">
+  {
+    faqs.map((faq) => (
+      <details class="faq-item">
+        <summary class="faq-question">
+          <span>{faq.question}</span>
+          <svg class="faq-chevron" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </summary>
+        <div class="faq-answer-wrapper">
+          <p class="faq-answer">{faq.answer}</p>
+        </div>
+      </details>
+    ))
+  }
+</div>
+
+<script>
+  document.querySelectorAll('.faq-item').forEach((details) => {
+    const summary = details.querySelector('summary')!;
+    const wrapper = details.querySelector('.faq-answer-wrapper') as HTMLElement;
+    const chevron = details.querySelector('.faq-chevron')!;
+    let animating = false;
+
+    function onTransitionEnd() {
+      wrapper.removeEventListener('transitionend', onTransitionEnd);
+      animating = false;
+      if (!details.hasAttribute('open')) {
+        wrapper.style.height = '';
+      } else {
+        wrapper.style.height = '';
+      }
+    }
+
+    summary.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (animating) return;
+
+      const isOpen = details.hasAttribute('open');
+      animating = true;
+      wrapper.removeEventListener('transitionend', onTransitionEnd);
+
+      if (isOpen) {
+        // Closing: rotate chevron immediately, then animate height
+        chevron.classList.remove('is-open');
+        wrapper.style.height = wrapper.scrollHeight + 'px';
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            wrapper.style.height = '0px';
+            wrapper.addEventListener('transitionend', () => {
+              details.removeAttribute('open');
+              wrapper.style.height = '';
+              animating = false;
+            }, { once: true });
+          });
+        });
+      } else {
+        // Opening: rotate chevron immediately, then animate height
+        chevron.classList.add('is-open');
+        wrapper.style.height = '0px';
+        details.setAttribute('open', '');
+        const height = wrapper.scrollHeight;
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            wrapper.style.height = height + 'px';
+            wrapper.addEventListener('transitionend', () => {
+              wrapper.style.height = '';
+              animating = false;
+            }, { once: true });
+          });
+        });
+      }
+    });
+  });
+</script>
+
+<style>
+  .faq-accordion {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .faq-item {
+    padding: var(--space-md) var(--space-lg);
+    background: var(--bg-surface);
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    transition: var(--transition-normal);
+  }
+
+  .faq-item:hover {
+    border-color: rgba(255, 255, 255, 0.12);
+  }
+
+  .faq-question {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-md);
+    line-height: 1.4;
+  }
+
+  .faq-question::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq-chevron {
+    flex-shrink: 0;
+    color: var(--text-secondary);
+    transition: transform 0.3s ease;
+  }
+
+  .faq-chevron.is-open {
+    transform: rotate(180deg);
+  }
+
+  .faq-answer-wrapper {
+    overflow: hidden;
+    transition: height 0.3s ease;
+  }
+
+  .faq-answer {
+    font-size: 0.9375rem;
+    line-height: 1.7;
+    color: var(--text-secondary);
+    margin-top: var(--space-sm);
+    padding-top: var(--space-sm);
+  }
+
+  @media (max-width: 768px) {
+    .faq-item {
+      padding: var(--space-md);
+    }
+
+    .faq-question {
+      font-size: 0.9375rem;
+    }
+
+    .faq-answer {
+      font-size: 0.875rem;
+    }
+  }
+</style>

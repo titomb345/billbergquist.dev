@@ -12,7 +12,7 @@ const projects = [
     title: 'Sports Shortcuts',
     description:
       'A friend who works at a sports reporting company needed a faster way to publish injury updates during live games. I built this tool for him. It generates standardized NFL and NBA game-day messages with autocomplete player search, team formatting, and one-click copy. What used to take minutes now takes seconds.',
-    techStack: ['React', 'TypeScript', 'Material UI', 'Vite'],
+    techStack: ['React', 'TypeScript', 'Tailwind CSS', 'Vite'],
     url: 'https://sportsshortcuts.com',
     color: 'purple' as const,
     screenshot: sportsshortcutsImg,
@@ -186,6 +186,10 @@ const jsonLdProjects = JSON.stringify({
         ))}
       </div>
     </section>
+
+    <p class={styles.perfLink}>
+      Every site I build scores 95+ on Google Lighthouse. <a href="/services/performance/">See the scores &rarr;</a>
+    </p>
 
     <!-- CTA -->
     <section class={styles.cta}>

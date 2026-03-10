@@ -21,6 +21,11 @@ const sites = [
     url: 'creaticalc.com',
     scores: { performance: 99, accessibility: 100, bestPractices: 100, seo: 100 },
   },
+  {
+    name: 'Sports Shortcuts',
+    url: 'sportsshortcuts.com',
+    scores: { performance: 99, accessibility: 100, bestPractices: 100, seo: 100 },
+  },
 ];
 
 function avg(key: keyof (typeof sites)[0]['scores']) {
@@ -53,7 +58,7 @@ const jsonLd = JSON.stringify({
 
 <Layout
   title="Site Performance — Bill Bergquist"
-  description="Real Lighthouse scores for websites I've built. See how billbergquist.dev, critter-care.com, and creaticalc.com perform, then test your own site."
+  description="Real Lighthouse scores for websites I've built. See how billbergquist.dev, critter-care.com, creaticalc.com, and sportsshortcuts.com perform, then test your own site."
   canonical="/services/performance"
   jsonLd={[jsonLd]}
 >
@@ -98,6 +103,7 @@ const jsonLd = JSON.stringify({
                   </div>
                 ))}
               </div>
+              <a href="#test" class={styles.verifyLink} data-verify-url={site.url}>Verify this score &darr;</a>
             </div>
           ))
         }
@@ -179,4 +185,17 @@ const jsonLd = JSON.stringify({
       </p>
     </section>
   </div>
+
+  <script is:inline>
+    document.querySelectorAll('[data-verify-url]').forEach(function(link) {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        var url = this.getAttribute('data-verify-url');
+        document.getElementById('test').scrollIntoView({ behavior: 'smooth' });
+        setTimeout(function() {
+          window.dispatchEvent(new CustomEvent('verify-score', { detail: url }));
+        }, 400);
+      });
+    });
+  </script>
 </Layout>

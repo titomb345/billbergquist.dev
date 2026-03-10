@@ -4,6 +4,7 @@ import Layout from '../layouts/Layout.astro';
 import ContactForm from '../components/services/ContactForm';
 import CredibilitySection from '../components/services/CredibilitySection.astro';
 import RecentWork from '../components/services/RecentWork.astro';
+import FaqAccordion from '../components/ui/FaqAccordion.astro';
 import headshot from '../assets/headshot.png';
 import styles from './ServicesPage.module.css';
 
@@ -143,6 +144,7 @@ const jsonLdService = JSON.stringify({
     'Professional web design and development services for small businesses in Denver, Lakewood, and the Colorado Front Range.',
   url: 'https://billbergquist.dev/services/',
   email: 'services@billbergquist.dev',
+  telephone: '+1-847-280-0729',
   address: {
     '@type': 'PostalAddress',
     addressLocality: 'Denver',
@@ -221,6 +223,25 @@ const jsonLdService = JSON.stringify({
   },
 });
 
+const jsonLdReview = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'Review',
+  itemReviewed: {
+    '@type': 'ProfessionalService',
+    name: 'Bill Bergquist — Web Development Services',
+    url: 'https://billbergquist.dev/services/',
+  },
+  author: {
+    '@type': 'Person',
+    name: 'Laurie',
+  },
+  reviewBody: "That's fabulous! I love it! I really appreciate you and the time you're spending on this and saving me money. Please move forward with it ASAP!",
+  publisher: {
+    '@type': 'Organization',
+    name: 'Bill Bergquist',
+  },
+});
+
 const jsonLdFaq = JSON.stringify({
   '@context': 'https://schema.org',
   '@type': 'FAQPage',
@@ -239,7 +260,7 @@ const jsonLdFaq = JSON.stringify({
   title="Web Design Services in Denver & Lakewood, CO — Bill Bergquist"
   description="Web design and development for small businesses in Denver, Lakewood, and the Colorado Front Range. Built by a local staff engineer with 14+ years of experience."
   canonical="/services"
-  jsonLd={[jsonLdService, jsonLdFaq]}
+  jsonLd={[jsonLdService, jsonLdReview, jsonLdFaq]}
   ogImage="/og/services.png"
   geoRegion="US-CO"
   geoPlacename="Denver, CO"
@@ -309,6 +330,14 @@ const jsonLdFaq = JSON.stringify({
       </div>
     </section>
 
+    <blockquote class={styles.testimonial}>
+      <p class={styles.testimonialQuote}>
+        "That's fabulous! I love it! I really appreciate you and the time you're spending on this
+        and saving me money. Please move forward with it ASAP!"
+      </p>
+      <cite class={styles.testimonialAuthor}>Laurie, Critter Care owner</cite>
+    </blockquote>
+
     <CredibilitySection />
 
     <div class={styles.divider}></div>
@@ -337,16 +366,7 @@ const jsonLdFaq = JSON.stringify({
 
     <section class={styles.faq}>
       <h2 class={styles.sectionTitle}>Frequently Asked Questions</h2>
-      <div class={styles.faqList}>
-        {
-          faqs.map((faq) => (
-            <div class={styles.faqItem}>
-              <h3 class={styles.faqQuestion}>{faq.question}</h3>
-              <p class={styles.faqAnswer}>{faq.answer}</p>
-            </div>
-          ))
-        }
-      </div>
+      <FaqAccordion faqs={faqs} />
     </section>
 
     <div class={styles.divider}></div>
@@ -380,16 +400,16 @@ const jsonLdFaq = JSON.stringify({
       <div class={styles.areasGrid}>
         <a href="/services/denver/" class={styles.areaLink}>Denver</a>
         <a href="/services/lakewood/" class={styles.areaLink}>Lakewood</a>
+        <a href="/services/aurora/" class={styles.areaLink}>Aurora</a>
         <a href="/services/boulder/" class={styles.areaLink}>Boulder</a>
         <a href="/services/arvada/" class={styles.areaLink}>Arvada</a>
+        <a href="/services/westminster/" class={styles.areaLink}>Westminster</a>
+        <a href="/services/highlands-ranch/" class={styles.areaLink}>Highlands Ranch</a>
         <a href="/services/golden/" class={styles.areaLink}>Golden</a>
         <a href="/services/littleton/" class={styles.areaLink}>Littleton</a>
         <span class={styles.areaText}>Wheat Ridge</span>
         <span class={styles.areaText}>Englewood</span>
-        <span class={styles.areaText}>Aurora</span>
         <span class={styles.areaText}>Centennial</span>
-        <span class={styles.areaText}>Highlands Ranch</span>
-        <span class={styles.areaText}>Westminster</span>
         <span class={styles.areaText}>Broomfield</span>
         <span class={styles.areaText}>Thornton</span>
         <span class={styles.areaText}>Edgewater</span>
@@ -421,7 +441,9 @@ const jsonLdFaq = JSON.stringify({
 
       <div class={styles.emailAlt}>
         <p>
-          Prefer email?{' '}
+          Prefer to reach out directly?{' '}
+          <a href="tel:+18472800729" class={styles.emailLink}>(847) 280-0729</a>{' '}
+          or{' '}
           <a href="mailto:services@billbergquist.dev" class={styles.emailLink}>
             services@billbergquist.dev
           </a>

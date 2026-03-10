@@ -2,22 +2,28 @@
 import Layout from '../../layouts/Layout.astro';
 import ContactForm from '../../components/services/ContactForm';
 import styles from '../ServicesPage.module.css';
+import FaqAccordion from '../../components/ui/FaqAccordion.astro';
 
 const faqs = [
   {
-    question: 'How much does a website cost for a Golden business?',
+    question: 'Golden gets a lot of tourists. How do I build a website that reaches both visitors and locals?',
     answer:
-      "Most sites I build for small businesses cost between $2,000 and $8,000. Tourism and outdoor businesses sometimes need booking integrations or seasonal content, which can affect scope. Try the cost calculator to get a ballpark, or reach out and I'll give you a clear estimate.",
+      "These are two completely different audiences searching in different ways. Tourists search things like 'best restaurants in Golden CO' and 'things to do near Clear Creek' before they visit. Locals search for 'Golden dentist' or 'plumber near Golden.' I build your site to serve both: tourist-friendly content with hours, directions, and what-to-expect info, plus local SEO targeting the neighborhood-level searches that keep your regulars coming back. The structure of the content matters more than most people think.",
   },
   {
-    question: 'Can you build a website that handles seasonal traffic for my Golden business?',
+    question: 'There are thousands of Mines students in Golden. How do I reach that audience?',
     answer:
-      "Yes. Golden gets huge surges of visitors during summer hiking season, fall colors, and holiday events. I build sites that load fast under traffic spikes and are easy to update with seasonal hours, menus, or event information.",
+      "Colorado School of Mines brings a tech-savvy, mobile-first audience to Golden year-round, plus visiting families during events and move-in weekends. These are people who expect fast, modern websites and who will judge your business by your online presence. If your site looks dated or doesn't load well on a phone, they're gone. I build sites that meet that standard, and I can target content toward student-relevant searches if that's part of your customer base.",
   },
   {
-    question: 'Do you understand the Golden market?',
+    question: 'Washington Avenue is packed with businesses. How does my website help me stand out?',
     answer:
-      "I do. Golden is different from Denver. It's a small mountain town with a strong local identity, a major university, and a steady stream of tourists. I build sites that speak to both locals and visitors, not generic Denver-area templates.",
+      "Your storefront competes with the businesses next door. Your website competes with every result on Google. The advantage of a custom website on Washington Ave is that most of your neighbors still have basic template sites or nothing beyond a Google listing. A fast, well-optimized custom site with real photos, strong reviews integration, and local SEO immediately puts you ahead of businesses relying on Yelp or a Facebook page to carry their online presence.",
+  },
+  {
+    question: 'My Golden business is seasonal. Is it worth investing in a website?',
+    answer:
+      "Seasonal businesses actually benefit more from a website than year-round ones. When you're in season, you need to capture every possible customer. A site that ranks for 'kayak rentals Golden CO' or 'best patio dining Golden' means you're not depending solely on foot traffic during your busiest months. I also build sites that are easy for you to update with seasonal hours, menus, and events, so you can keep the content fresh without calling a developer every time something changes.",
   },
 ];
 
@@ -29,6 +35,7 @@ const jsonLdService = JSON.stringify({
     'Custom web design and development for small businesses in Golden, Colorado. Fast, modern websites built by a local Front Range developer.',
   url: 'https://billbergquist.dev/services/golden/',
   email: 'services@billbergquist.dev',
+  telephone: '+1-847-280-0729',
   address: {
     '@type': 'PostalAddress',
     addressLocality: 'Golden',
@@ -214,16 +221,7 @@ const bookingMonth = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleStr
       <h2 class={styles.sectionTitle}>
         Frequently Asked Questions
       </h2>
-      <div class={styles.faqList}>
-        {
-          faqs.map((faq) => (
-            <div class={styles.faqItem}>
-              <h3 class={styles.faqQuestion}>{faq.question}</h3>
-              <p class={styles.faqAnswer}>{faq.answer}</p>
-            </div>
-          ))
-        }
-      </div>
+      <FaqAccordion faqs={faqs} />
     </section>
 
     <p class={styles.perfLink}>
@@ -257,13 +255,12 @@ const bookingMonth = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleStr
         Also Serving Nearby
       </h2>
       <div class={styles.areasGrid}>
-        <a href="/services/denver/" class={styles.areaLink}>Denver</a>
         <a href="/services/lakewood/" class={styles.areaLink}>Lakewood</a>
         <a href="/services/arvada/" class={styles.areaLink}>Arvada</a>
+        <a href="/services/denver/" class={styles.areaLink}>Denver</a>
         <a href="/services/boulder/" class={styles.areaLink}>Boulder</a>
         <a href="/services/littleton/" class={styles.areaLink}>Littleton</a>
         <span class={styles.areaText}>Wheat Ridge</span>
-        <span class={styles.areaText}>Edgewater</span>
         <span class={styles.areaText}>Morrison</span>
       </div>
     </section>
@@ -283,13 +280,18 @@ const bookingMonth = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleStr
         <span class={styles.trustItem}>&#10003; Currently booking for {bookingMonth}</span>
         <span class={styles.trustItem}>&#10003; Free consultation, no obligation</span>
         <span class={styles.trustItem}>&#10003; Response within 1 business day</span>
+        <a href="https://share.google/AN9wq1GbXPqjeQwEf" target="_blank" rel="noopener noreferrer" class={styles.trustItem}>
+          &#10003; View my Google Business Profile
+        </a>
       </div>
 
       <ContactForm client:visible />
 
       <div class={styles.emailAlt}>
         <p>
-          Prefer email?{' '}
+          Prefer to reach out directly?{' '}
+          <a href="tel:+18472800729" class={styles.emailLink}>(847) 280-0729</a>{' '}
+          or{' '}
           <a href="mailto:services@billbergquist.dev" class={styles.emailLink}>
             services@billbergquist.dev
           </a>

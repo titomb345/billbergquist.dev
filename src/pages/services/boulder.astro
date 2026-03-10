@@ -2,22 +2,33 @@
 import Layout from '../../layouts/Layout.astro';
 import ContactForm from '../../components/services/ContactForm';
 import styles from '../ServicesPage.module.css';
+import FaqAccordion from '../../components/ui/FaqAccordion.astro';
 
 const faqs = [
   {
-    question: 'How much does a website cost for a Boulder business?',
+    question: 'Boulder has a lot of tech-savvy consumers. Does that change how you build a website here?',
     answer:
-      "Most small business sites run between $2,000 and $8,000. Boulder businesses often need strong visual design to match the quality of their products and services, and I build that into every project. Try the cost calculator to get a ballpark, or reach out and I'll give you a clear estimate.",
+      "It does. Boulder's audience has higher expectations for web experiences than most Colorado cities. They notice slow load times, dated designs, and clunky mobile experiences. They're also more likely to research a business thoroughly before choosing. I build sites that meet that standard: fast, modern, well-designed, and technically solid. If your site feels like it was built in 2018, Boulder customers will notice and move on.",
   },
   {
-    question: 'Do you work with Boulder businesses remotely or in person?',
+    question: 'My Pearl Street business gets a lot of foot traffic. Why do I need a website?',
     answer:
-      "Both. I'm based in the Denver/Lakewood area, about 30-40 minutes from Boulder. I'm happy to meet in person for initial discussions, and we can handle the rest over video calls. I've worked with Boulder clients this way and it works well.",
+      "Foot traffic is great, but it's seasonal and limited to people physically walking by. A website extends your reach to CU students researching where to eat, tourists planning a Boulder trip, and locals who search before they leave the house. Even for businesses with strong foot traffic, a website with hours, menus, and online ordering captures the customers you're currently losing to competitors who show up in search results.",
   },
   {
-    question: 'Can you build e-commerce or booking features for my Boulder business?',
+    question: 'Can you build a website that reflects Boulder values like sustainability and community?',
     answer:
-      "Yes. Whether you need an online store for a Pearl Street boutique, a booking system for a yoga studio, or a reservation system for a restaurant, I can build custom functionality that fits your specific workflow.",
+      "Boulder customers care about these things, and your website should reflect that. I'm not talking about slapping a green leaf icon on the page. I mean thoughtfully incorporating your sustainability practices, community involvement, and brand story into the content and design. A fast, lightweight site is also inherently more sustainable, as it uses less energy per page load than a bloated WordPress site.",
+  },
+  {
+    question: 'I sell outdoor gear / run a fitness studio. Can you integrate booking or e-commerce?',
+    answer:
+      "Yes. Boulder's outdoor and wellness scene often needs functionality beyond a basic brochure site. I can build in online booking for classes and appointments, e-commerce for product sales, event registration, and integrations with tools you already use like Mindbody, Square, or Shopify. The key is building it lean so it loads fast, especially for mobile users who might be searching from the trailhead.",
+  },
+  {
+    question: "You're based in the Denver area. Do you really know Boulder well enough?",
+    answer:
+      "I've spent plenty of time in Boulder and I know what makes it different from Denver. The culture, the customer expectations, the competitive landscape on Pearl Street versus a neighborhood business on Arapahoe. I drive up for in-person meetings whenever it's helpful. But honestly, the most important thing isn't whether I live on Mapleton Hill. It's whether I can build you a site that loads fast, looks great, and gets found by your customers. That's what I do.",
   },
 ];
 
@@ -29,6 +40,7 @@ const jsonLdService = JSON.stringify({
     'Custom web design and development for small businesses in Boulder, Colorado. Fast, modern websites built by an experienced Front Range developer.',
   url: 'https://billbergquist.dev/services/boulder/',
   email: 'services@billbergquist.dev',
+  telephone: '+1-847-280-0729',
   address: {
     '@type': 'PostalAddress',
     addressLocality: 'Boulder',
@@ -214,16 +226,7 @@ const bookingMonth = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleStr
       <h2 class={styles.sectionTitle}>
         Frequently Asked Questions
       </h2>
-      <div class={styles.faqList}>
-        {
-          faqs.map((faq) => (
-            <div class={styles.faqItem}>
-              <h3 class={styles.faqQuestion}>{faq.question}</h3>
-              <p class={styles.faqAnswer}>{faq.answer}</p>
-            </div>
-          ))
-        }
-      </div>
+      <FaqAccordion faqs={faqs} />
     </section>
 
     <p class={styles.perfLink}>
@@ -258,12 +261,11 @@ const bookingMonth = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleStr
       </h2>
       <div class={styles.areasGrid}>
         <a href="/services/denver/" class={styles.areaLink}>Denver</a>
-        <a href="/services/lakewood/" class={styles.areaLink}>Lakewood</a>
+        <a href="/services/westminster/" class={styles.areaLink}>Westminster</a>
         <a href="/services/arvada/" class={styles.areaLink}>Arvada</a>
         <a href="/services/golden/" class={styles.areaLink}>Golden</a>
-        <a href="/services/littleton/" class={styles.areaLink}>Littleton</a>
+        <a href="/services/lakewood/" class={styles.areaLink}>Lakewood</a>
         <span class={styles.areaText}>Broomfield</span>
-        <span class={styles.areaText}>Westminster</span>
         <span class={styles.areaText}>Louisville</span>
       </div>
     </section>
@@ -283,13 +285,18 @@ const bookingMonth = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleStr
         <span class={styles.trustItem}>&#10003; Currently booking for {bookingMonth}</span>
         <span class={styles.trustItem}>&#10003; Free consultation, no obligation</span>
         <span class={styles.trustItem}>&#10003; Response within 1 business day</span>
+        <a href="https://share.google/AN9wq1GbXPqjeQwEf" target="_blank" rel="noopener noreferrer" class={styles.trustItem}>
+          &#10003; View my Google Business Profile
+        </a>
       </div>
 
       <ContactForm client:visible />
 
       <div class={styles.emailAlt}>
         <p>
-          Prefer email?{' '}
+          Prefer to reach out directly?{' '}
+          <a href="tel:+18472800729" class={styles.emailLink}>(847) 280-0729</a>{' '}
+          or{' '}
           <a href="mailto:services@billbergquist.dev" class={styles.emailLink}>
             services@billbergquist.dev
           </a>

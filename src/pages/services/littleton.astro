@@ -2,22 +2,28 @@
 import Layout from '../../layouts/Layout.astro';
 import ContactForm from '../../components/services/ContactForm';
 import styles from '../ServicesPage.module.css';
+import FaqAccordion from '../../components/ui/FaqAccordion.astro';
 
 const faqs = [
   {
-    question: 'How much does a website cost for a Littleton business?',
+    question: 'My shop is on Main Street in Littleton. How do I get more people to find me online before they visit?',
     answer:
-      "Most small business sites I build cost between $2,000 and $8,000. Main Street boutiques and restaurants usually land in the middle of that range. More complex projects with e-commerce or booking systems cost more. Try the cost calculator to get a ballpark, or reach out and I'll give you a straight answer.",
+      "Main Street Littleton is a destination, and people research before they go. They search 'shops on Main Street Littleton' and 'Littleton restaurants' to plan their visit. If your business doesn't show up in those results, they're walking past your door because they already decided to go somewhere else. I build sites that target these specific searches and include the practical info visitors need: hours, parking, what to expect, and why they should stop in.",
   },
   {
-    question: 'Do you know the Littleton area?',
+    question: 'Littleton feels like a small town but it borders Denver. How does that affect my online strategy?',
     answer:
-      "I do. I used to live in Littleton and still know the area well. I've walked Main Street plenty of times, spent time at Hudson Gardens, and understand the community. That local knowledge shows up in the websites I build for Littleton businesses.",
+      "It's actually an advantage. Littleton has a distinct identity that people search for specifically. Someone searching 'Littleton dentist' is a better lead than someone searching 'Denver dentist' because they've already narrowed down to your area. I build your site to capture those Littleton-specific searches while also being competitive for broader south metro queries. You get the best of both worlds: the small-town loyalty and the metro area search volume.",
   },
   {
-    question: 'Can you build an online store for my Main Street shop?',
+    question: 'I run a service business that covers Littleton and surrounding areas. Can you help me target multiple neighborhoods?',
     answer:
-      "Yes. I can add e-commerce to your website so customers can browse and buy online, not just in person. For Main Street boutiques, this is a big deal. It lets you reach customers beyond foot traffic and keeps your business going even when the store is closed.",
+      "Yes. Service businesses in Littleton often cover Columbine, Ken Caryl, Highlands Ranch, and parts of south Denver. I build your site with clear service area information and content that targets the specific communities you serve. This is more effective than saying 'we serve the Denver metro area' because it matches how your customers actually search. Someone in Ken Caryl is searching for 'plumber near Ken Caryl,' not 'plumber Denver.'",
+  },
+  {
+    question: 'Hudson Gardens and the area around the Platte River bring visitors to Littleton. Can my business benefit from that traffic?',
+    answer:
+      "Absolutely. Event venues, parks, and attractions bring people to Littleton who aren't familiar with the area. They search for nearby restaurants, coffee shops, and things to do before and after their visit. A website optimized for these adjacent searches ('restaurants near Hudson Gardens' or 'coffee shop downtown Littleton') captures customers who are already in your area and ready to spend money. It's a low-competition search opportunity that most Littleton businesses miss.",
   },
 ];
 
@@ -29,6 +35,7 @@ const jsonLdService = JSON.stringify({
     'Custom web design and development for small businesses in Littleton, Colorado. Fast, modern websites built by a developer who knows the Littleton community.',
   url: 'https://billbergquist.dev/services/littleton/',
   email: 'services@billbergquist.dev',
+  telephone: '+1-847-280-0729',
   address: {
     '@type': 'PostalAddress',
     addressLocality: 'Littleton',
@@ -215,16 +222,7 @@ const bookingMonth = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleStr
       <h2 class={styles.sectionTitle}>
         Frequently Asked Questions
       </h2>
-      <div class={styles.faqList}>
-        {
-          faqs.map((faq) => (
-            <div class={styles.faqItem}>
-              <h3 class={styles.faqQuestion}>{faq.question}</h3>
-              <p class={styles.faqAnswer}>{faq.answer}</p>
-            </div>
-          ))
-        }
-      </div>
+      <FaqAccordion faqs={faqs} />
     </section>
 
     <p class={styles.perfLink}>
@@ -258,14 +256,14 @@ const bookingMonth = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleStr
         Also Serving Nearby
       </h2>
       <div class={styles.areasGrid}>
+        <a href="/services/highlands-ranch/" class={styles.areaLink}>Highlands Ranch</a>
         <a href="/services/denver/" class={styles.areaLink}>Denver</a>
         <a href="/services/lakewood/" class={styles.areaLink}>Lakewood</a>
+        <a href="/services/aurora/" class={styles.areaLink}>Aurora</a>
         <a href="/services/golden/" class={styles.areaLink}>Golden</a>
-        <a href="/services/arvada/" class={styles.areaLink}>Arvada</a>
-        <a href="/services/boulder/" class={styles.areaLink}>Boulder</a>
         <span class={styles.areaText}>Englewood</span>
         <span class={styles.areaText}>Centennial</span>
-        <span class={styles.areaText}>Highlands Ranch</span>
+        <span class={styles.areaText}>Ken Caryl</span>
       </div>
     </section>
 
@@ -284,13 +282,18 @@ const bookingMonth = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleStr
         <span class={styles.trustItem}>&#10003; Currently booking for {bookingMonth}</span>
         <span class={styles.trustItem}>&#10003; Free consultation, no obligation</span>
         <span class={styles.trustItem}>&#10003; Response within 1 business day</span>
+        <a href="https://share.google/AN9wq1GbXPqjeQwEf" target="_blank" rel="noopener noreferrer" class={styles.trustItem}>
+          &#10003; View my Google Business Profile
+        </a>
       </div>
 
       <ContactForm client:visible />
 
       <div class={styles.emailAlt}>
         <p>
-          Prefer email?{' '}
+          Prefer to reach out directly?{' '}
+          <a href="tel:+18472800729" class={styles.emailLink}>(847) 280-0729</a>{' '}
+          or{' '}
           <a href="mailto:services@billbergquist.dev" class={styles.emailLink}>
             services@billbergquist.dev
           </a>

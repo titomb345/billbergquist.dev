@@ -1,0 +1,320 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import ContactForm from '../../components/services/ContactForm';
+import styles from '../ServicesPage.module.css';
+import FaqAccordion from '../../components/ui/FaqAccordion.astro';
+
+const faqs = [
+  {
+    question: 'Highlands Ranch residents seem to expect a lot from businesses. Does my website really matter that much here?',
+    answer:
+      "More than almost any other community on the Front Range. Highlands Ranch has one of the highest median household incomes in Colorado, and these customers research everything before they commit. They compare websites, read reviews, check credentials, and judge professionalism based on your online presence. A dated or slow website doesn't just fail to attract new customers here. It actively drives them to a competitor who looks more polished. The bar is higher in HR, and your website needs to meet it.",
+  },
+  {
+    question: 'I work from home in Highlands Ranch as a consultant/coach/freelancer. Do I need a website?',
+    answer:
+      "Highlands Ranch has a high concentration of home-based professionals: financial advisors, marketing consultants, tutors, photographers, IT contractors. A website gives you something a LinkedIn profile can't: a dedicated space to explain your services, show your work, and let potential clients contact you on your terms. It also shows up in Google when someone searches for your type of service locally, which LinkedIn won't do. You don't need a big site. A clean one-pager with your services, credentials, and a contact form is often enough to start landing local clients.",
+  },
+  {
+    question: 'There are so many dentists and medical practices in Highlands Ranch. How does a website help mine stand out?',
+    answer:
+      "Highlands Ranch is saturated with dental and medical practices, which means patients have choices and they comparison-shop online. The practices that win are the ones with a professional website featuring real provider photos, clear insurance information, easy online booking, and genuine patient reviews. I also set up medical-specific schema markup so Google can show your practice details (specialties, ratings, hours) directly in search results, which gives you an edge before anyone even clicks through to your site.",
+  },
+  {
+    question: 'My landscaping/contractor business serves Highlands Ranch but I am based elsewhere. Can my website still target HR customers?',
+    answer:
+      "Yes, and this is actually one of the best uses of a location-optimized website. A lot of service businesses cover Highlands Ranch from a base in Littleton, Castle Rock, or Denver. I build your site with service area pages that explicitly mention Highlands Ranch neighborhoods and the types of homes and properties you work on. This tells Google you serve the area even if your business address is somewhere else. Combined with a Google Business Profile that lists HR as a service area, you can absolutely compete with locally-based competitors.",
+  },
+  {
+    question: 'My kids are in activities all over Highlands Ranch. Can you build a site for a youth program or sports league?',
+    answer:
+      "Highlands Ranch families are always searching for activities: martial arts, dance, swim lessons, sports leagues, tutoring, camps. These programs live and die by parent searches like 'kids martial arts Highlands Ranch' or 'swim lessons near me.' A fast site with class schedules, age groups, pricing, and easy registration is what converts a searching parent into an enrolled student. I can also integrate with registration platforms you already use so you're not managing two systems.",
+  },
+];
+
+const jsonLdService = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'ProfessionalService',
+  name: 'Bill Bergquist — Web Design in Highlands Ranch, CO',
+  description:
+    'Custom web design and development for small businesses in Highlands Ranch, Colorado. Fast, modern websites built by a local Front Range developer.',
+  url: 'https://billbergquist.dev/services/highlands-ranch/',
+  email: 'services@billbergquist.dev',
+  telephone: '+1-847-280-0729',
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Highlands Ranch',
+    addressRegion: 'CO',
+    addressCountry: 'US',
+  },
+  areaServed: {
+    '@type': 'City',
+    name: 'Highlands Ranch',
+    containedInPlace: { '@type': 'State', name: 'Colorado' },
+  },
+  provider: {
+    '@id': 'https://billbergquist.dev/#person',
+  },
+  serviceType: ['Web Design', 'Web Development', 'Website Redesign', 'Landing Page Design'],
+  priceRange: '$$',
+  image: 'https://billbergquist.dev/og/services-highlands-ranch.png',
+  dateModified: '2026-03-09',
+  hasOfferCatalog: {
+    '@type': 'OfferCatalog',
+    name: 'Web Development Services in Highlands Ranch',
+    itemListElement: [
+      {
+        '@type': 'Offer',
+        itemOffered: {
+          '@type': 'Service',
+          name: 'Business Websites',
+          description: 'Professional websites for Highlands Ranch small businesses. Fast, mobile-friendly, and built to convert.',
+        },
+      },
+      {
+        '@type': 'Offer',
+        itemOffered: {
+          '@type': 'Service',
+          name: 'Landing Pages',
+          description: 'Focused, single-page sites designed to drive bookings, signups, or sales for Highlands Ranch businesses.',
+        },
+      },
+      {
+        '@type': 'Offer',
+        itemOffered: {
+          '@type': 'Service',
+          name: 'Website Redesign',
+          description: 'Modernize your outdated website with a fresh design, faster performance, and better user experience.',
+        },
+      },
+      {
+        '@type': 'Offer',
+        itemOffered: {
+          '@type': 'Service',
+          name: 'Ongoing Support & Maintenance',
+          description: 'Website updates, tweaks, and maintenance from a local Front Range developer you can reach out to anytime.',
+        },
+      },
+    ],
+  },
+});
+
+const jsonLdFaq = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+});
+
+const bookingMonth = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleString('en-US', {
+  month: 'long',
+});
+---
+
+<Layout
+  title="Web Design in Highlands Ranch, CO — Bill Bergquist"
+  description="Custom web design for Highlands Ranch small businesses. Fast, modern websites built by a local developer. Serving the south metro Denver area."
+  canonical="/services/highlands-ranch"
+  jsonLd={[jsonLdService, jsonLdFaq]}
+  ogImage="/og/services-highlands-ranch.png"
+  geoRegion="US-CO"
+  geoPlacename="Highlands Ranch, CO"
+>
+  <div class={styles.page}>
+    <header class={styles.header}>
+      <h1 class={styles.title}>
+        Web Design in Highlands Ranch, CO
+      </h1>
+      <p class={styles.subtitle}>Custom Websites for Highlands Ranch Small Businesses</p>
+      <p class={styles.intro}>
+        Highlands Ranch is one of the largest planned communities in the country, and its residents
+        have high expectations. They search for local services online before they do anything else.
+        Whether you run a practice on County Line Road, a studio near Town Center, a home-based
+        consulting business, or a service company covering the south metro area, your website is
+        the first thing most potential customers see. I build fast, professional sites that match
+        the quality your Highlands Ranch customers expect.
+      </p>
+    </header>
+
+    <section class={styles.whySection}>
+      <h2 class={styles.sectionTitle}>
+        Why Highlands Ranch Businesses Need Custom Websites
+      </h2>
+      <div class={styles.whyGrid}>
+        <div class={styles.whyItem}>
+          <h3 class={styles.whyTitle}>Affluent residents with high standards</h3>
+          <p class={styles.whyDescription}>
+            Highlands Ranch has one of the highest median household incomes in Colorado. These
+            customers research extensively before choosing a provider. A polished, professional
+            website signals that your business matches the quality they expect. A dated or slow
+            site sends them to your competitor.
+          </p>
+        </div>
+        <div class={styles.whyItem}>
+          <h3 class={styles.whyTitle}>Local searches dominate here</h3>
+          <p class={styles.whyDescription}>
+            Highlands Ranch residents tend to prefer local options over driving to Denver. They
+            search for "dentist in Highlands Ranch" and "landscaper near me," not "dentist Denver."
+            A website optimized for Highlands Ranch and south metro searches captures these
+            customers while they're ready to book.
+          </p>
+        </div>
+        <div class={styles.whyItem}>
+          <h3 class={styles.whyTitle}>Lots of home-based and small businesses</h3>
+          <p class={styles.whyDescription}>
+            Highlands Ranch has a high concentration of consultants, coaches, freelancers, and
+            small service businesses operating from home. You don't need a storefront to benefit
+            from a professional website. A well-built site gives you credibility and a way for
+            clients to find and trust you.
+          </p>
+        </div>
+        <div class={styles.whyItem}>
+          <h3 class={styles.whyTitle}>Front Range developer who gets the south metro</h3>
+          <p class={styles.whyDescription}>
+            I'm based in the Denver/Lakewood area and work with businesses across the south
+            metro. I can meet you at your office or a coffee shop off Broadway. You work directly
+            with me, not an agency with a weeks-long feedback loop.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <div class={styles.divider}></div>
+
+    <section class={styles.whySection}>
+      <h2 class={styles.sectionTitle}>
+        Highlands Ranch Businesses I Work With
+      </h2>
+      <div class={styles.whyGrid}>
+        <div class={styles.whyItem}>
+          <h3 class={styles.whyTitle}>Health, dental & wellness</h3>
+          <p class={styles.whyDescription}>
+            Dentists, orthodontists, chiropractors, therapists, med spas. Highlands Ranch
+            families want providers close to home, and they comparison-shop online. A professional
+            site with provider bios, online booking, insurance info, and patient reviews fills
+            your schedule with the right patients.
+          </p>
+        </div>
+        <div class={styles.whyItem}>
+          <h3 class={styles.whyTitle}>Home services & contractors</h3>
+          <p class={styles.whyDescription}>
+            Landscapers, painters, roofers, handyman services, cleaning companies. With over
+            100,000 residents in a community that takes pride in its homes, the demand is
+            constant. A fast site with clear pricing, service areas, and before/after photos
+            turns searches into booked jobs.
+          </p>
+        </div>
+        <div class={styles.whyItem}>
+          <h3 class={styles.whyTitle}>Professional services & consulting</h3>
+          <p class={styles.whyDescription}>
+            Financial advisors, real estate agents, attorneys, coaches, IT consultants. Highlands
+            Ranch is full of professionals who serve clients locally and remotely. A clean site
+            that communicates your expertise and makes it easy to schedule a call is often all
+            you need to start landing clients.
+          </p>
+        </div>
+        <div class={styles.whyItem}>
+          <h3 class={styles.whyTitle}>Fitness, youth sports & activities</h3>
+          <p class={styles.whyDescription}>
+            Martial arts studios, dance schools, personal trainers, youth sports leagues.
+            Highlands Ranch families are always looking for activities for their kids and
+            themselves. A site with class schedules, registration, and instructor bios helps
+            parents find and commit to your program.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <div class={styles.divider}></div>
+
+    <section class={styles.faq}>
+      <h2 class={styles.sectionTitle}>
+        Frequently Asked Questions
+      </h2>
+      <FaqAccordion faqs={faqs} />
+    </section>
+
+    <p class={styles.perfLink}>
+      Want a quick ballpark? <a href="/services/estimate/">Try the cost calculator &rarr;</a>
+    </p>
+
+    <div class={styles.divider}></div>
+
+    <section class={styles.whySection}>
+      <h2 class={styles.sectionTitle}>Related Reading</h2>
+      <div class={styles.faqList}>
+        <div class={styles.faqItem}>
+          <a href="/blog/how-much-does-a-website-cost-denver/">How Much Does a Website Cost in Denver?</a>
+          <p class={styles.faqAnswer}>Pricing applies across the metro area, including Highlands Ranch. See the full breakdown.</p>
+        </div>
+        <div class={styles.faqItem}>
+          <a href="/blog/signs-your-business-website-needs-redesign/">Signs Your Business Website Needs a Redesign</a>
+          <p class={styles.faqAnswer}>Not sure if your current site is holding you back? Here are the telltale signs.</p>
+        </div>
+        <div class={styles.faqItem}>
+          <a href="/blog/template-vs-custom-website/">Template vs. Custom Website: Which Is Right for Your Business?</a>
+          <p class={styles.faqAnswer}>Understand the trade-offs before deciding how to build your next site.</p>
+        </div>
+      </div>
+    </section>
+
+    <div class={styles.divider}></div>
+
+    <section class={styles.areasServed}>
+      <h2 class={styles.sectionTitle}>
+        Also Serving Nearby
+      </h2>
+      <div class={styles.areasGrid}>
+        <a href="/services/littleton/" class={styles.areaLink}>Littleton</a>
+        <a href="/services/aurora/" class={styles.areaLink}>Aurora</a>
+        <a href="/services/denver/" class={styles.areaLink}>Denver</a>
+        <a href="/services/lakewood/" class={styles.areaLink}>Lakewood</a>
+        <span class={styles.areaText}>Centennial</span>
+        <span class={styles.areaText}>Parker</span>
+        <span class={styles.areaText}>Castle Rock</span>
+        <span class={styles.areaText}>Lone Tree</span>
+      </div>
+    </section>
+
+    <div class={styles.divider}></div>
+
+    <section class={styles.contact}>
+      <h2 class={styles.sectionTitle}>
+        Let's Build Your Highlands Ranch Website
+      </h2>
+      <p class={styles.contactIntro}>
+        Whether you run a practice on County Line Road, a home-based consulting business, a
+        fitness studio near Town Center, or any other Highlands Ranch business, I'd love to
+        hear about your project.
+      </p>
+
+      <div class={styles.trustSignals}>
+        <span class={styles.trustItem}>&#10003; Currently booking for {bookingMonth}</span>
+        <span class={styles.trustItem}>&#10003; Free consultation, no obligation</span>
+        <span class={styles.trustItem}>&#10003; Response within 1 business day</span>
+        <a href="https://share.google/AN9wq1GbXPqjeQwEf" target="_blank" rel="noopener noreferrer" class={styles.trustItem}>
+          &#10003; View my Google Business Profile
+        </a>
+      </div>
+
+      <ContactForm client:visible />
+
+      <div class={styles.emailAlt}>
+        <p>
+          Prefer to reach out directly?{' '}
+          <a href="tel:+18472800729" class={styles.emailLink}>(847) 280-0729</a>{' '}
+          or{' '}
+          <a href="mailto:services@billbergquist.dev" class={styles.emailLink}>
+            services@billbergquist.dev
+          </a>
+        </p>
+        <p style="margin-top: var(--space-md);">
+          <a href="/services/" class={styles.emailLink}>&larr; Back to all services</a>
+        </p>
+      </div>
+    </section>
+  </div>
+</Layout>

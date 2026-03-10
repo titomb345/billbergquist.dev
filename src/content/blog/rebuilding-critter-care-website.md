@@ -126,4 +126,4 @@ If that sounds like you, it's probably worth a conversation. I build websites fo
 
 [Let's talk about your project &rarr;](/services/)
 
-I serve businesses in [Denver](/services/denver/), [Lakewood](/services/lakewood/), [Boulder](/services/boulder/), [Arvada](/services/arvada/), [Golden](/services/golden/), and [Littleton](/services/littleton/).
+I serve businesses in [Denver](/services/denver/), [Lakewood](/services/lakewood/), [Boulder](/services/boulder/), [Arvada](/services/arvada/), [Golden](/services/golden/), [Littleton](/services/littleton/), [Aurora](/services/aurora/), [Westminster](/services/westminster/), and [Highlands Ranch](/services/highlands-ranch/).
