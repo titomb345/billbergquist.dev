@@ -30,6 +30,8 @@ Template builders load a lot of code to power their drag-and-drop editors. That 
 
 A typical Wix site [loads in 3-5 seconds on mobile](https://backlinko.com/page-speed-stats). A custom-built site using modern tools like [Astro](https://astro.build/) loads in under 1 second. That difference matters for both user experience and Google rankings.
 
+You can test this yourself. I have a [speed comparison tool on my performance page](/services/performance/#test) where you can punch in any URL and see a real Lighthouse score. Try your own site, then compare it against one of mine. The gap is usually 40-50 points. Google uses these metrics in its ranking algorithm, so a slow template site is fighting with one hand behind its back before you even think about content or keywords.
+
 ### SEO Control
 
 Template builders give you basic SEO: you can set page titles and meta descriptions. But the deeper technical SEO (structured data, semantic HTML, proper heading hierarchy, canonical URLs, XML sitemaps with priority tuning) is either limited or locked behind premium plans.
@@ -60,6 +62,8 @@ This one matters a lot for Denver businesses. Template builders handle basic SEO
 
 Google's local pack (the map results for "plumber near me" or "coffee shop RiNo") favors sites that load fast, have clean technical markup, and include location-specific structured data. Template sites rarely check all three boxes.
 
+Say you run a landscaping company in Lakewood. You want Google to know you serve Lakewood, Green Mountain, Bear Creek, and the surrounding area. A custom site can have a dedicated page for each service area with real content about that neighborhood, plus structured data that tells Google exactly what you do and where. On Squarespace, you get an "About" page with your address on it. That's the whole local SEO strategy.
+
 ## What "Custom-Built" Actually Means
 
 Custom-built doesn't mean expensive or complicated. It means:
@@ -82,7 +86,7 @@ I built a website for [Critter Care](https://critter-care.com), a pet sitting an
 - SEO setup including structured data and Google Business Profile integration
 - Mobile-first design tested on real devices
 
-The result is a site that looks and performs nothing like a template, because it isn't one.
+The result is a site that looks and performs nothing like a template, because it isn't one. You can read the [full case study here](/blog/rebuilding-critter-care-website/), including before and after screenshots and the exact cost savings.
 
 ## When Templates Still Make Sense
 
@@ -95,6 +99,8 @@ I'm not anti-template. Templates are the right call when:
 
 Just be honest with yourself about what you're getting. A template is a starting point, not a long-term play for a business that needs its website to bring in customers.
 
+One more thing: migrating off a template later is harder than people expect. Wix and Squarespace don't give you clean exports of your content. You can't take a Wix site and just move it somewhere else. You're starting over, which means you pay the full custom build cost anyway, on top of however many months of template fees you already spent. If you know you want a real site eventually, it's cheaper to just start there.
+
 ## When to Choose Custom
 
 You should consider a custom website if:
@@ -105,6 +111,12 @@ You should consider a custom website if:
 - **You need SEO to work** because you can't afford to be invisible on Google
 - **You want to own your site** rather than renting it month-to-month
 - **You're investing in your business long-term** and want a site that grows with you
+
+## What About WordPress?
+
+WordPress sits in a weird middle ground. It's technically "custom" since you can modify the code, but most small business WordPress sites are really just templates with plugins stacked on top. The result is a site that loads slowly because it's pulling in 30 scripts on every page, needs constant security updates because WordPress is the most targeted CMS on the internet, and costs $30-100/month for managed hosting because it needs a real server to run.
+
+WordPress makes sense for content-heavy sites that need dozens of editors and hundreds of pages. For a 5-page small business site, it's overkill. You're paying for infrastructure you don't need and maintaining software that adds complexity without adding value.
 
 ## The Bottom Line
 

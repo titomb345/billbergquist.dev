@@ -102,6 +102,10 @@ A year ago, scam emails were easy to spot. Bad grammar, weird formatting, obviou
 
 This bot read my site well enough to know I build websites, asked for a reasonable scope (five pages), and matched the casual tone I use in my own copy. If I hadn't noticed the UK email on a Denver-focused site, I probably would've spent 20 minutes writing a real reply.
 
+The personalization is what makes these different from the spam we're all used to ignoring. This bot didn't send a generic "I need a website" email. It read my site, knew I build websites for small businesses, asked for a reasonable scope (five pages), and matched the casual tone I use in my own copy. It even knew to mention having a domain and logo already, which is exactly the kind of detail that makes a real inquiry feel legitimate. That's not a template. That's a bot that scraped my site and tailored its pitch to my services.
+
+And the thing is, the bot was almost good enough. If the email had come from a .com address instead of .co.uk, I might not have looked twice. The scope was realistic. The tone was natural. The only reason I caught it was a geographic mismatch that had nothing to do with the quality of the writing. That should worry anyone who freelances.
+
 These are only going to get better. That's why process matters more than instinct. Don't rely on "this feels off." Have a checklist so you catch the ones that don't feel off.
 
 ## My Process for Vetting Inquiries
@@ -114,7 +118,9 @@ After this experience, I formalized how I vet new leads. It takes about two minu
 4. **Ask for a call.** "Can we do a quick 15-minute video call to discuss the project?" Real clients say yes. Bots make excuses.
 5. **Watch for perfect responses.** Real people miss questions, respond at odd hours, and write messy emails. Robots are suspiciously thorough.
 
-None of this is paranoid. It's two minutes of Googling that saves you from wasting an afternoon on a fake client.
+None of this is paranoid. It's two minutes of Googling that saves you from wasting an afternoon on a fake client. I've been doing this for every cold inquiry since this happened, and it's become second nature. The whole process takes less time than writing a reply.
+
+The call request is the most effective filter. A real client who's ready to spend money on a website will happily do a 15-minute video call. It costs them nothing and it moves their project forward. A bot can't do a video call. Neither can most scammers. One question eliminates 90% of the noise.
 
 ## The Simple Fix
 
