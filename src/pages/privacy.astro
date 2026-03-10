@@ -1,6 +1,5 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import GlowText from '../components/ui/GlowText.astro';
 import styles from './PrivacyPage.module.css';
 ---
 
@@ -8,13 +7,10 @@ import styles from './PrivacyPage.module.css';
   title="Privacy Policy — Bill Bergquist"
   description="Privacy policy for billbergquist.dev. How your data is collected, used, and protected."
   canonical="/privacy"
-  noindex={true}
 >
   <div class={styles.page}>
     <header class={styles.header}>
-      <GlowText as="h1" size="large" color="mint" class={styles.title}>
-        PRIVACY POLICY
-      </GlowText>
+      <h1 class={styles.title}>Privacy Policy</h1>
       <p class={styles.updated}>Last updated: February 28, 2026</p>
     </header>
 

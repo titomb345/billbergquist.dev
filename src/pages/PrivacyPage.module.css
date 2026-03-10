@@ -10,7 +10,11 @@
 }
 
 .title {
-  margin-bottom: var(--space-sm);
+  font-family: var(--font-body);
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 var(--space-sm);
 }
 
 .updated {
@@ -27,7 +31,7 @@
 }
 
 .sectionTitle {
-  font-family: var(--font-heading);
+  font-family: var(--font-body);
   font-size: 1.125rem;
   font-weight: 600;
   color: var(--text-primary);
