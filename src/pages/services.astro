@@ -2,6 +2,7 @@
 import { Image } from 'astro:assets';
 import Layout from '../layouts/Layout.astro';
 import ContactForm from '../components/services/ContactForm';
+import SiteAuditForm from '../components/services/SiteAuditForm';
 import CredibilitySection from '../components/services/CredibilitySection.astro';
 import RecentWork from '../components/services/RecentWork.astro';
 import FaqAccordion from '../components/ui/FaqAccordion.astro';
@@ -177,7 +178,7 @@ const jsonLdService = JSON.stringify({
   priceRange: '$$',
   image: `${BASE_URL}/og/services.png`,
   foundingDate: '2026-02-01',
-  dateModified: '2026-03-09',
+  dateModified: '2026-03-10',
   hasOfferCatalog: {
     '@type': 'OfferCatalog',
     name: 'Web Development Services',
@@ -359,6 +360,17 @@ const jsonLdFaq = JSON.stringify({
           ))
         }
       </div>
+    </section>
+
+    <div class={styles.divider}></div>
+
+    <section class={styles.whySection}>
+      <h2 class={styles.sectionTitle}>Free Website Audit</h2>
+      <p class={styles.contactIntro}>
+        Curious how your current site stacks up? Drop your URL below and I'll send you a
+        free audit covering speed, mobile experience, SEO basics, and quick wins you can act on right away.
+      </p>
+      <SiteAuditForm client:visible />
     </section>
 
     <div class={styles.divider}></div>
