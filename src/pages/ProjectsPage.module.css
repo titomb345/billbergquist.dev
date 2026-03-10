@@ -235,6 +235,23 @@
   gap: var(--space-lg);
 }
 
+.perfLink {
+  text-align: center;
+  margin-top: var(--space-md);
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+}
+
+.perfLink a {
+  color: var(--neon-mint);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.perfLink a:hover {
+  text-decoration: underline;
+}
+
 /* ── Services CTA ── */
 
 .cta {

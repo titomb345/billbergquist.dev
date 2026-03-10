@@ -1,7 +1,8 @@
 ---
 title: "5 Signs Your Small Business Website Needs a Redesign"
-description: "How to tell if your website is hurting your business instead of helping it. Five clear signals that it's time for a redesign, from load times to mobile experience."
+description: "How to tell if your website is hurting your business. Five clear signals that it's time for a redesign, from load times to mobile experience."
 publishDate: 2026-02-25
+updatedDate: 2026-03-09
 tags: ["web design", "small business", "redesign"]
 ogImage: "/og/blog/signs-your-business-website-needs-redesign.png"
 ---
@@ -21,7 +22,7 @@ Common causes of slow websites:
 - Cheap shared hosting
 - Outdated CMS plugins
 
-A well-built modern site loads in under 1 second. That's not an exaggeration. It's what current tools and hosting platforms make possible.
+A well-built modern site loads in under 1 second. That's not an exaggeration. It's what current tools and hosting platforms make possible. You can [test your own site's speed on my performance page](/services/performance/#test) and see exactly where it stands.
 
 The fix isn't always a full redesign. Sometimes it's as simple as compressing your images or switching to a modern format like WebP. But if your site has years of accumulated plugins and patches, a clean rebuild is usually faster and cheaper than trying to untangle the mess. If you're on Wix or Squarespace and wondering whether it's worth switching, I wrote about [the trade-offs here](/blog/template-vs-custom-website/).
 
@@ -47,9 +48,9 @@ This is the most honest test. When someone asks for your website, do you confide
 
 Your website is often the first impression a potential customer has of your business. If you wouldn't hand someone a crumpled, faded business card, you shouldn't be directing them to a site that looks like it was built in 2015.
 
-Design trends move fast. What looked professional five years ago reads as dated today. Rounded corners on everything, stock photo banners with text overlaid, tiny body copy, hamburger menus on desktop. Your customers might not be able to articulate why your site feels old, but they notice.
+Design trends move fast. What looked professional five years ago reads as dated today. Rounded corners on everything, stock photo banners with text overlaid, tiny body copy, hamburger menus on desktop. Your customers might not be able to articulate why your site feels old, but they notice. And if they're comparing you to a competitor whose site looks current, the competitor wins that first impression.
 
-A redesign doesn't mean throwing everything away. Your content, branding, and domain all carry over. It's the structure and code underneath that gets rebuilt.
+I see this with businesses across the Front Range. The service is great, the reviews are great, but the website looks like it belongs to a different company. It doesn't match the quality of what they actually do. A redesign doesn't mean throwing everything away. Your content, branding, and domain all carry over. It's the structure and code underneath that gets rebuilt.
 
 ## 4. You Can't Find Yourself on Google
 
@@ -63,7 +64,7 @@ Common issues that tank search visibility:
 - **No Google Business Profile.** For local businesses, this is as important as the website itself.
 - **Slow load times.** Google uses page speed as a ranking factor.
 
-Good SEO isn't a mystery. It's clean code, useful content, and the right technical foundations. Every site I build includes these basics from day one.
+Good SEO isn't a mystery. It's clean code, useful content, and the right technical foundations. Every site I build includes these basics from day one. No add-on package, no extra charge. It's just part of building a website properly.
 
 For businesses on the Front Range, local SEO is the whole game. If someone searches "best coffee shop in Lakewood" or "plumber in Golden" and you don't show up, that customer goes to whoever does. Local search means your Google Business Profile, location-specific structured data, and content that actually says where you are and what you serve. A lot of older sites were built before any of that mattered.
 
@@ -81,6 +82,8 @@ A good business website has one primary goal on every page and makes it obvious 
 
 Quick test: pull up your homepage on your phone and see how long it takes to find your phone number or contact form. More than one scroll? You're losing people. Every page on your site should answer three questions fast: what do you do, where do you do it, and how do I hire you.
 
+I think about this a lot when I build sites. A visitor who lands on a pet sitter's site doesn't want to read the owner's life story before figuring out how to book. They want to see the services, the prices, and a way to get in touch. Everything else is secondary. When I rebuilt the [Critter Care site](/blog/rebuilding-critter-care-website/), I restructured every page around this idea. The old site had all the right info, but it was buried in paragraph text. The new site puts pricing cards front and center and has a contact option visible on every page.
+
 ## What a Redesign Actually Involves
 
 A redesign doesn't mean slapping a new coat of paint on the same site. It means:
@@ -92,10 +95,18 @@ A redesign doesn't mean slapping a new coat of paint on the same site. It means:
 5. Making sure it's fast, mobile-friendly, and accessible
 6. Testing everything before launch
 
-The result is a site that loads fast, looks professional, shows up in search results, and actually converts visitors into customers. That's what I did for [Critter Care](https://critter-care.com), rebuilding their site from scratch with sub-second load times and proper local SEO.
+The result is a site that loads fast, looks professional, shows up in search results, and actually converts visitors into customers. That's what I did for [Critter Care](https://critter-care.com), rebuilding their site from scratch with sub-second load times and proper local SEO. The whole project took a weekend to build and cut the owner's monthly costs from $53 to $0. You can read the [full story here](/blog/rebuilding-critter-care-website/).
+
+## The Cost of Waiting
+
+Every month you keep a slow, outdated site running is a month of lost leads. People don't send you a message saying "I visited your site but it was too slow so I went somewhere else." They just leave. You never know they were there. The businesses that invest in their web presence early are the ones that show up when someone searches "plumber in Lakewood" or "best salon in Arvada." The ones that wait are competing for whatever's left after the first page of Google is taken.
+
+A redesign isn't an expense. It's the cost of being findable. And the longer you wait, the further behind you fall while competitors who already made the investment keep building their search authority.
 
 ## Is It Time?
 
 If you recognized your business in any of these signs, it's probably time for a conversation. I build websites for small businesses in Denver, Lakewood, and the Colorado Front Range. I'll take a look at your current site for free and tell you honestly what it would take to fix. If you're curious about what a rebuild costs, I wrote a [full pricing breakdown here](/blog/how-much-does-a-website-cost-denver/).
 
 [Let's talk &rarr;](/services/)
+
+I work with businesses in [Denver](/services/denver/), [Lakewood](/services/lakewood/), [Boulder](/services/boulder/), [Arvada](/services/arvada/), [Golden](/services/golden/), [Littleton](/services/littleton/), [Aurora](/services/aurora/), [Westminster](/services/westminster/), and [Highlands Ranch](/services/highlands-ranch/).

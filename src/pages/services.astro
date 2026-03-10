@@ -4,12 +4,14 @@ import Layout from '../layouts/Layout.astro';
 import ContactForm from '../components/services/ContactForm';
 import CredibilitySection from '../components/services/CredibilitySection.astro';
 import RecentWork from '../components/services/RecentWork.astro';
+import FaqAccordion from '../components/ui/FaqAccordion.astro';
 import headshot from '../assets/headshot.png';
 import styles from './ServicesPage.module.css';
+import { BASE_URL, CONTACT_EMAIL, CONTACT_PHONE, CONTACT_PHONE_DISPLAY, CONTACT_PHONE_TEL, GBP_URL, PERSON_REF } from '../shared/site';
 
-const bookingMonth = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleString('en-US', {
-  month: 'long',
-});
+import { getBookingMonth } from '../shared/utils/content';
+
+const bookingMonth = getBookingMonth();
 
 const services = [
   {
@@ -141,8 +143,9 @@ const jsonLdService = JSON.stringify({
   name: 'Bill Bergquist — Web Development Services',
   description:
     'Professional web design and development services for small businesses in Denver, Lakewood, and the Colorado Front Range.',
-  url: 'https://billbergquist.dev/services/',
-  email: 'services@billbergquist.dev',
+  url: `${BASE_URL}/services/`,
+  email: CONTACT_EMAIL,
+  telephone: CONTACT_PHONE,
   address: {
     '@type': 'PostalAddress',
     addressLocality: 'Denver',
@@ -169,12 +172,12 @@ const jsonLdService = JSON.stringify({
     { '@type': 'City', name: 'Edgewater', containedInPlace: { '@type': 'State', name: 'Colorado' } },
     { '@type': 'City', name: 'Commerce City', containedInPlace: { '@type': 'State', name: 'Colorado' } },
   ],
-  provider: {
-    '@id': 'https://billbergquist.dev/#person',
-  },
+  provider: PERSON_REF,
   serviceType: ['Web Design', 'Web Development', 'Website Redesign', 'Landing Page Design'],
   priceRange: '$$',
-  image: 'https://billbergquist.dev/og/services.png',
+  image: `${BASE_URL}/og/services.png`,
+  foundingDate: '2026-02-01',
+  dateModified: '2026-03-09',
   hasOfferCatalog: {
     '@type': 'OfferCatalog',
     name: 'Web Development Services',
@@ -219,6 +222,25 @@ const jsonLdService = JSON.stringify({
   },
 });
 
+const jsonLdReview = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'Review',
+  itemReviewed: {
+    '@type': 'ProfessionalService',
+    name: 'Bill Bergquist — Web Development Services',
+    url: `${BASE_URL}/services/`,
+  },
+  author: {
+    '@type': 'Person',
+    name: 'Laurie',
+  },
+  reviewBody: "That's fabulous! I love it! I really appreciate you and the time you're spending on this and saving me money. Please move forward with it ASAP!",
+  publisher: {
+    '@type': 'Organization',
+    name: 'Bill Bergquist',
+  },
+});
+
 const jsonLdFaq = JSON.stringify({
   '@context': 'https://schema.org',
   '@type': 'FAQPage',
@@ -237,7 +259,7 @@ const jsonLdFaq = JSON.stringify({
   title="Web Design Services in Denver & Lakewood, CO — Bill Bergquist"
   description="Web design and development for small businesses in Denver, Lakewood, and the Colorado Front Range. Built by a local staff engineer with 14+ years of experience."
   canonical="/services"
-  jsonLd={[jsonLdService, jsonLdFaq]}
+  jsonLd={[jsonLdService, jsonLdReview, jsonLdFaq]}
   ogImage="/og/services.png"
   geoRegion="US-CO"
   geoPlacename="Denver, CO"
@@ -307,6 +329,14 @@ const jsonLdFaq = JSON.stringify({
       </div>
     </section>
 
+    <blockquote class={styles.testimonial}>
+      <p class={styles.testimonialQuote}>
+        "That's fabulous! I love it! I really appreciate you and the time you're spending on this
+        and saving me money. Please move forward with it ASAP!"
+      </p>
+      <cite class={styles.testimonialAuthor}>Laurie, Critter Care owner</cite>
+    </blockquote>
+
     <CredibilitySection />
 
     <div class={styles.divider}></div>
@@ -335,15 +365,30 @@ const jsonLdFaq = JSON.stringify({
 
     <section class={styles.faq}>
       <h2 class={styles.sectionTitle}>Frequently Asked Questions</h2>
+      <FaqAccordion faqs={faqs} />
+    </section>
+
+    <div class={styles.divider}></div>
+
+    <section class={styles.whySection}>
+      <h2 class={styles.sectionTitle}>From the Blog</h2>
       <div class={styles.faqList}>
-        {
-          faqs.map((faq) => (
-            <div class={styles.faqItem}>
-              <h3 class={styles.faqQuestion}>{faq.question}</h3>
-              <p class={styles.faqAnswer}>{faq.answer}</p>
-            </div>
-          ))
-        }
+        <div class={styles.faqItem}>
+          <a href="/blog/how-much-does-a-website-cost-denver/">How Much Does a Website Cost in Denver?</a>
+          <p class={styles.faqAnswer}>A detailed breakdown of what small businesses can expect to pay for a professional website in the Denver metro area.</p>
+        </div>
+        <div class={styles.faqItem}>
+          <a href="/blog/signs-your-business-website-needs-redesign/">Signs Your Business Website Needs a Redesign</a>
+          <p class={styles.faqAnswer}>Not sure if your current site is costing you customers? Here are the telltale signs it's time for an upgrade.</p>
+        </div>
+        <div class={styles.faqItem}>
+          <a href="/blog/template-vs-custom-website/">Template vs. Custom Website: Which Is Right for Your Business?</a>
+          <p class={styles.faqAnswer}>Squarespace, Wix, or custom-built? Understand the real trade-offs before you decide.</p>
+        </div>
+        <div class={styles.faqItem}>
+          <a href="/blog/rebuilding-critter-care-website/">Rebuilding the Critter Care Website</a>
+          <p class={styles.faqAnswer}>A real case study: how I turned an outdated $53/month template site into a perfect-scoring custom build.</p>
+        </div>
       </div>
     </section>
 
@@ -354,16 +399,16 @@ const jsonLdFaq = JSON.stringify({
       <div class={styles.areasGrid}>
         <a href="/services/denver/" class={styles.areaLink}>Denver</a>
         <a href="/services/lakewood/" class={styles.areaLink}>Lakewood</a>
+        <a href="/services/aurora/" class={styles.areaLink}>Aurora</a>
         <a href="/services/boulder/" class={styles.areaLink}>Boulder</a>
         <a href="/services/arvada/" class={styles.areaLink}>Arvada</a>
+        <a href="/services/westminster/" class={styles.areaLink}>Westminster</a>
+        <a href="/services/highlands-ranch/" class={styles.areaLink}>Highlands Ranch</a>
         <a href="/services/golden/" class={styles.areaLink}>Golden</a>
         <a href="/services/littleton/" class={styles.areaLink}>Littleton</a>
         <span class={styles.areaText}>Wheat Ridge</span>
         <span class={styles.areaText}>Englewood</span>
-        <span class={styles.areaText}>Aurora</span>
         <span class={styles.areaText}>Centennial</span>
-        <span class={styles.areaText}>Highlands Ranch</span>
-        <span class={styles.areaText}>Westminster</span>
         <span class={styles.areaText}>Broomfield</span>
         <span class={styles.areaText}>Thornton</span>
         <span class={styles.areaText}>Edgewater</span>
@@ -386,7 +431,7 @@ const jsonLdFaq = JSON.stringify({
         <span class={styles.trustItem}>&#10003; Currently booking for {bookingMonth}</span>
         <span class={styles.trustItem}>&#10003; Free consultation, no obligation</span>
         <span class={styles.trustItem}>&#10003; Response within 1 business day</span>
-        <a href="https://share.google/AN9wq1GbXPqjeQwEf" target="_blank" rel="noopener noreferrer" class={styles.trustItem}>
+        <a href={GBP_URL} target="_blank" rel="noopener noreferrer" class={styles.trustItem}>
           &#10003; View my Google Business Profile
         </a>
       </div>
@@ -395,9 +440,11 @@ const jsonLdFaq = JSON.stringify({
 
       <div class={styles.emailAlt}>
         <p>
-          Prefer email?{' '}
-          <a href="mailto:services@billbergquist.dev" class={styles.emailLink}>
-            services@billbergquist.dev
+          Prefer to reach out directly?{' '}
+          <a href={`tel:${CONTACT_PHONE_TEL}`} class={styles.emailLink}>{CONTACT_PHONE_DISPLAY}</a>{' '}
+          or{' '}
+          <a href={`mailto:${CONTACT_EMAIL}`} class={styles.emailLink}>
+            {CONTACT_EMAIL}
           </a>
         </p>
       </div>

@@ -58,7 +58,7 @@ Now I was just having fun. I asked for three things: his domain, his logo file, 
 
 > The domain is hp-connect.co.uk. I will email you the logo separately. The company number is 12345678.
 
-12345678\. The bot gave me a placeholder as a company number.
+12345678\. The bot gave me a placeholder as a company number. Not even a realistic-looking one. Not a random string of digits that might pass a glance. The literal sequence 1-2-3-4-5-6-7-8. This is the part where I realized whoever built this thing either didn't test it with real freelancers or didn't care enough to seed it with a valid company number. Either way, not inspiring confidence in the operation.
 
 I looked it up anyway, because why not. Company 12345678 is BOCIOC M LIMITED, a dissolved freight transport company in Rugby. So unless Halton pivoted hard from trucking logistics, not a match.
 
@@ -70,9 +70,9 @@ But I also did something else. I'd been using ChatGPT to help draft my replies, 
 
 > [Drafting Note: Ensure the tone sounds professional but helpful. Does this response seem human enough to elicit a reply?]
 
-Two bots, both leaving their instructions in the email. Just a beautiful moment in modern communication.
+Two bots, both leaving their instructions in the email. Just a beautiful moment in modern communication. I wish I could say I planned it, but honestly I just forgot to delete the note before hitting send. Happy accident.
 
-No response. Either the bot broke, or whoever was running this thing saw the drafting note and realized they'd been made.
+No response after that. Either the bot broke trying to process a drafting note it wasn't expecting, or whoever was running this thing saw it and realized they'd been made. I like to think someone on the other end read "[Drafting Note: Does this response seem human enough to elicit a reply?]" and had a moment of self-reflection about their life choices.
 
 ## What's the Point of a Scam Like This?
 
@@ -102,6 +102,10 @@ A year ago, scam emails were easy to spot. Bad grammar, weird formatting, obviou
 
 This bot read my site well enough to know I build websites, asked for a reasonable scope (five pages), and matched the casual tone I use in my own copy. If I hadn't noticed the UK email on a Denver-focused site, I probably would've spent 20 minutes writing a real reply.
 
+The personalization is what makes these different from the spam we're all used to ignoring. This bot didn't send a generic "I need a website" email. It read my site, knew I build websites for small businesses, asked for a reasonable scope (five pages), and matched the casual tone I use in my own copy. It even knew to mention having a domain and logo already, which is exactly the kind of detail that makes a real inquiry feel legitimate. That's not a template. That's a bot that scraped my site and tailored its pitch to my services.
+
+And the thing is, the bot was almost good enough. If the email had come from a .com address instead of .co.uk, I might not have looked twice. The scope was realistic. The tone was natural. The only reason I caught it was a geographic mismatch that had nothing to do with the quality of the writing. That should worry anyone who freelances.
+
 These are only going to get better. That's why process matters more than instinct. Don't rely on "this feels off." Have a checklist so you catch the ones that don't feel off.
 
 ## My Process for Vetting Inquiries
@@ -114,7 +118,9 @@ After this experience, I formalized how I vet new leads. It takes about two minu
 4. **Ask for a call.** "Can we do a quick 15-minute video call to discuss the project?" Real clients say yes. Bots make excuses.
 5. **Watch for perfect responses.** Real people miss questions, respond at odd hours, and write messy emails. Robots are suspiciously thorough.
 
-None of this is paranoid. It's two minutes of Googling that saves you from wasting an afternoon on a fake client.
+None of this is paranoid. It's two minutes of Googling that saves you from wasting an afternoon on a fake client. I've been doing this for every cold inquiry since this happened, and it's become second nature. The whole process takes less time than writing a reply.
+
+The call request is the most effective filter. A real client who's ready to spend money on a website will happily do a 15-minute video call. It costs them nothing and it moves their project forward. A bot can't do a video call. Neither can most scammers. One question eliminates 90% of the noise.
 
 ## The Simple Fix
 

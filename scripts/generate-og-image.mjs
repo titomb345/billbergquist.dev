@@ -40,7 +40,7 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630">
   <!-- Name -->
   <text x="420" y="280" font-family="Arial, Helvetica, sans-serif" font-size="64" font-weight="700" fill="#f0f0f5" letter-spacing="2">Bill Bergquist</text>
   <!-- Role -->
-  <text x="420" y="340" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="400" fill="#00c9a7" letter-spacing="1">Staff Software Engineer</text>
+  <text x="420" y="340" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="400" fill="#00c9a7" letter-spacing="1">Web Design for Small Businesses</text>
   <!-- URL -->
   <text x="420" y="400" font-family="monospace" font-size="20" fill="#8888aa" letter-spacing="0.5">billbergquist.dev</text>
   <!-- Bottom accent line -->

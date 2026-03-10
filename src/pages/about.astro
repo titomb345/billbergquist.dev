@@ -4,25 +4,28 @@ import Layout from '../layouts/Layout.astro';
 import SectionDivider from '../components/ui/SectionDivider.astro';
 import headshot from '../assets/headshot.png';
 import styles from './AboutPage.module.css';
+import { BASE_URL, CONTACT_PHONE, GBP_URL, PERSON_ID } from '../shared/site';
 
 const jsonLdPerson = JSON.stringify({
   '@context': 'https://schema.org',
   '@type': 'Person',
-  '@id': 'https://billbergquist.dev/#person',
+  '@id': PERSON_ID,
   name: 'Bill Bergquist',
-  jobTitle: 'Staff Software Engineer',
-  description: 'Staff Software Engineer with 14+ years of experience. Web developer in Denver, CO specializing in React, TypeScript, and modern web applications for small businesses.',
-  url: 'https://billbergquist.dev',
-  image: 'https://billbergquist.dev/og/about.png',
+  jobTitle: 'Web Developer',
+  description: 'Web developer in Denver, CO with 14+ years of experience specializing in React, TypeScript, and modern web applications for small businesses.',
+  url: BASE_URL,
+  image: `${BASE_URL}/og/about.png`,
   address: {
     '@type': 'PostalAddress',
     addressLocality: 'Denver',
     addressRegion: 'CO',
     addressCountry: 'US',
   },
+  telephone: CONTACT_PHONE,
   sameAs: [
     'https://github.com/titomb345',
     'https://www.linkedin.com/in/bill-bergquist/',
+    GBP_URL,
   ],
   worksFor: {
     '@type': 'Organization',
@@ -44,8 +47,8 @@ const jsonLdPerson = JSON.stringify({
 ---
 
 <Layout
-  title="About Bill Bergquist — Staff Software Engineer"
-  description="14+ years of full-stack experience. Currently Staff Engineer at Kasa, building React applications and leading frontend architecture. Web developer in Denver, CO."
+  title="About Bill Bergquist — Denver Web Developer"
+  description="Web developer in Denver with 14+ years of experience. I build fast, custom websites for small businesses across the Colorado Front Range."
   canonical="/about"
   jsonLd={[jsonLdPerson]}
   ogImage="/og/about.png"
@@ -54,13 +57,13 @@ const jsonLdPerson = JSON.stringify({
     <header class={styles.header}>
       <Image
         src={headshot}
-        alt="Bill Bergquist — Staff Software Engineer"
+        alt="Bill Bergquist — Denver Web Developer"
         width={160}
         height={160}
         class={styles.headshot}
       />
       <h1 class={styles.name}>Bill Bergquist</h1>
-      <p class={styles.role}>Staff Software Engineer &middot; Denver, CO</p>
+      <p class={styles.role}>Web Developer &middot; Denver, CO</p>
     </header>
 
     <main class={styles.content}>
@@ -187,6 +190,10 @@ const jsonLdPerson = JSON.stringify({
           website, I'd love to help.
         </p>
         <a href="/services/" class={styles.servicesCtaLink}>View My Services &rarr;</a>
+        <p class={styles.text} style="margin-top: var(--space-md); font-size: 0.9rem;">
+          Or read about my work: <a href="/blog/rebuilding-critter-care-website/">Rebuilding the Critter Care Website</a> &middot;
+          <a href="/blog/how-much-does-a-website-cost-denver/">How Much Does a Website Cost?</a>
+        </p>
       </section>
     </main>
   </div>

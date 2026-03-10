@@ -2,6 +2,7 @@
 import Layout from '../../layouts/Layout.astro';
 import CostCalculator from '../../components/services/CostCalculator';
 import styles from '../ServicesPage.module.css';
+import { BASE_URL, PERSON_REF } from '../../shared/site';
 
 const jsonLd = JSON.stringify({
   '@context': 'https://schema.org',
@@ -9,18 +10,18 @@ const jsonLd = JSON.stringify({
   name: 'Website Cost Calculator — Bill Bergquist',
   description:
     'Get an instant estimate for your website project. Answer a few questions about what you need and see a ballpark cost in under a minute.',
-  url: 'https://billbergquist.dev/services/estimate/',
-  author: { '@id': 'https://billbergquist.dev/#person' },
+  url: `${BASE_URL}/services/estimate/`,
+  author: PERSON_REF,
   isPartOf: {
     '@type': 'WebSite',
-    url: 'https://billbergquist.dev/',
+    url: `${BASE_URL}/`,
   },
 });
 ---
 
 <Layout
   title="Website Cost Calculator — Bill Bergquist"
-  description="Get an instant estimate for your website project. Answer 5 quick questions and see a ballpark cost for your Denver-area business website, landing page, or redesign."
+  description="Get an instant website cost estimate. Answer 5 quick questions to see a ballpark price for your Denver-area business website or redesign."
   canonical="/services/estimate"
   jsonLd={[jsonLd]}
 >
@@ -35,5 +36,25 @@ const jsonLd = JSON.stringify({
     </header>
 
     <CostCalculator client:load />
+
+    <div class={styles.divider}></div>
+
+    <section class={styles.whySection}>
+      <h2 class={styles.sectionTitle}>Want More Details?</h2>
+      <div class={styles.faqList}>
+        <div class={styles.faqItem}>
+          <a href="/blog/how-much-does-a-website-cost-denver/">How Much Does a Website Cost in Denver?</a>
+          <p class={styles.faqAnswer}>A full breakdown of what affects pricing and what to expect at each budget level.</p>
+        </div>
+        <div class={styles.faqItem}>
+          <a href="/blog/template-vs-custom-website/">Template vs. Custom Website</a>
+          <p class={styles.faqAnswer}>Understand the trade-offs between a $16/month template and a custom build.</p>
+        </div>
+        <div class={styles.faqItem}>
+          <a href="/services/#contact">Ready to talk? Get a free quote &rarr;</a>
+          <p class={styles.faqAnswer}>The calculator gives you a ballpark. A conversation gives you a real number.</p>
+        </div>
+      </div>
+    </section>
   </div>
 </Layout>

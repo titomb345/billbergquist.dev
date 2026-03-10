@@ -1,5 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import { BASE_URL, PERSON_AUTHOR } from '../../shared/site';
 import GridlockPage from '../../games/gridlock/GridlockPage';
 
 const jsonLdGame = JSON.stringify({
@@ -10,12 +11,8 @@ const jsonLdGame = JSON.stringify({
   genre: ['Puzzle', 'Arcade'],
   gamePlatform: 'Web Browser',
   applicationCategory: 'Game',
-  author: {
-    '@type': 'Person',
-    name: 'Bill Bergquist',
-    url: 'https://billbergquist.dev',
-  },
-  url: 'https://billbergquist.dev/arcade/gridlock',
+  author: PERSON_AUTHOR,
+  url: `${BASE_URL}/arcade/gridlock/`,
   offers: {
     '@type': 'Offer',
     price: '0',
