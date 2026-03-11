@@ -75,6 +75,35 @@
   color: var(--neon-mint);
 }
 
+/* ── Recent posts ── */
+
+.recentPosts {
+  margin-top: var(--space-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.recentLabel {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 0;
+}
+
+.recentLink {
+  font-size: 0.9375rem;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.recentLink:hover {
+  color: var(--neon-mint);
+}
+
 @media (max-width: 640px) {
   .page {
     padding: var(--space-lg) var(--space-md-lg);

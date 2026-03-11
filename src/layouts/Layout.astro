@@ -107,6 +107,9 @@ const allJsonLd = breadcrumbLd ? [...jsonLd, breadcrumbLd] : jsonLd;
     <meta name="description" content={description} />
     <title>{title}</title>
 
+    <!-- Preconnect -->
+    <link rel="preconnect" href="https://static.cloudflareinsights.com" crossorigin />
+
     <!-- RSS feed -->
     <link rel="alternate" type="application/rss+xml" title="Bill Bergquist — Blog" href="/rss.xml" />
 
@@ -140,6 +143,7 @@ const allJsonLd = breadcrumbLd ? [...jsonLd, breadcrumbLd] : jsonLd;
     <slot name="head" />
   </head>
   <body>
+    <a href="#main" class="skip-link">Skip to content</a>
     <div class="layout">
       <ScrollProgress />
 
@@ -160,7 +164,7 @@ const allJsonLd = breadcrumbLd ? [...jsonLd, breadcrumbLd] : jsonLd;
       <div class="atmosphereOrb orbMagenta" aria-hidden="true"></div>
 
       <Navbar />
-      <main class="main">
+      <main id="main" class="main">
         {!hideBreadcrumbs && breadcrumbs.length > 2 && (
           <div class="breadcrumbs-wrapper">
             <Breadcrumbs items={breadcrumbs} />

@@ -1,21 +1,27 @@
-# Bill Bergquist — Software Engineer & Web Developer
+# Bill Bergquist — Web Developer & Designer
 
-## Key Facts
-- Bill Bergquist is a Staff Software Engineer with 14+ years of experience, based in Denver/Lakewood, Colorado.
-- He builds custom websites for small businesses, typically priced between $2,000 and $8,000.
-- His portfolio sites score 95+ on Google Lighthouse mobile performance audits.
-- Tech stack: Astro, React, TypeScript, Tailwind CSS, Netlify.
-- He rebuilt a client's site (Critter Care) reducing hosting costs from $53/month to $0/month and load time from 4+ seconds to under 1 second.
-- Education: BS Computer Engineering, Purdue University.
-- Currently employed as Staff Engineer at Kasa while freelancing for local businesses.
+> I build fast, modern websites for small businesses. Based in Denver, Colorado.
 
-## About
-Bill Bergquist is a Staff Software Engineer with 14+ years of experience building web applications. Based in the Denver/Lakewood, Colorado area. Currently at Kasa, leading frontend architecture with React, TypeScript, and Node.js.
+## Quick Facts
+- Staff Software Engineer with 14+ years of experience
+- Based in Denver/Lakewood, Colorado
+- BS Computer Engineering, Purdue University
+- Currently Staff Engineer at Kasa (React, TypeScript, Node.js) while freelancing for local businesses
+- Every site I build scores 95+ on Google Lighthouse
+- Pricing: $2,000–$8,000 for most small business websites
+- Free website audits available on request
+- Twitter/X: @BergquistDev
 
 ## Services
-Web design and development for small businesses in Denver, Lakewood, Boulder, and the Colorado Front Range. Services include business websites, landing pages, website redesigns, and ongoing support. Pricing typically ranges from $2,000 to $8,000 for small business sites.
+I offer web design and development for small businesses in Denver, Lakewood, Boulder, and across the Colorado Front Range. Services include:
 
-- Main services page: https://billbergquist.dev/services/
+- **Business Websites** — Professional sites built to get found online, load fast, and convert visitors
+- **Landing Pages** — Single-page sites focused on one goal: bookings, signups, or sales
+- **Website Redesign** — Modernize outdated sites with better performance, design, and SEO
+- **Ongoing Support** — Updates, maintenance, and a real person to call after launch
+- **Free Website Audit** — Submit your URL and get a report on speed, mobile experience, SEO, and quick wins
+
+### Service Areas
 - Denver: https://billbergquist.dev/services/denver/
 - Lakewood: https://billbergquist.dev/services/lakewood/
 - Boulder: https://billbergquist.dev/services/boulder/
@@ -25,31 +31,60 @@ Web design and development for small businesses in Denver, Lakewood, Boulder, an
 - Aurora: https://billbergquist.dev/services/aurora/
 - Westminster: https://billbergquist.dev/services/westminster/
 - Highlands Ranch: https://billbergquist.dev/services/highlands-ranch/
-- Cost calculator: https://billbergquist.dev/services/estimate/
-- Performance scores: https://billbergquist.dev/services/performance/
-- Phone: (847) 280-0729
-- Email: services@billbergquist.dev
+- Also serving: Wheat Ridge, Englewood, Centennial, Broomfield, Thornton, Edgewater, Commerce City, Parker, Castle Rock, and remote clients anywhere
 
-## Projects
-- Critter Care (https://critter-care.com) — Pet sitting business website, rebuilt from scratch with perfect Lighthouse scores
-- CreatiCalc (https://creaticalc.com) — Free calculator suite for content creators covering YouTube, Instagram, TikTok, Facebook, and X
-- Sports Shortcuts (https://sportsshortcuts.com) — Injury alert generator for sports reporters
+### Tools
+- Cost calculator: https://billbergquist.dev/services/estimate/
+- Lighthouse scores: https://billbergquist.dev/services/performance/
+
+## Tech Stack
+Astro, React 19, TypeScript, Tailwind CSS, Node.js, Cloudflare Workers, Netlify. I build static-first sites with React islands for interactivity. No bloated frameworks, no unnecessary JavaScript.
+
+## Portfolio
+
+### Client Work
+- **Critter Care** (https://critter-care.com) — Rebuilt a pet sitting business website from a $53/month IONOS template to a custom Astro site. Perfect Lighthouse scores, under 1 second load time, $0/month hosting. Case study: https://billbergquist.dev/blog/rebuilding-critter-care-website/
+
+### Side Projects
+- **CreatiCalc** (https://creaticalc.com) — Free calculator suite for content creators. YouTube revenue estimates, engagement rates, sponsorship pricing across major platforms. Built as an SEO learning experiment.
+- **Sports Shortcuts** (https://sportsshortcuts.com) — Injury alert generator for sports reporters. Built in a weekend for a friend. Generates standardized NFL and NBA game-day messages with autocomplete player search.
+- **RetroRetro** (https://billbergquist.dev/retro/) — Real-time retrospective tool with rooms, sticky notes, voting, drag-and-drop grouping, timer, and CSV export. Built on Cloudflare Workers and WebSockets.
+
+### Games
+- **Minesweeper: Descent** (https://billbergquist.dev/arcade/descent/) — Roguelike minesweeper with procedural generation, upgrades, and permadeath
+- **Gridlock** (https://billbergquist.dev/arcade/gridlock/) — Puzzle game
 
 ## Blog
+Articles on web development, pricing, and building websites for small businesses:
+
 - How Much Does a Website Cost for a Small Business in Denver?: https://billbergquist.dev/blog/how-much-does-a-website-cost-denver/
 - 5 Signs Your Small Business Website Needs a Redesign: https://billbergquist.dev/blog/signs-your-business-website-needs-redesign/
 - Template vs. Custom Website: Which Is Right for Your Business?: https://billbergquist.dev/blog/template-vs-custom-website/
-- Rebuilding the Critter Care Website: https://billbergquist.dev/blog/rebuilding-critter-care-website/
+- Rebuilding the Critter Care Website (Case Study): https://billbergquist.dev/blog/rebuilding-critter-care-website/
 - An AI Bot Tried to Hire Me (It Didn't Go Well): https://billbergquist.dev/blog/ai-scam-bot-freelance-inquiry/
 
-## Games
-- Minesweeper: Descent (https://billbergquist.dev/arcade/descent/) — Roguelike minesweeper browser game
-- Gridlock (https://billbergquist.dev/arcade/gridlock/) — Puzzle game
-
-## Links
+## Contact
 - Website: https://billbergquist.dev
-- About: https://billbergquist.dev/about/
+- Email: services@billbergquist.dev
+- Phone: (847) 280-0729
+- Twitter/X: https://x.com/BergquistDev
+- GitHub: https://github.com/titomb345
+- LinkedIn: https://www.linkedin.com/in/bill-bergquist/
+
+## Frequently Asked Questions
+- **How much does a website cost?** Most small business sites I build land between $2,000 and $8,000. Landing pages are on the lower end.
+- **How long does it take?** Usually 3 to 6 weeks from start to launch.
+- **Do you work outside Denver?** Yes. I work with businesses across the Front Range and remotely.
+- **Will my site work on mobile?** I build mobile-first. Every site is tested on real devices.
+- **Can you help with SEO?** SEO basics are baked into every build: clean structure, meta tags, fast load times, structured data, and local schema markup.
+- **What about after launch?** I offer ongoing support and don't disappear after your site goes live.
+
+## Site Map
+- Home: https://billbergquist.dev
 - Services: https://billbergquist.dev/services/
 - Portfolio: https://billbergquist.dev/portfolio/
+- About: https://billbergquist.dev/about/
 - Blog: https://billbergquist.dev/blog/
 - Arcade: https://billbergquist.dev/arcade/
+- Privacy: https://billbergquist.dev/privacy/
+- RSS: https://billbergquist.dev/rss.xml

@@ -1,6 +1,12 @@
 ---
+import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
+import { stripExt } from '../shared/utils/content';
 import styles from './NotFoundPage.module.css';
+
+const recentPosts = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf())
+  .slice(0, 3);
 ---
 
 <Layout title="404 — Bill Bergquist" description="Page not found." noindex={true}>
@@ -15,6 +21,14 @@ import styles from './NotFoundPage.module.css';
         <a href="/portfolio/">Portfolio</a>
         <a href="/blog/">Blog</a>
       </nav>
+      {recentPosts.length > 0 && (
+        <div class={styles.recentPosts}>
+          <p class={styles.recentLabel}>Recent from the blog:</p>
+          {recentPosts.map((post) => (
+            <a href={`/blog/${stripExt(post.id)}/`} class={styles.recentLink}>{post.data.title}</a>
+          ))}
+        </div>
+      )}
     </div>
   </div>
 </Layout>

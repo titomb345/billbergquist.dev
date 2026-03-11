@@ -13,9 +13,10 @@ interface Props {
   tags: string[];
   ogImage?: string;
   slug: string;
+  readingTime?: number;
 }
 
-const { title, description, publishDate, updatedDate, tags, ogImage, slug } = Astro.props;
+const { title, description, publishDate, updatedDate, tags, ogImage, slug, readingTime } = Astro.props;
 
 const formattedDate = formatDate(publishDate);
 const formattedUpdated = updatedDate ? formatDate(updatedDate) : undefined;
@@ -54,6 +55,9 @@ const jsonLdArticle = JSON.stringify({
         <time datetime={publishDate.toISOString()} class={styles.date}>{formattedDate}</time>
         {formattedUpdated && (
           <span class={styles.updated}>(Updated {formattedUpdated})</span>
+        )}
+        {readingTime && (
+          <span class={styles.readingTime}>{readingTime} min read</span>
         )}
       </div>
       <div class={styles.tags}>
