@@ -47,7 +47,7 @@ export default defineConfig({
           '/arcade/descent/': '2026-02-04',
           '/arcade/gridlock/': '2026-03-01',
           '/privacy/': '2026-02-28',
-          '/blog/ai-scam-bot-freelance-inquiry/': '2026-03-07',
+          '/blog/ai-scam-bot-freelance-inquiry/': '2026-03-10',
           '/blog/how-much-does-a-website-cost-denver/': '2026-03-09',
           '/blog/template-vs-custom-website/': '2026-03-09',
           '/blog/signs-your-business-website-needs-redesign/': '2026-03-09',

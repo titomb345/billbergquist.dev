@@ -136,3 +136,7 @@ The call request is the most effective filter. A real client who's ready to spen
 You don't need to be paranoid about every inquiry. Just verify before you invest time. A 30-second search, a LinkedIn lookup, or a "can we do a quick video call?" filters out most of this stuff immediately.
 
 And if you're building a scam bot, maybe don't use 12345678 as your company number.
+
+---
+
+If you're a small business owner looking for a legitimate web developer, I'd love to chat. Check out [my services](/services/) or [see some of my work](/portfolio/). I'm based in the Denver area and work with businesses across the [Front Range](/services/denver/).

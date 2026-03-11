@@ -233,3 +233,67 @@ body {
     display: none;
   }
 }
+
+/* ── Skip to content link ── */
+
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: var(--space-md);
+  z-index: 9999;
+  padding: var(--space-sm) var(--space-md);
+  background: var(--bg-surface);
+  color: var(--neon-mint);
+  border: 1px solid var(--neon-mint);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  text-decoration: none;
+  transition: top 0.15s ease;
+}
+
+.skip-link:focus {
+  top: var(--space-md);
+}
+
+/* ── Print styles ── */
+
+@media print {
+  body {
+    background: white;
+    color: black;
+  }
+
+  .skip-link,
+  nav,
+  footer,
+  .noise,
+  .atmosphereOrb,
+  .breadcrumbs-wrapper {
+    display: none !important;
+  }
+
+  .layout::before,
+  .layout::after {
+    display: none !important;
+  }
+
+  a {
+    color: black;
+    text-decoration: underline;
+  }
+
+  a[href]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.8em;
+    color: #555;
+  }
+
+  a[href^="/"]::after {
+    content: " (billbergquist.dev" attr(href) ")";
+  }
+
+  a[href^="#"]::after {
+    content: "";
+  }
+}

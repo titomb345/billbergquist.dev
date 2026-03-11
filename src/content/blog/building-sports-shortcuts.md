@@ -79,6 +79,6 @@ It also costs almost nothing to run. No server, no database, no monthly fees. It
 
 When someone asks me what kind of work I do, this is the project I talk about. Not because it's technically impressive, but because it shows the process. Someone had a problem, they told me about it, I built a solution over a weekend, and they're still using it. That's the whole job.
 
-If you've got a workflow that involves doing the same thing over and over, it's probably worth automating. Sometimes the most useful tool is the simplest one. [Get in touch](/services/) if you've got something like that and want to talk about building it.
+If you've got a workflow that involves doing the same thing over and over, it's probably worth automating. Sometimes the most useful tool is the simplest one. [Get in touch](/services/) if you've got something like that and want to talk about building it. You can also read about [another project I built for a friend](/blog/rebuilding-critter-care-website/) or check out [what goes into the cost of a website](/blog/how-much-does-a-website-cost-denver/).
 
 I serve businesses in [Denver](/services/denver/), [Lakewood](/services/lakewood/), [Boulder](/services/boulder/), [Arvada](/services/arvada/), [Golden](/services/golden/), [Littleton](/services/littleton/), [Aurora](/services/aurora/), [Westminster](/services/westminster/), and [Highlands Ranch](/services/highlands-ranch/).
