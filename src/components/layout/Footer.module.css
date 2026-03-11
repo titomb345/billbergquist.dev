@@ -138,6 +138,7 @@
   color: var(--text-muted);
   text-decoration: none;
   transition: var(--transition-fast);
+  padding: var(--space-xs) 0;
 }
 
 .serviceLink:hover {
