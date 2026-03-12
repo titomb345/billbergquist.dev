@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1050 600" width="1050" height="600">
+  <defs>
+    <!-- Glow filter for logo -->
+    <filter id="mintGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="12" result="blur"/>
+      <feColorMatrix in="blur" type="matrix" values="0 0 0 0 0  0 0 0 0 0.79  0 0 0 0 0.65  0 0 0 0.6 0"/>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="orangeGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="8" result="blur"/>
+      <feColorMatrix in="blur" type="matrix" values="0 0 0 0 0.94  0 0 0 0 0.39  0 0 0 0 0.09  0 0 0 0.5 0"/>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <!-- Noise texture -->
+    <filter id="noise">
+      <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/>
+      <feColorMatrix type="saturate" values="0"/>
+      <feBlend in="SourceGraphic" mode="multiply"/>
+    </filter>
+    <!-- Background gradient -->
+    <radialGradient id="bgGrad" cx="45%" cy="42%" r="55%">
+      <stop offset="0%" stop-color="#161625"/>
+      <stop offset="100%" stop-color="#0a0a0f"/>
+    </radialGradient>
+    <!-- Subtle ambient light from logo area -->
+    <radialGradient id="ambientMint" cx="50%" cy="38%" r="40%">
+      <stop offset="0%" stop-color="#00c9a7" stop-opacity="0.03"/>
+      <stop offset="100%" stop-color="#00c9a7" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1050" height="600" fill="url(#bgGrad)"/>
+  <!-- Ambient light wash -->
+  <rect width="1050" height="600" fill="url(#ambientMint)"/>
+
+  <!-- Dot grid pattern (very subtle) -->
+  <g opacity="0.04">
+    <pattern id="dots" x="0" y="0" width="30" height="30" patternUnits="userSpaceOnUse">
+      <circle cx="15" cy="15" r="0.8" fill="#ffffff"/>
+    </pattern>
+    <rect width="1050" height="600" fill="url(#dots)"/>
+  </g>
+
+  <!-- Thin border inset -->
+  <rect x="28" y="28" width="994" height="544" rx="2" fill="none" stroke="#ffffff" stroke-width="0.5" opacity="0.04"/>
+
+  <!-- Logo — centered, hero scale -->
+  <g transform="translate(370, 52) scale(0.72)">
+    <!-- Glow layer -->
+    <g filter="url(#mintGlow)">
+      <polygon points="96,136 96,180 276,264 96,348 96,392 328,264" fill="#00c9a7"/>
+    </g>
+    <g filter="url(#orangeGlow)">
+      <rect x="272" y="340" width="152" height="44" fill="#f06418"/>
+    </g>
+    <!-- Purple shadow -->
+    <polygon points="108,148 108,192 288,276 108,360 108,404 340,276" fill="#a855f7" opacity="0.35"/>
+    <!-- Main chevron -->
+    <polygon points="96,136 96,180 276,264 96,348 96,392 328,264" fill="#00c9a7"/>
+    <!-- Cursor block -->
+    <rect x="272" y="340" width="152" height="44" rx="4" fill="#f06418"/>
+  </g>
+
+  <!-- Name -->
+  <text x="525" y="400" fill="#ffffff" font-family="'Orbitron', 'Arial Black', sans-serif" font-size="38" font-weight="700" letter-spacing="3" text-anchor="middle">BILL BERGQUIST</text>
+
+  <!-- Role — letterspaced, understated -->
+  <text x="525" y="435" fill="#808090" font-family="'Space Grotesk', Arial, sans-serif" font-size="14" letter-spacing="4" text-anchor="middle">WEB DESIGN FOR SMALL BUSINESSES</text>
+
+  <!-- Bottom bar -->
+  <g transform="translate(0, 510)">
+    <!-- Accent line spanning card -->
+    <rect x="72" y="0" width="906" height="1" fill="#00c9a7" opacity="0.12"/>
+    <!-- URL left -->
+    <text x="72" y="40" fill="#00c9a7" font-family="'JetBrains Mono', 'Courier New', monospace" font-size="13" letter-spacing="0.5" opacity="0.7">billbergquist.dev</text>
+    <!-- Location right -->
+    <text x="978" y="40" fill="#808090" font-family="'Space Grotesk', Arial, sans-serif" font-size="12" letter-spacing="2" text-anchor="end">DENVER · LAKEWOOD · CO</text>
+  </g>
+
+  <!-- Noise overlay for print texture -->
+  <rect width="1050" height="600" fill="transparent" filter="url(#noise)" opacity="0.03"/>
+</svg>
