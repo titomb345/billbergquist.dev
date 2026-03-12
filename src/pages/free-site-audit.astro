@@ -1,0 +1,61 @@
+---
+import Layout from '../layouts/Layout.astro';
+import SiteAuditForm from '../components/services/SiteAuditForm';
+import styles from './FreeSiteAuditPage.module.css';
+import { BASE_URL, PERSON_REF } from '../shared/site';
+
+const jsonLd = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: 'Free Website Audit for Denver & Lakewood Businesses',
+  description:
+    'Get a free audit of your business website covering speed, mobile experience, SEO, and what may be costing you customers. For small businesses in Denver, Lakewood, and the Colorado Front Range.',
+  url: `${BASE_URL}/free-site-audit/`,
+  provider: PERSON_REF,
+});
+---
+
+<Layout
+  title="Free Website Audit — Denver & Lakewood, CO | Bill Bergquist"
+  description="Get a free website audit covering speed, mobile experience, SEO basics, and what's costing you customers. For small businesses in Denver, Lakewood, and the Colorado Front Range."
+  canonical="/free-site-audit"
+  jsonLd={[jsonLd]}
+  ogImage="/og/services.png"
+  geoRegion="US-CO"
+  geoPlacename="Denver, CO"
+>
+  <div class={styles.page}>
+    <header class={styles.header}>
+      <p class={styles.eyebrow}>100% Free &middot; No Obligation</p>
+      <h1 class={styles.title}>Free Website Audit</h1>
+      <p class={styles.subtitle}>
+        Find out what's holding your site back. I'll review your website and send you a
+        personalized report covering speed, mobile experience, SEO basics, and what's
+        costing you customers.
+      </p>
+    </header>
+
+    <section class={styles.formSection}>
+      <SiteAuditForm client:visible />
+      <p class={styles.responseTime}>I'll send your audit within a few business days.</p>
+    </section>
+
+    <section class={styles.details}>
+      <h2 class={styles.detailsTitle}>What's included</h2>
+      <ul class={styles.checklist}>
+        <li>Page speed analysis on desktop and mobile</li>
+        <li>Mobile-friendliness check</li>
+        <li>Basic SEO review (titles, meta, headings, structured data)</li>
+        <li>Accessibility quick scan</li>
+        <li>Summary of what's costing you customers and where to focus first</li>
+      </ul>
+      <p class={styles.note}>
+        No strings attached. If you want help fixing anything, we can talk about that separately.
+      </p>
+    </section>
+
+    <footer class={styles.footer}>
+      <a href="/services/" class={styles.backLink}>&larr; View all services</a>
+    </footer>
+  </div>
+</Layout>
